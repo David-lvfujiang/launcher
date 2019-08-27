@@ -1,0 +1,85 @@
+apply plugin: 'com.android.library'
+
+
+android {
+    compileSdkVersion BUILD_VERSIONS.COMPILE_SDK
+    buildToolsVersion BUILD_VERSIONS.BUILD_TOOLS
+
+
+    defaultConfig {
+        minSdkVersion BUILD_VERSIONS.MIN_SDK
+        targetSdkVersion BUILD_VERSIONS.TARGET_SDK
+        versionCode BUILD_VERSIONS.VERSION_CODE
+        versionName BUILD_VERSIONS.VERSION_NAME
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+repositories {
+    flatDir {
+        dirs 'libs'
+        //this way we can find the .aar file in libs folder
+    }
+    mavenCentral()
+    maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    api deps.support.app_compat
+    api deps.support.v4
+    api deps.support.recyclerview
+    api deps.support.cardview
+    api deps.support.design
+    api deps.support.multidex
+    //test
+    testImplementation deps.junit
+    androidTestImplementation deps.test_runner
+    androidTestImplementation deps.test_espresso_core
+
+    //retrofit
+    api deps.retrofit.runtime
+    api deps.retrofit.adapter
+    api deps.retrofit.gson
+    api deps.retrofit.logging
+
+    //rx
+    api deps.rxjava2
+    api deps.rx_android
+
+    //ARouter
+    api deps.arouter_api
+
+    api deps.event_bus
+    api deps.glide
+
+    api deps.netty
+    api deps.lottie
+    api deps.rxlifecycle
+    api deps.rxlifecycle_components
+    api deps.recyclerview_helper
+    api deps.androidannotations_api
+
+
+    // bugly tinker
+    api deps.crashreport_upgrade
+    api deps.tinker
+    api deps.nativecrashreport
+
+
+    annotationProcessor deps.androidannotations
+
+
+
+}
+
