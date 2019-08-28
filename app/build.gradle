@@ -6,24 +6,76 @@ android {
     defaultConfig {
         applicationId "com.fenda.launcher"
         minSdkVersion 21
+        flavorDimensions "default"
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        lintOptions {
+            checkReleaseBuilds false
+            abortOnError false
+        }
+    }
+    signingConfigs {
+        debug {
+            storeFile file('../keystore/platform.jks')
+            storePassword 'Fendakeji'
+            keyAlias 'fenda'
+            keyPassword 'Fendakeji'
+        }
+        release {
+            keyAlias 'fenda'
+            keyPassword 'Fendakeji'
+            storeFile file('../keystore/platform.jks')
+            storePassword 'Fendakeji'
+        }
+    }
+    productFlavors {
+        _dev {//开发环境
+            //设置baseUrl 使用方法Application.getContext().getResources().getString(R.string.API_SERVER)
+            resValue "string", "BASE_SERVER_URL", "http://192.168.43.37:8998/smartsound/"
+            resValue "string", "TCP_IP", "192.168.43.37"
+            resValue "string", "DEVICE_SN", " "
+        }
+
+        _test {//测试环境
+            resValue "string", "BASE_SERVER_URL", "http://192.168.100.127:8998/smartsound/"
+            resValue "string", "TCP_IP", "192.168.100.127"
+            resValue "string", "DEVICE_SN", " "
+        }
+
+        _prod {//正式环境
+            resValue "string", "BASE_SERVER_URL", "https://ai.fenda.com/smartsound/"
+            resValue "string", "TCP_IP", "47.106.223.29"
+            resValue "string", "DEVICE_SN", "-pro"
+        }
     }
     buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }
+configurations.all {
 
+    resolutionStrategy.eachDependency {
+        DependencyResolveDetails details ->
+            def requested = details.requested
+            if (requested.group == 'com.android.support') {
+                if (!requested.name.startsWith("multidex")) {
+                    details.useVersion '25.4.0'//
+                }
+            }
+    }
+}
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation project(path: ':common')
 }

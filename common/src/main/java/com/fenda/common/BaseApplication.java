@@ -12,7 +12,6 @@ public class BaseApplication extends Application {
 
     private static BaseApplication instance;
 
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -20,14 +19,9 @@ public class BaseApplication extends Application {
     }
 
 
-    public static Application getInstance(){
+    public static BaseApplication getInstance() {
         return instance;
     }
-
-
-
-
-
 
 
 }

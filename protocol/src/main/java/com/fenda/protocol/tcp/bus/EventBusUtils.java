@@ -1,15 +1,11 @@
-package com.fenda.common.bus;
+package com.fenda.protocol.tcp.bus;
 
-import com.fenda.common.base.BaseEvent;
-import com.fenda.common.bean.EventMessage;
+
+import com.fenda.protocol.tcp.bean.EventMessage;
+import com.fenda.protocol.tcp.bean.PlayerMessage;
 
 import org.greenrobot.eventbus.EventBus;
-/**
-  * @author mirrer.wangzhonglin
-  * @Date 2019/8/26 20:30
-  * @Description Bus工具类
-  *
-  */
+
 public class EventBusUtils {
 
     private EventBusUtils() {
@@ -47,15 +43,6 @@ public class EventBusUtils {
     public static void post(EventMessage event) {
         EventBus.getDefault().post(event);
     }
-    /**
-     * 发送事件消息
-     *
-     * @param event
-     */
-    public static void post(BaseEvent event) {
-        EventBus.getDefault().post(event);
-    }
-
 
     public static void post(String type){
         EventBus.getDefault().post(type);
@@ -67,6 +54,13 @@ public class EventBusUtils {
     public static void post(Object type){
         EventBus.getDefault().post(type);
     }
+    /**
+     * 发送事件消息
+     * @param type
+     */
+    public static void post(PlayerMessage message){
+        EventBus.getDefault().post(message);
+    }
 
     /**
      * 发送粘性事件消息
@@ -74,6 +68,14 @@ public class EventBusUtils {
      * @param event
      */
     public static void postSticky(EventMessage event) {
+        EventBus.getDefault().postSticky(event);
+    }
+    /**
+     * 发送粘性事件消息
+     *
+     * @param event
+     */
+    public static void postSticky(PlayerMessage event) {
         EventBus.getDefault().postSticky(event);
     }
 }

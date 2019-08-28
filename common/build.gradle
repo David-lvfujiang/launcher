@@ -12,10 +12,7 @@ android {
         versionCode BUILD_VERSIONS.VERSION_CODE
         versionName BUILD_VERSIONS.VERSION_NAME
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -36,38 +33,22 @@ repositories {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    api deps.support.app_compat
-    api deps.support.v4
     api deps.support.recyclerview
     api deps.support.cardview
     api deps.support.design
-    api deps.support.multidex
     //test
     testImplementation deps.junit
     androidTestImplementation deps.test_runner
     androidTestImplementation deps.test_espresso_core
-
-    //retrofit
-    api deps.retrofit.runtime
-    api deps.retrofit.adapter
-    api deps.retrofit.gson
-    api deps.retrofit.logging
-
-    //rx
-    api deps.rxjava2
-    api deps.rx_android
-
     //ARouter
     api deps.arouter_api
-
-    api deps.event_bus
+    //
     api deps.glide
 
-    api deps.netty
+
     api deps.lottie
     api deps.rxlifecycle
     api deps.rxlifecycle_components
-    api deps.recyclerview_helper
     api deps.androidannotations_api
 
 
@@ -76,8 +57,8 @@ dependencies {
     api deps.tinker
     api deps.nativecrashreport
 
-
-    annotationProcessor deps.androidannotations
+    api project(':protocol')
+//    annotationProcessor deps.androidannotations
 
 
 

@@ -1,0 +1,6 @@
+fendakeji
+
+
+store: fendasigned  password: fendakeji  
+Alias: fendasigned  password: fendakeji
+SHA256: 3E:40:53:24:26:0B:5B:87:2F:A3:91:D4:3C:BA:A5:FB:93:92:95:CE:5C:8A:39:DD:DE:F9:CF:16:6D:E6:63:C7
