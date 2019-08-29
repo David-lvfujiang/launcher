@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+
+    <com.fenda.common.view.CircleImageView
+        android:id="@+id/iv_music_playingbg"
+        android:layout_marginLeft="150px"
+        android:layout_width="212px"
+        android:layout_height="212px"
+        android:layout_centerVertical="true"
+        android:scaleType="centerCrop"
+        />
+
+    <TextView
+        android:id="@+id/tv_music_name"
+        android:text="歌曲名"
+        android:textSize="60px"
+        android:textColor="@color/player_white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/iv_music_playingbg"
+        android:layout_marginTop="130px"
+        android:layout_marginLeft="55px"
+        android:maxLines="1"
+        android:ellipsize="end"
+
+        />
+
+    <TextView
+        android:id="@+id/tv_music_author"
+        android:text="歌曲作者"
+        android:textSize="38px"
+        android:textColor="@color/player_white"
+        android:layout_marginLeft="55px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/iv_music_playingbg"
+        android:layout_below="@id/tv_music_name"
+        android:layout_marginTop="12px"
+        />
+
+</RelativeLayout>

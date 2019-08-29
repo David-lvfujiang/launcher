@@ -9,18 +9,7 @@ import com.trello.rxlifecycle2.LifecycleProvider;
   * @Description
   *
   */
-public class BaseModel {
+public interface BaseModel {
 
 
-    private LifecycleProvider lifecycle;
-    public void injectLifecycle(LifecycleProvider lifecycle) {
-        this.lifecycle = lifecycle;
-    }
-
-    public LifecycleProvider getLifecycle() {
-        return lifecycle;
-    }
-
-
-    public void destory(){}
 }

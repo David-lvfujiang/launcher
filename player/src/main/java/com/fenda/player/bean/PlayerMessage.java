@@ -1,4 +1,4 @@
-package com.fenda.protocol.tcp.bean;
+package com.fenda.player.bean;
 
 import java.io.Serializable;
 

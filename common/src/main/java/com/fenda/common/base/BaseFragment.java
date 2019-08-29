@@ -18,7 +18,6 @@ import com.fenda.common.view.LoadingInitView;
 import com.fenda.common.view.LoadingTransView;
 import com.fenda.common.view.NetErrorView;
 import com.fenda.common.view.NoDataView;
-import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -28,9 +27,9 @@ import org.greenrobot.eventbus.EventBus;
  * @Time 2019/8/26  15:32
  * @Description This is BaseFragment
  */
-public abstract class BaseFragment extends Fragment implements BaseView {
+public abstract class BaseFragment extends Fragment {
 
-    private View mFragmentView;
+    protected View mRootView;
 
     protected NetErrorView mNetErrorView;
     protected NoDataView mNoDataView;
@@ -57,33 +56,23 @@ public abstract class BaseFragment extends Fragment implements BaseView {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mFragmentView = inflater.inflate(R.layout.common_fragment_root,container,false);
+        mRootView = inflater.inflate(R.layout.common_fragment_root,container,false);
         initCommonView();
         initView();
+        initData();
         initListener();
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return mRootView;
     }
 
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        isViewCreated = true;
-        //如果启用了懒加载就进行懒加载，否则就进行预加载
-        if (enableLazyData()) {
-            lazyLoad();
-        } else {
-            initData();
-        }
-    }
 
     protected void initCommonView() {
-        mViewContent = mFragmentView.findViewById(R.id.view_stub_content);
-        mViewContent = mFragmentView.findViewById(R.id.view_stub_content);
-        mViewInitLoading = mFragmentView.findViewById(R.id.view_stub_init_loading);
-        mViewTransLoading = mFragmentView.findViewById(R.id.view_stub_trans_loading);
-        mViewError = mFragmentView.findViewById(R.id.view_stub_error);
-        mViewNoData = mFragmentView.findViewById(R.id.view_stub_nodata);
+        mViewContent = mRootView.findViewById(R.id.view_stub_content);
+        mViewContent = mRootView.findViewById(R.id.view_stub_content);
+        mViewInitLoading = mRootView.findViewById(R.id.view_stub_init_loading);
+        mViewTransLoading = mRootView.findViewById(R.id.view_stub_trans_loading);
+        mViewError = mRootView.findViewById(R.id.view_stub_error);
+        mViewNoData = mRootView.findViewById(R.id.view_stub_nodata);
 
         mViewContent.setLayoutResource(onBindLayout());
         mViewContent.inflate();
@@ -121,42 +110,33 @@ public abstract class BaseFragment extends Fragment implements BaseView {
 
     public void initListener() {
     }
-    @Override
     public void showInitLoadView() {
         showInitLoadView(true);
     }
-    @Override
     public void hideInitLoadView() {
         showInitLoadView(false);
     }
 
-    @Override
     public void showTransLoadingView() {
         showTransLoadingView(true);
     }
 
-    @Override
     public void hideTransLoadingView() {
         showTransLoadingView(false);
     }
-    @Override
     public void showNoDataView() {
         showNoDataView(true);
     }
-    @Override
     public void showNoDataView(int resid) {
         showNoDataView(true, resid);
     }
-    @Override
     public void hideNoDataView() {
         showNoDataView(false);
     }
 
-    @Override
     public void hideNetWorkErrView() {
         showNetWorkErrView(false);
     }
-    @Override
     public void showNetWorkErrView() {
         showNetWorkErrView(true);
     }

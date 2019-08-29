@@ -8,11 +8,11 @@ import android.content.Context;
   * @Description
   *
   */
-public interface BaseView extends ILoadView,INetErrView,INoDataView,ITransView{
+public interface BaseView {
 
-    void initView();
-    void initListener();
-    void initData();
-    Context getContext();
+    /*******内嵌加载*******/
+    void showLoading(String title);
+    void stopLoading();
+    void showErrorTip(String msg);
 
 }

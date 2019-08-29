@@ -2,7 +2,6 @@ package com.fenda.protocol.tcp.bus;
 
 
 import com.fenda.protocol.tcp.bean.EventMessage;
-import com.fenda.protocol.tcp.bean.PlayerMessage;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -54,13 +53,6 @@ public class EventBusUtils {
     public static void post(Object type){
         EventBus.getDefault().post(type);
     }
-    /**
-     * 发送事件消息
-     * @param type
-     */
-    public static void post(PlayerMessage message){
-        EventBus.getDefault().post(message);
-    }
 
     /**
      * 发送粘性事件消息
@@ -68,14 +60,6 @@ public class EventBusUtils {
      * @param event
      */
     public static void postSticky(EventMessage event) {
-        EventBus.getDefault().postSticky(event);
-    }
-    /**
-     * 发送粘性事件消息
-     *
-     * @param event
-     */
-    public static void postSticky(PlayerMessage event) {
         EventBus.getDefault().postSticky(event);
     }
 }

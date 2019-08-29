@@ -1,6 +1,8 @@
 package com.fenda.test.contract;
 
 import com.fenda.common.base.BaseResponse;
+import com.fenda.common.mvp.BaseModel;
+import com.fenda.common.mvp.BasePresenter;
 import com.fenda.common.mvp.BaseView;
 import com.fenda.test.api.LoginRequest;
 import com.fenda.test.api.RegisterRequest;
@@ -19,19 +21,18 @@ public interface TestContract {
         void registerDevice(BaseResponse response);
 
 
-
     }
 
 
 
-    interface Model{
+    interface Model extends BaseModel {
         Observable<BaseResponse> register(LoginRequest loginRequest);
 
 
     }
 
-    interface Presenter{
-        void register(LoginRequest loginRequest);
+    abstract class Presenter extends BasePresenter<View,Model> {
+        public abstract void register(LoginRequest loginRequest);
 
     }
 

@@ -73,7 +73,8 @@ public class ImageUtil {
         Glide.with(imageView.getContext())
                 .load(url)
                 .apply(options)
-                .listener(listener);
+                .listener(listener)
+                .into(imageView);
 
     }
     /**
@@ -81,15 +82,16 @@ public class ImageUtil {
      * @param resource
      * @param imageView
      */
-    public static void loadGIFImage(int resource,ImageView imageView){
+    public static void loadGIFImage(int resource,ImageView imageView,int defaultImg){
         RequestOptions options = RequestOptions
                 .diskCacheStrategyOf(DiskCacheStrategy.ALL)
-                .placeholder(R.mipmap.ic_launcher)
-                .error(R.mipmap.ic_launcher);
+                .placeholder(defaultImg)
+                .error(defaultImg);
         Glide.with(imageView.getContext())
                 .asGif()
                 .load(resource)
-                .apply(options);
+                .apply(options)
+                .into(imageView);
 
 
 
@@ -109,10 +111,30 @@ public class ImageUtil {
         Glide.with(imageView.getContext())
                 .asFile()
                 .load(file)
-                .apply(options);
+                .apply(options)
+                .into(imageView);
 
 
 
+    }
+
+    /**
+     * 加载可设置默认图片
+     * @param v
+     * @param url
+     * @param defaultImg
+     */
+    public static void loadDefaultcImg(ImageView v, String url,int defaultImg) {
+
+        RequestOptions options = RequestOptions
+                .diskCacheStrategyOf(DiskCacheStrategy.ALL)
+                .placeholder(defaultImg)
+                .error(defaultImg);
+
+        Glide.with(v.getContext())
+                .load(url)
+                .apply(options)
+                .into(v);
     }
 
 

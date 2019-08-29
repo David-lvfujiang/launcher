@@ -2,6 +2,7 @@ package com.fenda.common.mvp;
 
 import android.content.Context;
 
+import com.fenda.common.baserx.RxManager;
 import com.trello.rxlifecycle2.LifecycleProvider;
 
 
@@ -13,30 +14,20 @@ import com.trello.rxlifecycle2.LifecycleProvider;
   */
 public abstract class BasePresenter<V,M extends BaseModel> {
     public Context mContext;
-    public V mView;
     public M mModel;
+    public V mView;
+    public RxManager mRxManage = new RxManager();
 
-    public void attachView(V mView,M mModel){
-        this.mView = mView;
-        this.mModel = mModel;
+    public void setVM(V v, M m) {
+        this.mView = v;
+        this.mModel = m;
+        this.onStart();
     }
-
-
-
-
-
-    public void detachView() {
-        if (mView != null){
-            mView = null;
-        }
+    public void onStart(){
+    };
+    public void onDestroy() {
+        mRxManage.clear();
     }
-
-    public void injectLifecycle(LifecycleProvider lifecycle) {
-        if (mModel != null) {
-            mModel.injectLifecycle(lifecycle);
-        }
-    }
-
 
 
 

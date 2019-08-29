@@ -3,6 +3,7 @@ package com.fenda.common.base;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.fenda.common.baserx.RxManager;
 import com.fenda.common.mvp.BaseModel;
 import com.fenda.common.mvp.BasePresenter;
 import com.fenda.common.util.TUtil;
@@ -18,26 +19,33 @@ public abstract class BaseMvpActivity<T extends BasePresenter,M extends BaseMode
     protected T mPresenter;
     protected M mModel;
 
+    public RxManager mRxManager;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        mRxManager=new RxManager();
+        mPresenter = TUtil.getT(this, 0);
         mModel = TUtil.getT(this,1);
-        initPresenter();
-        if (mPresenter != null) {
+        if (mPresenter != null){
             mPresenter.mContext = this;
-            mPresenter.attachView(this,mModel);
-            mPresenter.injectLifecycle(this);
         }
+        initPresenter();
         super.onCreate(savedInstanceState);
     }
 
-
+    /**
+     * 此处把Model和View与Presenter相关联
+     */
     protected abstract void initPresenter();
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (mPresenter != null){
-            mPresenter.detachView();
+            mPresenter.onDestroy();
+        }
+        if (mRxManager != null){
+            mRxManager.clear();
         }
     }
 }

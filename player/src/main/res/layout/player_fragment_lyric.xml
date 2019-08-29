@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:paddingTop="20px"
+        android:paddingBottom="60px"
+        >
+
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/player_white"
+            android:textSize="40sp"
+            android:text="月下独酌"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="10px"
+
+            />
+        <TextView
+            android:id="@+id/tv_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/player_white"
+            android:textSize="40sp"
+            android:text="李白"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="10px"
+
+            />
+
+        <LinearLayout
+            android:id="@+id/lin_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="10px"
+            ></LinearLayout>
+
+
+
+    </LinearLayout>
+
+
+
+
+</ScrollView>

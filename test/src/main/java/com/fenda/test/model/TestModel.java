@@ -20,12 +20,14 @@ import io.reactivex.ObservableOnSubscribe;
  * @Date 2019/8/28 10:24
  * @Description
  */
-public class TestModel  extends BaseModel implements TestContract.Model {
+public class TestModel  implements TestContract.Model {
 
 
     @Override
     public Observable<BaseResponse> register(LoginRequest request) {
-        return RetrofitHelper.getInstance(Constant.TEST_BASE_URL).getServer(MyService.class).register(request).compose(RxSchedulers.<BaseResponse>io_main(getLifecycle()));
+        return RetrofitHelper.getInstance(Constant.TEST_BASE_URL).getServer(MyService.class)
+                .register(request)
+                .compose(RxSchedulers.<BaseResponse>io_main());
 
     }
 }

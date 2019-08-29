@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">player</string>
+
+    <string name="player_play_music">正在播放</string>
+    <string name="player_play_list">播放列表</string>
+    <string name="player_fd_music_listTitle">播放列表</string>
+</resources>

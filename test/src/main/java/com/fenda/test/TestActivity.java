@@ -37,7 +37,7 @@ public class TestActivity extends BaseMvpActivity <TestPresenter, TestModel> imp
 
     @Override
     protected void initPresenter() {
-        mPresenter = new TestPresenter();
+        mPresenter.setVM(this,mModel);
 
 
     }
@@ -73,10 +73,6 @@ public class TestActivity extends BaseMvpActivity <TestPresenter, TestModel> imp
 
     }
 
-    @Override
-    public Context getContext() {
-        return this;
-    }
 
     @Override
     public void registerDevice(BaseResponse response) {
@@ -96,5 +92,20 @@ public class TestActivity extends BaseMvpActivity <TestPresenter, TestModel> imp
             request.setPassword("123456");
             mPresenter.register(request);
         }
+    }
+
+    @Override
+    public void showLoading(String title) {
+
+    }
+
+    @Override
+    public void stopLoading() {
+
+    }
+
+    @Override
+    public void showErrorTip(String msg) {
+
     }
 }

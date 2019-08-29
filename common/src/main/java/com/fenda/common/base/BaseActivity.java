@@ -1,6 +1,8 @@
 package com.fenda.common.base;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +11,7 @@ import android.view.ViewStub;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.R;
+import com.fenda.common.baseapp.AppManager;
 import com.fenda.common.mvp.BaseView;
 import com.fenda.common.util.NetUtil;
 import com.fenda.common.view.LoadingInitView;
@@ -22,13 +25,15 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import io.reactivex.disposables.CompositeDisposable;
+
 
 /**
  * @Author mirrer.wangzhonglin
  * @Time 2019/8/26  15:32
  * @Description This is BaseActivity
  */
-public abstract class BaseActivity extends RxAppCompatActivity implements BaseView {
+public abstract class BaseActivity extends RxAppCompatActivity {
 
 
     protected Context mContext;
@@ -42,6 +47,8 @@ public abstract class BaseActivity extends RxAppCompatActivity implements BaseVi
     private ViewStub mViewTransLoading;
     private ViewStub mViewNoData;
     private ViewStub mViewError;
+    private boolean isConfigChange = false;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,16 +58,16 @@ public abstract class BaseActivity extends RxAppCompatActivity implements BaseVi
         initCommonView();
         ARouter.getInstance().inject(this);
         initView();
-        initListener();
         initData();
+        initListener();
         EventBus.getDefault().register(this);
+        AppManager.getAppManager().addActivity(this);
 
 
     }
 
 
     protected void initCommonView() {
-        mViewContent = findViewById(R.id.view_stub_content);
         mViewContent = findViewById(R.id.view_stub_content);
         mViewInitLoading = findViewById(R.id.view_stub_init_loading);
         mViewTransLoading = findViewById(R.id.view_stub_trans_loading);
@@ -72,53 +79,85 @@ public abstract class BaseActivity extends RxAppCompatActivity implements BaseVi
     }
 
 
+    /**
+     * 通过Class跳转界面
+     **/
+    public void startActivity(Class<?> cls) {
+        startActivity(cls, null);
+    }
+
+
+    /**
+     * 通过Class跳转界面
+     **/
+    public void startActivityForResult(Class<?> cls, int requestCode) {
+        startActivityForResult(cls, null, requestCode);
+    }
+
+    /**
+     * 含有Bundle通过Class跳转界面
+     **/
+    public void startActivityForResult(Class<?> cls, Bundle bundle,
+                                       int requestCode) {
+        Intent intent = new Intent();
+        intent.setClass(this, cls);
+        if (bundle != null) {
+            intent.putExtras(bundle);
+        }
+        startActivityForResult(intent, requestCode);
+    }
+
+
+    /**
+     * 含有Bundle通过Class跳转界面
+     **/
+    public void startActivity(Class<?> cls, Bundle bundle) {
+        Intent intent = new Intent();
+        intent.setClass(this, cls);
+        if (bundle != null) {
+            intent.putExtras(bundle);
+        }
+        startActivity(intent);
+    }
+
+
     public abstract int onBindLayout();
 
-    @Override
     public abstract void initView();
 
-    @Override
     public abstract void initData();
 
-    @Override
     public void initListener() {
     }
-    @Override
     public void showInitLoadView() {
         showInitLoadView(true);
     }
-    @Override
     public void hideInitLoadView() {
         showInitLoadView(false);
     }
 
-    @Override
     public void showTransLoadingView() {
         showTransLoadingView(true);
     }
 
-    @Override
     public void hideTransLoadingView() {
         showTransLoadingView(false);
     }
-    @Override
+
     public void showNoDataView() {
         showNoDataView(true);
     }
-    @Override
     public void showNoDataView(int resid) {
         showNoDataView(true, resid);
     }
-    @Override
     public void hideNoDataView() {
         showNoDataView(false);
     }
 
-    @Override
     public void hideNetWorkErrView() {
         showNetWorkErrView(false);
     }
-    @Override
+
     public void showNetWorkErrView() {
         showNetWorkErrView(true);
     }
@@ -184,10 +223,21 @@ public abstract class BaseActivity extends RxAppCompatActivity implements BaseVi
 
 
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        //横竖切换
+        isConfigChange=true;
+    }
+
+
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        if (!isConfigChange){
+            AppManager.getAppManager().finishActivity(this);
+        }
     }
 }

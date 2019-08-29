@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/alarm_bg"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/tv_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="闹钟"
+        android:textColor="@color/white"
+        android:textSize="22sp"
+        app:layout_constraintTop_toTopOf="@id/img_back"
+        app:layout_constraintBottom_toBottomOf="@id/img_back"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+
+        />
+
+    <ImageView
+        android:id="@+id/img_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:src="@mipmap/life_back"
+        android:paddingLeft="36px"
+        android:paddingTop="20px"
+        android:paddingBottom="20px"
+        android:paddingRight="60px"
+        />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="665px"
+        android:layout_height="289px"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/alarm_book" />
+
+    <ImageView
+        android:id="@+id/img_left_one"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48px"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/one" />
+
+    <ImageView
+        android:id="@+id/img_left_two"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="14px"
+        app:layout_constraintBottom_toBottomOf="@id/img_left_one"
+        app:layout_constraintStart_toEndOf="@+id/img_left_one"
+        app:srcCompat="@mipmap/five" />
+
+
+    <ImageView
+        android:id="@+id/img_right_two"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="48px"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/imageView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/zero"
+
+        />
+
+    <ImageView
+        android:id="@+id/img_right_one"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="14px"
+        app:layout_constraintBottom_toBottomOf="@id/img_right_two"
+        app:layout_constraintEnd_toStartOf="@id/img_right_two"
+        app:srcCompat="@mipmap/zero"
+
+        />
+
+
+    <TextView
+        android:id="@+id/tv_date"
+        android:layout_width="665px"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30px"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="数据库的给"
+        android:textColor="@color/white"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="@id/imageView"
+        app:layout_constraintLeft_toRightOf="@id/imageView"
+        app:layout_constraintTop_toBottomOf="@id/imageView"
+        />
+
+
+    <TextView
+        android:id="@+id/tv_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/alarm_stop"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageView"
+        android:layout_marginTop="50px"
+        android:text="停止"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:textSize="34sp"
+        android:visibility="gone"
+
+        />
+
+
+</android.support.constraint.ConstraintLayout>
