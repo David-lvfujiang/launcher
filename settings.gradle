@@ -1,1 +1,3 @@
-include ':app', ':common', ':protocol'
+include ':app', ':common', ':test', ':protocol'
+
+

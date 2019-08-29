@@ -12,11 +12,27 @@ android {
         versionCode BUILD_VERSIONS.VERSION_CODE
         versionName BUILD_VERSIONS.VERSION_NAME
 
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
+
+            annotationProcessorOptions {
+
+                arguments = [moduleName: project.getName()]
+
+            }
+        }
+
     }
+
     buildTypes {
         release {
+            buildConfigField "boolean", "LOG_DEBUG", "false"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        debug{
+            buildConfigField "boolean", "LOG_DEBUG", "true"
         }
     }
 
@@ -33,32 +49,77 @@ repositories {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    api deps.support.recyclerview
-    api deps.support.cardview
-    api deps.support.design
+    api (deps.support.app_compat){}
+    api (deps.support.v4){}
+    api (deps.support.recyclerview){}
+    api (deps.support.cardview){}
+    api (deps.support.design){}
+    api (deps.support.multidex){}
+    api (deps.constraint_layout)
+
     //test
-    testImplementation deps.junit
-    androidTestImplementation deps.test_runner
-    androidTestImplementation deps.test_espresso_core
-    //ARouter
-    api deps.arouter_api
-    //
-    api deps.glide
+    testImplementation (deps.junit){
+    }
+    androidTestImplementation (deps.test_runner){
+    }
+    androidTestImplementation (deps.test_espresso_core){
+    }
+
+    //retrofit
+    api (deps.retrofit.runtime){
+    }
+    api (deps.retrofit.adapter){
+    }
+    api (deps.retrofit.gson){
+    }
+    api (deps.retrofit.logging){
+    }
+
+    //rx
+    api (deps.rxjava2){
+    }
+    api (deps.rx_android){
+    }
+    api (deps.rxlifecycle){
+    }
+    api (deps.rxlifecycle_components){
+    }
+
+//    //ARouter
+    api (deps.arouter_api) {
+    }
+//    //
+    api (deps.glide){
+    }
 
 
-    api deps.lottie
-    api deps.rxlifecycle
-    api deps.rxlifecycle_components
-    api deps.androidannotations_api
+    api (deps.lottie){
+    }
+    api (deps.rxlifecycle){
+    }
+    api (deps.rxlifecycle_components){
+    }
+    api (deps.androidannotations_api){
+    }
 
 
-    // bugly tinker
-    api deps.crashreport_upgrade
-    api deps.tinker
-    api deps.nativecrashreport
+//      bugly tinker
+    api (deps.crashreport_upgrade){
+    }
+    api (deps.tinker){
+    }
+    api (deps.nativecrashreport){
+    }
+    //日志
+    api (deps.logger){
+    }
 
     api project(':protocol')
-//    annotationProcessor deps.androidannotations
+
+    annotationProcessor (deps.androidannotations){
+    }
+    annotationProcessor (deps.arouter_compiler){
+    }
 
 
 

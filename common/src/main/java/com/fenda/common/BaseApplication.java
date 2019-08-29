@@ -1,6 +1,12 @@
 package com.fenda.common;
 
 import android.app.Application;
+import android.support.annotation.Nullable;
+
+import com.alibaba.android.arouter.launcher.ARouter;
+import com.orhanobut.logger.AndroidLogAdapter;
+import com.orhanobut.logger.Logger;
+
 
 /**
  * @Author mirrer.wangzhonglin
@@ -16,6 +22,21 @@ public class BaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+
+        ARouter.openLog();
+        ARouter.openDebug();
+        ARouter.init(getInstance());
+
+        //日志框架初始化
+        Logger.addLogAdapter(new AndroidLogAdapter(){
+            @Override
+            public boolean isLoggable(int priority, @Nullable String tag) {
+                return BuildConfig.LOG_DEBUG;
+            }
+        });
+
+
+
     }
 
 

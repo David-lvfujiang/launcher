@@ -1,18 +1,27 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "29.0.1"
+    compileSdkVersion BUILD_VERSIONS.COMPILE_SDK
+    buildToolsVersion BUILD_VERSIONS.BUILD_TOOLS
     defaultConfig {
         applicationId "com.fenda.launcher"
-        minSdkVersion 21
+        minSdkVersion BUILD_VERSIONS.MIN_SDK
+        targetSdkVersion BUILD_VERSIONS.TARGET_SDK
+        versionCode BUILD_VERSIONS.VERSION_CODE
+        versionName BUILD_VERSIONS.VERSION_NAME
         flavorDimensions "default"
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
         lintOptions {
             checkReleaseBuilds false
             abortOnError false
+        }
+
+        javaCompileOptions {
+
+            annotationProcessorOptions {
+
+                arguments = [moduleName: project.getName()]
+
+            }
         }
     }
     signingConfigs {
@@ -62,20 +71,28 @@ android {
         }
     }
 }
-configurations.all {
+//configurations.all {
+//
+//    resolutionStrategy.eachDependency {
+//        DependencyResolveDetails details ->
+//            def requested = details.requested
+//            if (requested.group == 'com.android.support') {
+//                if (!requested.name.startsWith("multidex")) {
+//                    details.useVersion '28.0.0'//
+//                }
+//            }
+//    }
+//}
 
-    resolutionStrategy.eachDependency {
-        DependencyResolveDetails details ->
-            def requested = details.requested
-            if (requested.group == 'com.android.support') {
-                if (!requested.name.startsWith("multidex")) {
-                    details.useVersion '25.4.0'//
-                }
-            }
-    }
-}
+
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+
+
+
     implementation project(path: ':common')
+
+//    annotationProcessor deps.androidannotations
+//    annotationProcessor deps.arouter_compiler
 }

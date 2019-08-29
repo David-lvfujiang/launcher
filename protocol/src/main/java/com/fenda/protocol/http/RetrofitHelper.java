@@ -69,7 +69,8 @@ public class RetrofitHelper {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         // Log信息拦截器
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);//这里可以选择拦截级别
+        //这里可以选择拦截级别
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         //设置 Debug Log 模式
         builder.addInterceptor(loggingInterceptor);
         OkHttpClient okHttpClient = builder.retryOnConnectionFailure(true)
