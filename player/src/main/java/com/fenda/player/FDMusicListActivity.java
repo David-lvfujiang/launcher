@@ -132,10 +132,8 @@ public class FDMusicListActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.tv_navbar_blck:
-                finish();
-                break;
+        if (v.getId() == R.id.tv_navbar_blck){
+            finish();
         }
 
     }

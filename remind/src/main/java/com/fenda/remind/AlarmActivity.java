@@ -22,9 +22,11 @@ import java.util.ArrayList;
 
 
 /**
- * @author WangZL
- * @Date $date$ $time$
- */
+  * @author mirrer.wangzhonglin
+  * @Date 2019/8/30 15:58
+  * @Description
+  *
+  */
 public class AlarmActivity extends Activity {
     ImageView imgBack;
     ImageView imgLeftOne;

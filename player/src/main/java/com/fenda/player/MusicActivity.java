@@ -558,53 +558,41 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
-
-        switch (v.getId()) {
+        int id = v.getId();
+        if (id == R.id.bt_music_pre){
             //上一曲
-            case R.id.bt_music_pre: {
-                preMusic();
-                break;
+            preMusic();
+        }else if (id == R.id.bt_music_play){
+            if (isPause) {
+                FDMusic tMusic = mMusicList.get(current_item);
+                play(tMusic);
+            } else {
+                pause();
             }
-            case R.id.bt_music_play: {
-                if (isPause) {
-                    FDMusic tMusic = mMusicList.get(current_item);
-                    play(tMusic);
-                } else {
-                    pause();
-                }
-                break;
-            }
+        }else if (id == R.id.bt_music_next){
             //下一曲
-            case R.id.bt_music_next: {
-                nextMusic();
-                break;
+            nextMusic();
+        }else if (id == R.id.bt_music_repeat){
+            if (playStatus == Constant.Player.LIST_CYCLE_PLAY) {
+                playStatus = Constant.Player.SINGLE_CYCLE_PLAY;
+            } else if (playStatus == Constant.Player.SINGLE_CYCLE_PLAY) {
+                playStatus = Constant.Player.RANDOM_PLAY;
+            } else if (playStatus == Constant.Player.RANDOM_PLAY) {
+                playStatus = Constant.Player.LIST_CYCLE_PLAY;
             }
-            case R.id.bt_music_repeat: {
-                if (playStatus == Constant.Player.LIST_CYCLE_PLAY) {
-                    playStatus = Constant.Player.SINGLE_CYCLE_PLAY;
-                } else if (playStatus == Constant.Player.SINGLE_CYCLE_PLAY) {
-                    playStatus = Constant.Player.RANDOM_PLAY;
-                } else if (playStatus == Constant.Player.RANDOM_PLAY) {
-                    playStatus = Constant.Player.LIST_CYCLE_PLAY;
-                }
-                setPlayStatus();
-
-                break;
-            }
-            case R.id.bt_music_list: {
-                isPlay = false;
-                Intent tIntent = new Intent(this, FDMusicListActivity.class);
-                tIntent.putExtra(Constant.Player.keyDataMusicList, mMusicList);
-                tIntent.putExtra(Constant.Player.keyCurrentPlayIndex, current_item);
-                tIntent.putExtra(Constant.Player.keyContentType, contentType);
-                startActivity(tIntent);
-                break;
-            }
-            case R.id.tv_navbar_back: {
-                finish();
-                break;
-            }
+            setPlayStatus();
+        }else if (id == R.id.bt_music_list){
+            isPlay = false;
+            Intent tIntent = new Intent(this, FDMusicListActivity.class);
+            tIntent.putExtra(Constant.Player.keyDataMusicList, mMusicList);
+            tIntent.putExtra(Constant.Player.keyCurrentPlayIndex, current_item);
+            tIntent.putExtra(Constant.Player.keyContentType, contentType);
+            startActivity(tIntent);
+        }else if (id == R.id.tv_navbar_back){
+            finish();
         }
+
+
     }
 
     /**
