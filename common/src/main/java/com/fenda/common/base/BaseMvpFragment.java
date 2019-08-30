@@ -7,10 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 import com.fenda.common.baserx.RxManager;
 import com.fenda.common.mvp.BaseModel;
 import com.fenda.common.mvp.BasePresenter;
+import com.fenda.common.mvp.BaseView;
 import com.fenda.common.util.TUtil;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
-public abstract class BaseMvpFragment<T extends BasePresenter,E extends BaseModel> extends BaseFragment {
+public abstract class BaseMvpFragment<T extends BasePresenter,E extends BaseModel> extends BaseFragment implements BaseView {
 
     protected T mPresenter;
     protected E mModel;
@@ -45,5 +46,32 @@ public abstract class BaseMvpFragment<T extends BasePresenter,E extends BaseMode
         if (mRxManager != null){
             mRxManager.clear();
         }
+    }
+
+
+    @Override
+    public void showLoading(String title) {
+        showInitLoadView();
+
+    }
+
+    @Override
+    public void hideLoading() {
+        hideInitLoadView();
+
+    }
+
+
+
+    @Override
+    public void showNetError() {
+        showNetWorkErrView();
+
+    }
+
+    @Override
+    public void hideNetError() {
+        hideNetWorkErrView();
+
     }
 }

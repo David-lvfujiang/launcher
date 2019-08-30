@@ -11,7 +11,7 @@ public interface BaseView {
 
     /*******内嵌加载*******/
     void showLoading(String title);
-    void stopLoading();
+    void hideLoading();
     void showErrorTip(String msg);
     void showNetError();
     void hideNetError();
