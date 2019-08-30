@@ -7,7 +7,9 @@ package com.fenda.common.constant;
  */
 public interface Constant {
 
-
+    /**
+     * 播放器组件
+     */
     interface Player{
         /**
          * 笑话
@@ -64,6 +66,27 @@ public interface Constant {
         String VOICE_FORWARD = "voice_forward";
         String VOICE_BACKWARD = "voice_backward";
 
+
+    }
+
+
+    /**
+     * 提醒组件
+     */
+    interface Remind{
+        String ALARM_LIST = "alarmList";
+        String ALARM_TYPE = "alarmType";
+        String CLASS_NAME = "AlarmActivity";
+        String CREATE_REMIND = "createRemind";
+        String DELETE_REMIND = "deleteRemind";
+        String QUERY_REMIND = "queryRemind";
+        String ALARM_REMIND = "alarmRemind";
+
+        String ACTION_CLOSE_ALARM = "com.fenda.lucher.ACTION_CLOSE_ALARM";
+        String ACTION_CLOSE_REMIND = "com.fenda.lucher.ACTION_CLOSE_REMIND";
+
+        int DELETE_ALARM = 2;
+        int CLOSE_ALARM = 4;
 
     }
 

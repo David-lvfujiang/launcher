@@ -13,8 +13,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.common.base.BaseActivity;
 import com.fenda.common.constant.Constant;
+import com.fenda.common.router.RouterPath;
 import com.fenda.player.adapter.FDMusicAdpater;
 import com.fenda.player.bean.FDMusic;
 
@@ -25,6 +27,7 @@ import java.util.ArrayList;
   * @Description 
   *
   */
+@Route(path = RouterPath.PLAYER.FDMusicListActivity)
 public class FDMusicListActivity extends BaseActivity implements View.OnClickListener {
 
     private TextView tvBlck;

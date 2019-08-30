@@ -9,7 +9,9 @@ public interface RouterPath {
     /**
      * 都用这种方式 Voice表示自己的组件名称
      */
-    interface Voice{
+    interface PLAYER{
+        String MusiceActivity = "/player/MusicActivity";
+        String FDMusicListActivity = "/player/FDMusicListActivity";
 
     }
 

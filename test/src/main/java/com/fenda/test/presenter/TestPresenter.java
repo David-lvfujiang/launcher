@@ -19,7 +19,7 @@ public class TestPresenter extends TestContract.Presenter {
     @Override
     public void register(LoginRequest loginRequest) {
         mView.showLoading("开始加载");
-        mRxManage.add(mModel.register(loginRequest).subscribeWith(new RxResourceObserver<BaseResponse<LoginResult>>() {
+        mRxManage.add(mModel.register(loginRequest).subscribeWith(new RxResourceObserver<BaseResponse<LoginResult>>(mView) {
             @Override
             protected void _onNext(BaseResponse<LoginResult> loginResultBaseResponse) {
                 loginResultBaseResponse.getMessage();

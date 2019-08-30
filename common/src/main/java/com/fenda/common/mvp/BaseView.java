@@ -1,6 +1,5 @@
 package com.fenda.common.mvp;
 
-import android.content.Context;
 
 /**
   * @author mirrer.wangzhonglin
@@ -14,5 +13,7 @@ public interface BaseView {
     void showLoading(String title);
     void stopLoading();
     void showErrorTip(String msg);
+    void showNetError();
+    void hideNetError();
 
 }

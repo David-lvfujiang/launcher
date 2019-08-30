@@ -28,8 +28,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.common.base.BaseActivity;
 import com.fenda.common.constant.Constant;
+import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.ImageUtil;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.NetUtil;
@@ -54,7 +56,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
-
+/**
+  * @author mirrer.wangzhonglin
+  * @Date 2019/8/30 11:25
+  * @Description
+  *
+  */
+@Route(path = RouterPath.PLAYER.MusiceActivity)
 public class MusicActivity extends BaseActivity implements View.OnClickListener {
 
     private ImageView mMusicPreBt;
