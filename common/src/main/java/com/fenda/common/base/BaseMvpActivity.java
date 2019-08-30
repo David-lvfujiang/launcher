@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import com.fenda.common.baserx.RxManager;
 import com.fenda.common.mvp.BaseModel;
 import com.fenda.common.mvp.BasePresenter;
+import com.fenda.common.mvp.BaseView;
 import com.fenda.common.util.TUtil;
 
 /**
@@ -14,7 +15,7 @@ import com.fenda.common.util.TUtil;
   * @Description
   *
   */
-public abstract class BaseMvpActivity<T extends BasePresenter,M extends BaseModel> extends BaseActivity {
+public abstract class BaseMvpActivity<T extends BasePresenter,M extends BaseModel> extends BaseActivity implements BaseView {
 
     protected T mPresenter;
     protected M mModel;
@@ -47,5 +48,31 @@ public abstract class BaseMvpActivity<T extends BasePresenter,M extends BaseMode
         if (mRxManager != null){
             mRxManager.clear();
         }
+    }
+
+    @Override
+    public void showLoading(String title) {
+        showInitLoadView();
+
+    }
+
+    @Override
+    public void hideLoading() {
+        hideInitLoadView();
+
+    }
+
+
+
+    @Override
+    public void showNetError() {
+        showNetWorkErrView();
+
+    }
+
+    @Override
+    public void hideNetError() {
+        hideNetWorkErrView();
+
     }
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.fenda.common.BaseApplication;
 import com.fenda.common.R;
+import com.fenda.common.base.BaseActivity;
 import com.fenda.common.mvp.BaseView;
 import com.fenda.common.util.NetUtil;
 
@@ -34,36 +35,27 @@ public abstract class RxResourceObserver<T> extends ResourceObserver<T> {
 
     private BaseView mView;
     private String msg;
-    private boolean showDialog=true;
+    private boolean showLoading;
 
-    /**
-     * 是否显示浮动dialog
-     */
-    public void showDialog() {
-        this.showDialog= true;
-    }
-    public void hideDialog() {
-        this.showDialog= true;
-    }
 
     public RxResourceObserver(BaseView mView) {
         this(mView,true);
     }
 
-    public RxResourceObserver(BaseView mView, String msg, boolean showDialog) {
-        this.mView = mView;
+    public RxResourceObserver(BaseView mView, String msg, boolean showLoading) {
+        this.mView =  mView;
         this.msg = msg;
-        this.showDialog=showDialog;
+        this.showLoading = showLoading;
     }
-    public RxResourceObserver(BaseView mView, boolean showDialog) {
-        this(mView,null,showDialog);
+    public RxResourceObserver(BaseView mView, boolean showLoading) {
+        this(mView,null,showLoading);
     }
 
 
     @Override
     protected void onStart() {
         // TODO 在这里可以添加请求网络前的一些初始化操作,比如打开请求网络的loading
-        if (showDialog && mView != null){
+        if (showLoading && mView != null){
             mView.showLoading(msg);
         }
     }
@@ -71,7 +63,7 @@ public abstract class RxResourceObserver<T> extends ResourceObserver<T> {
     @Override
     public void onComplete() {
         if (mView != null){
-            mView.stopLoading();
+            mView.hideLoading();
             mView.hideNetError();
         }
 
@@ -86,7 +78,7 @@ public abstract class RxResourceObserver<T> extends ResourceObserver<T> {
         e.printStackTrace();
         //网络
         if (!NetUtil.checkNet()) {
-            if (mView != null){
+            if (mView != null ){
                 mView.showNetError();
             }
             _onError(BaseApplication.getInstance().getString(R.string.no_net));

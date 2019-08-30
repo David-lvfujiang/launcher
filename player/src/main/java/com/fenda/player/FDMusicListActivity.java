@@ -28,7 +28,7 @@ import java.util.ArrayList;
   *
   */
 @Route(path = RouterPath.PLAYER.FDMusicListActivity)
-public class FDMusicListActivity extends BaseActivity implements View.OnClickListener {
+public class FDMusicListActivity extends BaseActivity implements View.OnClickListener  {
 
     private TextView tvBlck;
     private RecyclerView mRecycleListView;
@@ -139,6 +139,9 @@ public class FDMusicListActivity extends BaseActivity implements View.OnClickLis
         }
 
     }
+
+
+
 
 
     private class ListBroadcastReceiver extends BroadcastReceiver {
