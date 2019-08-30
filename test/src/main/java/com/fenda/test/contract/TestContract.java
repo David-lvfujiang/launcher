@@ -5,6 +5,7 @@ import com.fenda.common.mvp.BaseModel;
 import com.fenda.common.mvp.BasePresenter;
 import com.fenda.common.mvp.BaseView;
 import com.fenda.test.api.LoginRequest;
+import com.fenda.test.api.LoginResult;
 import com.fenda.test.api.RegisterRequest;
 
 import io.reactivex.Observable;
@@ -18,7 +19,7 @@ public interface TestContract {
 
     interface View extends BaseView{
 
-        void registerDevice(BaseResponse response);
+        void registerDevice(BaseResponse<LoginResult> response);
 
 
     }
@@ -26,7 +27,7 @@ public interface TestContract {
 
 
     interface Model extends BaseModel {
-        Observable<BaseResponse> register(LoginRequest loginRequest);
+        Observable<BaseResponse<LoginResult>> register(LoginRequest loginRequest);
 
 
     }
