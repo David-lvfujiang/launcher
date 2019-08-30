@@ -16,6 +16,6 @@ public interface MyService {
      * @return
      */
     @POST("user/login")
-    Observable<BaseResponse> register(@Body LoginRequest loginRequest);
+    Observable<BaseResponse<LoginResult>> register(@Body LoginRequest loginRequest);
 
 }

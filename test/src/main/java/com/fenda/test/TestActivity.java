@@ -17,6 +17,7 @@ import com.fenda.common.base.BaseResponse;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.test.api.LoginRequest;
+import com.fenda.test.api.LoginResult;
 import com.fenda.test.api.RegisterRequest;
 import com.fenda.test.contract.TestContract;
 import com.fenda.test.model.TestModel;
@@ -75,7 +76,7 @@ public class TestActivity extends BaseMvpActivity <TestPresenter, TestModel> imp
 
 
     @Override
-    public void registerDevice(BaseResponse response) {
+    public void registerDevice(BaseResponse<LoginResult> response) {
         LogUtil.i(response.getData().toString());
 
 

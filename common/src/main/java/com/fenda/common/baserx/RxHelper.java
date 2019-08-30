@@ -27,57 +27,32 @@ import io.reactivex.schedulers.Schedulers;
         .//省略*/
 
 public class RxHelper {
-//    /**
-//     * 对服务器返回数据进行预处理
-//     *
-//     * @param <T>
-//     * @return
-//     */
-//    public static <T> ObservableTransformer<BaseResponse<T>, T> handleResult() {
-//        return new Observable.Transformer<BaseRespose<T>, T>() {
-//            @Override
-//            public Observable<T> call(Observable<BaseRespose<T>> tObservable) {
-//                return tObservable.flatMap(new Func1<BaseRespose<T>, Observable<T>>() {
-//                    @Override
-//                    public Observable<T> call(BaseRespose<T> result) {
-//                        LogUtils.logd("result from api : " + result);
-//                        if (result.success()) {
-//                            return createData(result.data);
-//                        } else {
-//                            return Observable.error(new ServerException(result.msg));
-//                        }
-//                    }
-//                }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-//            }
-//        };
-//
-//    }
-//    /**
-//     * 对服务器返回数据进行预处理
-//     *
-//     * @param <T>
-//     * @return
-//     */
-//    public static <T> ObservableTransformer<BaseResponse<T>, T> handleResult() {
-//        return new ObservableTransformer<BaseResponse<T>, T>() {
-//
-//            @Override
-//            public ObservableSource<T> apply(Observable<BaseResponse<T>> upstream) {
-//
-//                return upstream.map(new Function<BaseResponse<T>, ObservableSource<?>>() {
-//                    @Override
-//                    public ObservableSource<T> apply(BaseResponse<T> tBaseResponse) throws Exception {
-//                        if (tBaseResponse.getCode() == 0) {
-//                            return (ObservableSource<T>) createData(tBaseResponse.getMessage());
-//                        } else {
-//                            return Observable.error(new RuntimeException(tBaseResponse.getMessage()));
-//                        }
-//                    }
-//                }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());;
-//            }
-//        };
-//
-//    }
+
+    /**
+     * 对服务器返回数据进行预处理
+     *
+     * @param <T>
+     * @return
+     */
+    public static <T> ObservableTransformer<BaseResponse<T>, T> handleResult() {
+        return new ObservableTransformer<BaseResponse<T>, T>() {
+            @Override
+            public ObservableSource<T> apply(Observable<BaseResponse<T>> upstream) {
+
+                return upstream.flatMap(new Function<BaseResponse<T>, ObservableSource<T>>() {
+                    @Override
+                    public ObservableSource<T> apply(BaseResponse<T> tBaseResponse) throws Exception {
+                        if (tBaseResponse.getCode() == 0) {
+                            return (ObservableSource<T>) createData(tBaseResponse.getMessage());
+                        } else {
+                            return Observable.error(new RuntimeException(tBaseResponse.getMessage()));
+                        }
+                    }
+                }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+            }
+        };
+
+    }
 
     /**
      * 创建成功的数据
