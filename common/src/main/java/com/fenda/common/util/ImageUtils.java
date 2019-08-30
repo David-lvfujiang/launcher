@@ -31,7 +31,6 @@ public class ImageUtils {
                 .error(R.mipmap.ic_launcher)
                 .dontAnimate()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .centerCrop()
                 .priority(Priority.HIGH);
 
         Glide.with(context)

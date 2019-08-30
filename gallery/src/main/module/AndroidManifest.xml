@@ -6,6 +6,15 @@
         <activity
             android:name=".activity.GalleryCategoryActivity"
             android:theme="@style/NoTitleFullscreen" />
+        <activity
+            android:name=".activity.FamilyGalleryActivity"
+            android:theme="@style/NoTitleFullscreen" />
+        <activity
+            android:name=".activity.PhotoDetailActivity"
+            android:theme="@style/NoTitleFullscreen" />
+        <activity
+            android:name=".activity.PhotosActivity"
+            android:theme="@style/NoTitleFullscreen" />
     </application>
 
 </manifest>

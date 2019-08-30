@@ -1,6 +1,8 @@
 package com.fenda.gallery.contract;
 
 import com.fenda.common.base.BaseResponse;
+import com.fenda.common.mvp.BaseModel;
+import com.fenda.common.mvp.BasePresenter;
 import com.fenda.common.mvp.BaseView;
 import com.fenda.gallery.http.FamilyPhotoRequest;
 import com.fenda.gallery.http.FamilyPhotoResponse;
@@ -33,7 +35,7 @@ public interface GalleryContract {
     }
 
 
-    interface Model {
+    interface Model extends BaseModel {
         Observable<BaseResponse<FamilyPhotoResponse>> getFamilyGallery(FamilyPhotoRequest loginRequest);
 
         Observable<BaseResponse> deleteFamilyPhoto(String ids);
@@ -41,12 +43,12 @@ public interface GalleryContract {
         Observable<BaseResponse> uploadFamilyPhoto(UploadPhotoRequest request);
     }
 
-    interface Presenter {
-        void getFamilyPhoto(FamilyPhotoRequest request);
+    abstract class Presenter extends BasePresenter<View,Model> {
+        public abstract void getFamilyPhoto(FamilyPhotoRequest request);
 
-        void deleteFamilyPhoto(String ids);
+        public abstract  void deleteFamilyPhoto(String ids);
 
-        void uploadPhoto(UploadPhotoRequest request);
+        public abstract void uploadPhoto(UploadPhotoRequest request);
 
     }
 

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="@dimen/demension_dp158"
+    android:layout_height="@dimen/demension_dp158"
+    android:layout_marginBottom="@dimen/demension_dp70">
+
+    <com.fenda.common.view.CustomRoundAngleImageView
+        android:id="@+id/img_photo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        app:radius="@dimen/demension_dp20" />
+
+    <ImageView
+        android:id="@+id/img_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/demension_dp8"
+        android:layout_marginRight="@dimen/demension_dp8"
+        android:src="@mipmap/gallery_photo_normal" />
+
+</RelativeLayout>

@@ -12,14 +12,16 @@ import android.view.ViewStub;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.R;
-import com.fenda.common.mvp.BaseView;
 import com.fenda.common.util.NetUtil;
 import com.fenda.common.view.LoadingInitView;
 import com.fenda.common.view.LoadingTransView;
 import com.fenda.common.view.NetErrorView;
 import com.fenda.common.view.NoDataView;
+import com.fenda.protocol.tcp.bean.EventMessage;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 
 /**
@@ -43,11 +45,12 @@ public abstract class BaseFragment extends Fragment {
 
     private boolean isViewCreated = false;
     private boolean isViewVisable = false;
-
+    protected Context mCotext;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mCotext = getActivity();
         ARouter.getInstance().inject(this);
         EventBus.getDefault().register(this);
 
@@ -56,14 +59,13 @@ public abstract class BaseFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mRootView = inflater.inflate(R.layout.common_fragment_root,container,false);
+        mRootView = inflater.inflate(R.layout.common_fragment_root, container, false);
         initCommonView();
         initView();
         initData();
         initListener();
         return mRootView;
     }
-
 
 
     protected void initCommonView() {
@@ -97,6 +99,7 @@ public abstract class BaseFragment extends Fragment {
             isViewVisable = false;
         }
     }
+
     //默认不启用懒加载
     public boolean enableLazyData() {
         return false;
@@ -110,9 +113,11 @@ public abstract class BaseFragment extends Fragment {
 
     public void initListener() {
     }
+
     public void showInitLoadView() {
         showInitLoadView(true);
     }
+
     public void hideInitLoadView() {
         showInitLoadView(false);
     }
@@ -124,12 +129,15 @@ public abstract class BaseFragment extends Fragment {
     public void hideTransLoadingView() {
         showTransLoadingView(false);
     }
+
     public void showNoDataView() {
         showNoDataView(true);
     }
+
     public void showNoDataView(int resid) {
         showNoDataView(true, resid);
     }
+
     public void hideNoDataView() {
         showNoDataView(false);
     }
@@ -137,10 +145,10 @@ public abstract class BaseFragment extends Fragment {
     public void hideNetWorkErrView() {
         showNetWorkErrView(false);
     }
+
     public void showNetWorkErrView() {
         showNetWorkErrView(true);
     }
-
 
 
     private void showInitLoadView(boolean show) {
@@ -196,10 +204,9 @@ public abstract class BaseFragment extends Fragment {
         mLoadingTransView.loading(show);
     }
 
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public <T> void onEvent(EventMessage<T> event) {
-//    }
-
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public <T> void onEvent(EventMessage<T> event) {
+    }
 
     @Override
     public void onDestroy() {

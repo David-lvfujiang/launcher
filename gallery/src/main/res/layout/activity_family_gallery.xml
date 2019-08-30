@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/gallery_family_photo_bg"
+    android:orientation="vertical"
+    tools:context=".activity.FamilyGalleryActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/demension_dp80">
+
+        <TextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:drawableLeft="@mipmap/life_back"
+            android:gravity="center"
+            android:paddingLeft="@dimen/demension_dp28"
+            android:paddingRight="@dimen/demension_dp18"
+            android:textColor="@color/white"
+            android:textSize="@dimen/demension_dp25" />
+
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="家庭相册"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textsize_sp32"
+
+            />
+
+        <TextView
+            android:id="@+id/tv_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:drawableLeft="@mipmap/gallery_photo_delete"
+            android:gravity="center"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/demension_dp120"
+            android:textColor="@color/white"
+            android:textSize="@dimen/demension_dp25" />
+
+        <ImageView
+            android:id="@+id/img_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/demension_dp40"
+            android:visibility="gone"
+            android:src="@mipmap/gallery_photo_delete" />
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rcPhotos"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/demension_dp140"
+        android:layout_marginRight="@dimen/demension_dp114" />
+</LinearLayout>

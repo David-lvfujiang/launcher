@@ -113,7 +113,7 @@ dependencies {
     //日志
     api (deps.logger){
     }
-
+    api deps.sectionedrecyclerview
     api project(':protocol')
 
     annotationProcessor (deps.androidannotations){

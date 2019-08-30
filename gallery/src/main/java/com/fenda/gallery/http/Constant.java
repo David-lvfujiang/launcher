@@ -1,7 +1,11 @@
 package com.fenda.gallery.http;
 
+import android.os.Environment;
+
 import com.fenda.common.BaseApplication;
 import com.fenda.gallery.R;
+
+import java.io.File;
 
 /**
  * @author mirrer.wangzhonglin
@@ -13,4 +17,8 @@ public class Constant {
     public static final String TCP_IP = BaseApplication.getInstance().getResources().getString(R.string.TCP_IP);
     public static final int TCP_PORT = 11211;
     public static final String SERIAL_NUM = android.os.Build.SERIAL;
+    public interface PHOTO{
+        String DirectoryPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + File.separator + "imgs"+File.separator;
+
+    }
 }

@@ -1,6 +1,5 @@
 package com.fenda.gallery.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Handler;
@@ -85,12 +84,6 @@ public class GalleryCategoryActivity extends BaseMvpActivity<GalleryPresenter, G
 
     }
 
-    @Override
-    public Context getContext() {
-        return mContext;
-    }
-
-
     private void getFamilyGallery() {
         FamilyPhotoRequest request = new FamilyPhotoRequest();
         request.setCurrentPage(mIndexPage);
@@ -117,8 +110,6 @@ public class GalleryCategoryActivity extends BaseMvpActivity<GalleryPresenter, G
                 }
             }
         });
-
-
     }
 
 
@@ -188,7 +179,7 @@ public class GalleryCategoryActivity extends BaseMvpActivity<GalleryPresenter, G
 
     @Override
     protected void initPresenter() {
-        mPresenter = new GalleryPresenter();
+        mPresenter.setVM(this, mModel);
     }
 
     @Override
@@ -196,11 +187,15 @@ public class GalleryCategoryActivity extends BaseMvpActivity<GalleryPresenter, G
         int id = v.getId();
         if (id == R.id.ivCancel) {
             finish();
+        } else if (id == R.id.llLocalLayout) {
+            startActivityForResult(new Intent(mContext, PhotosActivity.class), FAMILY_UPLOAD_REQUEST);
+        } else if (id == R.id.llServerLayout) {
+            startActivityForResult(new Intent(mContext, FamilyGalleryActivity.class), FAMILY_DELETE_REQUEST);
         }
-//        else if (id == R.id.llLocalLayout) {
-//            startActivityForResult(new Intent(mContext, PhotosActivity.class), FAMILY_UPLOAD_REQUEST);
-//        } else if (id == R.id.llServerLayout) {
-//            startActivityForResult(new Intent(mContext, FamilyGalleryActivity.class), FAMILY_DELETE_REQUEST);
-//        }
+    }
+
+    @Override
+    public void showErrorTip(String msg) {
+
     }
 }
