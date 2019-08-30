@@ -77,7 +77,7 @@
 //    }
 //
 //    private void initData() {
-//        imageView.setImageResource(R.mipmap.alarm_book);
+//        imageView.setImageResource(R.mipmap.remind_alarm_book);
 //        Intent mIntent = getIntent();
 //        alarmBeans = mIntent.getParcelableArrayListExtra("alarmList");
 //        type = mIntent.getStringExtra("alarmType");

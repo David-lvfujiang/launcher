@@ -39,8 +39,6 @@ public class TestActivity extends BaseMvpActivity <TestPresenter, TestModel> imp
     @Override
     protected void initPresenter() {
         mPresenter.setVM(this,mModel);
-
-
     }
 
     @Override
