@@ -6,6 +6,7 @@ import com.fenda.common.mvp.BaseModel;
 import com.fenda.protocol.http.RetrofitHelper;
 import com.fenda.test.api.Constant;
 import com.fenda.test.api.LoginRequest;
+import com.fenda.test.api.LoginResult;
 import com.fenda.test.api.MyService;
 import com.fenda.test.api.RegisterRequest;
 import com.fenda.test.contract.TestContract;
@@ -24,10 +25,10 @@ public class TestModel  implements TestContract.Model {
 
 
     @Override
-    public Observable<BaseResponse> register(LoginRequest request) {
+    public Observable<BaseResponse<LoginResult>> register(LoginRequest request) {
         return RetrofitHelper.getInstance(Constant.TEST_BASE_URL).getServer(MyService.class)
                 .register(request)
-                .compose(RxSchedulers.<BaseResponse>io_main());
+                .compose(RxSchedulers.<BaseResponse<LoginResult>>io_main());
 
     }
 }

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/alarm_bg"
+    android:background="@mipmap/remind_alarm_bg"
     android:orientation="vertical">
 
 
@@ -43,7 +43,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/alarm_book" />
+        app:srcCompat="@mipmap/remind_alarm_book"
+        />
 
     <ImageView
         android:id="@+id/img_left_one"
@@ -53,7 +54,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/one" />
+        app:srcCompat="@mipmap/remind_one" />
 
     <ImageView
         android:id="@+id/img_left_two"
@@ -62,7 +63,7 @@
         android:layout_marginLeft="14px"
         app:layout_constraintBottom_toBottomOf="@id/img_left_one"
         app:layout_constraintStart_toEndOf="@+id/img_left_one"
-        app:srcCompat="@mipmap/five" />
+        app:srcCompat="@mipmap/remind_five" />
 
 
     <ImageView
@@ -73,7 +74,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/imageView"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/zero"
+        app:srcCompat="@mipmap/remind_zero"
 
         />
 
@@ -84,7 +85,7 @@
         android:layout_marginRight="14px"
         app:layout_constraintBottom_toBottomOf="@id/img_right_two"
         app:layout_constraintEnd_toStartOf="@id/img_right_two"
-        app:srcCompat="@mipmap/zero"
+        app:srcCompat="@mipmap/remind_zero"
 
         />
 
@@ -112,7 +113,7 @@
         android:id="@+id/tv_stop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@mipmap/alarm_stop"
+        android:background="@mipmap/remind_alarm_stop"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/imageView"
