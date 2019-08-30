@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">gallery</string>
+    <string name="gallery_photo_count_indicator">%1$d张照片</string>
+</resources>

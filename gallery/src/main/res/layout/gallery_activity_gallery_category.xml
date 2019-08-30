@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/gallery_family_photo_bg"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/demension_dp80">
+
+        <ImageView
+            android:id="@+id/ivCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingLeft="@dimen/demension_dp28"
+            android:paddingRight="@dimen/demension_dp18"
+            android:src="@mipmap/gallery_life_back" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="家庭相册"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textsize_sp32" />
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/llLocalLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/demension_dp50"
+        android:layout_marginTop="@dimen/demension_dp40"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="@dimen/demension_dp222"
+            android:layout_height="@dimen/demension_dp198"
+            android:background="@mipmap/gallery_category_photo_bg"
+            android:paddingLeft="@dimen/demension_dp20"
+            android:paddingTop="@dimen/demension_dp20"
+            android:paddingRight="@dimen/demension_dp40"
+            android:paddingBottom="@dimen/demension_dp20">
+
+            <com.fenda.common.view.CustomRoundAngleImageView
+                android:id="@+id/ivLocalCategory"
+                android:layout_width="@dimen/demension_dp158"
+                android:layout_height="@dimen/demension_dp158"
+                android:scaleType="fitXY"
+                app:radius="@dimen/demension_dp20" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/demension_dp60"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="本地相册"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_sp48" />
+
+            <TextView
+                android:id="@+id/tvLocalCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/demension_dp3"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_sp24" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llServerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/demension_dp50"
+        android:layout_marginTop="@dimen/demension_dp45"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="@dimen/demension_dp222"
+            android:layout_height="@dimen/demension_dp198"
+            android:background="@mipmap/gallery_category_photo_bg"
+            android:paddingLeft="@dimen/demension_dp20"
+            android:paddingTop="@dimen/demension_dp20"
+            android:paddingRight="@dimen/demension_dp40"
+            android:paddingBottom="@dimen/demension_dp20">
+
+            <com.fenda.common.view.CustomRoundAngleImageView
+                android:id="@+id/ivServerCategory"
+                android:layout_width="@dimen/demension_dp158"
+                android:layout_height="@dimen/demension_dp158"
+                android:scaleType="fitXY"
+                app:radius="@dimen/demension_dp20" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/demension_dp60"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="家庭相册"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_sp48" />
+
+            <TextView
+                android:id="@+id/tvServerCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/demension_dp3"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_sp24" />
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

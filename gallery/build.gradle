@@ -1,18 +1,29 @@
-apply plugin: 'com.android.application'
+if (isModule.toBoolean()) {
+    apply plugin: 'com.android.library'
+} else {
+
+    apply plugin: 'com.android.application'
+}
 
 android {
     compileSdkVersion BUILD_VERSIONS.COMPILE_SDK
     buildToolsVersion BUILD_VERSIONS.BUILD_TOOLS
     defaultConfig {
-        applicationId "com.fenda.launcher"
+        if (!isModule.toBoolean()) {
+            applicationId "com.fenda.gallery"
+        }
+        flavorDimensions "default"
         minSdkVersion BUILD_VERSIONS.MIN_SDK
         targetSdkVersion BUILD_VERSIONS.TARGET_SDK
         versionCode BUILD_VERSIONS.VERSION_CODE
         versionName BUILD_VERSIONS.VERSION_NAME
-        flavorDimensions "default"
-        lintOptions {
-            checkReleaseBuilds false
-            abortOnError false
+        javaCompileOptions {
+
+            annotationProcessorOptions {
+
+                arguments = [moduleName: project.getName()]
+
+            }
         }
     }
     signingConfigs {
@@ -29,6 +40,21 @@ android {
             storePassword 'Fendakeji'
         }
     }
+    sourceSets {
+        main {
+            if (isModule.toBoolean()) {
+                manifest.srcFile "src/main/module/AndroidManifest.xml"
+
+            } else {
+                manifest.srcFile "src/main/AndroidManifest.xml"
+                //集成开发模式下排除debug文件夹中的所有Java文件
+                java {
+                    exclude 'debug/**'
+                }
+            }
+        }
+    }
+
     productFlavors {
         _dev {//开发环境
             //设置baseUrl 使用方法Application.getContext().getResources().getString(R.string.API_SERVER)
@@ -61,18 +87,11 @@ android {
             signingConfig signingConfigs.release
         }
     }
-}
-repositories {
-    flatDir {
-        dirs 'libs'
-    }
+
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation(name: 'gallery', ext: 'aar')
     implementation project(path: ':common')
-
-//    annotationProcessor deps.androidannotations
-//    annotationProcessor deps.arouter_compiler
+    annotationProcessor deps.arouter_compiler
 }
