@@ -33,7 +33,7 @@ import io.reactivex.disposables.CompositeDisposable;
  * @Time 2019/8/26  15:32
  * @Description This is BaseActivity
  */
-public abstract class BaseActivity extends RxAppCompatActivity {
+public abstract class BaseActivity extends RxAppCompatActivity implements BaseView{
 
 
     protected Context mContext;
@@ -120,6 +120,28 @@ public abstract class BaseActivity extends RxAppCompatActivity {
         startActivity(intent);
     }
 
+    @Override
+    public void showLoading(String title) {
+        showInitLoadView();
+
+    }
+
+    @Override
+    public void stopLoading() {
+        hideInitLoadView();
+    }
+
+
+    @Override
+    public void showNetError() {
+        showNetWorkErrView();
+
+    }
+
+    @Override
+    public void hideNetError() {
+        hideNetWorkErrView();
+    }
 
     public abstract int onBindLayout();
 
@@ -161,6 +183,8 @@ public abstract class BaseActivity extends RxAppCompatActivity {
     public void showNetWorkErrView() {
         showNetWorkErrView(true);
     }
+
+
 
 
 

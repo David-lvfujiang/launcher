@@ -15,6 +15,35 @@ public class NetUtil {
     }
 
 
+    /**
+     * 检查网络是否可用
+     *
+     * @param paramContext
+     * @return
+     */
+    public static boolean isNetConnected(Context paramContext) {
+        boolean i = false;
+        NetworkInfo localNetworkInfo = ((ConnectivityManager) paramContext
+                .getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+        if ((localNetworkInfo != null) && (localNetworkInfo.isAvailable()))
+            return true;
+        return false;
+    }
+    /**
+     * 检测wifi是否连接
+     */
+    public static boolean isWifiConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm != null) {
+            NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+            if (networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 
     public static boolean checkNet() {
         Context context = BaseApplication.getInstance();
@@ -27,25 +56,6 @@ public class NetUtil {
             ToastUtils.show("网络不给力哦！");
         }
         return isNet;
-    }
-    /**
-     * @param context
-     * @return
-     * @方法说明:判断WIFI网络是否可用
-     * @方法名称:isWifiConnected
-     * @返回值:boolean
-     */
-    public static boolean isWifiConnected(Context context) {
-        if (context != null) {
-            ConnectivityManager mConnectivityManager = (ConnectivityManager) context
-                    .getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo mWiFiNetworkInfo = mConnectivityManager
-                    .getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-            if (mWiFiNetworkInfo != null) {
-                return mWiFiNetworkInfo.isAvailable();
-            }
-        }
-        return false;
     }
 
     /**
