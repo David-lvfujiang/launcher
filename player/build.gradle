@@ -32,8 +32,6 @@ android {
                 }
             } else {
                 manifest.srcFile "src/main/module/AndroidManifest.xml"
-
-
             }
         }
     }

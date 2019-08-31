@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.FDSettingsBluetoothActivity"
+    android:background="@mipmap/settings_bind_netset_background">
+
+    <ImageView
+        android:id="@+id/set_bt_back_iv"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:src="@mipmap/settings_set_back"
+        app:layout_constraintBottom_toBottomOf="@+id/set_bt_tv"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/set_bt_tv" />
+
+    <TextView
+        android:id="@+id/set_bt_tv"
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:background="@mipmap/settings_main"
+        android:gravity="center"
+        android:text="@string/settings_bt"
+        android:textColor="#ff00f0ff"
+        android:textSize="35dp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <Button
+        android:id="@+id/set_bt_flash_btn"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="870dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/rectangle_button"
+        android:text="@string/settings_bt_reflash"
+        android:textColor="@color/white"
+        android:textSize="30dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="100dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
+
+            <LinearLayout
+                android:id="@+id/bt_opening_layout"
+                android:layout_width="964px"
+                android:layout_height="120dp"
+                android:orientation="horizontal"
+                android:layout_marginLeft="33px"
+                android:background="@mipmap/settings_item">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_weight="4"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/set_bt_dis_btname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingLeft="30dp"
+                        android:layout_marginTop="27dp"
+                        android:text="@string/settings_bt_agree_open_bt"
+                        android:textColor="@color/white"
+                        android:textSize="30dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/set_bt_dis_bt_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="32dp"
+                            android:textColor="@color/white"
+                            android:textSize="15dp"
+                            android:layout_marginTop="10dp"
+                            android:clickable="true"/>
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="14dp"
+                            android:layout_marginTop="14dp"
+                            android:src="@mipmap/settings_white_back"
+                            android:visibility="visible"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <Switch
+                    android:id="@+id/bt_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_height="37dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="50dp"
+                    android:switchMinWidth="20dp"
+                    android:textOff="  "
+                    android:textOn="  "
+                    android:thumb="@drawable/settings_wifi_switch_thumb"
+                    android:track="@drawable/settings_wifi_switch_track"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </LinearLayout>
+
+            <com.fenda.common.view.MyListView
+                android:id="@+id/set_bt_listview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="false"
+                android:focusable="false">
+            </com.fenda.common.view.MyListView>
+        </LinearLayout>
+    </ScrollView>
+</android.support.constraint.ConstraintLayout>

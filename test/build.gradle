@@ -30,12 +30,12 @@ android {
             resValue "string", "DEVICE_SN", " "
         }
 
-        _prod {//正式环境
-            resValue "string", "BASE_SERVER_URL", "https://ai.fenda.com/smartsound/"
-            resValue "string", "TCP_IP", "47.106.223.29"
-            resValue "string", "DEVICE_SN", "-pro"
-        }
+    _prod {//正式环境
+        resValue "string", "BASE_SERVER_URL", "https://ai.fenda.com/smartsound/"
+        resValue "string", "TCP_IP", "47.106.223.29"
+        resValue "string", "DEVICE_SN", "-pro"
     }
+}
 
     buildTypes {
         release {

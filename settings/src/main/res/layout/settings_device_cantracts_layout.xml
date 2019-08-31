@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.FDSettingsDeviceContractsActivity"
+    android:background="@mipmap/settings_bind_netset_background">
+
+    <TextView
+        android:id="@+id/bind_contacts_back_iv"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
+        android:layout_marginLeft="40dp"
+        android:text="@string/settings_cancel"
+        android:textSize="33dp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/bind_info_tv"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bind_info_tv" />
+
+    <TextView
+        android:id="@+id/bind_info_tv"
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:layout_marginTop="4dp"
+        android:background="@mipmap/settings_main"
+        android:gravity="center"
+        android:text="@string/settings_device_constacts"
+        android:textColor="#ff00f0ff"
+        android:textSize="35dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/bind_contacts_sure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="900dp"
+        android:text="@string/settings_sure"
+        android:textSize="33dp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/bind_info_tv"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bind_info_tv"
+        app:layout_constraintVertical_bias="0.464"
+        android:visibility="gone"/>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/bind_contacts_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:listSelector="@android:color/transparent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="110dp"></android.support.v7.widget.RecyclerView>
+
+    <ImageView
+        android:id="@+id/add_contacts_tv"
+        android:layout_width="109dp"
+        android:layout_height="109dp"
+        android:src="@mipmap/settings_addcontracts_icon"
+        android:layout_marginTop="430dp"
+        android:layout_marginLeft="850dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:clickable="true"/>
+
+</android.support.constraint.ConstraintLayout>

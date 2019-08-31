@@ -158,10 +158,6 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         }
     };
 
-
-
-
-
     @Override
     public int onBindLayout() {
         return R.layout.player_activity_music_main;

@@ -12,15 +12,24 @@ public interface RouterPath {
     interface PLAYER{
         String MusiceActivity = "/player/MusicActivity";
         String FDMusicListActivity = "/player/FDMusicListActivity";
-
     }
 
-
-    public interface Gallery {
+    interface Gallery {
         String GALLERY_CATOGORY = "/gallery/GalleryCategoryActivity";
         String GALLERY_LIST_LOCAL = "/gallery/PhotosActivity";
         String GALLERY_LIST_SERVER = "/gallery/FamilyGalleryActivity";
         String GALLERY_DETAIL = "/gallery/PhotoDetailActivity";
     }
 
+    interface SETTINGS {
+        String FDSettingsActivity = "/settings/FDSettingsActivity";
+        String FDSettingsVolumeActivity = "/settings/FDSettingsVolumeActivity";
+        String FDSetttingsBrightnessActivity = "/settings/FDSetttingsBrightnessActivity";
+        String FDSettingsWifiActivity = "/settings/FDSettingsWifiActivity";
+        String FDSettingsWifiInputPswActivity = "/settings/FDSettingsWifiInputPswActivity";
+        String FDSettingsWifiConnectedInfoActivity = "/settings/FDSettingsWifiConnectedInfoActivity";
+        String FDSettingsDeviceInfoActivity = "/settings/FDSettingsDeviceInfoActivity";
+        String FDSettingsBluetoothActivity = "/settings/FDSettingsBluetoothActivity";
+
+    }
 }

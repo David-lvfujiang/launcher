@@ -1,5 +1,8 @@
 package com.fenda.common.constant;
 
+import com.fenda.common.BaseApplication;
+import com.fenda.common.R;
+
 /**
  * @author mirrer.wangzhonglin
  * @Date 2019/8/29 11:31
@@ -90,6 +93,11 @@ public interface Constant {
 
     }
 
+    /**
+     * 设置组件
+     */
+    interface Settings{
 
+    }
 
 }
