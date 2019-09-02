@@ -37,7 +37,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/iv_main_jd"
         app:layout_constraintLeft_toRightOf="@+id/iv_main_jd"
         app:layout_constraintRight_toLeftOf="@+id/iv_main_other"
-        android:src="@mipmap/jd_main_ico_phone"
+        android:src="@mipmap/cm_main_ico_phone"
         android:layout_width="100px"
         android:layout_height="100px" />
 
@@ -47,7 +47,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/iv_main_jd"
         app:layout_constraintLeft_toRightOf="@+id/iv_main_phone"
         app:layout_constraintRight_toLeftOf="@+id/iv_main_tools"
-        android:src="@mipmap/jd_main_ico_other"
+        android:src="@mipmap/cm_main_ico_other"
         android:layout_width="100dp"
         android:layout_height="100dp" />
 
@@ -57,7 +57,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/iv_main_jd"
         app:layout_constraintLeft_toRightOf="@+id/iv_main_other"
         app:layout_constraintRight_toLeftOf="@+id/iv_main_study"
-        android:src="@mipmap/jd_main_ico_tools"
+        android:src="@mipmap/cm_main_ico_tools"
         android:layout_width="100dp"
         android:layout_height="100dp" />
 
@@ -67,7 +67,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/iv_main_jd"
         app:layout_constraintLeft_toRightOf="@+id/iv_main_tools"
         app:layout_constraintRight_toRightOf="parent"
-        android:src="@mipmap/jd_main_ico_study"
+        android:src="@mipmap/cm_main_ico_study"
         android:layout_width="100dp"
         android:layout_height="100dp" />
 
@@ -156,7 +156,7 @@
 
         <ImageView
             android:id="@+id/iv_ai_mic"
-            android:src="@mipmap/jd_ico_microphone"
+            android:src="@mipmap/cm_ico_microphone"
             android:layout_centerVertical="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -222,7 +222,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/tv_header_time"
         app:layout_constraintLeft_toRightOf="@+id/tv_header_time"
         android:layout_marginLeft="38dp"
-        android:src="@mipmap/jd_ico_favorite"
+        android:src="@mipmap/cm_ico_favorite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
@@ -232,7 +232,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/tv_header_time"
         app:layout_constraintLeft_toRightOf="@+id/iv_header_love"
         android:layout_marginLeft="30dp"
-        android:src="@mipmap/jd_ico_history"
+        android:src="@mipmap/cm_ico_history"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -242,7 +242,7 @@
         app:layout_constraintTop_toTopOf="@id/tv_header_time"
         app:layout_constraintBottom_toBottomOf="@+id/tv_header_time"
         app:layout_constraintRight_toRightOf="@+id/iv_main_study"
-        android:src="@mipmap/jd_ico_weather_cloudy"
+        android:src="@mipmap/cm_ico_weather_cloudy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

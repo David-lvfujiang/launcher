@@ -58,6 +58,18 @@ public class HomePageActivity extends Activity implements View.OnClickListener {
         initViews();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mCyclicRollHandler.postDelayed(cycleRollRunabler, HomeUtil.PAGE_SHOW_TIME);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mCyclicRollHandler.removeCallbacks(cycleRollRunabler);
+    }
+
     private void initViews() {
 
         mHeaderTimeTv = findViewById(R.id.tv_header_time);
@@ -97,7 +109,7 @@ public class HomePageActivity extends Activity implements View.OnClickListener {
                     int review_position = layoutManager.findFirstVisibleItemPosition();
                     Log.e("fd", "onScrollStateChanged review_position " + review_position + " showPageIndex " + showPageIndex);
 
-                    mCyclicRollHandler.postDelayed(cycleRollRunabler, 6000);
+                    mCyclicRollHandler.postDelayed(cycleRollRunabler, HomeUtil.PAGE_SHOW_TIME);
 
                     if (review_position == showPageIndex) {
                         return;
