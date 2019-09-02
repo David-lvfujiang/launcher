@@ -1,3 +1,1 @@
-include ':app', ':common', ':test', ':protocol', ':player', ':remind', ':gallery', ':settings'
-
-
+include ':app', ':common', ':test', ':protocol', ':player', ':remind', ':homepage',':gallery', ':settings'

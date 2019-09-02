@@ -1,6 +1,6 @@
-if (isModule.toBoolean()){
+if (isModule.toBoolean()) {
     apply plugin: 'com.android.library'
-}else {
+} else {
     apply plugin: 'com.android.application'
 }
 
@@ -10,8 +10,8 @@ android {
 
 
     defaultConfig {
-        if (!isModule.toBoolean()){
-            applicationId "com.fenda.player"
+        if (!isModule.toBoolean()) {
+            applicationId "com.fenda.homepage"
         }
         minSdkVersion BUILD_VERSIONS.MIN_SDK
         targetSdkVersion BUILD_VERSIONS.TARGET_SDK
@@ -25,13 +25,14 @@ android {
     sourceSets {
         main {
             if (isModule.toBoolean()) {
-                manifest.srcFile "src/main/AndroidManifest.xml"
+                manifest.srcFile "src/main/module/AndroidManifest.xml"
+
                 //集成开发模式下排除debug文件夹中的所有Java文件
                 java {
                     exclude 'debug/**'
                 }
             } else {
-                manifest.srcFile "src/main/module/AndroidManifest.xml"
+                manifest.srcFile "src/main/AndroidManifest.xml"
             }
         }
     }
@@ -48,4 +49,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    implementation project(path: ':common')
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }
