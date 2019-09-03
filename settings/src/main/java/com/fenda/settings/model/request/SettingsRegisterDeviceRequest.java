@@ -3,21 +3,21 @@ package com.fenda.settings.model.request;
 /**
  * Created by  Android Studio.
  * Author :   aviva.jiangjing
- * Date:   2019/8/31 15:01
+ * Date:   2019/9/2 14:59
  */
-public class SettingsDeviceRegisterRequest {
+public class SettingsRegisterDeviceRequest {
     private String deviceId;
     private String name;
     private String client_version;
     private String mac_addr;
 
-    public SettingsDeviceRegisterRequest(String deviceId, String name, String client_version, String mac_addr) {
+    public SettingsRegisterDeviceRequest(String deviceId, String name, String client_version, String mac_addr) {
         this.deviceId = deviceId;
         this.name = name;
         this.client_version = client_version;
         this.mac_addr = mac_addr;
     }
-    public SettingsDeviceRegisterRequest() {
+    public SettingsRegisterDeviceRequest() {
     }
     public String getDeviceId() {
         return deviceId;
@@ -53,7 +53,7 @@ public class SettingsDeviceRegisterRequest {
 
     @Override
     public String toString() {
-        return "SettingsDeviceRegisterRequest{" +
+        return "SettingsRegisterDeviceRequest{" +
                 "deviceId='" + deviceId + '\'' +
                 ", name='" + name + '\'' +
                 ", client_version=" + client_version +

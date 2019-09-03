@@ -73,7 +73,9 @@ retrofit.gson = "com.squareup.retrofit2:converter-gson:$versions.retrofit"
 retrofit.logging = "com.squareup.okhttp3:logging-interceptor:$versions.logging_interceptor"
 deps.retrofit = retrofit
 
-
+def zxing = [:]
+zxing.core = "com.google.zxing:core:$versions.zxing"
+deps.zxing = zxing
 
 
 
@@ -93,7 +95,6 @@ deps.gson = "com.google.code.gson:gson:$versions.gson"
 deps.arouter_api = "com.alibaba:arouter-api:$versions.arouter_api"
 deps.arouter_compiler = "com.alibaba:arouter-compiler:$versions.arouter_compiler"
 deps.netty = "io.netty:netty-all:$versions.netty"
-deps.zxing = "com.google.zxing:core:$versions.zxing"
 deps.crashreport_upgrade = "com.tencent.bugly:crashreport_upgrade:$versions.crashreport_upgrade"
 deps.tinker  = "com.tencent.tinker:tinker-android-lib:$versions.tinker"
 deps.nativecrashreport = "com.tencent.bugly:nativecrashreport:$versions.nativecrashreport"

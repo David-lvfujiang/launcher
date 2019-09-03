@@ -20,9 +20,9 @@ import com.fenda.settings.R;
  * Author :   aviva.jiangjing
  * Date:   2019/8/30 11:32
  */
-@Route(path = RouterPath.SETTINGS.FDSettingsVolumeActivity)
-public class FDSettingsVolumeActivity extends BaseMvpActivity implements View.OnClickListener {
-    private static final String TAG = "FDSettingsVolumeActivity";
+@Route(path = RouterPath.SETTINGS.SettingsVolumeActivity)
+public class SettingsVolumeActivity extends BaseMvpActivity {
+    private static final String TAG = "SettingsVolumeActivity";
 
     private ImageView volumeBackIv;
     private ImageView volumeIconIv;
@@ -52,7 +52,6 @@ public class FDSettingsVolumeActivity extends BaseMvpActivity implements View.On
         volumeIconIv = findViewById(R.id.volume_icon);
         mVolumeReceiver = new MyVolumeReceiver();
 //        myVolumeSeekBarChangeListener = new MyVolumeSeekBarChangeListener();
-        volumeBackIv.setOnClickListener(this);
         //获取系统的Audio管理者
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         //最大音量
@@ -98,13 +97,13 @@ public class FDSettingsVolumeActivity extends BaseMvpActivity implements View.On
     }
 
     @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.volume_back_iv:
+    public void initListener() {
+        volumeBackIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 finish();
-                break;
-        }
-
+            }
+        });
     }
 
     /**

@@ -44,9 +44,9 @@ import java.util.List;
  * Author :   aviva.jiangjing
  * Date:   2019/8/30 15:33
  */
-@Route(path = RouterPath.SETTINGS.FDSettingsWifiActivity)
-public class FDSettingsWifiActivity extends BaseMvpActivity implements View.OnClickListener {
-    private static final String TAG = "FDSettingsWifiActivity";
+@Route(path = RouterPath.SETTINGS.SettingsWifiActivity)
+public class SettingsWifiActivity extends BaseMvpActivity{
+    private static final String TAG = "SettingsWifiActivity";
 
     Switch wifiSwitch;
     private RecyclerView mlistView;
@@ -92,11 +92,9 @@ public class FDSettingsWifiActivity extends BaseMvpActivity implements View.OnCl
         mWifiList = new ArrayList<>();
         mAadapter = new MyAdapter(getLayoutInflater(), mWifiList);
         mlistView.setAdapter(mAadapter);
-        mWifiAdmin = new SettingsWifiUtil(FDSettingsWifiActivity.this);
+        mWifiAdmin = new SettingsWifiUtil(SettingsWifiActivity.this);
 
         wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-
-        setWifiBack.setOnClickListener(this);
 
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         connectedSSID = wifiInfo.getSSID().replace("\"", "");
@@ -135,7 +133,7 @@ public class FDSettingsWifiActivity extends BaseMvpActivity implements View.OnCl
                     mHandler.post(runnable);
                 } else{
                     LogUtil.d(TAG, "wifi switch is off ");
-                    mWifiAdmin.closeWifi(FDSettingsWifiActivity.this);
+                    mWifiAdmin.closeWifi(SettingsWifiActivity.this);
                     ScanWifiTv.setVisibility(View.GONE);
                     mScanWifiGif.setVisibility(View.GONE);
                     mScanWifiGif.setImageResource(R.drawable.settings_network_loading_gif);
@@ -196,7 +194,7 @@ public class FDSettingsWifiActivity extends BaseMvpActivity implements View.OnCl
 
                     break;
                 case CLOSE_WIFI:
-                    mWifiAdmin.closeWifi(FDSettingsWifiActivity.this);
+                    mWifiAdmin.closeWifi(SettingsWifiActivity.this);
                     mWifiList.clear();
                 default:
                     break;
@@ -205,15 +203,15 @@ public class FDSettingsWifiActivity extends BaseMvpActivity implements View.OnCl
     };
 
     @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.set_wifi_back_iv:
+    public void initListener() {
+        setWifiBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 setResult(100);
                 finish();
-                break;
-        }
+            }
+        });
     }
-
     @Override
     public void showErrorTip(String msg) {
 
@@ -268,6 +266,7 @@ public class FDSettingsWifiActivity extends BaseMvpActivity implements View.OnCl
                 mHolder.connectWifiLoading.setImageResource(R.drawable.settings_wifi_connecting_gif);
                 animationDrawable = (AnimationDrawable) mHolder.connectWifiLoading.getDrawable();
                 animationDrawable.stop();
+                SPUtils.put(SettingsWifiActivity.this, "WifiName", wifiSSID);
 
                 //wifiSwitch.setClickable(true);
             } else if(status ==3) {
@@ -301,8 +300,8 @@ public class FDSettingsWifiActivity extends BaseMvpActivity implements View.OnCl
                     List<WifiConfiguration> wifiConfigurationList = mWifiAdmin.getConfiguration();
                     LogUtil.d(TAG, "wifiConfigurationList = " + wifiConfigurationList);
 
-                    if(connectedSSID.equals(ssid)) {// startActivity(new Intent(FDSettingsWifiActivity.this, FDWifiConnectConfigActivity.class));
-                        Intent connectedIntent = new Intent(FDSettingsWifiActivity.this, FDSettingsWifiConnectedInfoActivity.class);
+                    if(connectedSSID.equals(ssid)) {// startActivity(new Intent(SettingsWifiActivity.this, FDWifiConnectConfigActivity.class));
+                        Intent connectedIntent = new Intent(SettingsWifiActivity.this, SettingsWifiConnectedInfoActivity.class);
                         //2). 通过intent携带额外数据
                         connectedIntent.putExtra("CONNECTED_MESSAGE", ssid);
                         //3). 启动Activity
@@ -320,7 +319,7 @@ public class FDSettingsWifiActivity extends BaseMvpActivity implements View.OnCl
                         } else {
                             if(scanResult.capabilities.contains("WEP")||scanResult.capabilities.contains("PSK") || scanResult.capabilities.contains("EAP")){
                                 //密码连接
-                                Intent connectIntent = new Intent(FDSettingsWifiActivity.this, FDSettingsWifiInputPswActivity.class);
+                                Intent connectIntent = new Intent(SettingsWifiActivity.this, SettingsWifiInputPswActivity.class);
                                 connectIntent.putExtra("MESSAGE", ssid);
                                 startActivity(connectIntent);
                                 finish();
@@ -379,7 +378,7 @@ public class FDSettingsWifiActivity extends BaseMvpActivity implements View.OnCl
                         mlistView.setAdapter(null);
 //                        mAadapter.notifyDataSetChanged();
                         mHandler.removeCallbacks(runnable);
-                        SPUtils.remove(FDSettingsWifiActivity.this, "WifiName");
+                        SPUtils.remove(SettingsWifiActivity.this, "WifiName");
                         break;
                     }
                     case WifiManager.WIFI_STATE_DISABLING: {
@@ -414,7 +413,7 @@ public class FDSettingsWifiActivity extends BaseMvpActivity implements View.OnCl
                     WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
                     wifiSSID = wifiManager.getConnectionInfo().getSSID();
                     wifiSSID = wifiSSID.substring(1, wifiSSID.length() - 1);
-                    SPUtils.put(FDSettingsWifiActivity.this, "WifiName", wifiSSID);
+                    SPUtils.put(SettingsWifiActivity.this, "WifiName", wifiSSID);
                     wifiSwitch.setChecked(true);
                 } else if (NetworkInfo.State.CONNECTING == info.getState()) {//正在连接
                     status = 1;
@@ -423,7 +422,7 @@ public class FDSettingsWifiActivity extends BaseMvpActivity implements View.OnCl
                     String extra = info.getExtraInfo();
                     Log.i(TAG, "extra = " + extra);
                     extra = extra.substring(1, extra.length() - 1);
-                    mWifiAdmin.startScan(FDSettingsWifiActivity.this);
+                    mWifiAdmin.startScan(SettingsWifiActivity.this);
                     mWifiList.clear();
                     mWifiList.addAll(mWifiAdmin.getWifiList(status, extra));
                     mAadapter.notifyDataSetChanged();
@@ -471,7 +470,7 @@ public class FDSettingsWifiActivity extends BaseMvpActivity implements View.OnCl
                     wifiSSID = wifiManager.getConnectionInfo()
                             .getSSID();
                     wifiSSID = wifiSSID.substring(1, wifiSSID.length() - 1);
-                    mWifiAdmin.startScan(FDSettingsWifiActivity.this);
+                    mWifiAdmin.startScan(SettingsWifiActivity.this);
                     mWifiList.clear();
                     mWifiList.addAll(mWifiAdmin.getWifiList(status, wifiSSID));
                     mAadapter.notifyDataSetChanged();

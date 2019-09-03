@@ -9,7 +9,6 @@ import com.fenda.common.R;
  * @Description
  */
 public interface Constant {
-
     /**
      * 播放器组件
      */
@@ -68,8 +67,6 @@ public interface Constant {
         String VOICE_RANDOM_PLAY = "voice_random_play";
         String VOICE_FORWARD = "voice_forward";
         String VOICE_BACKWARD = "voice_backward";
-
-
     }
 
 
@@ -90,14 +87,20 @@ public interface Constant {
 
         int DELETE_ALARM = 2;
         int CLOSE_ALARM = 4;
-
     }
 
     /**
      * 设置组件
      */
     interface Settings{
-
+        String USER_ID = "userId";
+        String DEVICE_ID = "deviceId";
+        String DEVICE_NAME = "device_name";
+        String DEVICE_ICON = "device_icon";
+        String VCODE = "dimensional_code";
+        String RONGYUNCLOUDTOKEN = "rongyunCloud_Token";
+        String DEVICE_STATUS = "device_status";
+//        boolean DEVICE_STATUS = "false";
     }
 
 }

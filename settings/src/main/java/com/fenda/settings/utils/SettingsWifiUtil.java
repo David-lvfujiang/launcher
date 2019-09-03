@@ -225,20 +225,18 @@ public class SettingsWifiUtil {
     }
 
     // 得到连接的ID
-//    public int getNetworkId() {
-//        return (mWifiInfo == null) ? 0 : mWifiInfo.getNetworkId();
-//    }
     public int getNetworkId(String sSID) {
         int connectId = 0;
         List<WifiConfiguration> wifiConfigurationList = mWifiManager.getConfiguredNetworks();
+        LogUtil.d(TAG, "wifiConfigurationList = " + wifiConfigurationList);
 
         if (wifiConfigurationList != null && wifiConfigurationList.size() != 0) {
             for (int i = 0; i < wifiConfigurationList.size(); i++) {
                 WifiConfiguration wifiConfiguration = wifiConfigurationList.get(i);
                 String SSID  = wifiConfiguration.SSID.replace("\"", "");
+                LogUtil.d(TAG, "ssid = " + SSID + "+" + sSID);
                 // wifiSSID就是SSID
                 if (SSID != null && SSID.equals(sSID)) {
-
                     connectId = wifiConfiguration.networkId;
                 }
             }
@@ -287,8 +285,7 @@ public class SettingsWifiUtil {
     }
 
     //创建wifi热点的。
-    public WifiConfiguration CreateWifiInfo(String SSID, String Password, int Type)
-    {
+    public WifiConfiguration CreateWifiInfo(String SSID, String Password, int Type) {
         WifiConfiguration config = new WifiConfiguration();
         config.allowedAuthAlgorithms.clear();
         config.allowedGroupCiphers.clear();

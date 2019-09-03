@@ -53,6 +53,7 @@ public abstract class BaseActivity extends RxAppCompatActivity{
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initStatusBar();
         setContentView(R.layout.common_activity_root);
         mContext = this;
         initCommonView();
@@ -62,8 +63,9 @@ public abstract class BaseActivity extends RxAppCompatActivity{
         initListener();
         EventBus.getDefault().register(this);
         AppManager.getAppManager().addActivity(this);
+    }
 
-
+    public void initStatusBar() {
     }
 
 

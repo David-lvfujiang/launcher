@@ -22,14 +22,21 @@ public interface RouterPath {
     }
 
     interface SETTINGS {
-        String FDSettingsActivity = "/settings/FDSettingsActivity";
-        String FDSettingsVolumeActivity = "/settings/FDSettingsVolumeActivity";
-        String FDSetttingsBrightnessActivity = "/settings/FDSetttingsBrightnessActivity";
-        String FDSettingsWifiActivity = "/settings/FDSettingsWifiActivity";
-        String FDSettingsWifiInputPswActivity = "/settings/FDSettingsWifiInputPswActivity";
-        String FDSettingsWifiConnectedInfoActivity = "/settings/FDSettingsWifiConnectedInfoActivity";
-        String FDSettingsDeviceInfoActivity = "/settings/FDSettingsDeviceInfoActivity";
-        String FDSettingsBluetoothActivity = "/settings/FDSettingsBluetoothActivity";
+        String SettingsActivity = "/settings/SettingsActivity";
+        String SettingsVolumeActivity = "/settings/SettingsVolumeActivity";
+        String SetttingsBrightnessActivity = "/settings/SetttingsBrightnessActivity";
+        String SettingsWifiActivity = "/settings/SettingsWifiActivity";
+        String SettingsWifiInputPswActivity = "/settings/SettingsWifiInputPswActivity";
+        String SettingsWifiConnectedInfoActivity = "/settings/SettingsWifiConnectedInfoActivity";
+        String SettingsDeviceInfoActivity = "/settings/SettingsDeviceInfoActivity";
+        String SettingsBluetoothActivity = "/settings/SettingsBluetoothActivity";
+        String SettingsChangeDeviceNameActivity = "/settings/SettingsChangeDeviceNameActivity";
+        String SettingsDeviceCenterActivity = "/settings/SettingsDeviceCenterActivity";
+        String SettingsDeviceContractsActivity = "/settings/SettingsDeviceContractsActivity";
+        String SettingsBindDeviceActivity = "/settings/SettingsBindDeviceActivity";
+        String SettingsLoadWebviewActivity = "/settings/SettingsLoadWebviewActivity";
+
+        String SettingsInitDeviceStatusActivity = "/settings/SettingsInitDeviceStatusActivity";
 
     }
 }

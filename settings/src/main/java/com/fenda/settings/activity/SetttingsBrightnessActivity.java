@@ -23,9 +23,9 @@ import com.fenda.settings.R;
  * Author :   aviva.jiangjing
  * Date:   2019/8/30 11:32
  */
-@Route(path = RouterPath.SETTINGS.FDSetttingsBrightnessActivity)
-public class FDSetttingsBrightnessActivity extends BaseMvpActivity {
-    private static final String TAG = "FDSetttingsBrightnessActivity";
+@Route(path = RouterPath.SETTINGS.SetttingsBrightnessActivity)
+public class SetttingsBrightnessActivity extends BaseMvpActivity {
+    private static final String TAG = "SetttingsBrightnessActivity";
 
     ImageView brightnessBack;
     SeekBar brightnessBar;
@@ -44,13 +44,6 @@ public class FDSetttingsBrightnessActivity extends BaseMvpActivity {
     public void initView() {
         brightnessBar = findViewById(R.id.light_seekbar);
         brightnessBack = findViewById(R.id.light_back_iv);
-
-        brightnessBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
         brightnessBar.setMax(255);
     }
 
@@ -59,6 +52,15 @@ public class FDSetttingsBrightnessActivity extends BaseMvpActivity {
         screenBrightness_check();
 
     }
+
+    @Override
+    public void initListener() {
+        brightnessBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });    }
 
     private void screenBrightness_check() {
         //先关闭系统的亮度自动调节
@@ -125,7 +127,7 @@ public class FDSetttingsBrightnessActivity extends BaseMvpActivity {
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             //改变亮度
             changeAppBrightness(progress);
-            saveBrightness(FDSetttingsBrightnessActivity.this, progress);
+            saveBrightness(SetttingsBrightnessActivity.this, progress);
             LogUtil.d(TAG, "seekbar brightness = " + progress);
         }
 

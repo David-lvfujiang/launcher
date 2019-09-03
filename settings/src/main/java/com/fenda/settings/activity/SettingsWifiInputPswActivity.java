@@ -21,15 +21,16 @@ import com.fenda.settings.utils.SettingsWifiUtil;
  * Author :   aviva.jiangjing
  * Date:   2019/8/30 18:24
  */
-@Route(path = RouterPath.SETTINGS.FDSettingsWifiInputPswActivity)
-public class FDSettingsWifiInputPswActivity  extends BaseMvpActivity implements View.OnClickListener {
-    private static final String TAG = "FDSettingsWifiInputPswActivity";
+@Route(path = RouterPath.SETTINGS.SettingsWifiInputPswActivity)
+public class SettingsWifiInputPswActivity extends BaseMvpActivity {
+    private static final String TAG = "SettingsWifiInputPswActivity";
 
     TextView cancelConnect, sureConnect, connectName;
     EditText wifiPsw;
     String inputWifiPsw;
     String ssid1;
     protected SettingsWifiUtil mWifiAdmin;
+
     @Override
     protected void initPresenter() {
 
@@ -47,20 +48,30 @@ public class FDSettingsWifiInputPswActivity  extends BaseMvpActivity implements 
         connectName = findViewById(R.id.connect_wifi_name);
         wifiPsw = findViewById(R.id.wifi_psw);
 
-        mWifiAdmin = new SettingsWifiUtil(FDSettingsWifiInputPswActivity.this);
-        cancelConnect.setOnClickListener(this);
+        mWifiAdmin = new SettingsWifiUtil(SettingsWifiInputPswActivity.this);
         wifiPsw.addTextChangedListener(textWatcher);
 
         //4). 得到intent对象
         Intent intent = getIntent();
         //5). 通过intent读取额外数据
         ssid1 = intent.getStringExtra("MESSAGE");
-        connectName.setText("请连接"+ssid1);
+        connectName.setText("请连接" + ssid1);
     }
 
     @Override
     public void initData() {
 
+    }
+
+    @Override
+    public void initListener() {
+        cancelConnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(SettingsWifiInputPswActivity.this, SettingsWifiActivity.class));
+                finish();
+            }
+        });
     }
 
     @Override
@@ -93,22 +104,11 @@ public class FDSettingsWifiInputPswActivity  extends BaseMvpActivity implements 
                         editor.commit();
                         mWifiAdmin.addNetwork(mWifiAdmin.CreateWifiInfo(ssid1, inputWifiPsw, 3));
 
-                        startActivity(new Intent(FDSettingsWifiInputPswActivity.this, FDSettingsWifiActivity.class));
+                        startActivity(new Intent(SettingsWifiInputPswActivity.this, SettingsWifiActivity.class));
                         finish();
                     }
                 });
             }
         }
     };
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.connect_wifi_cancel:
-                LogUtil.d(TAG, "cancel clicked");
-                startActivity(new Intent(FDSettingsWifiInputPswActivity.this, FDSettingsWifiActivity.class));
-                finish();
-                break;
-        }
-    }
 }

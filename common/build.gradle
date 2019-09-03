@@ -120,8 +120,9 @@ dependencies {
     }
     annotationProcessor (deps.arouter_compiler){
     }
-
-
+    //二维码
+    api (deps.zxing.core){
+    }
 
 }
 

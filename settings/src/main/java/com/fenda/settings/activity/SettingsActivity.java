@@ -21,6 +21,7 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.router.RouterPath;
+import com.fenda.common.util.AppUtils;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.SPUtils;
 import com.fenda.common.util.ToastUtils;
@@ -36,10 +37,11 @@ import java.util.Map;
  * Author :   aviva.jiangjing
  * Date:   2019/8/30 11:31
  */
-@Route(path = RouterPath.SETTINGS.FDSettingsActivity)
-public class FDSettingsActivity extends BaseMvpActivity implements View.OnClickListener {
-    private static final String TAG = "FDSettingsActivity";
+@Route(path = RouterPath.SETTINGS.SettingsActivity)
+public class SettingsActivity extends BaseMvpActivity   {
+    private static final String TAG = "SettingsActivity";
 
+    SettingsInitDeviceStatusManager deviceStatusActivity;
     private ImageView setBackIv;
     private TextView disDeviceNameTv;
     private ListView disSetListItemLv;
@@ -65,19 +67,15 @@ public class FDSettingsActivity extends BaseMvpActivity implements View.OnClickL
         disDeviceNameTv = findViewById(R.id.set_first_info_name);
         disSetListItemLv = findViewById(R.id.set_items_iv);
         deviceCenterLL = findViewById(R.id.set_first_info_layout);
-
+        deviceStatusActivity = new SettingsInitDeviceStatusManager(SettingsActivity.this);
         IntentFilter filter = new IntentFilter();
-        //监听wifiwifi连接状态广播
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         registerReceiver(mwifiReceiver, filter);
-
     }
 
     @Override
     public void initData() {
-        String[] listItemName = new String[] {getString(R.string.settings_set_names_list_wifi), getString(R.string.settings_set_names_list_bluetooth),
-                getString(R.string.settings_set_names_list_light), getString(R.string.settings_set_names_list_volume), getString(R.string.settings_set_names_list_deviceinfo),
-                getString(R.string.settings_set_names_list_about)};
+        String[] listItemName = new String[] {getString(R.string.settings_set_names_list_wifi), getString(R.string.settings_set_names_list_bluetooth), getString(R.string.settings_set_names_list_light), getString(R.string.settings_set_names_list_volume), getString(R.string.settings_set_names_list_deviceinfo), getString(R.string.settings_set_names_list_about)};
         String[] listItemStatus = new String[]{getString(R.string.settings_set_status_wifi_noconnect) ,"", "", "", "", ""};
 
         listitemData = new ArrayList<>();
@@ -88,40 +86,49 @@ public class FDSettingsActivity extends BaseMvpActivity implements View.OnClickL
             listitemData.add(map);
         }
         listViewAdapter = new SimpleAdapter(this, listitemData, R.layout.settings_main_items_layout, new String[]{"name", "state"}, new int[]{R.id.set_items, R.id.set_items_status});
-
         disSetListItemLv.setAdapter(listViewAdapter);
     }
 
     @Override
     public void initListener() {
-        setBackIv.setOnClickListener(this);
-        deviceCenterLL.setOnClickListener(this);
+        setBackIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+        deviceCenterLL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent SetDeviceCenterIntent = new Intent(SettingsActivity.this, SettingsDeviceCenterActivity.class);
+                startActivity(SetDeviceCenterIntent);
+                finish();
+            }
+        });
         disSetListItemLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Map<String, Object> map = (Map<String, Object>) parent.getItemAtPosition(position);
                 String setClickedListName = map.get("name").toString();
-                LogUtil.d(TAG, "select name is =" + setClickedListName);
                 if(("WIFI").equals(setClickedListName)) {
-                    Intent SetWifiIntent = new Intent(FDSettingsActivity.this, FDSettingsWifiActivity.class);
+                    Intent SetWifiIntent = new Intent(SettingsActivity.this, SettingsWifiActivity.class);
                     startActivityForResult(SetWifiIntent,200);
                 } else if(("蓝牙").equals(setClickedListName)) {
-                    Intent SetBTIntent = new Intent(FDSettingsActivity.this, FDSettingsBluetoothActivity.class);
+                    Intent SetBTIntent = new Intent(SettingsActivity.this, SettingsBluetoothActivity.class);
                     startActivity(SetBTIntent);
                 } else if(("关于小乐").equals(setClickedListName)) {
-                    ToastUtils.show(setClickedListName);
                     String ApksUrl = "https://ai.fenda.com/CloudIntroduce/index.html";
-//                    Intent aboutIntent = new Intent(FDSettingsActivity.this, FDLoadWebViewActivity.class);
-//                    aboutIntent.putExtra("APK_URL", ApksUrl);
-//                    startActivity(aboutIntent);
+                    Intent aboutIntent = new Intent(SettingsActivity.this, SettingsLoadWebviewActivity.class);
+                    aboutIntent.putExtra("APK_URL", ApksUrl);
+                    startActivity(aboutIntent);
                 } else if(("设备信息").equals(setClickedListName)) {
-                    Intent deviceInfoIntent = new Intent(FDSettingsActivity.this, FDSettingsDeviceInfoActivity.class);
+                    Intent deviceInfoIntent = new Intent(SettingsActivity.this, SettingsDeviceInfoActivity.class);
                     startActivity(deviceInfoIntent);
                 } else if(("屏幕与亮度").equals(setClickedListName)) {
-                    Intent lightIntent = new Intent(FDSettingsActivity.this, FDSetttingsBrightnessActivity.class);
+                    Intent lightIntent = new Intent(SettingsActivity.this, SetttingsBrightnessActivity.class);
                     startActivity(lightIntent);
                 } else if(("音量").equals(setClickedListName)) {
-                    Intent lightIntent = new Intent(FDSettingsActivity.this, FDSettingsVolumeActivity.class);
+                    Intent lightIntent = new Intent(SettingsActivity.this, SettingsBindDeviceActivity.class);
                     startActivity(lightIntent);
                 } else {
                     ToastUtils.show("开发中...");
@@ -146,21 +153,7 @@ public class FDSettingsActivity extends BaseMvpActivity implements View.OnClickL
             listViewAdapter.notifyDataSetChanged();
         }
     }
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.set_back_iv:
-                finish();
-                break;
-            case R.id.set_first_info_layout:
-                Intent SetDeviceCenterIntent = new Intent(FDSettingsActivity.this, FDSettingsDeviceCenterActivity.class);
-                startActivity(SetDeviceCenterIntent);
-                finish();
-                break;
-        }
-    }
 
-    //监听wifi状态变化
     private BroadcastReceiver mwifiReceiver = new BroadcastReceiver () {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -169,13 +162,12 @@ public class FDSettingsActivity extends BaseMvpActivity implements View.OnClickL
                 ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo wifiInfo = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
                 Log.i(TAG, "--NetworkInfo--" + info.toString());
-                if (NetworkInfo.State.DISCONNECTED == info.getState()) {//wifi没连接上
+                if (NetworkInfo.State.DISCONNECTED == info.getState()) { //wifi没连接上
                     Log.i(TAG, "wifi没连接上");
-                } else if (NetworkInfo.State.CONNECTED == info.getState()) {//wifi连接上了
+                } else if (NetworkInfo.State.CONNECTED == info.getState()) { //wifi连接上了
                     Log.i(TAG, "wifi连接上了");
                     listitemData.remove(0);
                     HashMap<String,String> params = new HashMap<>();
-                    //String wifiName = (String) SPUtils.get(getApplicationContext(),"WifiName","");
                     WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
                     wifiSSID = wifiManager.getConnectionInfo().getSSID();
                     wifiSSID = wifiSSID.substring(1,wifiSSID.length()-1);
@@ -186,6 +178,7 @@ public class FDSettingsActivity extends BaseMvpActivity implements View.OnClickL
                     listitemData.add(0,params);
                     listViewAdapter.notifyDataSetChanged();
 
+//                    deviceStatusActivity.judgeviceStatus(getApplicationContext());
                 } else if (NetworkInfo.State.CONNECTING == info.getState()) {//正在连接
 
                 }
@@ -198,7 +191,6 @@ public class FDSettingsActivity extends BaseMvpActivity implements View.OnClickL
 
     @Override
     public void showErrorTip(String msg) {
-
     }
 
     @Override

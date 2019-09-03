@@ -31,9 +31,9 @@ import static java.lang.System.getProperty;
  * Author :   aviva.jiangjing
  * Date:   2019/8/31 10:05
  */
-@Route(path = RouterPath.SETTINGS.FDSettingsDeviceInfoActivity)
-public class FDSettingsDeviceInfoActivity extends BaseMvpActivity {
-    private static final String TAG = "FDSettingsDeviceInfoActivity";
+@Route(path = RouterPath.SETTINGS.SettingsDeviceInfoActivity)
+public class SettingsDeviceInfoActivity extends BaseMvpActivity {
+    private static final String TAG = "SettingsDeviceInfoActivity";
 
     protected SettingsWifiUtil mWifiAdmin;
 
@@ -51,22 +51,20 @@ public class FDSettingsDeviceInfoActivity extends BaseMvpActivity {
 
     @Override
     public void initView() {
-        mWifiAdmin = new SettingsWifiUtil(FDSettingsDeviceInfoActivity.this);
+        mWifiAdmin = new SettingsWifiUtil(SettingsDeviceInfoActivity.this);
         deviceInfoBack = findViewById(R.id.device_info_back_iv);
         deviceInfoListview = findViewById(R.id.device_info_listview);
 
         deviceInfoBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent Intent = new Intent(FDSettingsDeviceInfoActivity.this, FDSettingsActivity.class);
+                Intent Intent = new Intent(SettingsDeviceInfoActivity.this, SettingsActivity.class);
                 startActivity(Intent);
                 finish();
             }
         });
 
-        String[] deviceInfoNamesDis = new String[] {getString(R.string.settings_device_info_sn), getString(R.string.settings_device_info_ip),
-                getString(R.string.settings_device_info_mac), getString(R.string.settings_device_info_launcher_version),
-                getString(R.string.settings_device_info_system_version), getString(R.string.settings_device_info_software_update)};
+        String[] deviceInfoNamesDis = new String[] {getString(R.string.settings_device_info_sn), getString(R.string.settings_device_info_ip), getString(R.string.settings_device_info_mac), getString(R.string.settings_device_info_launcher_version), getString(R.string.settings_device_info_system_version), getString(R.string.settings_device_info_software_update)};
         String[] deviceInfoStatusDis = new String[]{"FD-R03-001", "", "", "", "", ""};
 
         String deviceIPString = getIpAddress();
@@ -128,8 +126,7 @@ public class FDSettingsDeviceInfoActivity extends BaseMvpActivity {
                 String setClickedListName = map.get("name").toString();
                 LogUtil.d(TAG, "select name is =" + setClickedListName);
 
-                if(setClickedListName.equals(getString(R.string.settings_device_info_software_update)))
-                {
+                if(setClickedListName.equals(getString(R.string.settings_device_info_software_update))) {
                     ToastUtils.show(getString(R.string.settings_device_info_no_new_version_tips));
 //                    Intent updateIntent = new Intent(DeviceInfoActivity.this, DeviceInfoSoftewareUpdateActivity.class);
 //                    startActivity(updateIntent);

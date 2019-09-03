@@ -44,9 +44,9 @@ import java.util.Set;
  * Date:   2019/8/31 10:24
  */
 @RequiresApi(api = Build.VERSION_CODES.ECLAIR)
-@Route(path = RouterPath.SETTINGS.FDSettingsBluetoothActivity)
-public class FDSettingsBluetoothActivity extends BaseMvpActivity implements View.OnClickListener {
-    private static final String TAG = "FDSettingsBluetoothActivity";
+@Route(path = RouterPath.SETTINGS.SettingsBluetoothActivity)
+public class SettingsBluetoothActivity extends BaseMvpActivity {
+    private static final String TAG = "SettingsBluetoothActivity";
 
     TextView disBtName;
     ImageView btBack;
@@ -105,6 +105,48 @@ public class FDSettingsBluetoothActivity extends BaseMvpActivity implements View
         } else {
             btSwitch.setChecked(false);
         }
+
+    }
+
+    @Override
+    public void initData() {
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        /**注册搜索蓝牙receiver*/
+        mFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        //绑定状态监听
+        mFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        //搜索完成时监听
+        mFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        mFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+
+
+        registerReceiver(mReceiver, mFilter);
+        getBondedDevices();
+    }
+
+    @Override
+    public void initListener() {
+        btBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+        btFlashBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 如果正在搜索，就先取消搜索
+                if (bluetoothAdapter.isDiscovering()) {
+                    bluetoothAdapter.cancelDiscovery();
+                }
+                LogUtil.d(TAG,"我在搜索");
+                boolean flashDiscoveryBool = bluetoothAdapter.startDiscovery();
+
+                LogUtil.d(TAG, "我在搜索 flash bool = " + flashDiscoveryBool);
+                blueAdapter.notifyDataSetChanged();
+            }
+        });
+
         btSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -145,9 +187,6 @@ public class FDSettingsBluetoothActivity extends BaseMvpActivity implements View
                 }
             }
         });
-
-        btBack.setOnClickListener(this);
-        btFlashBtn.setOnClickListener(this);
 
         disBtInfosListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -199,50 +238,13 @@ public class FDSettingsBluetoothActivity extends BaseMvpActivity implements View
                 }
                 return true;
             }
-        });
-    }
-
-    @Override
-    public void initData() {
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        /**注册搜索蓝牙receiver*/
-        mFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        //绑定状态监听
-        mFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-        //搜索完成时监听
-        mFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        mFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-
-
-        registerReceiver(mReceiver, mFilter);
-        getBondedDevices();
-    }
+        });    }
 
     @Override
     public void showErrorTip(String msg) {
 
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId())
-        {
-            case R.id.set_bt_back_iv:
-                finish();
-                break;
-            case R.id.set_bt_flash_btn:
-                // 如果正在搜索，就先取消搜索
-                if (bluetoothAdapter.isDiscovering()) {
-                    bluetoothAdapter.cancelDiscovery();
-                }
-                LogUtil.d(TAG,"我在搜索");
-                boolean flashDiscoveryBool = bluetoothAdapter.startDiscovery();
-
-                LogUtil.d(TAG, "我在搜索 flash bool = " + flashDiscoveryBool);
-                blueAdapter.notifyDataSetChanged();
-                break;
-        }
-    }
     /**
      * 获取所有已经绑定的蓝牙设备并显示
      */
@@ -260,7 +262,7 @@ public class FDSettingsBluetoothActivity extends BaseMvpActivity implements View
             setDevices.add(blueDevice);
         }
         if (blueAdapter == null) {
-            blueAdapter = new SettingsBluetoothAdapter(FDSettingsBluetoothActivity.this, setDevices);
+            blueAdapter = new SettingsBluetoothAdapter(SettingsBluetoothActivity.this, setDevices);
             disBtInfosListView.setAdapter(blueAdapter);
         } else {
             blueAdapter.setSetDevices(setDevices);
@@ -356,7 +358,7 @@ public class FDSettingsBluetoothActivity extends BaseMvpActivity implements View
     private void contectBuleDevices() {
         LogUtil.d(TAG,  "开始连接蓝牙");
         /**使用A2DP协议连接设备*/
-        bluetoothAdapter.getProfileProxy(FDSettingsBluetoothActivity.this, mProfileServiceListener, BluetoothProfile.A2DP);
+        bluetoothAdapter.getProfileProxy(SettingsBluetoothActivity.this, mProfileServiceListener, BluetoothProfile.A2DP);
     }
 
     /**
@@ -405,7 +407,7 @@ public class FDSettingsBluetoothActivity extends BaseMvpActivity implements View
     public void showDailog(String msg, DialogInterface.OnClickListener listeners)
     {
         final AlertDialog alertDialog;
-        alertDialog = new AlertDialog.Builder(FDSettingsBluetoothActivity.this).create();
+        alertDialog = new AlertDialog.Builder(SettingsBluetoothActivity.this).create();
         alertDialog.setMessage(msg);
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "取消", new DialogInterface.OnClickListener() {
             @Override

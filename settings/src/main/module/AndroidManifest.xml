@@ -64,23 +64,25 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/NoTitleFullscreen">
-            <activity android:name="com.fenda.settings.activity.FDSettingsActivity">
+            <activity android:name="com.fenda.settings.activity.SettingsActivity">
                 <intent-filter>
                     <action android:name="android.intent.action.MAIN" />
                     <category android:name="android.intent.category.LAUNCHER" />
                 </intent-filter>
             </activity>
 
-            <activity android:name=".activity.FDSetttingsBrightnessActivity"/>
-            <activity android:name=".activity.FDSettingsVolumeActivity"/>
-            <activity android:name=".activity.FDSettingsWifiActivity"/>
-            <activity android:name=".activity.FDSettingsWifiInputPswActivity"/>
-            <activity android:name=".activity.FDSettingsWifiConnectedInfoActivity"/>
-            <activity android:name=".activity.FDSettingsDeviceInfoActivity"/>
-            <activity android:name=".activity.FDSettingsBluetoothActivity"/>
-            <activity android:name=".activity.FDSettingsDeviceCenterActivity"/>
-            <activity android:name=".activity.FDSettingsChangeDeviceNameActivity"/>
-            <activity android:name=".activity.FDSettingsDeviceContractsActivity"/>
+            <activity android:name=".activity.SetttingsBrightnessActivity"/>
+            <activity android:name=".activity.SettingsVolumeActivity"/>
+            <activity android:name=".activity.SettingsWifiActivity"/>
+            <activity android:name=".activity.SettingsWifiInputPswActivity"/>
+            <activity android:name=".activity.SettingsWifiConnectedInfoActivity"/>
+            <activity android:name=".activity.SettingsDeviceInfoActivity"/>
+            <activity android:name=".activity.SettingsBluetoothActivity"/>
+            <activity android:name=".activity.SettingsDeviceCenterActivity"/>
+            <activity android:name=".activity.SettingsChangeDeviceNameActivity"/>
+            <activity android:name=".activity.SettingsDeviceContractsActivity"/>
+            <activity android:name=".activity.SettingsLoadWebviewActivity"/>
+            <activity android:name=".activity.SettingsBindDeviceActivity"/>
 
         </application>
 
