@@ -76,6 +76,9 @@ public abstract class RxResourceObserver<T> extends ResourceObserver<T> {
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
+        if (mView != null){
+            mView.hideLoading();
+        }
         //网络
         if (!NetUtil.checkNet()) {
             if (mView != null ){

@@ -18,26 +18,30 @@ import com.fenda.gallery.fragment.PhotoDetailFragment;
 
 import java.util.ArrayList;
 
-
+/**
+ * @author kevin.wangzhiqiang
+ * @Date 2019/9/3 10:50
+ * @Description 相册详情页面
+ */
 public class PhotoDetailActivity extends BaseActivity implements View.OnClickListener {
 
 
-    private HackyViewPager hackyPage;
+    private HackyViewPager mVpContent;
     private TextView mTvTitle;
     private ImageView mIvBack;
-    private ArrayList<PhoneCameraBean> cameraBeans;
-    private int pageIndex;
-    private int style;
+    private ArrayList<PhoneCameraBean> mDatas;
+    private int mPageIndex;
+    private int mStyle;
 
 
     @Override
     public int onBindLayout() {
-        return R.layout.activity_photo_detal;
+        return R.layout.gallery_activity_photo_detal;
     }
 
     @Override
     public void initView() {
-        hackyPage = findViewById(R.id.hacky_page);
+        mVpContent = findViewById(R.id.hacky_page);
         mTvTitle = findViewById(R.id.tvTitle);
         mIvBack = findViewById(R.id.ivBack);
     }
@@ -51,20 +55,20 @@ public class PhotoDetailActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void initData() {
         Intent mIntent = getIntent();
-        cameraBeans = mIntent.getParcelableArrayListExtra("list");
-        pageIndex = mIntent.getIntExtra("index", 0);
-        style = mIntent.getIntExtra("style", 0);
-        ImagePagerAdapter adapter = new ImagePagerAdapter(getSupportFragmentManager(), cameraBeans);
-        hackyPage.setAdapter(adapter);
-        mTvTitle.setText(getResources().getString(R.string.gallery_page_indicator, pageIndex + 1, cameraBeans.size()));
-        hackyPage.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mDatas = mIntent.getParcelableArrayListExtra("list");
+        mPageIndex = mIntent.getIntExtra("index", 0);
+        mStyle = mIntent.getIntExtra("mStyle", 0);
+        ImagePagerAdapter adapter = new ImagePagerAdapter(getSupportFragmentManager(), mDatas);
+        mVpContent.setAdapter(adapter);
+        mTvTitle.setText(getResources().getString(R.string.gallery_page_indicator, mPageIndex + 1, mDatas.size()));
+        mVpContent.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {
             }
 
             @Override
             public void onPageSelected(int i) {
-                String title = getResources().getString(R.string.gallery_page_indicator, i + 1, cameraBeans.size());
+                String title = getResources().getString(R.string.gallery_page_indicator, i + 1, mDatas.size());
                 mTvTitle.setText(title);
             }
 
@@ -72,8 +76,8 @@ public class PhotoDetailActivity extends BaseActivity implements View.OnClickLis
             public void onPageScrollStateChanged(int i) {
             }
         });
-        hackyPage.setOffscreenPageLimit(1);
-        hackyPage.setCurrentItem(pageIndex);
+        mVpContent.setOffscreenPageLimit(1);
+        mVpContent.setCurrentItem(mPageIndex);
 
     }
 
@@ -97,7 +101,7 @@ public class PhotoDetailActivity extends BaseActivity implements View.OnClickLis
         @Override
         public Fragment getItem(int i) {
             PhoneCameraBean bean = mList.get(i);
-            return PhotoDetailFragment.newInstance(bean, style);
+            return PhotoDetailFragment.newInstance(bean, mStyle);
         }
 
         @Override

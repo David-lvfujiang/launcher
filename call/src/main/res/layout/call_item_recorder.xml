@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/demension_dp134"
+    android:layout_marginLeft="@dimen/demension_dp47"
+    android:layout_marginRight="@dimen/demension_dp47">
+
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:layout_width="@dimen/demension_dp100"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textsize_sp24" />
+
+    <RelativeLayout
+        android:id="@+id/rlLine"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/demension_dp10"
+        android:layout_marginRight="@dimen/demension_dp10"
+        android:layout_toRightOf="@id/tvTime">
+
+        <View
+            android:id="@+id/vTopLine"
+            android:layout_width="@dimen/demension_dp2"
+            android:layout_height="@dimen/demension_dp62"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/call_dash_line_shape"
+            android:layerType="software" />
+
+        <TextView
+            android:id="@+id/tvDot"
+            android:layout_width="@dimen/demension_dp10"
+            android:layout_height="@dimen/demension_dp10"
+            android:layout_below="@id/vTopLine"
+            android:background="@drawable/call_dot_shape" />
+
+        <View
+            android:id="@+id/vButtomLine"
+            android:layout_width="@dimen/demension_dp2"
+            android:layout_height="@dimen/demension_dp62"
+            android:layout_below="@id/tvDot"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/call_dash_line_shape"
+            android:layerType="software" />
+    </RelativeLayout>
+
+    <com.fenda.common.view.CircleImageView
+        android:id="@+id/civHead"
+        android:layout_width="@dimen/demension_dp80"
+        android:layout_height="@dimen/demension_dp80"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/demension_dp20"
+        android:layout_toRightOf="@id/rlLine" />
+
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/civHead"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textsize_sp50" />
+
+
+    <ImageView
+        android:id="@+id/ivStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true" />
+
+
+</RelativeLayout>

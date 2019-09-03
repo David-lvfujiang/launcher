@@ -3,7 +3,11 @@ package com.fenda.gallery.http;
 import java.util.List;
 
 import okhttp3.MultipartBody;
-
+/**
+ * @author kevin.wangzhiqiang
+ * @Date 2019/9/3 10:59
+ * @Description 上传相册请求实体
+ */
 public class UploadPhotoRequest {
 
 

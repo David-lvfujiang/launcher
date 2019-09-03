@@ -32,7 +32,11 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
-
+/**
+ * @author kevin.wangzhiqiang
+ * @Date 2019/9/3 10:49
+ * @Description 相册分类页面
+ */
 @Route(path = RouterPath.Gallery.GALLERY_CATOGORY)
 public class GalleryCategoryActivity extends BaseMvpActivity<GalleryPresenter, GalleryModel> implements GalleryContract.View, View.OnClickListener {
     private ImageView mIvCancel;

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/demension_dp72"
+    android:layout_height="@dimen/demension_dp72"
+    android:background="@drawable/call_number_bg_shape"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:textColor="@color/white"
+        android:textSize="@dimen/textsize_sp28" />
+
+    <TextView
+        android:id="@+id/tvLetter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textsize_sp16" />
+</LinearLayout>

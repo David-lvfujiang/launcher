@@ -18,34 +18,37 @@ import com.fenda.gallery.bean.PhoneCameraBean;
 
 import java.util.ArrayList;
 import java.util.List;
-
-
+/**
+ * @author kevin.wangzhiqiang
+ * @Date 2019/9/3 10:51
+ * @Description 本地相册Adapter
+ */
 public class PhoneCameraAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private ArrayList<PhoneCameraBean> beanList;
+    private ArrayList<PhoneCameraBean> mBeanList;
     private Context mContext;
-    private selectOnClickListener listener;
-    private List<String> selectList = new ArrayList<>();
+    private selectOnClickListener mListener;
+    private List<String> mSelectList = new ArrayList<>();
 
 
     public PhoneCameraAdapter(ArrayList<PhoneCameraBean> beanList, Context mContext) {
-        this.beanList = beanList;
+        this.mBeanList = beanList;
         this.mContext = mContext;
     }
 
     public void setNewData(ArrayList<PhoneCameraBean> beanList) {
-        if (this.beanList != null) {
-            this.beanList.clear();
-            this.beanList.addAll(beanList);
+        if (this.mBeanList != null) {
+            this.mBeanList.clear();
+            this.mBeanList.addAll(beanList);
         } else {
-            this.beanList = beanList;
+            this.mBeanList = beanList;
         }
         notifyDataSetChanged();
     }
 
 
     public void setSelectOnClickListener(selectOnClickListener listener) {
-        this.listener = listener;
+        this.mListener = listener;
     }
 
     public void notifyAdapter(int index) {
@@ -56,21 +59,21 @@ public class PhoneCameraAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         this.notifyAll();
     }
 
-    public List<String> getSelectList() {
-        return selectList;
+    public List<String> getmSelectList() {
+        return mSelectList;
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        MyViewHolder holder = new MyViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_family_photo, viewGroup, false));
+        MyViewHolder holder = new MyViewHolder(LayoutInflater.from(mContext).inflate(R.layout.gallery_item_family_photo, viewGroup, false));
         return holder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int i) {
         final MyViewHolder holder = (MyViewHolder) viewHolder;
-        final PhoneCameraBean cameraBean = beanList.get(i);
+        final PhoneCameraBean cameraBean = mBeanList.get(i);
         if (cameraBean != null) {
             String path = cameraBean.getPhotos();
             ImageUtils.loadImg(mContext, holder.imgPhoto, path);
@@ -84,23 +87,23 @@ public class PhoneCameraAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 public void onClick(View v) {
                     if (cameraBean.getSelectStatus() == 2) {
                         holder.imgSelect.setImageResource(R.mipmap.gallery_photo_normal);
-                        if (selectList.contains(cameraBean.getPhotos())) {
-                            selectList.remove(cameraBean.getPhotos());
+                        if (mSelectList.contains(cameraBean.getPhotos())) {
+                            mSelectList.remove(cameraBean.getPhotos());
                         }
                         cameraBean.setSelectStatus(1);
                     } else if (cameraBean.getSelectStatus() == 1) {
-                        if (selectList.size() >= 9) {
+                        if (mSelectList.size() >= 9) {
                             ToastUtils.show("最多只能选择9张图片");
                             return;
                         }
                         holder.imgSelect.setImageResource(R.mipmap.gallery_photo_selected);
-                        if (!selectList.contains(cameraBean.getPhotos())) {
-                            selectList.add(cameraBean.getPhotos());
+                        if (!mSelectList.contains(cameraBean.getPhotos())) {
+                            mSelectList.add(cameraBean.getPhotos());
                         }
                         cameraBean.setSelectStatus(2);
                     }
-                    if (listener != null) {
-                        listener.selectListener(cameraBean, i);
+                    if (mListener != null) {
+                        mListener.selectListener(cameraBean, i);
                     }
                 }
             });
@@ -109,7 +112,7 @@ public class PhoneCameraAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 @Override
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
-                    bundle.putParcelableArrayList("list", beanList);
+                    bundle.putParcelableArrayList("list", mBeanList);
                     bundle.putInt("index", i);
                     Intent mIntent = new Intent(mContext, PhotoDetailActivity.class);
                     mIntent.putExtras(bundle);
@@ -125,9 +128,9 @@ public class PhoneCameraAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemCount() {
-        if (beanList == null)
-            beanList = new ArrayList<>();
-        return beanList.size();
+        if (mBeanList == null)
+            mBeanList = new ArrayList<>();
+        return mBeanList.size();
     }
 
     private static class MyViewHolder extends RecyclerView.ViewHolder {

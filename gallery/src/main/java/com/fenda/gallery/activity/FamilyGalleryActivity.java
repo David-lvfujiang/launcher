@@ -34,13 +34,17 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * @author kevin.wangzhiqiang
+ * @Date 2019/9/3 10:49
+ * @Description 相册列表页面
+ */
 public class FamilyGalleryActivity extends BaseMvpActivity<GalleryPresenter, GalleryModel> implements GalleryContract.View {
 
-    private TextView tvCancel;
-    private TextView tvTitle;
-    private TextView tvDelete;
-    private ImageView imgAdd;
+    private TextView mTvCancel;
+    private TextView mTvTitle;
+    private TextView mTvDelete;
+    private ImageView mIvAdd;
     private RecyclerView mRcPhotos;
     private boolean isDelete = false;
     private FamilyPhotoAdapter mPhotoAdapter;
@@ -52,15 +56,15 @@ public class FamilyGalleryActivity extends BaseMvpActivity<GalleryPresenter, Gal
 
     @Override
     public int onBindLayout() {
-        return R.layout.activity_family_gallery;
+        return R.layout.gallery_activity_family_gallery;
     }
 
     @Override
     public void initView() {
-        tvCancel = findViewById(R.id.tv_cancel);
-        tvTitle = findViewById(R.id.tv_title);
-        tvDelete = findViewById(R.id.tv_delete);
-        imgAdd = findViewById(R.id.img_add);
+        mTvCancel = findViewById(R.id.tv_cancel);
+        mTvTitle = findViewById(R.id.tv_title);
+        mTvDelete = findViewById(R.id.tv_delete);
+        mIvAdd = findViewById(R.id.img_add);
         mRcPhotos = findViewById(R.id.rcPhotos);
     }
 
@@ -88,7 +92,7 @@ public class FamilyGalleryActivity extends BaseMvpActivity<GalleryPresenter, Gal
     @Override
     public void initListener() {
         super.initListener();
-        imgAdd.setOnClickListener(new View.OnClickListener() {
+        mIvAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isDelete) {
@@ -96,7 +100,7 @@ public class FamilyGalleryActivity extends BaseMvpActivity<GalleryPresenter, Gal
                 }
             }
         });
-        tvDelete.setOnClickListener(new View.OnClickListener() {
+        mTvDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isDelete) {
@@ -113,7 +117,7 @@ public class FamilyGalleryActivity extends BaseMvpActivity<GalleryPresenter, Gal
 
             }
         });
-        tvCancel.setOnClickListener(new View.OnClickListener() {
+        mTvCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -143,11 +147,11 @@ public class FamilyGalleryActivity extends BaseMvpActivity<GalleryPresenter, Gal
                     imgIds.add(bean.getId());
                 }
                 if (imgIds.size() > 0) {
-                    imgAdd.setVisibility(View.VISIBLE);
+                    mIvAdd.setVisibility(View.VISIBLE);
                 } else {
-                    imgAdd.setVisibility(View.GONE);
+                    mIvAdd.setVisibility(View.GONE);
                 }
-                tvTitle.setText(getResources().getString(R.string.gallery_delete_size, String.valueOf(imgIds.size())));
+                mTvTitle.setText(getResources().getString(R.string.gallery_delete_size, String.valueOf(imgIds.size())));
             }
         });
     }
@@ -177,14 +181,14 @@ public class FamilyGalleryActivity extends BaseMvpActivity<GalleryPresenter, Gal
                 phoneCameraBean.setSelectStatus(1);
             }
         }
-        tvCancel.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        mTvCancel.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         Resources resources = getResources();
-        tvCancel.setText(resources.getString(R.string.gallery_family_cancel));
+        mTvCancel.setText(resources.getString(R.string.gallery_family_cancel));
         mPhotoAdapter.notifyDataSetChanged();
-        tvTitle.setText(resources.getString(R.string.gallery_delete_size, "0"));
-        tvDelete.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        tvDelete.setText("全选");
-        imgAdd.setVisibility(View.GONE);
+        mTvTitle.setText(resources.getString(R.string.gallery_delete_size, "0"));
+        mTvDelete.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        mTvDelete.setText("全选");
+        mIvAdd.setVisibility(View.GONE);
         isDelete = true;
     }
 
@@ -192,7 +196,7 @@ public class FamilyGalleryActivity extends BaseMvpActivity<GalleryPresenter, Gal
      * 选中状态
      */
     private void selectOnStatus() {
-        String text = tvDelete.getText().toString();
+        String text = mTvDelete.getText().toString();
         if ("全选".equals(text)) {
             List<DayPhoteInfoBean> beans = mPhotoAdapter.getData();
             for (DayPhoteInfoBean bean : beans) {
@@ -204,8 +208,8 @@ public class FamilyGalleryActivity extends BaseMvpActivity<GalleryPresenter, Gal
                     }
                 }
             }
-            imgAdd.setVisibility(View.VISIBLE);
-            tvDelete.setText("全不选");
+            mIvAdd.setVisibility(View.VISIBLE);
+            mTvDelete.setText("全不选");
         } else if ("全不选".equals(text)) {
             List<DayPhoteInfoBean> beans = mPhotoAdapter.getData();
             for (DayPhoteInfoBean bean : beans) {
@@ -217,10 +221,10 @@ public class FamilyGalleryActivity extends BaseMvpActivity<GalleryPresenter, Gal
                     }
                 }
             }
-            imgAdd.setVisibility(View.GONE);
-            tvDelete.setText("全选");
+            mIvAdd.setVisibility(View.GONE);
+            mTvDelete.setText("全选");
         }
-        tvTitle.setText(getResources().getString(R.string.gallery_delete_size, String.valueOf(imgIds.size())));
+        mTvTitle.setText(getResources().getString(R.string.gallery_delete_size, String.valueOf(imgIds.size())));
         mPhotoAdapter.notifyDataSetChanged();
     }
 
@@ -229,13 +233,13 @@ public class FamilyGalleryActivity extends BaseMvpActivity<GalleryPresenter, Gal
      */
     private void cancelDeleteStatus() {
         Resources resources = getResources();
-        tvCancel.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.life_back, 0, 0, 0);
-        tvCancel.setText("");
+        mTvCancel.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.life_back, 0, 0, 0);
+        mTvCancel.setText("");
         mPhotoAdapter.notifyDataSetChanged();
-        tvTitle.setText(resources.getString(R.string.gallery_family_gallery));
-        tvDelete.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.gallery_photo_delete, 0, 0, 0);
-        tvDelete.setText("");
-        imgAdd.setVisibility(View.GONE);
+        mTvTitle.setText(resources.getString(R.string.gallery_family_gallery));
+        mTvDelete.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.gallery_photo_delete, 0, 0, 0);
+        mTvDelete.setText("");
+        mIvAdd.setVisibility(View.GONE);
         if (imgIds.size() > 0) {
             imgIds.clear();
         }

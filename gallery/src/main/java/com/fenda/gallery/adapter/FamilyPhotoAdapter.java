@@ -21,15 +21,19 @@ import com.truizlop.sectionedrecyclerview.SectionedRecyclerViewAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * @author kevin.wangzhiqiang
+ * @Date 2019/9/3 10:51
+ * @Description 相册列表Adapter
+ */
 public class FamilyPhotoAdapter extends SectionedRecyclerViewAdapter<FamilyPhotoAdapter.MyHeaderViewHolder, FamilyPhotoAdapter.MyItemViewHolder, FamilyPhotoAdapter.MyFooterViewHolder> {
 
     private Context mContext;
     private List<DayPhoteInfoBean> mDatas;
-    private OnItemClickListener listener;
+    private OnItemClickListener mListener;
 
     public void setOnItemClickListener(OnItemClickListener listener) {
-        this.listener = listener;
+        this.mListener = listener;
     }
 
     public interface OnItemClickListener {
@@ -82,7 +86,7 @@ public class FamilyPhotoAdapter extends SectionedRecyclerViewAdapter<FamilyPhoto
      */
     @Override
     protected MyHeaderViewHolder onCreateSectionHeaderViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(mContext).inflate(R.layout.item_rv_header, parent, false);
+        View itemView = LayoutInflater.from(mContext).inflate(R.layout.gallery_item_rv_header, parent, false);
         return new MyHeaderViewHolder(itemView);
     }
 
@@ -95,7 +99,7 @@ public class FamilyPhotoAdapter extends SectionedRecyclerViewAdapter<FamilyPhoto
      */
     @Override
     protected MyFooterViewHolder onCreateSectionFooterViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(mContext).inflate(R.layout.item_rv_footer, parent, false);
+        View itemView = LayoutInflater.from(mContext).inflate(R.layout.gallery_item_rv_footer, parent, false);
         return new MyFooterViewHolder(itemView);
     }
 
@@ -108,7 +112,7 @@ public class FamilyPhotoAdapter extends SectionedRecyclerViewAdapter<FamilyPhoto
      */
     @Override
     protected MyItemViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(mContext).inflate(R.layout.item_family_photo, parent, false);
+        View itemView = LayoutInflater.from(mContext).inflate(R.layout.gallery_item_family_photo, parent, false);
         return new MyItemViewHolder(itemView);
     }
 
@@ -177,8 +181,8 @@ public class FamilyPhotoAdapter extends SectionedRecyclerViewAdapter<FamilyPhoto
                 } else if (phoneCameraBean.getSelectStatus() == 2) {
                     phoneCameraBean.setSelectStatus(1);
                 }
-                if (listener != null) {
-                    listener.itemClickListener(phoneCameraBean);
+                if (mListener != null) {
+                    mListener.itemClickListener(phoneCameraBean);
                 }
 
                 notifyDataSetChanged();

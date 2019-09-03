@@ -12,20 +12,24 @@ import com.fenda.gallery.bean.PhoneCameraBean;
 
 import java.text.DecimalFormat;
 
-
+/**
+ * @author kevin.wangzhiqiang
+ * @Date 2019/9/3 10:53
+ * @Description 相册详情Fragment
+ */
 public class PhotoDetailFragment extends BaseFragment {
 
 
-    private ImageView imgDetail;
+    private ImageView mIvDetail;
 
     @Override
     public int onBindLayout() {
-        return R.layout.fragment_photo_detail;
+        return R.layout.gallery_fragment_photo_detail;
     }
 
     @Override
     public void initView() {
-        imgDetail = mRootView.findViewById(R.id.img_detail);
+        mIvDetail = mRootView.findViewById(R.id.img_detail);
 
     }
 
@@ -36,9 +40,9 @@ public class PhotoDetailFragment extends BaseFragment {
             PhoneCameraBean cameraBean = mBundle.getParcelable("bean");
             int style = mBundle.getInt("style");
             if (style == 1) {
-                ImageUtils.loadImg(mCotext, imgDetail, cameraBean.getPhotos());
+                ImageUtils.loadImg(mContext, mIvDetail, cameraBean.getPhotos());
             } else {
-                ImageUtils.loadImg(mCotext, imgDetail, cameraBean.getPhotos());
+                ImageUtils.loadImg(mContext, mIvDetail, cameraBean.getPhotos());
             }
 
         }

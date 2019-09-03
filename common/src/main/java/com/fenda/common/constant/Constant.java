@@ -88,6 +88,12 @@ public interface Constant {
         int DELETE_ALARM = 2;
         int CLOSE_ALARM = 4;
     }
+    /**
+     * 音视频组件
+     */
+    interface Call{
+        String TOKEN = "token";
+    }
 
     /**
      * 设置组件

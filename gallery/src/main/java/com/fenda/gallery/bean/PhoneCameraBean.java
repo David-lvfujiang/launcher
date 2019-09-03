@@ -2,7 +2,11 @@ package com.fenda.gallery.bean;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
+/**
+ * @author kevin.wangzhiqiang
+ * @Date 2019/9/3 10:52
+ * @Description 单张照片实体
+ */
 public class PhoneCameraBean implements Parcelable {
 
     private String id;

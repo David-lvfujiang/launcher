@@ -14,13 +14,18 @@ public interface RouterPath {
         String FDMusicListActivity = "/player/FDMusicListActivity";
     }
 
-    interface Gallery {
+
+    public interface Gallery {
         String GALLERY_CATOGORY = "/gallery/GalleryCategoryActivity";
         String GALLERY_LIST_LOCAL = "/gallery/PhotosActivity";
         String GALLERY_LIST_SERVER = "/gallery/FamilyGalleryActivity";
         String GALLERY_DETAIL = "/gallery/PhotoDetailActivity";
     }
 
+    public interface Call {
+        String CALL_SERVICE = "/call/CallService";
+        String MAIN_ACTIVITY = "/call/MainActivity";
+    }
     interface SETTINGS {
         String SettingsActivity = "/settings/SettingsActivity";
         String SettingsVolumeActivity = "/settings/SettingsVolumeActivity";

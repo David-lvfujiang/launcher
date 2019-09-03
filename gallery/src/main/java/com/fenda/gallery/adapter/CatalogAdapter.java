@@ -17,45 +17,49 @@ import com.fenda.gallery.bean.PhoneCameraBean;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
+/**
+ * @author kevin.wangzhiqiang
+ * @Date 2019/9/3 10:51
+ * @Description
+ */
 public class CatalogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
-    private List<String> catalogList;
+    private List<String> mCatalogList;
     private Context mContext;
-    private int selectIndex;
-    private onClickCatalogListener listener;
-    private HashMap<String, ArrayList<PhoneCameraBean>> mapBean;
+    private int mSelectIndex;
+    private onClickCatalogListener mListener;
+    private HashMap<String, ArrayList<PhoneCameraBean>> mMapBean;
 
     public CatalogAdapter(List<String> catalogList, Context mContext, int selectIndex, HashMap<String, ArrayList<PhoneCameraBean>> mapBean) {
-        this.mapBean = mapBean;
-        this.catalogList = catalogList;
+        this.mMapBean = mapBean;
+        this.mCatalogList = catalogList;
         this.mContext = mContext;
-        this.selectIndex = selectIndex;
+        this.mSelectIndex = selectIndex;
     }
 
     public void setOnClickCatalogListener(onClickCatalogListener listener) {
-        this.listener = listener;
+        this.mListener = listener;
 
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View itemView = LayoutInflater.from(mContext).inflate(R.layout.popup_catalog_item, null);
+        View itemView = LayoutInflater.from(mContext).inflate(R.layout.gallery_popup_catalog_item, null);
         return new ViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int i) {
-        final String catalogName = catalogList.get(i);
+        final String catalogName = mCatalogList.get(i);
         final ViewHolder holder = (ViewHolder) viewHolder;
-        ArrayList<PhoneCameraBean> beanArrayList = mapBean.get(catalogName);
+        ArrayList<PhoneCameraBean> beanArrayList = mMapBean.get(catalogName);
         String name = mContext.getResources().getString(R.string.gallery_picture_size, catalogName, String.valueOf(beanArrayList.size()));
         String path = beanArrayList.get(0).getPhotos();
         ImageUtils.loadImg(mContext, holder.imgPic, path);
         holder.tvName.setText(name);
-        if (selectIndex == i) {
+        if (mSelectIndex == i) {
             holder.rbButton.setChecked(true);
         } else {
             holder.rbButton.setChecked(false);
@@ -63,8 +67,8 @@ public class CatalogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (listener != null) {
-                    listener.catalogListener(catalogName, i);
+                if (mListener != null) {
+                    mListener.catalogListener(catalogName, i);
                 }
 
             }
@@ -75,9 +79,9 @@ public class CatalogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemCount() {
-        if (catalogList == null)
-            catalogList = new ArrayList<>();
-        return catalogList.size();
+        if (mCatalogList == null)
+            mCatalogList = new ArrayList<>();
+        return mCatalogList.size();
     }
 
 

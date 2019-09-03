@@ -14,9 +14,9 @@ import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 /**
- * @author mirrer.wangzhonglin
- * @Date 2019/8/28 18:54
- * @Description
+ * @author kevin.wangzhiqiang
+ * @Date 2019/9/3 10:59
+ * @Description 家庭相册ApiService
  */
 public interface GalleryApiService {
     //查询家庭相册

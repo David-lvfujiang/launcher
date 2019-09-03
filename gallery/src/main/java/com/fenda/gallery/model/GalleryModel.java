@@ -13,9 +13,9 @@ import com.fenda.protocol.http.RetrofitHelper;
 import io.reactivex.Observable;
 
 /**
- * @author mirrer.wangzhonglin
- * @Date 2019/8/28 10:24
- * @Description
+ * @author kevin.wangzhiqiang
+ * @Date 2019/9/3 11:00
+ * @Description 家庭相册Model
  */
 public class GalleryModel implements GalleryContract.Model {
 

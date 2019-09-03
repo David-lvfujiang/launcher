@@ -36,7 +36,10 @@
     <color name="color_999999">#999999</color>
     <color name="color_EEEEEE">#EEEEEE</color>
     <color name="DarkBlue">#00008B</color>
-
+    <color name="fd_text_select">#59FB53</color>
+    <color name="fd_text_normal">#66FCFCFF</color>
+    <color name="fd_text_pay">#FCFCFF</color>
+    <color name="fd_number_bg">#80FFFFFF</color>
 
 
 </resources>
