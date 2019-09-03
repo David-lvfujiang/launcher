@@ -11,9 +11,9 @@ import com.fenda.gallery.http.UploadPhotoRequest;
 import io.reactivex.Observable;
 
 /**
- * @author mirrer.wangzhonglin
- * @Date 2019/8/28 10:18
- * @Description
+ * @author kevin.wangzhiqiang
+ * @Date 2019/9/3 10:53
+ * @Description 家庭相册Contract
  */
 public interface GalleryContract {
 

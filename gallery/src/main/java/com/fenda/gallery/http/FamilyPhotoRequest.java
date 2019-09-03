@@ -1,5 +1,9 @@
 package com.fenda.gallery.http;
-
+/**
+ * @author kevin.wangzhiqiang
+ * @Date 2019/9/3 10:58
+ * @Description 相册列表请求实体
+ */
 public class FamilyPhotoRequest {
 
     private int currentPage;

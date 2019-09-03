@@ -49,14 +49,18 @@ import java.util.List;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-
+/**
+ * @author kevin.wangzhiqiang
+ * @Date 2019/9/3 10:50
+ * @Description 本地相册页面
+ */
 public class PhotosActivity extends BaseMvpActivity<GalleryPresenter, GalleryModel> implements GalleryContract.View, View.OnClickListener {
 
-    private ImageView back;
-    private TextView title;
-    private ImageView ivSend;
-    private RecyclerView rcPhonePic;
-    private RelativeLayout rela;
+    private ImageView mIvBack;
+    private TextView mTitle;
+    private ImageView mIvSend;
+    private RecyclerView mRcPhonePic;
+    private RelativeLayout mRlTitle;
 
     public static final int PERMISSION_REQ = 0x123456;
     private final String[] IMAGE_PROJECT = {
@@ -92,24 +96,24 @@ public class PhotosActivity extends BaseMvpActivity<GalleryPresenter, GalleryMod
 
     @Override
     public int onBindLayout() {
-        return R.layout.activity_photo;
+        return R.layout.gallery_activity_photo;
     }
 
     @Override
     public void initView() {
-        back = findViewById(R.id.img_back);
-        title = findViewById(R.id.tv_title);
-        ivSend = findViewById(R.id.iv_send);
-        rcPhonePic = findViewById(R.id.rc_phone_pic);
-        rela = findViewById(R.id.rela);
+        mIvBack = findViewById(R.id.img_back);
+        mTitle = findViewById(R.id.tv_title);
+        mIvSend = findViewById(R.id.iv_send);
+        mRcPhonePic = findViewById(R.id.rc_phone_pic);
+        mRlTitle = findViewById(R.id.rela);
     }
 
     @Override
     public void initListener() {
         super.initListener();
-        back.setOnClickListener(this);
-        title.setOnClickListener(this);
-        ivSend.setOnClickListener(this);
+        mIvBack.setOnClickListener(this);
+        mTitle.setOnClickListener(this);
+        mIvSend.setOnClickListener(this);
     }
 
     @Override
@@ -119,11 +123,11 @@ public class PhotosActivity extends BaseMvpActivity<GalleryPresenter, GalleryMod
         selectPath = new ArrayList<>();
         catalogList = new ArrayList<>();
         adapter = new PhoneCameraAdapter(new ArrayList<PhoneCameraBean>(), this);
-        rcPhonePic.setHasFixedSize(true);
-        rcPhonePic.setItemAnimator(new DefaultItemAnimator());
-        rcPhonePic.setLayoutManager(new GridLayoutManager(this, 4));
-        rcPhonePic.setItemAnimator(new DefaultItemAnimator());
-        rcPhonePic.setAdapter(adapter);
+        mRcPhonePic.setHasFixedSize(true);
+        mRcPhonePic.setItemAnimator(new DefaultItemAnimator());
+        mRcPhonePic.setLayoutManager(new GridLayoutManager(this, 4));
+        mRcPhonePic.setItemAnimator(new DefaultItemAnimator());
+        mRcPhonePic.setAdapter(adapter);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             for (String one : mPermission) {
@@ -146,7 +150,7 @@ public class PhotosActivity extends BaseMvpActivity<GalleryPresenter, GalleryMod
         int resId = v.getId();
         if (resId == R.id.iv_send) {
             //上传图片
-            List<String> mList = adapter.getSelectList();
+            List<String> mList = adapter.getmSelectList();
             if (mList != null && mList.isEmpty()) {
                 ToastUtils.show(R.string.gallery_select_photo);
                 return;
@@ -276,7 +280,7 @@ public class PhotosActivity extends BaseMvpActivity<GalleryPresenter, GalleryMod
     }
 
     private void showCatalog() {
-        View mView = getLayoutInflater().inflate(R.layout.popup_catalog, null);
+        View mView = getLayoutInflater().inflate(R.layout.gallery_popup_catalog, null);
         int screenHeight = DensityUtil.getScreenHeight(this);
 
         int popupHeight = (int) (screenHeight * 0.4);
@@ -294,7 +298,7 @@ public class PhotosActivity extends BaseMvpActivity<GalleryPresenter, GalleryMod
                 PhotosActivity.this.position = position;
                 ArrayList<PhoneCameraBean> cameraBeans = cameraBeanMap.get(catalog);
                 adapter.setNewData(cameraBeans);
-                title.setText(catalog);
+                mTitle.setText(catalog);
                 if (window != null) {
                     window.dismiss();
                     window = null;
@@ -306,7 +310,7 @@ public class PhotosActivity extends BaseMvpActivity<GalleryPresenter, GalleryMod
         window.setOutsideTouchable(true);
         window.setTouchable(true);
         window.setFocusable(true);
-        window.showAsDropDown(rela);
+        window.showAsDropDown(mRlTitle);
 
     }
 

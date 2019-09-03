@@ -92,6 +92,12 @@ public interface Constant {
         int CLOSE_ALARM = 4;
 
     }
+    /**
+     * 音视频组件
+     */
+    interface Call{
+        String TOKEN = "token";
+    }
 
     /**
      * 设置组件

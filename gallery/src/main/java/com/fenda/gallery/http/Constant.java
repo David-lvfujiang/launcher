@@ -8,9 +8,9 @@ import com.fenda.gallery.R;
 import java.io.File;
 
 /**
- * @author mirrer.wangzhonglin
- * @Date 2019/8/28 19:33
- * @Description
+ * @author kevin.wangzhiqiang
+ * @Date 2019/9/3 10:58
+ * @Description 常量
  */
 public class Constant {
     public static String TEST_BASE_URL = BaseApplication.getInstance().getResources().getString(R.string.BASE_SERVER_URL);

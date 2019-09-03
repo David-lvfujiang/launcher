@@ -18,6 +18,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name="com.fenda.common.db.UserContentProvider"
+            android:authorities="com.fenda.ai"
+            android:enabled="true"
+            android:exported="true"
+            android:grantUriPermissions="true">
+        </provider>
     </application>
 
 </manifest>

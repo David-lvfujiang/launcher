@@ -3,7 +3,11 @@ package com.fenda.gallery.http;
 import com.fenda.gallery.bean.PhoneCameraBean;
 
 import java.util.List;
-
+/**
+ * @author kevin.wangzhiqiang
+ * @Date 2019/9/3 10:59
+ * @Description 相册列表响应实体
+ */
 public class FamilyPhotoResponse {
 
 

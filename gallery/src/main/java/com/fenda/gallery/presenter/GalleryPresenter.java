@@ -3,15 +3,16 @@ package com.fenda.gallery.presenter;
 
 import com.fenda.common.base.BaseResponse;
 import com.fenda.common.baserx.RxResourceObserver;
+import com.fenda.common.util.ToastUtils;
 import com.fenda.gallery.contract.GalleryContract;
 import com.fenda.gallery.http.FamilyPhotoRequest;
 import com.fenda.gallery.http.FamilyPhotoResponse;
 import com.fenda.gallery.http.UploadPhotoRequest;
 
 /**
- * @author mirrer.wangzhonglin
- * @Date 2019/8/28 10:26
- * @Description
+ * @author kevin.wangzhiqiang
+ * @Date 2019/9/3 11:00
+ * @Description 家庭相册Presenter
  */
 public class GalleryPresenter extends GalleryContract.Presenter {
 
@@ -30,7 +31,6 @@ public class GalleryPresenter extends GalleryContract.Presenter {
 
             @Override
             protected void _onError(String message) {
-
             }
         }));
     }

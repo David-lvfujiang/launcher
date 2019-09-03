@@ -3,6 +3,11 @@ package com.fenda.gallery.bean;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author kevin.wangzhiqiang
+ * @Date 2019/9/3 10:52
+ * @Description 相册列表实体
+ */
 public class DayPhoteInfoBean {
     private String header;
     private String footer;
