@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.fenda.common.BaseApplication;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
 import com.fenda.common.constant.Constant;
@@ -35,7 +36,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.File;
 import java.lang.reflect.Method;
 
-import debug.SettingsApplication;
 
 /**
  * Created by  Android Studio.
@@ -112,7 +112,7 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
     public void initData() {
         mPresenter.queryDeviceInfo();
 
-        String userId = (String) SPUtils.get(SettingsApplication.getInstance(), Constant.Settings.USER_ID,"");
+        String userId = (String) SPUtils.get(BaseApplication.getInstance(), Constant.Settings.USER_ID,"");
         LogUtil.d(TAG, "userId = " + userId);
         ClientBootstrap bootstrap = ClientBootstrap.getInstance();
         bootstrap.init(mContext, userId, SettingsContant.TCP_IP, SettingsContant.TCP_PORT, 0);

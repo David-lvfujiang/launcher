@@ -27,6 +27,8 @@ public interface RouterPath {
         String MAIN_ACTIVITY = "/call/MainActivity";
     }
     interface SETTINGS {
+        String SettingsService = "/settings/SettingsService";
+
         String SettingsActivity = "/settings/SettingsActivity";
         String SettingsVolumeActivity = "/settings/SettingsVolumeActivity";
         String SetttingsBrightnessActivity = "/settings/SetttingsBrightnessActivity";
@@ -40,8 +42,6 @@ public interface RouterPath {
         String SettingsDeviceContractsActivity = "/settings/SettingsDeviceContractsActivity";
         String SettingsBindDeviceActivity = "/settings/SettingsBindDeviceActivity";
         String SettingsLoadWebviewActivity = "/settings/SettingsLoadWebviewActivity";
-
-        String SettingsInitDeviceStatusActivity = "/settings/SettingsInitDeviceStatusActivity";
 
     }
 }

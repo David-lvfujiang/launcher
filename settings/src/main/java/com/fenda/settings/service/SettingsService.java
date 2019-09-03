@@ -1,4 +1,4 @@
-package com.fenda.settings.activity;
+package com.fenda.settings.service;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,7 @@ import com.fenda.common.BaseApplication;
 import com.fenda.common.base.BaseResponse;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.provider.ICallProvider;
+import com.fenda.common.provider.ISettingsProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.AppUtils;
 import com.fenda.common.util.LogUtil;
@@ -19,6 +20,7 @@ import com.fenda.protocol.http.RetrofitHelper;
 import com.fenda.protocol.http.RxSchedulers;
 import com.fenda.protocol.tcp.ClientBootstrap;
 import com.fenda.settings.R;
+import com.fenda.settings.activity.SettingsBindDeviceActivity;
 import com.fenda.settings.constant.SettingsContant;
 import com.fenda.settings.http.SettingsApiService;
 import com.fenda.settings.model.request.SettingsRegisterDeviceRequest;
@@ -30,22 +32,18 @@ import io.reactivex.functions.Consumer;
 /**
  * Created by  Android Studio.
  * Author :   aviva.jiangjing
- * Date:   2019/9/3 10:39
+ * Date:   2019/9/3 15:21
  */
-public class SettingsInitDeviceStatusManager {
+@Route(path = RouterPath.SETTINGS.SettingsService)
+public class SettingsService implements ISettingsProvider {
     private static final String TAG = "SettingsInitDeviceStatusManager";
     private String registeName = "FD-R03";
     private String registeMac = "00:11:22:33:44:55";
     //    String registeVersion = "V1.0";
     private String registeVersion;
 
-
-    // 构造器
-    public SettingsInitDeviceStatusManager(Context context) {
-
-    }
-
-    public void judgDeviceStatus(Context context) {
+    @Override
+    public void deviceStatus(Context context) {
         LogUtil.d(TAG, "sn = " + SettingsContant.SETTINGS_SERIAL_NUM);
         if (AppUtils.isRegisterDevice(context) ){
             LogUtil.d(TAG, "device have registered~");
@@ -63,6 +61,11 @@ public class SettingsInitDeviceStatusManager {
             LogUtil.d(TAG, "start register device");
             registerDevice(context);
         }
+    }
+
+    @Override
+    public void init(Context context) {
+
     }
 
     private void registerDevice(final Context context) {
@@ -110,7 +113,6 @@ public class SettingsInitDeviceStatusManager {
             loginService.login(response.getData().getRongcloud_token());
         }
 
-
         String userId = (String) SPUtils.get(BaseApplication.getInstance(), Constant.Settings.USER_ID, "");
         LogUtils.v(TAG, "userId = " + userId);
         ClientBootstrap bootstrap = ClientBootstrap.getInstance();
@@ -149,13 +151,11 @@ public class SettingsInitDeviceStatusManager {
                     public void accept(Throwable throwable) throws Exception {
                         // 异常处理
                         LogUtil.d(TAG, "queryDeviceInfo response throwable = " + throwable);
-
                     }
                 });
     }
 
     private void queryDeviceInfoSuccess(Context context, BaseResponse<SettingsQueryDeviceInfoResponse> response) {
-
         SPUtils.put(context, Constant.Settings.USER_ID, response.getData().getId());
         SPUtils.put(context, Constant.Settings.DEVICE_NAME, response.getData().getName());
         SPUtils.put(context, Constant.Settings.DEVICE_ICON, response.getData().getIcon());

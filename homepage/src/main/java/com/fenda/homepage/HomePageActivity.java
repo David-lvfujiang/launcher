@@ -28,8 +28,6 @@ public class HomePageActivity extends Activity implements View.OnClickListener {
     private int showPageIndex;
     private Handler mCyclicRollHandler = new Handler();
 
-
-
     Runnable cycleRollRunabler = new Runnable() {
         @Override
         public void run() {
