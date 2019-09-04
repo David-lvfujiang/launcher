@@ -30,7 +30,7 @@ import com.fenda.test.presenter.TestPresenter;
  * @Date 2019/8/28 9:51
  * @Description
  */
-public class TestActivity extends BaseMvpActivity <TestPresenter, TestModel> implements TestContract.View {
+public class TestActivity extends BaseMvpActivity <TestPresenter, TestModel> implements TestContract.View, View.OnClickListener {
 
     private Button btStart;
     private Button btTest;
@@ -52,13 +52,14 @@ public class TestActivity extends BaseMvpActivity <TestPresenter, TestModel> imp
         btStart = findViewById(R.id.bt_start);
         btTest  = findViewById(R.id.bt_test);
 
+        findViewById(R.id.bt_test_searchuser).setOnClickListener(this);
+
         hasRecordPermission = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED;
 
         if (!hasRecordPermission) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO,Manifest.permission.WAKE_LOCK,Manifest.permission.READ_PHONE_STATE}, 1);
         }
-
     }
 
 
@@ -66,19 +67,22 @@ public class TestActivity extends BaseMvpActivity <TestPresenter, TestModel> imp
     public void initData() {
         if (hasRecordPermission){
             LoginRequest request = new LoginRequest();
-            request.setMobile("15989349055");
+            request.setMobile("15673629224");
             request.setPassword("123456");
             mPresenter.register(request);
         }
-
-
     }
 
 
     @Override
     public void registerDevice(BaseResponse<LoginResult> response) {
-        LogUtil.i(response.getData().toString());
+//        LogUtil.i(response.getData().toString());
 
+
+    }
+
+    @Override
+    public void searchUserByPhone(BaseResponse response) {
 
     }
 
@@ -111,5 +115,16 @@ public class TestActivity extends BaseMvpActivity <TestPresenter, TestModel> imp
     @Override
     public void showErrorTip(String msg) {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.bt_test_searchuser:{
+                mPresenter.searchUserByPhone("13360548781");
+                break;
+            }
+            default:break;
+        }
     }
 }

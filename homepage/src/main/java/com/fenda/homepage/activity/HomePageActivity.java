@@ -24,6 +24,7 @@ import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.AppUtils;
 import com.fenda.common.util.GsonUtil;
 import com.fenda.common.util.LogUtil;
+import com.fenda.common.router.RouterPath;
 import com.fenda.homepage.Adapter.MainAdapter;
 import com.fenda.homepage.R;
 import com.fenda.homepage.Util.HomeUtil;
@@ -36,8 +37,9 @@ import com.fenda.protocol.tcp.bean.BaseTcpMessage;
 import com.fenda.protocol.tcp.bean.EventMessage;
 
 import java.util.List;
-@Route(path = RouterPath.HomePage.HomePageActivity)
+@Route(path = RouterPath.HomePage.HOMEPAGE_MAIN)
 public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener, View.OnTouchListener {
+
 
     TextClock mHeaderTimeTv;
     RecyclerView mTipInfoRv;
@@ -72,7 +74,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
     @Override
     public int onBindLayout() {
-        return R.layout.activity_home_page;
+        return R.layout.homepage_home_activity;
     }
 
     @Override

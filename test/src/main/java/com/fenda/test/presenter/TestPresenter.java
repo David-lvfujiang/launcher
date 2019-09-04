@@ -39,4 +39,22 @@ public class TestPresenter extends TestContract.Presenter {
 //            }
 //        }));
     }
+
+    @Override
+    public void searchUserByPhone(String userPhone) {
+
+        mRxManage.add(mModel.searchUser(userPhone).subscribeWith(new RxResourceObserver<BaseResponse>(mView,true) {
+            @Override
+            protected void _onNext(BaseResponse loginResultBaseResponse) {
+     //           loginResultBaseResponse.getMessage();
+                mView.searchUserByPhone(loginResultBaseResponse);
+
+            }
+
+            @Override
+            protected void _onError(String message) {
+
+            }
+        }));
+    }
 }

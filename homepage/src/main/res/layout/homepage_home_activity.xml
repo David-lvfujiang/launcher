@@ -147,7 +147,7 @@
         android:id="@+id/rl_AI_tip"
         app:layout_constraintLeft_toLeftOf="@+id/iv_main_jd"
         app:layout_constraintBottom_toTopOf="@+id/iv_main_jd"
-        android:background="@drawable/shape_aitip_bg"
+        android:background="@drawable/homepage_shape_aitip_bg"
         android:layout_marginBottom="36dp"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"

@@ -34,9 +34,6 @@ public interface RouterPath {
 
     }
 
-    public interface HomePage {
-        String HomePageActivity = "/homepage/HomePageActivity";
-    }
     interface SETTINGS {
         String SettingsService = "/settings/SettingsService";
 
@@ -58,8 +55,18 @@ public interface RouterPath {
         String SettingsDeviceContractsNickNameActivity = "/settings/SettingsDeviceContractsNickNameActivity";
 
     }
+
     interface NEWS{
         String NEWS_PLAY = "/news/NewsPlay";
         String NEWS_ACTIVITY = "/news/NewsActivity";
+    }
+
+
+    interface HomePage {
+        String HOMEPAGE_MAIN = "/homepage/HomePageActivity";
+    }
+
+    interface Weather {
+        String WEATHER_MAIN = "/weather/WeatherActivity";
     }
 }
