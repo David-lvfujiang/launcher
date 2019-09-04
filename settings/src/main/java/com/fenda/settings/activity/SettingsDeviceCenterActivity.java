@@ -3,6 +3,7 @@ package com.fenda.settings.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -13,7 +14,9 @@ import android.widget.TextView;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
+import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.constant.Constant;
+import com.fenda.common.db.ContentProviderManager;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.SPUtils;
@@ -21,7 +24,6 @@ import com.fenda.common.util.ToastUtils;
 import com.fenda.settings.R;
 import com.fenda.settings.contract.SettingsContract;
 import com.fenda.settings.model.SettingsModel;
-import com.fenda.settings.model.response.SettingsGetContractListResponse;
 import com.fenda.settings.model.response.SettingsQueryDeviceInfoResponse;
 import com.fenda.settings.model.response.SettingsRegisterDeviceResponse;
 import com.fenda.settings.presenter.SettingsPresenter;
@@ -44,6 +46,8 @@ public class SettingsDeviceCenterActivity extends BaseMvpActivity<SettingsPresen
     ImageView bindInfoBack;
     TextView bindInfoItems, bindInfoStatus;
     ListView bindInfoListView;
+    private Uri mUri = Uri.parse(ContentProviderManager.BASE_URI + "/user");
+
     @Override
     protected void initPresenter() {
         mPresenter.setVM(this, mModel);
@@ -85,6 +89,8 @@ public class SettingsDeviceCenterActivity extends BaseMvpActivity<SettingsPresen
         //第一个参数是上下文对象，第二个是listitem， 第三个是指定每个列表项的布局文件，第四个是指定Map对象中定义的两个键（这里通过字符串数组来指定），第五个是用于指定在布局文件中定义的id（也是用数组来指定）
 
         bindInfoListView.setAdapter(adapter);
+
+        mPresenter.getContactsList();
     }
 
     @Override
@@ -125,24 +131,6 @@ public class SettingsDeviceCenterActivity extends BaseMvpActivity<SettingsPresen
                             public void onClick(DialogInterface dialog, int which) {
                                 ToastUtils.show("解绑");
                                 mPresenter.unbindDevice();
-                                //...To-do
-//                                RetrofitHelper.getInstance().getServer().unBindDevice(Constant.SERIAL_NUM)
-//                                        .compose(RxSchedulers.<BaseResponse>applySchedulers())
-//                                        .subscribe(new Consumer<BaseResponse>() {
-//                                            @Override
-//                                            public void accept(BaseResponse response) throws Exception {
-//                                                if (response.getCode() == 200) {
-//
-//                                                } else {
-//                                                    ToastUtils.show(response.getMessage());
-//                                                }
-//                                            }
-//                                        }, new Consumer<Throwable>() {
-//                                            @Override
-//                                            public void accept(Throwable throwable) throws Exception {
-//                                                // 异常处理
-//                                            }
-//                                        });
                             }
                         });
                         normalDialog.setNegativeButton(getString(R.string.settings_cancel),
@@ -201,8 +189,9 @@ public class SettingsDeviceCenterActivity extends BaseMvpActivity<SettingsPresen
     }
 
     @Override
-    public void getContactsListSuccess(BaseResponse<SettingsGetContractListResponse> response) {
-
+    public void getContactsListSuccess(BaseResponse<List<UserInfoBean>> response) {
+        LogUtil.d(TAG, "getContactsListSuccess = " + response.getData());
+        ContentProviderManager.getInstance(SettingsDeviceCenterActivity.this, mUri).insertUsers(response.getData());
     }
 
     @Override
@@ -241,7 +230,7 @@ public class SettingsDeviceCenterActivity extends BaseMvpActivity<SettingsPresen
     }
 
     @Override
-    public void getContactsListFailure(BaseResponse<SettingsGetContractListResponse> response) {
+    public void getContactsListFailure(BaseResponse<List<UserInfoBean>> response) {
 
     }
 }

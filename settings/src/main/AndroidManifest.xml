@@ -34,6 +34,9 @@
         <activity android:name=".activity.SettingsDeviceContractsActivity"/>
         <activity android:name=".activity.SettingsLoadWebviewActivity"/>
         <activity android:name=".activity.SettingsBindDeviceActivity"/>
+        <activity android:name=".activity.SettingsDeviceContractsNickNameActivity"/>
+        <activity android:name=".activity.SettingsContractsNickNameEditActivity"/>
+        <activity android:name=".activity.SettingsDeviceAddContractsQRActivity"/>
 
     </application>
 </manifest>

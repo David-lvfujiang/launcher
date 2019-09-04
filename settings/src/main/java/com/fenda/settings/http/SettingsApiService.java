@@ -1,10 +1,10 @@
 package com.fenda.settings.http;
 
 import com.fenda.common.base.BaseResponse;
+import com.fenda.common.bean.UserInfoBean;
 import com.fenda.settings.model.request.SettingsAgreeUserAddRequest;
 import com.fenda.settings.model.request.SettingsRegisterDeviceRequest;
 import com.fenda.settings.model.response.SettingsQueryDeviceInfoResponse;
-import com.tencent.bugly.crashreport.biz.UserInfoBean;
 
 import java.util.List;
 

@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
+import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.SPUtils;
@@ -22,6 +23,8 @@ import com.fenda.settings.contract.SettingsContract;
 import com.fenda.settings.model.SettingsModel;
 import com.fenda.settings.model.request.SettingsUpdateDeviceNameRequest;
 import com.fenda.settings.presenter.SettingsPresenter;
+
+import java.util.List;
 
 /**
  * Created by  Android Studio.
@@ -142,9 +145,14 @@ public class SettingsChangeDeviceNameActivity extends BaseMvpActivity<SettingsPr
     }
 
     @Override
-    public void getContactsListSuccess(BaseResponse response) {
+    public void getContactsListSuccess(BaseResponse<List<UserInfoBean>> response) {
 
     }
+//
+//    @Override
+//    public void getContactsListSuccess(BaseResponse response) {
+//
+//    }
 
     @Override
     public void haveRegisterDevice(BaseResponse response) {
@@ -182,7 +190,12 @@ public class SettingsChangeDeviceNameActivity extends BaseMvpActivity<SettingsPr
     }
 
     @Override
-    public void getContactsListFailure(BaseResponse response) {
+    public void getContactsListFailure(BaseResponse<List<UserInfoBean>> response) {
 
     }
+
+//    @Override
+//    public void getContactsListFailure(BaseResponse response) {
+//
+//    }
 }

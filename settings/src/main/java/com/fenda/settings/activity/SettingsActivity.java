@@ -41,7 +41,6 @@ import java.util.Map;
 public class SettingsActivity extends BaseMvpActivity   {
     private static final String TAG = "SettingsActivity";
 
-    SettingsInitDeviceStatusManager deviceStatusActivity;
     private ImageView setBackIv;
     private TextView disDeviceNameTv;
     private ListView disSetListItemLv;
@@ -67,7 +66,6 @@ public class SettingsActivity extends BaseMvpActivity   {
         disDeviceNameTv = findViewById(R.id.set_first_info_name);
         disSetListItemLv = findViewById(R.id.set_items_iv);
         deviceCenterLL = findViewById(R.id.set_first_info_layout);
-        deviceStatusActivity = new SettingsInitDeviceStatusManager(SettingsActivity.this);
         IntentFilter filter = new IntentFilter();
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         registerReceiver(mwifiReceiver, filter);

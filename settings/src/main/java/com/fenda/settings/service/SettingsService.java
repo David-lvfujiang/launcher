@@ -36,7 +36,7 @@ import io.reactivex.functions.Consumer;
  */
 @Route(path = RouterPath.SETTINGS.SettingsService)
 public class SettingsService implements ISettingsProvider {
-    private static final String TAG = "SettingsInitDeviceStatusManager";
+    private static final String TAG = "SettingsService";
     private String registeName = "FD-R03";
     private String registeMac = "00:11:22:33:44:55";
     //    String registeVersion = "V1.0";
