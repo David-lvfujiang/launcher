@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">news</string>
+    <string name="news_time_source">%s&#160;&#160;&#160;&#160;%s</string>
+</resources>

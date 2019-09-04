@@ -44,4 +44,8 @@ public interface RouterPath {
         String SettingsLoadWebviewActivity = "/settings/SettingsLoadWebviewActivity";
 
     }
+    interface NEWS{
+        String NEWS_PLAY = "/news/NewsPlay";
+        String NEWS_ACTIVITY = "/news/NewsActivity";
+    }
 }
