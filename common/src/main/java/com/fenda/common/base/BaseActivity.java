@@ -18,6 +18,7 @@ import com.fenda.common.view.LoadingInitView;
 import com.fenda.common.view.LoadingTransView;
 import com.fenda.common.view.NetErrorView;
 import com.fenda.common.view.NoDataView;
+import com.fenda.protocol.tcp.bean.BaseTcpMessage;
 import com.fenda.protocol.tcp.bean.EventMessage;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
@@ -226,7 +227,7 @@ public abstract class BaseActivity extends RxAppCompatActivity{
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public <T> void onEvent(EventMessage<T> event) {
+    public  void onEvent(EventMessage<BaseTcpMessage> event) {
     }
 
 
