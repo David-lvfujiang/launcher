@@ -28,7 +28,9 @@ public interface RouterPath {
     }
 
     public interface Calendar {
-        String CALENDAR_ACTIVITY = "/calendar/calendarActivity";
+        String CALENDAR_ACTIVITY = "/calendar/CalendarActivity";
+        String CALENDAR_PROVIDER = "/calendar/CalendarPresenTer";
+        String ENCYCLOPEDIA_PROVIDER = "/encyclopedias/EncyclopediaFragmentPensenTer";
 
     }
     interface SETTINGS {

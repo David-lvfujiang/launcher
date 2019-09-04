@@ -1,8 +1,8 @@
-package com.example.calendar.base;
+package com.fenda.calendar.base;
 
 import com.alibaba.android.arouter.facade.template.IProvider;
 
 public interface ICalendarProvider extends IProvider {
 
-    public void getMsg(String json);
+    public void getCalendarMsg(String json);
 }

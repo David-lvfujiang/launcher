@@ -20,7 +20,8 @@
             android:paddingLeft="@dimen/demension_dp28"
             android:paddingRight="@dimen/demension_dp18"
             android:textColor="@color/white"
-            android:textSize="@dimen/demension_dp25" />
+            android:textSize="@dimen/demension_dp25"
+            />
 
 
         <TextView

@@ -1,4 +1,4 @@
-package com.example.calendar.model;
+package com.fenda.calendar.model;
 
 import com.fenda.common.mvp.BaseModel;
 

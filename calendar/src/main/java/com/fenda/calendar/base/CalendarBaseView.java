@@ -1,4 +1,4 @@
-package com.example.calendar.base;
+package com.fenda.calendar.base;
 
 import com.alibaba.fastjson.JSONObject;
 import com.fenda.common.mvp.BaseView;

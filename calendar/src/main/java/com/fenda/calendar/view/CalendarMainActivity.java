@@ -1,4 +1,4 @@
-package com.example.calendar.view;
+package com.fenda.calendar.view;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -7,13 +7,10 @@ import android.os.Message;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.example.calendar.R;
-import com.example.calendar.base.CalendarBaseView;
-import com.example.calendar.model.Calendar;
-import com.example.calendar.presenter.CalendarPresenTer;
+import com.fenda.calendar.model.Calendar;
 import com.fenda.common.base.BaseActivity;
 import com.fenda.common.router.RouterPath;
 

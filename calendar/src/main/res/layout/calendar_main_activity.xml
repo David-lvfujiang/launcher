@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.CalendarMainActivity"
+    tools:context="com.fenda.calendar.view.CalendarMainActivity"
     android:fitsSystemWindows="true"
     android:background="@mipmap/calendar_backgroud_icon"
     >
