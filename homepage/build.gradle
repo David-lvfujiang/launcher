@@ -20,7 +20,14 @@ android {
         versionName BUILD_VERSIONS.VERSION_NAME
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
 
+            annotationProcessorOptions {
+
+                arguments = [moduleName: project.getName()]
+
+            }
+        }
     }
 
     sourceSets {
@@ -68,7 +75,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
+    annotationProcessor deps.arouter_compiler
     implementation project(path: ':common')
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }

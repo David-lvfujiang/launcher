@@ -13,6 +13,7 @@ android {
         if (!isModule.toBoolean()) {
             applicationId "com.fenda.call"
         }
+        flavorDimensions "default"
         minSdkVersion BUILD_VERSIONS.MIN_SDK
         targetSdkVersion BUILD_VERSIONS.TARGET_SDK
         versionCode BUILD_VERSIONS.VERSION_CODE
@@ -52,6 +53,26 @@ android {
             } else {
                 manifest.srcFile "src/main/AndroidManifest.xml"
             }
+        }
+    }
+    productFlavors {
+        _dev {//开发环境
+            //设置baseUrl 使用方法Application.getContext().getResources().getString(R.string.API_SERVER)
+            resValue "string", "BASE_SERVER_URL", "http://192.168.43.37:8998/smartsound/"
+            resValue "string", "TCP_IP", "192.168.43.37"
+            resValue "string", "DEVICE_SN", " "
+        }
+
+        _test {//测试环境
+            resValue "string", "BASE_SERVER_URL", "http://192.168.100.127:8998/smartsound/"
+            resValue "string", "TCP_IP", "192.168.100.127"
+            resValue "string", "DEVICE_SN", " "
+        }
+
+        _prod {//正式环境
+            resValue "string", "BASE_SERVER_URL", "https://ai.fenda.com/smartsound/"
+            resValue "string", "TCP_IP", "47.106.223.29"
+            resValue "string", "DEVICE_SN", "-pro"
         }
     }
     buildTypes {

@@ -33,6 +33,10 @@ public interface RouterPath {
         String ENCYCLOPEDIA_PROVIDER = "/encyclopedias/EncyclopediaFragmentPensenTer";
 
     }
+
+    public interface HomePage {
+        String HomePageActivity = "/homepage/HomePageActivity";
+    }
     interface SETTINGS {
         String SettingsService = "/settings/SettingsService";
 

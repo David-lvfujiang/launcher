@@ -71,7 +71,10 @@ repositories {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':common')
-
+    implementation project(path: ':CallLib')
+    implementation project(path: ':CallKit')
+    implementation project(path: ':IMKit')
+    implementation project(path: ':IMLib')
 //    annotationProcessor deps.androidannotations
 //    annotationProcessor deps.arouter_compiler
 }

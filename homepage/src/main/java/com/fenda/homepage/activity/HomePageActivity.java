@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextClock;
 import android.widget.TextView;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
@@ -35,8 +36,8 @@ import com.fenda.protocol.tcp.bean.BaseTcpMessage;
 import com.fenda.protocol.tcp.bean.EventMessage;
 
 import java.util.List;
-
-public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener ,View.OnTouchListener{
+@Route(path = RouterPath.HomePage.HomePageActivity)
+public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener, View.OnTouchListener {
 
     TextClock mHeaderTimeTv;
     RecyclerView mTipInfoRv;
