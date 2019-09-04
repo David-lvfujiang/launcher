@@ -83,7 +83,16 @@
             <activity android:name=".activity.SettingsDeviceContractsActivity"/>
             <activity android:name=".activity.SettingsLoadWebviewActivity"/>
             <activity android:name=".activity.SettingsBindDeviceActivity"/>
-
+            <activity android:name=".activity.SettingsDeviceContractsNickNameActivity"/>
+            <activity android:name=".activity.SettingsContractsNickNameEditActivity"/>
+            <activity android:name=".activity.SettingsDeviceAddContractsQRActivity"/>
+            <provider
+                android:name="com.fenda.common.db.UserContentProvider"
+                android:authorities="com.fenda.ai"
+                android:enabled="true"
+                android:exported="true"
+                android:grantUriPermissions="true">
+            </provider>
         </application>
 
 </manifest>

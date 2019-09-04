@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/news_bg_01"
+    android:clipChildren="false"
+    android:layerType="software"
+    android:id="@+id/lin_news_bg">
+
+    <TextView
+        android:id="@+id/tv_news_back"
+        android:layout_width="wrap_content"
+        android:layout_height="70px"
+        android:paddingRight="60px"
+        android:text="今日资讯"
+        android:gravity="center_vertical"
+        android:textSize="24sp"
+        android:textColor="#FFF"
+        android:drawableLeft="@mipmap/news_set_back"
+        android:drawablePadding="15dp"
+        android:paddingLeft="30dp"
+        />
+
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_page"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="118px"
+        android:layout_marginRight="118px"
+        ></android.support.v4.view.ViewPager>
+
+
+</LinearLayout>

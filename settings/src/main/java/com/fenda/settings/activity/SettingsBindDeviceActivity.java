@@ -3,6 +3,7 @@ package com.fenda.settings.activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.view.View;
@@ -10,10 +11,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
+import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.constant.Constant;
+import com.fenda.common.db.ContentProviderManager;
+import com.fenda.common.provider.ICallProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.AppUtils;
 import com.fenda.common.util.LogUtil;
@@ -35,7 +40,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.lang.reflect.Method;
-
+import java.util.List;
 
 /**
  * Created by  Android Studio.
@@ -103,9 +108,7 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
             bindVcodeTv.setTextColor(getColor(R.color.settings_colorAccent));
             bindVcodeTv.setTextSize(22);
         }
-
         sendMicDisableBroad();
-//        EventBusUtils.register(SettingsBindDeviceActivity.this);
     }
 
     @Override
@@ -126,32 +129,13 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReceiveEvent(EventMessage<BaseTcpMessage> message) {
         if (message.getCode() == TCPConfig.MessageType.MANGER_SUCCESS) {
-//            RetrofitHelper.getInstance().getServer().getContactList()
-//                    .compose(RxSchedulers.<BaseResponse<List<UserInfoBean>>>applySchedulers())
-//                    .subscribe(new Consumer<BaseResponse<List<UserInfoBean>>>() {
-//                        @Override
-//                        public void accept(BaseResponse<List<UserInfoBean>> response) throws Exception {
-//                            if (response.getCode() == 200) {
-//                                LogUtil.d("bind success");
-//                                // 异常处理
-////                                ContentProviderManager.getInstance(SettingsBindDeviceActivity.this, Uri.parse(ContentProviderManager.BASE_URI + "/user")).insertUsers(response.getData());
-//                            } else {
-//                                ToastUtils.show(response.getMessage());
-//                            }
-//                        }
-//                    }, new Consumer<Throwable>() {
-//                        @Override
-//                        public void accept(Throwable throwable) throws Exception {
-//                            // 异常处理
-//                        }
-//                    });
+            mPresenter.getContactsList();
             LogUtil.d(TAG, "bind onReceiveEvent = " + message);
             AppUtils.saveBindedDevice(getApplicationContext(), true);
             startActivity(new Intent(SettingsBindDeviceActivity.this, SettingsActivity.class));
             finish();
         }
     }
-
 
     public void sendMicDisableBroad() {
         LogUtil.d(TAG, "sendMicDisableBroad action:com.fenda.smartcall.ACTION_MIC_ENABLE");
@@ -191,7 +175,6 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
 
     @Override
     protected void onDestroy() {
-//        EventBusUtils.unregister(SettingsBindDeviceActivity.this);
         setStatusBarDisable(DISABLE_NONE);
         sendMicAbleBroad();
         super.onDestroy();
@@ -212,11 +195,11 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
         SPUtils.put(getApplicationContext(), Constant.Settings.VCODE, queryDeviceInfoResponse.getVcode());
         SPUtils.put(getApplicationContext(), Constant.Settings.RONGYUNCLOUDTOKEN, queryDeviceInfoResponse.getRongcloud_token());
 
-//        // 调用音视频服务接口登录IM
-//        String rongCloudToken=response.getData().getRongcloud_token();
-//        if (!TextUtils.isEmpty(rongCloudToken)) {
-//            RongCloundCallUtils.getInstance(DuiApplication.getContext()).loginIm(rongCloudToken);
-//        }
+       // 调用音视频服务接口登录IM
+        ICallProvider loginService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
+        if(loginService != null){
+            loginService.login(queryDeviceInfoResponse.getRongcloud_token());
+        }
         final String filePath2 = QRcodeUtil.getFileRoot(SettingsBindDeviceActivity.this) + File.separator + "qr_" + System.currentTimeMillis() + ".jpg";
 //        二维码图片较大时，生成图片、保存文件的时间可能较长，因此放在新线程中
         new Thread(new Runnable() {
@@ -258,8 +241,8 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
     }
 
     @Override
-    public void getContactsListSuccess(BaseResponse response) {
-
+    public void getContactsListSuccess(BaseResponse<List<UserInfoBean>> response) {
+        ContentProviderManager.getInstance(SettingsBindDeviceActivity.this, Uri.parse(ContentProviderManager.BASE_URI + "/user")).insertUsers(response.getData());
     }
 
     @Override
@@ -275,7 +258,6 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
     @Override
     public void queryDeviceInfoFailure(BaseResponse response) {
         LogUtil.d(TAG, " fail loginIm,BaseResponse  = " + response.getData());
-
     }
 
     @Override
@@ -299,7 +281,8 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
     }
 
     @Override
-    public void getContactsListFailure(BaseResponse response) {
+    public void getContactsListFailure(BaseResponse<List<UserInfoBean>> response) {
 
     }
+
 }

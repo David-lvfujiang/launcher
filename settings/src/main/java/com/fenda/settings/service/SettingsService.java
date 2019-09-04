@@ -36,7 +36,7 @@ import io.reactivex.functions.Consumer;
  */
 @Route(path = RouterPath.SETTINGS.SettingsService)
 public class SettingsService implements ISettingsProvider {
-    private static final String TAG = "SettingsInitDeviceStatusManager";
+    private static final String TAG = "SettingsService";
     private String registeName = "FD-R03";
     private String registeMac = "00:11:22:33:44:55";
     //    String registeVersion = "V1.0";
@@ -50,6 +50,12 @@ public class SettingsService implements ISettingsProvider {
             if (AppUtils.isBindedDevice(context)) {
                 LogUtil.d(TAG, "device have bind~");
                 String userId = (String) SPUtils.get(BaseApplication.getInstance(), Constant.Settings.DEVICE_ID, "");
+                String rongCloudToken= (String) SPUtils.get(context, Constant.Settings.RONGYUNCLOUDTOKEN, "");
+                // 调用音视频服务接口登录IM
+                ICallProvider loginService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
+                if(loginService != null){
+                    loginService.login(rongCloudToken);
+                }
                 LogUtil.d(TAG, "userId = " + userId);
                 ClientBootstrap bootstrap = ClientBootstrap.getInstance();
                 bootstrap.init(context, userId, SettingsContant.TCP_IP, SettingsContant.TCP_PORT, 0);

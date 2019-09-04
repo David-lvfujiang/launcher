@@ -49,6 +49,13 @@ public interface RouterPath {
         String SettingsDeviceContractsActivity = "/settings/SettingsDeviceContractsActivity";
         String SettingsBindDeviceActivity = "/settings/SettingsBindDeviceActivity";
         String SettingsLoadWebviewActivity = "/settings/SettingsLoadWebviewActivity";
+        String SettingsContractsNickNameEditActivity = "/settings/SettingsContractsNickNameEditActivity";
+        String SettingsDeviceAddContractsQRActivity = "/settings/SettingsDeviceAddContractsQRActivity";
+        String SettingsDeviceContractsNickNameActivity = "/settings/SettingsDeviceContractsNickNameActivity";
 
+    }
+    interface NEWS{
+        String NEWS_PLAY = "/news/NewsPlay";
+        String NEWS_ACTIVITY = "/news/NewsActivity";
     }
 }

@@ -1,5 +1,6 @@
 package com.fenda.settings.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -15,14 +16,30 @@ import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.common.base.BaseMvpActivity;
+import com.fenda.common.base.BaseResponse;
+import com.fenda.common.bean.UserInfoBean;
+import com.fenda.common.db.ContentProviderManager;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.ImageUtils;
 import com.fenda.common.util.LogUtil;
+import com.fenda.common.util.ToastUtils;
+import com.fenda.protocol.http.RetrofitHelper;
+import com.fenda.protocol.http.RxSchedulers;
 import com.fenda.settings.R;
 import com.fenda.settings.bean.SettingsContractsInfoBean;
+import com.fenda.settings.constant.SettingsContant;
+import com.fenda.settings.contract.SettingsContract;
+import com.fenda.settings.http.SettingsApiService;
+import com.fenda.settings.model.SettingsModel;
+import com.fenda.settings.model.response.SettingsGetContractListResponse;
+import com.fenda.settings.model.response.SettingsQueryDeviceInfoResponse;
+import com.fenda.settings.model.response.SettingsRegisterDeviceResponse;
+import com.fenda.settings.presenter.SettingsPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by  Android Studio.
@@ -30,7 +47,7 @@ import java.util.List;
  * Date:   2019/8/31 15:35
  */
 @Route(path = RouterPath.SETTINGS.SettingsDeviceContractsActivity)
-public class SettingsDeviceContractsActivity extends BaseMvpActivity{
+public class SettingsDeviceContractsActivity extends BaseMvpActivity {
     private static final String TAG = "SettingsDeviceContractsActivity";
 
     RecyclerView recyclerView;
@@ -38,8 +55,8 @@ public class SettingsDeviceContractsActivity extends BaseMvpActivity{
     private ImageView addContacts;
 
     private MyContractAdapter mAadapter;
-    private List<SettingsContractsInfoBean> mContractList;
-//    private Uri mUri = Uri.parse(ContentProviderManager.BASE_URI + "/user");
+    private List<UserInfoBean> mContractList;
+    private Uri mUri = Uri.parse(ContentProviderManager.BASE_URI + "/user");
     @Override
     protected void initPresenter() {
 
@@ -57,10 +74,9 @@ public class SettingsDeviceContractsActivity extends BaseMvpActivity{
         addContacts = findViewById(R.id.add_contacts_tv);
 
         mContractList = new ArrayList<>();
-//        mContractList = ContentProviderManager.getInstance(getApplicationContext(), mUri).queryUser(null, null);
-
         addContacts.bringToFront();
-
+        mContractList = ContentProviderManager.getInstance(getApplicationContext(), mUri).queryUser(null, null);
+        LogUtil.d(TAG, "getContactsListSuccess ContractList = " +mContractList);
 
         //设置为垂直5列
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(5,StaggeredGridLayoutManager.VERTICAL));
@@ -70,9 +86,9 @@ public class SettingsDeviceContractsActivity extends BaseMvpActivity{
         recyclerView.setAdapter(mAadapter);
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public void initData() {
-
     }
 
     @Override
@@ -80,13 +96,17 @@ public class SettingsDeviceContractsActivity extends BaseMvpActivity{
         addContacts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent addIntent = new Intent(SettingsDeviceContractsActivity.this, SettingsDeviceAddContractsQRActivity.class);
+                startActivity(addIntent);
+                finish();
             }
         });
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent backBindInfoIntent = new Intent(SettingsDeviceContractsActivity.this, SettingsDeviceCenterActivity.class);
+                startActivity(backBindInfoIntent);
+                finish();
             }
         });
     }
@@ -98,9 +118,9 @@ public class SettingsDeviceContractsActivity extends BaseMvpActivity{
 
     public class MyContractAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         LayoutInflater inflater;
-        List<SettingsContractsInfoBean> list;
+        List<UserInfoBean> list;
 
-        public MyContractAdapter(LayoutInflater inflater, List<SettingsContractsInfoBean> list) {
+        public MyContractAdapter(LayoutInflater inflater, List<UserInfoBean> list) {
             this.inflater = inflater;
             this.list = list;
         }
@@ -114,28 +134,29 @@ public class SettingsDeviceContractsActivity extends BaseMvpActivity{
         @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-            final SettingsContractsInfoBean ConstactsListBean = mContractList.get(position);
+            final UserInfoBean constactsListBean = mContractList.get(position);
             final ViewHolder holder1= (ViewHolder) holder;
-            if(ConstactsListBean != null){
+            if(constactsListBean != null){
 
-                String iconPath = ConstactsListBean.getIcon();
+                String iconPath = constactsListBean.getIcon();
                 ImageUtils.loadImg(getApplicationContext(), holder1.contractIcon, iconPath);
 
                 if(position == 0){
-                    holder1.contractName.setText(ConstactsListBean.getUserName() + "(管理员)");
+                    holder1.contractName.setText(constactsListBean.getUserName() + "(管理员)");
                 } else {
-                    holder1.contractName.setText(ConstactsListBean.getUserName());
+                    holder1.contractName.setText(constactsListBean.getUserName());
                 }
 
                 holder1.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         String clickedName = (String) holder1.contractName.getText();
-                        LogUtil.d(TAG, "clicked contract name  = " + clickedName + " = " + ConstactsListBean.getUserName());
-                        LogUtil.d(TAG, "clicked contract icon = " + ConstactsListBean.getIcon());
-//                        Intent ContractInfoIntent = new Intent(SettingsDeviceContractsActivity.this, ChangeContractsNicknameAvtivity.class);
-//                        ContractInfoIntent.putExtra("ContractName", clickedName);
-//                        startActivity(ContractInfoIntent);
+                        LogUtil.d(TAG, "clicked contract name  = " + clickedName + " = " + constactsListBean.getUserName());
+                        LogUtil.d(TAG, "clicked contract icon = " + constactsListBean.getIcon());
+                        Intent ContractInfoIntent = new Intent(SettingsDeviceContractsActivity.this, SettingsDeviceContractsNickNameActivity.class);
+                        ContractInfoIntent.putExtra("ContractName", clickedName);
+                        ContractInfoIntent.putExtra("ContractIcon", constactsListBean.getIcon());
+                        startActivity(ContractInfoIntent);
                         finish();
                     }
                 });

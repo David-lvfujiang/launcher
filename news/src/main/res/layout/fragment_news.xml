@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+
+
+    >
+
+    <LinearLayout
+        android:layout_width="750px"
+        android:layout_height="320px"
+        android:orientation="horizontal"
+        android:background="@mipmap/news_content_bg"
+        android:layout_marginTop="90px"
+        android:gravity="center_vertical"
+        >
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginTop="45px"
+        android:layout_marginBottom="45px"
+        android:layout_marginLeft="45px"
+        >
+        <TextView
+            android:id="@+id/tv_news_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minLines="3"
+            android:maxLines="3"
+            android:ellipsize="end"
+            android:textSize="40sp"
+            android:text="东阿阿胶承认渠道靠囤货盈利 业绩暴降如何扭转？"
+            android:textColor="#000"
+            />
+
+        <TextView
+            android:id="@+id/tv_news_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="第一财经 6分钟前"
+            android:textColor="#666666"
+            android:layout_marginTop="18px"
+            android:textSize="24sp"
+
+
+            />
+        
+
+
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/img_news"
+        android:layout_width="216px"
+        android:layout_height="210px"
+        android:layout_marginLeft="40px"
+        android:layout_marginRight="45px"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/news_poetry_pic_default"
+        />
+
+
+    </LinearLayout>
+
+</LinearLayout>
