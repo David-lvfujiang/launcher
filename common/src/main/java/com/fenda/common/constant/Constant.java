@@ -1,7 +1,10 @@
 package com.fenda.common.constant;
 
+import android.net.Uri;
+
 import com.fenda.common.BaseApplication;
 import com.fenda.common.R;
+import com.fenda.common.db.ContentProviderManager;
 
 /**
  * @author mirrer.wangzhonglin
@@ -12,7 +15,7 @@ public interface Constant {
     /**
      * 播放器组件
      */
-    interface Player{
+    interface Player {
         /**
          * 笑话
          */
@@ -20,7 +23,7 @@ public interface Constant {
         /**
          * 资讯
          */
-        int NEW_CONSULT =  2;
+        int NEW_CONSULT = 2;
         /**
          * 曲艺、故事
          */
@@ -32,7 +35,7 @@ public interface Constant {
         /**
          * 广播
          */
-        int FM      = 5;
+        int FM = 5;
 
         /**
          * 列表循环
@@ -73,7 +76,7 @@ public interface Constant {
     /**
      * 提醒组件
      */
-    interface Remind{
+    interface Remind {
         String ALARM_LIST = "alarmList";
         String ALARM_TYPE = "alarmType";
         String CLASS_NAME = "AlarmActivity";
@@ -88,17 +91,18 @@ public interface Constant {
         int DELETE_ALARM = 2;
         int CLOSE_ALARM = 4;
     }
+
     /**
      * 音视频组件
      */
-    interface Call{
+    interface Call {
         String TOKEN = "token";
     }
 
     /**
      * 设置组件
      */
-    interface Settings{
+    interface Settings {
         String USER_ID = "userId";
         String DEVICE_ID = "deviceId";
         String DEVICE_NAME = "device_name";
@@ -107,6 +111,10 @@ public interface Constant {
         String RONGYUNCLOUDTOKEN = "rongyunCloud_Token";
         String DEVICE_STATUS = "device_status";
 //        boolean DEVICE_STATUS = "false";
+    }
+
+    interface common {
+        Uri URI = Uri.parse(ContentProviderManager.BASE_URI + "/user");
     }
 
 }
