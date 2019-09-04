@@ -32,7 +32,7 @@ public class NewsPlay implements INewsProvider {
     public static boolean isNewsAcitivytOpen = false;
     public static final String keyNews = "news";
     private ArrayList<FDMusic> playlist = new ArrayList<>();
-    private Context mContext;
+    private Context mContext = BaseApplication.getInstance();
 
     /**
      * 获取新闻数据
@@ -107,6 +107,6 @@ public class NewsPlay implements INewsProvider {
     }
     @Override
     public void init(Context context) {
-        this.mContext = context;
+//        this.mContext = context;
     }
 }

@@ -16,7 +16,7 @@ public class AllApplyData {
     public static List<ApplyBean> dataList (List<ApplyBean> mList) {
         mList.add(new ApplyBean(Constant.CALCULATOR,"计算器", R.mipmap.submenu_ico_calculator));
         mList.add(new ApplyBean(Constant.WEATHER,"天气", R.mipmap.submenu_ico_weather));
-        mList.add(new ApplyBean(Constant.CALCULATOR,"日历", R.mipmap.submenu_icon_calendar));
+        mList.add(new ApplyBean(Constant.CALENDAR,"日历", R.mipmap.submenu_icon_calendar));
         mList.add(new ApplyBean(Constant.PHOTO ,"相册", R.mipmap.submenu_ico_photo));
         mList.add(new ApplyBean(Constant.TIME ,"时钟", R.mipmap.submenu_ico_time));
         mList.add(new ApplyBean(Constant.FM ,"收音机", R.mipmap.submenu_icon_fm));
