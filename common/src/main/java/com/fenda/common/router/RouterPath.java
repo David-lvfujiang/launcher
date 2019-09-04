@@ -26,6 +26,11 @@ public interface RouterPath {
         String CALL_SERVICE = "/call/CallService";
         String MAIN_ACTIVITY = "/call/MainActivity";
     }
+
+    public interface Calendar {
+        String CALENDAR_ACTIVITY = "/calendar/calendarActivity";
+
+    }
     interface SETTINGS {
         String SettingsService = "/settings/SettingsService";
 
