@@ -1,3 +1,3 @@
-include ':app', ':common', ':test', ':protocol', ':player', ':remind', ':gallery', ':call', ':CallKit', ':IMKit', ':CallLib', ':IMLib', ':homepage', ':settings',':news'
+include ':app', ':common', ':test', ':protocol', ':player', ':remind', ':gallery', ':call', ':CallKit', ':IMKit', ':CallLib', ':IMLib', ':homepage', ':settings',':news',':encyclopedia' ,"calendar"
 
 

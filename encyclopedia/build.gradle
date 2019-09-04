@@ -1,5 +1,4 @@
 if (isModule.toBoolean()) {
-
     apply plugin: 'com.android.library'
 } else {
     apply plugin: 'com.android.application'}
@@ -16,18 +15,23 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [moduleName: project.getName()]
+            }
+        }
     }
     sourceSets {
         main {
             if (isModule.toBoolean()) {
                 manifest.srcFile "src/main/module/AndroidManifest.xml"
-            } else {
-                manifest.srcFile "src/main/AndroidManifest.xml"
                 //集成开发模式下排除debug文件夹中的所有Java文件
                 java {
                     exclude 'debug/**'
                 }
+            } else {
+                manifest.srcFile "src/main/AndroidManifest.xml"
+
             }
         }
     }

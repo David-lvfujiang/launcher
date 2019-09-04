@@ -57,7 +57,7 @@ public class EncyclopediaFragmentPensenTer implements IEncyclopediaProvider {
 
         Intent intent = new Intent();
         intent.putExtra("shares", shares);
-        intent.setClass( BaseApplication.getInstance(), EncyclopediaSharesActivity.class);
+        intent.setClass(BaseApplication.getInstance(), EncyclopediaSharesActivity.class);
         BaseApplication.getInstance().startActivity(intent);
 
     }
