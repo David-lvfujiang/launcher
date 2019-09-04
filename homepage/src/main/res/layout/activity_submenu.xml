@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/submenu_bg"
-    tools:context=".SubmenuActivity">
+    tools:context=".activity.SubmenuActivity">
 
 
     <ImageView
@@ -16,7 +16,7 @@
         android:layout_marginTop="37dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/submenu_back" />
+        android:src="@mipmap/submenu_back" />
 
     <TextView
         android:id="@+id/tv_submenu_title"

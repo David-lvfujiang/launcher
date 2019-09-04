@@ -1,4 +1,4 @@
-package com.fenda.homepage;
+package com.fenda.homepage.data;
 
 /**
  * @author matt.Ljp

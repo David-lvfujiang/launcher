@@ -1,4 +1,4 @@
-package com.fenda.homepage;
+package com.fenda.homepage.activity;
 
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,9 +14,13 @@ import com.fenda.common.base.BaseActivity;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.homepage.Adapter.GridAdapter;
+import com.fenda.homepage.R;
 import com.fenda.homepage.bean.ApplyBean;
+import com.fenda.homepage.data.AllApplyData;
+import com.fenda.homepage.data.Constant;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,7 +31,6 @@ public class SubmenuActivity extends BaseActivity {
     List<ApplyBean> mApplyList;
 
     private RecyclerView mSubmenuListRv;
-    private TextView mSubmenuTitleTv;
     private ImageView mSubmenuBackIv;
     private GridAdapter mGridAdapter;
 
@@ -39,13 +42,14 @@ public class SubmenuActivity extends BaseActivity {
     @Override
     protected void initCommonView() {
         super.initCommonView();
-        mSubmenuTitleTv = findViewById(R.id.tv_submenu_title);
         mSubmenuBackIv = findViewById(R.id.iv_submenu_back);
         mSubmenuListRv = findViewById(R.id.rv_submenu_list);
     }
 
     @Override
     public void initView() {
+        mApplyList = new ArrayList<>();
+        mApplyList = AllApplyData.dataList(mApplyList);
         //这里的第二个参数6代表的是网格的列数
         mSubmenuListRv.setLayoutManager(new GridLayoutManager(this, 4));
         mGridAdapter = new GridAdapter(mApplyList);
@@ -139,9 +143,9 @@ public class SubmenuActivity extends BaseActivity {
 
     @Override
     public void initData() {
-        ARouter.getInstance().inject(this);
-        mSubmenuTitleTv.setText(mApplyList.get(0).getSubmenuTitle());
+
     }
+
 
     @Override
     public void initListener() {
@@ -152,5 +156,6 @@ public class SubmenuActivity extends BaseActivity {
             }
         });
     }
+
 
 }

@@ -16,6 +16,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.SubmenuActivity"/>
         <provider
             android:name="com.fenda.common.db.UserContentProvider"
             android:authorities="com.fenda.ai"

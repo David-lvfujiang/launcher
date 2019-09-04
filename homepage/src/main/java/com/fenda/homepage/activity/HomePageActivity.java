@@ -1,10 +1,12 @@
 package com.fenda.homepage.activity;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextClock;
@@ -34,7 +36,7 @@ import com.fenda.protocol.tcp.bean.EventMessage;
 
 import java.util.List;
 
-public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener {
+public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener ,View.OnTouchListener{
 
     TextClock mHeaderTimeTv;
     RecyclerView mTipInfoRv;
@@ -81,7 +83,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mAiTipIv = findViewById(R.id.iv_main_tip_icon);
         mAiTipTitleTv = findViewById(R.id.tv_main_item_content);
         mAiTipMicTv = findViewById(R.id.tv_ai_tiptext);
-
+        findViewById(R.id.linearlayout_layout).setOnTouchListener(this);
         findViewById(R.id.iv_main_jd).setOnClickListener(this);
         findViewById(R.id.iv_main_phone).setOnClickListener(this);
         findViewById(R.id.iv_main_other).setOnClickListener(this);
@@ -234,5 +236,29 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     @Override
     public void showErrorTip(String msg) {
 
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        // TODO Auto-generated method stub
+        //如果这个方法消费了这个这个event事件，就返回True，否则false。
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        float  startY = 0,  offsetY;
+        int eventAction = event.getAction();
+        if(eventAction==MotionEvent.ACTION_DOWN){
+            startY = event.getY();
+        } else if (eventAction==MotionEvent.ACTION_UP){
+            offsetY = event.getY() - startY;
+            if (offsetY < -10) {
+                // up
+                Intent intent = new Intent(this,SubmenuActivity.class);
+                startActivity(intent);
+            }
+        }
+        return true;
     }
 }
