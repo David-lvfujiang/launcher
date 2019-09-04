@@ -13,6 +13,10 @@ import android.widget.ImageView;
 import android.widget.TextClock;
 import android.widget.TextView;
 
+import com.alibaba.android.arouter.launcher.ARouter;
+import com.fenda.common.provider.ICallProvider;
+import com.fenda.common.provider.ISettingsProvider;
+import com.fenda.common.router.RouterPath;
 import com.fenda.homepage.Adapter.MainAdapter;
 import com.fenda.homepage.Util.HomeUtil;
 
@@ -54,6 +58,10 @@ public class HomePageActivity extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_home_page);
 
         initViews();
+        ISettingsProvider loginService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
+        if(loginService != null){
+            loginService.deviceStatus(this);
+        }
     }
 
     @Override

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@mipmap/settings_nickname_bak"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <Button
+        android:id="@+id/set_nickname_cancel_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="64dp"
+        android:layout_marginTop="48dp"
+        android:background="#00000000"
+        android:clickable="true"
+        android:text="@string/settings_nickname_cancel"
+        android:textColor="@color/DarkBlue"
+        android:textSize="30dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/enlarge_back"
+        android:layout_width="297dp"
+        android:layout_height="70dp"
+        android:layout_marginLeft="336dp"
+        android:layout_marginTop="48dp"
+        android:clickable="true"
+        android:drawablePadding="30dp"
+        android:paddingLeft="30dp"
+        android:text="@string/settings_set_nickname_title"
+        android:textColor="@color/black"
+        android:textSize="35dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/set_nickname_sure_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="880dp"
+        android:layout_marginTop="48dp"
+        android:clickable="true"
+        android:text="@string/settings_nickname_sure"
+        android:textColor="@color/DarkBlue"
+        android:textSize="30dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="#00000000"/>
+
+    <EditText
+        android:id="@+id/set_nickname_edit"
+        android:layout_width="800dp"
+        android:layout_height="100dp"
+        android:layout_marginLeft="128dp"
+        android:layout_marginTop="172dp"
+        android:hint="最多可以输入10个字符"
+        android:maxLength="10"
+        android:singleLine="true"
+        android:textSize="30dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="128dp"
+        android:layout_marginTop="296dp"
+        android:text="@string/settings_set_nickname_tv"
+        android:textSize="25dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="372dp"
+        android:text="@string/settings_quikily_select_nickname"
+        android:textSize="25dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
+
+</android.support.constraint.ConstraintLayout>

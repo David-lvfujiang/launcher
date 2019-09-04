@@ -2,6 +2,7 @@ package com.fenda.settings.presenter;
 
 import com.fenda.common.base.BaseResponse;
 import com.fenda.common.baserx.RxResourceObserver;
+import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.util.LogUtil;
 import com.fenda.settings.contract.SettingsContract;
 import com.fenda.settings.model.request.SettingChangeContractNickNameRequest;
@@ -9,6 +10,8 @@ import com.fenda.settings.model.request.SettingDeleteLinkmanRequest;
 import com.fenda.settings.model.request.SettingsAgreeUserAddRequest;
 import com.fenda.settings.model.request.SettingsRegisterDeviceRequest;
 import com.fenda.settings.model.request.SettingsUpdateDeviceNameRequest;
+
+import java.util.List;
 
 /**
  * Created by  Android Studio.
@@ -146,20 +149,19 @@ public class SettingsPresenter extends SettingsContract.Presenter {
 
     @Override
     public void getContactsList() {
-        mRxManage.add(mModel.getContactsList().subscribeWith(new RxResourceObserver<BaseResponse>(mView,false) {
+        mRxManage.add(mModel.getContactsList().subscribeWith(new RxResourceObserver<BaseResponse<List<UserInfoBean>>>(mView, false) {
             @Override
-            protected void _onNext(BaseResponse response) {
-                if (response.getCode() == 200) {
-                    mView.getContactsListSuccess(response);
+            protected void _onNext(BaseResponse<List<UserInfoBean>> listBaseResponse) {
+                if (listBaseResponse.getCode() == 200) {
+                    mView.getContactsListSuccess(listBaseResponse);
                 } else {
-                    mView.getContactsListFailure(response);
+                    mView.getContactsListFailure(listBaseResponse);
                 }
             }
+
             @Override
             protected void _onError(String message) {
-                LogUtil.e(" error" + message);
-            }
+                LogUtil.e(" error" + message);            }
         }));
     }
-
 }
