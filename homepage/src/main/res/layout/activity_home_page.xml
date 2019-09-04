@@ -269,7 +269,7 @@
         android:textSize="64sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:id="@+id/linearlayout_layout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -277,8 +277,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
-
-
-    </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
