@@ -31,4 +31,11 @@ public class TestModel  implements TestContract.Model {
                 .compose(RxSchedulers.<BaseResponse<LoginResult>>io_main());
 
     }
+
+    @Override
+    public Observable<BaseResponse> searchUser(String userPhone) {
+        return RetrofitHelper.getInstance(Constant.TEST_BASE_URL).getServer(MyService.class)
+                .seachUserInfoByMobile(userPhone)
+                .compose(RxSchedulers.<BaseResponse>io_main());
+    }
 }

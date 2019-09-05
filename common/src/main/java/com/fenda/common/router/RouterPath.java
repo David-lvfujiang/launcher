@@ -10,10 +10,24 @@ public interface RouterPath {
      * 都用这种方式 Voice表示自己的组件名称
      */
     interface PLAYER{
-        String MusiceActivity = "/player/MusicActivity";
-        String FDMusicListActivity = "/player/FDMusicListActivity";
+        String MUSIC = "/player/MusicActivity";
+        String MUSIC_LIST = "/player/FDMusicListActivity";
+        String MUSIC_PROVIDER ="/player/PlayerProviderImpl";
+
     }
 
+    /**
+     * 提醒
+     */
+    interface REMIND{
+        String ALARM = "/remind/AlarmActivity";
+        String ALARM_LIST = "/remind/AlarmListActivity";
+        String ALARM_SERVICE = "/remind/AlarmService";
+    }
+
+    interface COMMON{
+        String JSON_SERVICE = "/common/JsonServiceImpl";
+    }
 
     public interface Gallery {
         String GALLERY_CATOGORY = "/gallery/GalleryCategoryActivity";
@@ -33,9 +47,8 @@ public interface RouterPath {
         String ENCYCLOPEDIA_PROVIDER = "/encyclopedias/EncyclopediaFragmentPensenTer";
 
     }
-
-    public interface HomePage {
-        String HomePageActivity = "/homepage/HomePageActivity";
+    public interface Encyclopedia {
+        String ENCYCLOPEDIA_PROVIDER = "/encyclopedia/EncyclopediaFragmentPensenTer";
     }
     interface SETTINGS {
         String SettingsService = "/settings/SettingsService";
@@ -58,8 +71,25 @@ public interface RouterPath {
         String SettingsDeviceContractsNickNameActivity = "/settings/SettingsDeviceContractsNickNameActivity";
 
     }
+
+    interface VOICE{
+        String INIT_PROVIDER = "/voice/initService";
+        String REQUEST_PROVIDER = "/voice/requestService";
+
+    }
+
     interface NEWS{
         String NEWS_PLAY = "/news/NewsPlay";
         String NEWS_ACTIVITY = "/news/NewsActivity";
+    }
+
+
+    interface HomePage {
+        String HOMEPAGE_MAIN = "/homepage/HomePageActivity";
+    }
+
+    interface Weather {
+        String WEATHER_MAIN = "/weather/WeatherActivity";
+        String WEATHER_SERVICE = "/weather/WeatherService";
     }
 }

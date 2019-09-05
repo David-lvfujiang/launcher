@@ -29,7 +29,7 @@
             android:theme="@style/NoTitleFullscreen"
             />
 
-        <activity android:name=".FDMusicListActivity"
+        <activity android:name=".MusicListActivity"
             android:theme="@style/NoTitleFullscreen"
             />
     </application>

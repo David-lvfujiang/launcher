@@ -11,12 +11,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.fenda.common.basebean.player.MusicPlayBean;
+import com.fenda.common.basebean.player.FDMusic;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.player.MusicActivity;
 import com.fenda.player.R;
-import com.fenda.player.bean.FDMusic;
-import com.fenda.player.bean.MusicPlayBean;
 
 import java.util.ArrayList;
 import java.util.List;

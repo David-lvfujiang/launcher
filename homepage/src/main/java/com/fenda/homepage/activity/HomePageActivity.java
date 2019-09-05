@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextClock;
 import android.widget.TextView;
 
+import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.base.BaseMvpActivity;
@@ -20,6 +21,7 @@ import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.db.ContentProviderManager;
 import com.fenda.common.provider.ISettingsProvider;
+import com.fenda.common.provider.IVoiceInitProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.AppUtils;
 import com.fenda.common.util.GsonUtil;
@@ -36,8 +38,9 @@ import com.fenda.protocol.tcp.bean.BaseTcpMessage;
 import com.fenda.protocol.tcp.bean.EventMessage;
 
 import java.util.List;
-@Route(path = RouterPath.HomePage.HomePageActivity)
+@Route(path = RouterPath.HomePage.HOMEPAGE_MAIN)
 public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener, View.OnTouchListener {
+
 
     TextClock mHeaderTimeTv;
     RecyclerView mTipInfoRv;
@@ -48,6 +51,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
     private int showPageIndex;
     private Handler mCyclicRollHandler = new Handler();
+
+    @Autowired
+    IVoiceInitProvider initProvider;
 
     Runnable cycleRollRunabler = new Runnable() {
         @Override
@@ -72,7 +78,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
     @Override
     public int onBindLayout() {
-        return R.layout.activity_home_page;
+        return R.layout.homepage_home_activity;
     }
 
     @Override
@@ -158,6 +164,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
     @Override
     public void initData() {
+        if (initProvider != null){
+            initProvider.initVoice();
+        }
         ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
         if (settingService != null) {
             settingService.deviceStatus(this);

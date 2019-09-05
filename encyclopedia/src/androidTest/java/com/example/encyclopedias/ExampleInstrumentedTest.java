@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.example.fenda.presenter.EncyclopediaFragmentPensenTer;
+import com.fenda.encyclopedia.presenter.EncyclopediaFragmentPensenter;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +27,7 @@ public class ExampleInstrumentedTest {
     }
     @Test
     public void text() {
-        EncyclopediaFragmentPensenTer e = new EncyclopediaFragmentPensenTer();
+        EncyclopediaFragmentPensenter e = new EncyclopediaFragmentPensenter();
         e.geSharesMsg("");
     }
 }

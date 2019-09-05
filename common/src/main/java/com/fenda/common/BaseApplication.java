@@ -17,6 +17,11 @@ public class BaseApplication extends Application {
 
 
     private static BaseApplication instance;
+    /**
+     * 播放状态
+     *
+     */
+    public boolean isPlay;
 
     @Override
     public void onCreate() {
@@ -44,5 +49,13 @@ public class BaseApplication extends Application {
         return instance;
     }
 
+
+    public void setPlayState(boolean isPlay){
+        this.isPlay = isPlay;
+    }
+
+    public boolean getPlayState(){
+        return isPlay;
+    }
 
 }

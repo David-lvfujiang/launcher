@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/main_rlayout"
-    tools:context="com.example.fenda.view.EncyclopediaQuestiionActivity"
+    tools:context="com.fenda.encyclopedia.view.EncyclopediaQuestiionActivity"
     >
 
     <RelativeLayout
@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/content_rlayout"
         >
-        <com.example.fenda.view.EncyclopediaAutoScrollView
+        <com.fenda.encyclopedia.view.EncyclopediaAutoScrollView
             android:id="@+id/scrollView"
             android:layout_height="400dp"
             android:layout_width="match_parent">
@@ -58,7 +58,7 @@
                 android:text="Hello World!"
                 />
 
-        </com.example.fenda.view.EncyclopediaAutoScrollView>
+        </com.fenda.encyclopedia.view.EncyclopediaAutoScrollView>
 
     </RelativeLayout>
     <RelativeLayout

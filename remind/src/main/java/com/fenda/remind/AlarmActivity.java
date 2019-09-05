@@ -10,7 +10,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
+import com.fenda.common.base.BaseActivity;
 import com.fenda.common.constant.Constant;
+import com.fenda.common.router.RouterPath;
 import com.fenda.protocol.tcp.bus.EventBusUtils;
 import com.fenda.remind.bean.AlarmBean;
 import com.fenda.remind.util.AlarmUtil;
@@ -27,7 +30,8 @@ import java.util.ArrayList;
   * @Description
   *
   */
-public class AlarmActivity extends Activity {
+@Route(path = RouterPath.REMIND.ALARM)
+public class AlarmActivity extends BaseActivity {
     ImageView imgBack;
     ImageView imgLeftOne;
     ImageView imgLeftTwo;
@@ -43,17 +47,12 @@ public class AlarmActivity extends Activity {
 
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.remind_activity_alarm);
-        initView();
-        initData();
-        addListener();
-
-
+    public int onBindLayout() {
+        return R.layout.remind_activity_alarm;
     }
 
-    private void initView(){
+    @Override
+    public void initView(){
         imgBack = findViewById(R.id.img_back);
         imgLeftOne = findViewById(R.id.img_left_one);
         imgLeftTwo = findViewById(R.id.img_left_two);
@@ -80,7 +79,8 @@ public class AlarmActivity extends Activity {
         timer.start();
     }
 
-    private void initData() {
+    @Override
+    public void initData() {
         imageView.setImageResource(R.mipmap.remind_alarm_book);
         Intent mIntent = getIntent();
         alarmBeans = mIntent.getParcelableArrayListExtra("alarmList");
@@ -107,7 +107,9 @@ public class AlarmActivity extends Activity {
     }
 
 
-    private void addListener() {
+    @Override
+    public void initListener() {
+        super.initListener();
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,8 +124,9 @@ public class AlarmActivity extends Activity {
                 sendBroadcast(intent);
             }
         });
-
     }
+
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(AlarmBean bean){

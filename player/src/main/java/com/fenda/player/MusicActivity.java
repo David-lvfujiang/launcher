@@ -5,11 +5,9 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.wifi.WifiManager;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
@@ -29,14 +27,15 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.fenda.common.BaseApplication;
 import com.fenda.common.base.BaseActivity;
+import com.fenda.common.basebean.player.MusicPlayBean;
+import com.fenda.common.basebean.player.FDMusic;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.ImageUtil;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.NetUtil;
-import com.fenda.player.bean.FDMusic;
-import com.fenda.player.bean.MusicPlayBean;
 import com.fenda.player.bean.PlayerMessage;
 import com.fenda.player.fragment.LyricFragment;
 import com.fenda.player.fragment.PlayerFragment;
@@ -62,7 +61,7 @@ import io.reactivex.schedulers.Schedulers;
   * @Description
   *
   */
-@Route(path = RouterPath.PLAYER.MusiceActivity)
+@Route(path = RouterPath.PLAYER.MUSIC)
 public class MusicActivity extends BaseActivity implements View.OnClickListener {
 
     private ImageView mMusicPreBt;
@@ -194,7 +193,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         mMusicListBt.setOnClickListener(this);
         tvBack.setOnClickListener(this);
 
-
+        BaseApplication.getInstance().setPlayState(true);
         addListener();
 
 
@@ -397,6 +396,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         super.onStop();
         Log.e("qob", "MusicActivity onStop");
         if (isPlay) {
+            BaseApplication.getInstance().setPlayState(false);
             stop();
             finish();
         }
@@ -579,7 +579,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
             setPlayStatus();
         }else if (id == R.id.bt_music_list){
             isPlay = false;
-            Intent tIntent = new Intent(this, FDMusicListActivity.class);
+            Intent tIntent = new Intent(this, MusicListActivity.class);
             tIntent.putExtra(Constant.Player.keyDataMusicList, mMusicList);
             tIntent.putExtra(Constant.Player.keyCurrentPlayIndex, current_item);
             tIntent.putExtra(Constant.Player.keyContentType, contentType);
@@ -989,7 +989,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                 audioManagerSatatus = focusChange;
                 if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
                     // 展示失去音频焦点，暂停播放等待重新获得音频焦点
-                    if (mediaPlayer.isPlaying()) {
+                    if (mediaPlayer != null && mediaPlayer.isPlaying()) {
                         mediaPlayer.setVolume(0.1f, 0.1f);
                     }
 
@@ -1010,7 +1010,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
 
                 } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
                     //失去焦点，降低音量
-                    if (mediaPlayer.isPlaying()) {
+                    if (mediaPlayer != null && mediaPlayer.isPlaying()) {
                         mediaPlayer.setVolume(0.1f, 0.1f);
                     }
                 }

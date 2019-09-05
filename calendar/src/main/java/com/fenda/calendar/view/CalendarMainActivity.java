@@ -1,4 +1,5 @@
 package com.fenda.calendar.view;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -9,7 +10,8 @@ import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.example.calendar.R;
+
+import com.fenda.calendar.R;
 import com.fenda.calendar.model.Calendar;
 import com.fenda.common.base.BaseActivity;
 import com.fenda.common.router.RouterPath;
@@ -33,7 +35,7 @@ public class CalendarMainActivity extends BaseActivity {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case AUDIO_CONVERSE_CLOSE: 	// 关闭界面
+                case AUDIO_CONVERSE_CLOSE:    // 关闭界面
                     CalendarMainActivity.this.finish();
                     break;
                 default:
@@ -41,6 +43,7 @@ public class CalendarMainActivity extends BaseActivity {
             }
         }
     };
+
     @Override
     public int onBindLayout() {
         ARouter.getInstance().inject(this);
@@ -50,13 +53,14 @@ public class CalendarMainActivity extends BaseActivity {
     @Override
     public void initView() {
         //消除状态栏底部的阴影
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             try {
                 Class decorViewClazz = Class.forName("com.android.internal.policy.DecorView");
                 Field field = decorViewClazz.getDeclaredField("mSemiTransparentStatusBarColor");
                 field.setAccessible(true);
                 field.setInt(getWindow().getDecorView(), Color.TRANSPARENT);  //改为透明
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
         ARouter.getInstance().inject(this);
         tvWeek = findViewById(R.id.week_tv);
@@ -72,38 +76,40 @@ public class CalendarMainActivity extends BaseActivity {
     public void initData() {
         Intent intent = getIntent();
         calendar = (Calendar) intent.getSerializableExtra("calendar");
-        changeData(calendar.getWeekday(), calendar.getYear(), calendar.getMonth(), calendar.getDay(), calendar.getNlmonth(), calendar.getNlday());
+        if (calendar != null) {
+            changeData(calendar.getWeekday(), calendar.getYear(), calendar.getMonth(), calendar.getDay(), calendar.getNlmonth(), calendar.getNlday());
+        }
     }
 
     /**
      * 动态修改日历
+     *
      * @param weekDay 星期
-     * @param year 年份
-     * @param month 月份
-     * @param day 日期
+     * @param year    年份
+     * @param month   月份
+     * @param day     日期
      * @param nlmonth
-     * @param nlday 农历日期
+     * @param nlday   农历日期
      */
 
     public void changeData(String weekDay, String year, String month, String day, String nlmonth, String nlday) {
         int monthNumber = 0;
         int dayNumber = 0;
-        if (Character.isDigit(day.charAt(0))){  // 判断是否是数字
+        if (Character.isDigit(day.charAt(0))) {  // 判断是否是数字
             monthNumber = Integer.parseInt(String.valueOf(day.charAt(0)));
         }
-        if (Character.isDigit(day.charAt(1))){  // 判断是否是数字
+        if (Character.isDigit(day.charAt(1))) {  // 判断是否是数字
             dayNumber = Integer.parseInt(String.valueOf(day.charAt(1)));
         }
         tvWeek.setText(weekDay);
-        tvYear.setText(year+"年");
+        tvYear.setText(year + "年");
         tvMonth.setText(month);
         imgMonth.setImageResource(datas[monthNumber]);
         imgDay.setImageResource(datas[dayNumber]);
-        tvNlDay.setText("农历"+nlmonth+nlday);
-       // 5秒后关闭界面
-      //  handler.sendEmptyMessageDelayed(AUDIO_CONVERSE_CLOSE, 5000);
+        tvNlDay.setText("农历" + nlmonth + nlday);
+        // 5秒后关闭界面
+        //  handler.sendEmptyMessageDelayed(AUDIO_CONVERSE_CLOSE, 5000);
     }
-
 
 
 }
