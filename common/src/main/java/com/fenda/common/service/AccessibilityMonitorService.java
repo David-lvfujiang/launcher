@@ -6,13 +6,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.provider.Settings;
+import android.provider.VoicemailContract;
 import android.text.TextUtils;
 import android.view.accessibility.AccessibilityEvent;
 
+import com.alibaba.android.arouter.launcher.ARouter;
+import com.fenda.common.baserx.RxSchedulers;
+import com.fenda.common.constant.Constant;
+import com.fenda.common.provider.IPlayerProvider;
+import com.fenda.common.provider.IVoiceRequestProvider;
 import com.fenda.common.util.AppTaskUtil;
 import com.fenda.common.util.LogUtil;
 
 import java.util.HashMap;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.functions.Consumer;
 
 
 /**
@@ -23,11 +34,13 @@ import java.util.HashMap;
   */
 public class AccessibilityMonitorService extends AccessibilityService {
     private static final String TAG = "AccessService";
+    public static final String QIYIMOBILE_PKG = "com.qiyi.video.speaker";
 
 
     private CharSequence mWindowClassName;
     private static HashMap<String,String> packageMap = new HashMap<>();
     private MyBroadcast broadcast;
+    private IVoiceRequestProvider provider;
 
 
     @Override
@@ -83,6 +96,26 @@ public class AccessibilityMonitorService extends AccessibilityService {
 //                    packageMap.put("key",mPackage);
 //                    packageMap.put("class",className);
 //                }
+                if (QIYIMOBILE_PKG.equals(mPackage)){
+                    Observable.create(new ObservableOnSubscribe<String>() {
+                        @Override
+                        public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                            emitter.onNext("");
+                        }
+                    }).compose(RxSchedulers.<String>io_main())
+                            .subscribe(new Consumer<String>() {
+                                @Override
+                                public void accept(String s) throws Exception {
+                                    if (provider == null){
+                                        provider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
+                                    }
+                                    provider.cancelQQMusic();
+                                }
+                            });
+
+
+
+                }
 
                 String mPack = AppTaskUtil.getAppTopPackage();
 

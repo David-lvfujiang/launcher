@@ -26,6 +26,8 @@ public interface IVoiceRequestProvider extends IProvider {
     void closeVoice();
     /**更新思必驰联系人**/
     void updateVocab(List<String> beanList);
+    /**关闭爱奇艺**/
+    void cancelQQMusic();
 
 
 

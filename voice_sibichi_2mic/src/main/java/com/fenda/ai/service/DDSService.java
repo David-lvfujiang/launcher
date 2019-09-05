@@ -580,23 +580,6 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                                         provider.geSharesMsg(state);
                                     }
                                 });
-                    }else if (skillName.equals("节假日查询") || skillName.equals("日历")){
-
-                        Observable.create(new ObservableOnSubscribe<String>() {
-                            @Override
-                            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
-                                emitter.onNext("");
-                            }
-                        }).compose(RxSchedulers.<String>io_main())
-                                .subscribe(new Consumer<String>() {
-                                    @Override
-                                    public void accept(String s) throws Exception {
-                                        if (calendarProvider == null){
-                                            calendarProvider = ARouter.getInstance().navigation(ICalendarProvider.class);
-                                        }
-                                        calendarProvider.getCalendarMsg(state);
-                                    }
-                                });
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -608,7 +591,32 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 time = System.currentTimeMillis();
                 break;
             case VoiceConstant.SIBICHI.DM_OUTPUT:
-//                LogUtil.e("SIBICHI_TEST","回复结果 延时 = "+(System.currentTimeMillis() - time));
+                JSONObject jo = null;
+                try {
+                    jo = new JSONObject(state);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                JSONObject dm = jo.optJSONObject("dm" );
+                String task = dm.optString("task");
+                if ("节假日查询".equals(task) || "日历".equals(task)){
+
+                    Observable.create(new ObservableOnSubscribe<String>() {
+                        @Override
+                        public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                            emitter.onNext("");
+                        }
+                    }).compose(RxSchedulers.<String>io_main())
+                            .subscribe(new Consumer<String>() {
+                                @Override
+                                public void accept(String s) throws Exception {
+                                    if (calendarProvider == null){
+                                        calendarProvider = ARouter.getInstance().navigation(ICalendarProvider.class);
+                                    }
+                                    calendarProvider.getCalendarMsg(state);
+                                }
+                            });
+                }
                 break;
             default:
 
@@ -753,13 +761,16 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
             throw new RuntimeException("widget name must not be empty");
         }
         String intentName = object.optString("intentName");
-        if (intentName.length() > 2){
-            intentName = intentName.substring(2);
+        if (!"播放影视".equals(intentName)){
+            if (intentName.length() > 2){
+                intentName = intentName.substring(2);
+            }
+            if (mediaModel == null){
+                mediaModel = new MediaModel();
+            }
+            mediaModel.handleMusicMediaWidget(object,intentName);
         }
-        if (mediaModel == null){
-            mediaModel = new MediaModel();
-        }
-        mediaModel.handleMusicMediaWidget(object,intentName);
+
 
 //        if ("music".equals(widgetName)){
 //            //笑话 电台 曲艺  故事 新闻 电台

@@ -20,7 +20,6 @@
             android:id="@+id/img_voice_dialog"
             android:layout_width="120px"
             android:layout_height="120px"
-            android:src="@mipmap/common_voice_dialog"
 
             />
 

@@ -148,5 +148,10 @@ public class RequestService implements IVoiceRequestProvider {
 
     }
 
+    @Override
+    public void cancelQQMusic() {
+       MusicPlugin.get().getMusicApi().pause();
+    }
+
 
 }
