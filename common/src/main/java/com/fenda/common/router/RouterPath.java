@@ -29,9 +29,10 @@ public interface RouterPath {
 
     public interface Calendar {
         String CALENDAR_ACTIVITY = "/calendar/CalendarActivity";
-        String CALENDAR_PROVIDER = "/calendar/CalendarPresenTer";
-        String ENCYCLOPEDIA_PROVIDER = "/encyclopedias/EncyclopediaFragmentPensenTer";
-
+        String CALENDAR_PROVIDER = "/calendar/CalendarPresenter";
+    }
+    public interface Encyclopedia {
+        String ENCYCLOPEDIA_PROVIDER = "/encyclopedia/EncyclopediaFragmentPensenTer";
     }
     interface SETTINGS {
         String SettingsService = "/settings/SettingsService";

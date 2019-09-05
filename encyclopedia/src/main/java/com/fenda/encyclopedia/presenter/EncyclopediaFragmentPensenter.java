@@ -13,7 +13,8 @@ import com.fenda.encyclopedia.view.EncyclopediaSharesActivity;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.provider.IEncyclopediaProvider;
 
-import static com.fenda.common.router.RouterPath.Calendar.ENCYCLOPEDIA_PROVIDER;
+import static com.fenda.common.router.RouterPath.Encyclopedia.ENCYCLOPEDIA_PROVIDER;
+
 
 /**
  * @author LiFuJiang
@@ -21,7 +22,7 @@ import static com.fenda.common.router.RouterPath.Calendar.ENCYCLOPEDIA_PROVIDER;
  * @Description 百科业务处理实现类
  */
 @Route(path = ENCYCLOPEDIA_PROVIDER)
-public class EncyclopediaFragmentPensenTer implements IEncyclopediaProvider {
+public class EncyclopediaFragmentPensenter implements IEncyclopediaProvider {
         private Context context;
     /**
      * 处理问答
