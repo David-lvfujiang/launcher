@@ -310,4 +310,14 @@ public class WeatherHelper implements IWeatherProvider {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void weatherFromVoiceControlToMainPage(String todayWeatherContent) {
+
+    }
+
+    @Override
+    public void init(Context context) {
+
+    }
 }
