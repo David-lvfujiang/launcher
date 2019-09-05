@@ -1,5 +1,10 @@
 package com.fenda.common.base;
-
+/**
+  * @author mirrer.wangzhonglin
+  * @Date 2019/8/30 19:00
+  * @Description
+  *
+  */
 public class BaseResponse<T> {
 
     private int code;

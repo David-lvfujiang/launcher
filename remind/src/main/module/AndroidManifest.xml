@@ -12,7 +12,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/LauncherTheme">
+        android:theme="@style/LauncherTheme"
+        >
         <activity android:name="debug.MainActivity"
             android:theme="@style/NoTitleFullscreen"
             >

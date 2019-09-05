@@ -20,7 +20,18 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
+        javaCompileOptions {
+
+            annotationProcessorOptions {
+
+                arguments = [moduleName: project.getName()]
+
+            }
+        }
+
     }
+
+
 
     sourceSets {
         main {
@@ -32,8 +43,6 @@ android {
                 }
             } else {
                 manifest.srcFile "src/main/module/AndroidManifest.xml"
-
-
             }
         }
     }
@@ -51,4 +60,5 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(path: ':common')
+    annotationProcessor deps.arouter_compiler
 }

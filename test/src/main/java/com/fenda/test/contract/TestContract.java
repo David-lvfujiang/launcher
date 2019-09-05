@@ -20,7 +20,7 @@ public interface TestContract {
     interface View extends BaseView{
 
         void registerDevice(BaseResponse<LoginResult> response);
-
+        void searchUserByPhone(BaseResponse response);
 
     }
 
@@ -28,12 +28,13 @@ public interface TestContract {
 
     interface Model extends BaseModel {
         Observable<BaseResponse<LoginResult>> register(LoginRequest loginRequest);
-
+        Observable<BaseResponse> searchUser(String userPhone);
 
     }
 
     abstract class Presenter extends BasePresenter<View,Model> {
         public abstract void register(LoginRequest loginRequest);
+        public abstract void searchUserByPhone(String userPhone);
 
     }
 

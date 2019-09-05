@@ -25,7 +25,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.HomeItemHolder
     public HomeItemHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
 
         View tView = LayoutInflater.from(
-                mContext).inflate(R.layout.item_homeinfo, viewGroup,
+                mContext).inflate(R.layout.homepage_home_item, viewGroup,
                 false);
         HomeItemHolder tHolder = new HomeItemHolder(tView);
 

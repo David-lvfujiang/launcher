@@ -1,21 +1,16 @@
 package com.fenda.player.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
 import com.fenda.common.base.BaseFragment;
+import com.fenda.common.basebean.player.FDMusic;
 import com.fenda.player.R;
-import com.fenda.player.bean.FDMusic;
 import com.fenda.player.bean.PlayerMessage;
 import com.fenda.protocol.tcp.bus.EventBusUtils;
 

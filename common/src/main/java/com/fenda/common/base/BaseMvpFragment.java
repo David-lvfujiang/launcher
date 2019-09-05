@@ -10,7 +10,12 @@ import com.fenda.common.mvp.BasePresenter;
 import com.fenda.common.mvp.BaseView;
 import com.fenda.common.util.TUtil;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
-
+/**
+  * @author mirrer.wangzhonglin
+  * @Date 2019/8/30 19:01
+  * @Description
+  *
+  */
 public abstract class BaseMvpFragment<T extends BasePresenter,E extends BaseModel> extends BaseFragment implements BaseView {
 
     protected T mPresenter;
@@ -19,11 +24,11 @@ public abstract class BaseMvpFragment<T extends BasePresenter,E extends BaseMode
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        mRxManager=new RxManager();
+        mRxManager = new RxManager();
         mPresenter = TUtil.getT(this, 0);
-        mModel= TUtil.getT(this,1);
+        mModel = TUtil.getT(this,1);
         if(mPresenter!=null){
-            mPresenter.mContext=this.getActivity();
+            mPresenter.mContext = this.getActivity();
         }
         initPresenter();
 

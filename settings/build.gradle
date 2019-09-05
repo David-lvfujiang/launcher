@@ -13,7 +13,14 @@ android {
         if (!isModule.toBoolean()){
             applicationId "com.fenda.settings"
         }
+        javaCompileOptions {
 
+            annotationProcessorOptions {
+
+                arguments = [moduleName: project.getName()]
+
+            }
+        }
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
@@ -96,4 +103,5 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':common')
+    annotationProcessor deps.arouter_compiler
 }
