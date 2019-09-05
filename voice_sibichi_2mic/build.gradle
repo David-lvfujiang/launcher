@@ -57,6 +57,7 @@ android {
     sourceSets {
         main {
             if (isModule.toBoolean()) {
+
                 manifest.srcFile "src/main/AndroidManifest.xml"
                 //集成开发模式下排除debug文件夹中的所有Java文件
                 java {
@@ -73,6 +74,14 @@ android {
 
     buildTypes {
         release {
+
+            if (isModule.toBoolean()){
+                // 集成模式 授权
+                buildConfigField "boolean", "LAUNCHER", "true"
+            }else {
+                // 集成模式 授权
+                buildConfigField "boolean", "LAUNCHER", "false"
+            }
             // 不显示Log
             buildConfigField "boolean", "LOG_DEBUG", "false"
             minifyEnabled false
@@ -80,6 +89,13 @@ android {
             signingConfig signingConfigs.release
         }
         debug {
+            if (isModule.toBoolean()){
+                // 集成模式 授权
+                buildConfigField "boolean", "LAUNCHER", "true"
+            }else {
+                // 集成模式 授权
+                buildConfigField "boolean", "LAUNCHER", "false"
+            }
             // 不显示Log
             buildConfigField "boolean", "LOG_DEBUG", "true"
             signingConfig signingConfigs.debug

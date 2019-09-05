@@ -6,10 +6,19 @@ import android.content.Intent;
 import com.aispeech.dui.plugin.iqiyi.IQiyiPlugin;
 import com.aispeech.dui.plugin.setting.SettingPlugin;
 import com.aispeech.dui.plugin.setting.SystemCtrl;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.BaseApplication;
+import com.fenda.common.baserx.RxSchedulers;
+import com.fenda.common.provider.ICalendarProvider;
+import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.AppTaskUtil;
 
 import org.androidannotations.annotations.App;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by chuck.liuzhaopeng on 2019/6/24.
@@ -77,6 +86,19 @@ public class SystemControl extends SystemCtrl {
 
     @Override
     public int openSettings(Settings settings) {
-        return super.openSettings(settings);
+        Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                emitter.onNext("");
+            }
+        }).compose(RxSchedulers.<String>io_main())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String s) throws Exception {
+                        ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
+
+                    }
+                });
+        return SettingPlugin.ERR_OK;
     }
 }

@@ -165,6 +165,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     @Override
     public void initData() {
         if (initProvider != null){
+            initProvider.init(this);
             initProvider.initVoice();
         }
         ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
