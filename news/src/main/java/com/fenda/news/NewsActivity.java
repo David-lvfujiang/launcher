@@ -96,8 +96,6 @@ public class NewsActivity extends BaseActivity {
         initMediaPlayer();
         randomBg();
         NewsPlay.isNewsAcitivytOpen = true;
-        EventBusUtils.register(this);
-        ARouter.getInstance().inject(this);
     }
 
     /**
@@ -351,6 +349,5 @@ public class NewsActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         NewsPlay.isNewsAcitivytOpen = false;
-        EventBusUtils.unregister(this);
     }
 }

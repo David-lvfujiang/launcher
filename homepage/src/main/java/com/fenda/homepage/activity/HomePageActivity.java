@@ -249,7 +249,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             ARouter.getInstance().build(RouterPath.Call.MAIN_ACTIVITY).navigation();
         } else if (resId == R.id.iv_main_tools) {
             //通讯录
-            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
+//            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
         }
         else if (resId == R.id.iv_header_weather || resId == R.id.tv_header_temp){
 
