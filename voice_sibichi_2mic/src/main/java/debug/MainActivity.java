@@ -98,12 +98,6 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    @Override
-    public <T> void onEvent(EventMessage<T> event) {
-
-
-
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -51,6 +51,18 @@ public class RequestService implements IVoiceRequestProvider {
     }
 
     @Override
+    public void nowWeather() {
+        try {
+            SkillIntent skillIntent = new SkillIntent(VoiceConstant.SIBICHI.ID,
+                    VoiceConstant.SIBICHI.TASK, VoiceConstant.SIBICHI.WEATHER_INTENT_NAME,
+                    new JSONObject().put(VoiceConstant.SIBICHI.TALK_KEY, VoiceConstant.SIBICHI.WEATHER_TALK_VALUE).toString());
+            DDS.getInstance().getAgent().triggerIntent(skillIntent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void cancelMusic(){
 
         if (Util.isQQMusicPlay()){

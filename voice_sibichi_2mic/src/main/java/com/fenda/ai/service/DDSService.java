@@ -36,7 +36,11 @@ import com.fenda.ai.observer.DuiNativeApiObserver;
 import com.fenda.ai.observer.DuiUpdateObserver;
 import com.fenda.ai.skill.Util;
 import com.fenda.common.BaseApplication;
+import com.fenda.common.baserx.RxSchedulers;
+import com.fenda.common.provider.IEncyclopediaProvider;
+import com.fenda.common.provider.INewsProvider;
 import com.fenda.common.provider.IRemindProvider;
+import com.fenda.common.provider.IWeatherProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.service.AccessibilityMonitorService;
 import com.fenda.common.util.DeviceIdUtil;
@@ -45,6 +49,11 @@ import com.fenda.common.view.SpeechView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.functions.Consumer;
 
 
 /**
@@ -85,6 +94,8 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
     private SpeechView speechView;
     private long time;
     private MyDDSInitListener listener;
+    private IEncyclopediaProvider provider;
+    private IWeatherProvider weatherProvider;
 
     public DDSService() {
     }
@@ -443,6 +454,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
 //            //包名com.fenda.launcher
 //            config.addConfig(DDSConfig.K_API_KEY, "ccfaebdea7f5ccfaebdea7f55d6e0baf");
 //        }
+//        config.addConfig(DDSConfig.K_API_KEY, "9e7baf5eae8f9e7baf5eae8f5d5284f0");
         config.addConfig(DDSConfig.K_API_KEY, "ccfaebdea7f5ccfaebdea7f55d6e0baf");
 
 //        // 资源更新配置项
@@ -495,8 +507,8 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
      * DuiMessageObserver中当前状态的回调
      */
     @Override
-    public void onState(String message,String state) {
-//        LogUtil.v(TAG,"FD-----"+message+"||||||"+state);
+    public void onState(String message, final String state) {
+        LogUtil.v(TAG,"FD-----"+message+"||||||"+state);
         switch(message)
         {
             case VoiceConstant.SIBICHI.SYS_DIALOG_START:
@@ -522,6 +534,65 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
             case VoiceConstant.SIBICHI.CONTEXT_WIDGET_CUSTOM:
                 HandleMessage(message,state);
                 break;
+            case VoiceConstant.SIBICHI.CONTEXT_OUTPUT_TEXT:
+//                String txt = "";
+                try {
+                    JSONObject jo = new JSONObject(state);
+                    String skillName = jo.optString("skillName", "");
+                    if (skillName.equals("股票")){
+                        Observable.create(new ObservableOnSubscribe<String>() {
+                            @Override
+                            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                                emitter.onNext("");
+                            }
+                        }).compose(RxSchedulers.<String>io_main())
+                                .subscribe(new Consumer<String>() {
+                                    @Override
+                                    public void accept(String s) throws Exception {
+                                        if (provider == null){
+                                            provider = ARouter.getInstance().navigation(IEncyclopediaProvider.class);
+                                        }
+                                        provider.geTextMsg(state);
+                                    }
+                                });
+                    }else if (skillName.equals("闲聊")){
+                        Observable.create(new ObservableOnSubscribe<String>() {
+                            @Override
+                            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                                emitter.onNext("");
+                            }
+                        }).compose(RxSchedulers.<String>io_main())
+                                .subscribe(new Consumer<String>() {
+                                    @Override
+                                    public void accept(String s) throws Exception {
+                                        if (provider == null){
+                                            provider = ARouter.getInstance().navigation(IEncyclopediaProvider.class);
+                                        }
+                                        provider.geSharesMsg(state);
+                                    }
+                                });
+                    }else if (skillName.equals("百科")){
+                        Observable.create(new ObservableOnSubscribe<String>() {
+                            @Override
+                            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                                emitter.onNext("");
+                            }
+                        }).compose(RxSchedulers.<String>io_main())
+                                .subscribe(new Consumer<String>() {
+                                    @Override
+                                    public void accept(String s) throws Exception {
+                                        if (provider == null){
+                                            provider = ARouter.getInstance().navigation(IEncyclopediaProvider.class);
+                                        }
+                                        provider.geSharesMsg(state);
+                                    }
+                                });
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                break;
             case VoiceConstant.SIBICHI.ASR_SPEECH_RESULT:
 //                LogUtil.e("SIBICHI_TEST","识别到结果 : " + state);
                 time = System.currentTimeMillis();
@@ -535,19 +606,10 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
         }
     }
 
-    private void HandleMessage(String message,String data) {
+    private void HandleMessage(String message, final String data) {
 
         switch (message) {
-            case VoiceConstant.SIBICHI.CONTEXT_OUTPUT_TEXT:
-                String txt = "";
-                try {
-                    JSONObject jo = new JSONObject(data);
-                    txt = jo.optString("text", "");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
 
-                break;
             case VoiceConstant.SIBICHI.CONTEXT_INPUT_TEXT:
                 try {
                     JSONObject jo = new JSONObject(data);
@@ -626,16 +688,32 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
             //custom widget 1 收到自定义控件消息
             case VoiceConstant.SIBICHI.CONTEXT_WIDGET_CUSTOM:
 //                if (AccessibilityMonitorService.getTopPackageName().equals(QIYIMOBILE_PKG))
+                LogUtil.e("CONTEXT_WIDGET_CUSTOM  == > "+data);
 
                 try {
                     JSONObject object = new JSONObject(data);
                     String widgetName = object.getString("widgetName");
                     if ("weather".equals(widgetName)){
                         //天气
-//                        DispatchManager.startService(widgetName,widgetName,data, VoiceConstant.AIDL.LAUNCHER);
-//                        startWeatherActivity(data);
+                        Observable.create(new ObservableOnSubscribe<String>() {
+                            @Override
+                            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                                emitter.onNext("");
+                            }
+                        }).compose(RxSchedulers.<String>io_main())
+                                .subscribe(new Consumer<String>() {
+                                    @Override
+                                    public void accept(String s) throws Exception {
+                                        if (weatherProvider == null){
+                                            weatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
+                                        }
+                                        weatherProvider.weatherFromVoiceControl(data);
+                                    }
+                                });
                     }else if ("stock".equals(widgetName)){
                         //股票
+
+
 
 
                     }

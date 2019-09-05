@@ -75,8 +75,10 @@ public class VoiceConstant {
         String ID = "2019050700000081";
         String TASK = "天气";
         String INTENTION = "主动请求天气";
+        String WEATHER_INTENT_NAME = "查询天气";
         String TALK_KEY = "";
         String TALK_VALUE = "自定义的今天天气";
+        String WEATHER_TALK_VALUE = "现在的天气";
     }
 
 

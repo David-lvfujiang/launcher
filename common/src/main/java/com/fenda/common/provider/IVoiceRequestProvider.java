@@ -14,6 +14,8 @@ public interface IVoiceRequestProvider extends IProvider {
 
     /**请求天气**/
     void requestWeather();
+    /**现在的天气**/
+    void nowWeather();
     /**关闭音乐**/
     void cancelMusic();
     /**删除闹钟**/

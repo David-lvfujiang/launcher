@@ -73,7 +73,6 @@ public class MediaModel {
                                 provider = ARouter.getInstance().navigation(INewsProvider.class);
                             }
                             provider.news(dataJsonObject);
-//                            ARouter.getInstance().build(RouterPath.).withParcelable(Constant.Player.keyDataMusicKey,bean).navigation();
                         }
                     });
 

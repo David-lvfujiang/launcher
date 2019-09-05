@@ -12,6 +12,8 @@ import com.fenda.common.baserx.RxSchedulers;
 import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.db.ContentProviderManager;
 import com.fenda.common.provider.ICallProvider;
+import com.fenda.common.provider.INewsProvider;
+import com.fenda.common.provider.IWeatherProvider;
 import com.fenda.common.util.LogUtil;
 
 import org.json.JSONException;
@@ -39,6 +41,8 @@ public class DuiCommandObserver implements CommandObserver {
     private static final String COMMAND_WEATHER = "command_weather";
 
     private ICallProvider callProvider;
+
+    private IWeatherProvider weatherProvider;
 
 
     public DuiCommandObserver() {
@@ -85,10 +89,26 @@ public class DuiCommandObserver implements CommandObserver {
                  data = data.replaceAll("]\"","]");
                  data = data.replace("\"{","{");
                  data = data.replace("}\"","}");
-                 JSONObject object = new JSONObject(data);
+                 final JSONObject object = new JSONObject(data);
                  JSONObject nlu = object.optJSONObject("nlu");
                  String type = nlu.optString("skill");
 //                 DispatchManager.startService(command,type,object.toString(),Constant.AIDL.LAUNCHER);
+
+                 Observable.create(new ObservableOnSubscribe<String>() {
+                     @Override
+                     public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                         emitter.onNext("");
+                     }
+                 }).compose(RxSchedulers.<String>io_main())
+                         .subscribe(new Consumer<String>() {
+                             @Override
+                             public void accept(String s) throws Exception {
+                                 if (weatherProvider == null){
+                                     weatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
+                                 }
+                                 weatherProvider.weatherFromVoiceControlToMainPage(object.toString());
+                             }
+                         });
              } catch (JSONException e) {
                  e.printStackTrace();
              }
