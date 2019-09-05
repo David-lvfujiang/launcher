@@ -1,139 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
-    android:fitsSystemWindows="true"
-    xmlns:tools="http://schemas.android.com/tools"
-    >
+    android:fitsSystemWindows="true">
+
     <RelativeLayout
+        android:id="@+id/title_layout"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:id="@+id/title_layout"
         tools:ignore="MissingConstraints">
+
         <ImageView
-            android:layout_width="wrap_content"
             android:id="@+id/title_return_img"
-            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/demension_dp45"
             android:layout_marginLeft="20dp"
-            android:layout_height="50dp"
-            android:background="@mipmap/encyclopedia_return"
-            />
+            android:layout_marginTop="15dp"
+            android:background="@mipmap/encyclopedia_return" />
+
         <TextView
+            android:id="@+id/title_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="80dp"
-            android:textSize="50sp"
             android:layout_marginTop="10dp"
             android:textColor="#ffffff"
-            android:id="@+id/title_text"
-            />
+            android:textSize="40dp" />
     </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/image_rlayout"
-        android:layout_centerHorizontal="true"
-        >
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/one"
-            android:background="@mipmap/encyclopedia_one"
-            android:layout_marginTop="130dp"
-            />
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@mipmap/encyclopedia_two"
-            android:layout_toRightOf="@+id/one"
-            android:layout_marginTop="130dp"
-            />
-        <RadioButton
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:checked="true"
-            android:layout_marginLeft="250dp"
-            android:layout_marginTop="250dp"
-            android:visibility="gone"
-            android:id="@+id/encyclopedia_fall_radio"
-            android:drawableTop="@drawable/encyclopedia_selector_change_icon"
-            />
-    </RelativeLayout>
-    <RelativeLayout
+<RelativeLayout
+    android:id="@+id/high_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/demension_dp80"
+    >
+    <TextView
+        android:id="@+id/high_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="60dp"
+        android:text="205.5"
+        android:textColor="#ffffff"
+        android:textSize="180dp" />
+
+    <RadioButton
+        android:id="@+id/encyclopedia_fall_radio"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="250dp"
+        android:layout_marginTop="250dp"
+        android:checked="true"
+        android:drawableTop="@drawable/encyclopedia_selector_change_icon"
+        android:visibility="gone" />
+</RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/text_rlayout"
-        android:layout_below="@+id/image_rlayout"
-        >
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/high_layout"
+        android:layout_centerHorizontal="true">
+
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="40sp"
-            android:textColor="#ffffff"
-            android:text="@string/encyclopedia_fall_text"
-            android:layout_alignBaseline="@+id/change_number_tv"
             android:id="@+id/change_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/change_number_tv"
             android:layout_marginLeft="30dp"
-
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="50sp"
+            android:text="@string/encyclopedia_fall_text"
             android:textColor="#ffffff"
-            android:text="0.14"
-            android:id="@+id/change_number_tv"
-            android:layout_toRightOf="@+id/change_tv"
-            />
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:textSize="40sp"
-            android:textColor="#ffffff"
-            android:text="@string/encyclopedia_fall_percentage_text"
-            android:id="@+id/percentage_tv"
-            android:layout_alignBaseline="@+id/percentage_number_tv"
-            android:layout_toRightOf="@id/change_number_tv"
-            android:layout_marginLeft="30dp"
 
             />
+
         <TextView
+            android:id="@+id/change_number_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="50sp"
+            android:layout_toRightOf="@+id/change_tv"
+            android:text="0.14"
             android:textColor="#ffffff"
-            android:text="50%"
-            android:id="@+id/percentage_number_tv"
-            android:layout_toRightOf="@+id/percentage_tv"
+            android:textSize="50sp" />
+
+
+        <TextView
+            android:id="@+id/percentage_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/percentage_number_tv"
+            android:layout_marginLeft="30dp"
+            android:layout_toRightOf="@id/change_number_tv"
+            android:text="@string/encyclopedia_fall_percentage_text"
+            android:textColor="#ffffff"
+            android:textSize="40sp"
 
             />
+
+        <TextView
+            android:id="@+id/percentage_number_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/percentage_tv"
+            android:text="50%"
+            android:textColor="#ffffff"
+            android:textSize="50sp" />
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_below="@+id/text_rlayout"
-        >
+        android:layout_centerHorizontal="true">
+
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:background="@mipmap/encyclopedia_true"
-            />
+            android:background="@mipmap/encyclopedia_true" />
 
         <TextView
+            android:id="@+id/date_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:id="@+id/date_tv"
             android:text="2019/08/23  15:00:00"
             android:textColor="#ffffffff"
-            android:textSize="30sp"
-            />
+            android:textSize="30sp" />
     </RelativeLayout>
 </RelativeLayout>

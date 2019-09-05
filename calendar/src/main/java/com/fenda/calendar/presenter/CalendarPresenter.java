@@ -6,19 +6,20 @@ import android.util.Log;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.fastjson.JSONObject;
+import com.fenda.calendar.R;
 import com.fenda.calendar.model.Calendar;
 import com.fenda.calendar.view.CalendarMainActivity;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.provider.ICalendarProvider;
+import com.fenda.common.router.RouterPath;
 
-import static com.fenda.common.router.RouterPath.Calendar.CALENDAR_PROVIDER;
 
 /**
  * @author LiFuJiang
  * @Date 2019/8/29 16:51
  * @Description 处理业务逻辑实现类
  */
-@Route(path = CALENDAR_PROVIDER)
+@Route(path = RouterPath.Calendar.CALENDAR_PROVIDER)
 public class CalendarPresenter implements ICalendarProvider {
     Context context;
 

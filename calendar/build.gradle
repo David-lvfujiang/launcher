@@ -6,38 +6,68 @@ if (isModule.toBoolean()) {
 }
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    compileSdkVersion BUILD_VERSIONS.COMPILE_SDK
+    buildToolsVersion BUILD_VERSIONS.BUILD_TOOLS
 
 
     defaultConfig {
-        //applicationId "com.example.calendar"
-        minSdkVersion 21
-        targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        if (!isModule.toBoolean()) {
+            applicationId "com.fenda.encyclopedia"
+        }
+        flavorDimensions "default"
+        minSdkVersion BUILD_VERSIONS.MIN_SDK
+        targetSdkVersion BUILD_VERSIONS.TARGET_SDK
+        versionCode BUILD_VERSIONS.VERSION_CODE
+        versionName BUILD_VERSIONS.VERSION_NAME
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
+
             annotationProcessorOptions {
+
                 arguments = [moduleName: project.getName()]
+
             }
         }
     }
+
     sourceSets {
         main {
             if (isModule.toBoolean()) {
                 manifest.srcFile "src/main/module/AndroidManifest.xml"
+
                 //集成开发模式下排除debug文件夹中的所有Java文件
                 java {
                     exclude 'debug/**'
                 }
-
             } else {
                 manifest.srcFile "src/main/AndroidManifest.xml"
             }
         }
     }
+
+    productFlavors {
+        _dev {//开发环境
+            //设置baseUrl 使用方法Application.getContext().getResources().getString(R.string.API_SERVER)
+            resValue "string", "BASE_SERVER_URL", "http://192.168.43.37:8998/smartsound/"
+            resValue "string", "TCP_IP", "192.168.43.37"
+            resValue "string", "DEVICE_SN", " "
+        }
+
+        _test {//测试环境
+            resValue "string", "BASE_SERVER_URL", "http://192.168.100.127:8998/smartsound/"
+            resValue "string", "TCP_IP", "192.168.100.127"
+            resValue "string", "DEVICE_SN", " "
+        }
+
+        _prod {//正式环境
+            resValue "string", "BASE_SERVER_URL", "https://ai.fenda.com/smartsound/"
+            resValue "string", "TCP_IP", "47.106.223.29"
+            resValue "string", "DEVICE_SN", "-pro"
+        }
+    }
+
+
     buildTypes {
         release {
             minifyEnabled false
@@ -49,13 +79,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation project(path: ':common')
-    implementation 'com.alibaba:fastjson:1.1.54.android'
-
+    annotationProcessor deps.arouter_compiler
 
 }

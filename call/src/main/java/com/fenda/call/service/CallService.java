@@ -37,7 +37,7 @@ public class CallService implements ICallProvider {
         ImConnectUtil.connectIm(rongCloudToken);
     }
 
-    @Override
+
     public void call(int callType, String callNumber) {
         if (ImConnectUtil.isConectIm(BaseApplication.getInstance())) {
             if (callType == 1) {

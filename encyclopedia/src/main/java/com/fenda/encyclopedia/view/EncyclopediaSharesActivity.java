@@ -18,7 +18,7 @@ import com.fenda.common.base.BaseActivity;
  */
 public class EncyclopediaSharesActivity extends BaseActivity implements View.OnClickListener {
     private EncyclopediaShares shares;
-    private TextView tvChange, tvChangeNumber, tvPercentage, tvPercentageNumber, tvDate, tvTitle;
+    private TextView tvChange, tvChangeNumber, tvPercentage, tvPercentageNumber, tvDate, tvTitle, tvHigh;
     private RadioButton radioButton;
     private ImageView imgReturnBack;
 
@@ -34,9 +34,10 @@ public class EncyclopediaSharesActivity extends BaseActivity implements View.OnC
         tvPercentage = findViewById(R.id.percentage_tv);
         tvPercentageNumber = findViewById(R.id.percentage_number_tv);
         tvDate = findViewById(R.id.date_tv);
+        tvHigh = findViewById(R.id.high_tv);
         radioButton = findViewById(R.id.encyclopedia_fall_radio);
         imgReturnBack = findViewById(R.id.title_return_img);
-        tvTitle = findViewById(R.id.title_text);
+        tvTitle = findViewById(R.id.title_tv);
         imgReturnBack.setOnClickListener(this);
     }
 
@@ -58,13 +59,14 @@ public class EncyclopediaSharesActivity extends BaseActivity implements View.OnC
             tvPercentageNumber.setText(shares.getPercentage() + "%");
         }
         tvTitle.setText(shares.getName());
-        tvDate.setText(shares.getDate());//设置时间
+        tvHigh.setText(shares.getHigh());
+        tvDate.setText(shares.getDate());
     }
 
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.title_return_img) {
-            finish();
+            EncyclopediaSharesActivity.this.finish();
         }
     }
 }

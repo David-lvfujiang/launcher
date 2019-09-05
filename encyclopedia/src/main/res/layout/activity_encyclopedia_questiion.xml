@@ -1,79 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_rlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/main_rlayout"
-    tools:context="com.fenda.encyclopedia.view.EncyclopediaQuestiionActivity"
-    >
+    android:background="#000000"
+    tools:context="com.fenda.encyclopedia.view.EncyclopediaQuestiionActivity">
 
     <RelativeLayout
+        android:id="@+id/title_layout"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:background="#5544"
-        android:id="@+id/title_layout"
         tools:ignore="MissingConstraints">
+
         <ImageView
-            android:layout_width="wrap_content"
             android:id="@+id/title_return_img"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="20dp"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:background="@mipmap/encyclopedia_return"
-            />
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@mipmap/encyclopedia_return" />
+
         <TextView
+            android:id="@+id/title_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="80dp"
-            android:textSize="50sp"
-            android:textColor="#ffffff"
             android:layout_marginTop="10dp"
-            android:id="@+id/title_text"
             android:text="@string/encyclopedia_panda"
-            />
+            android:textColor="#ffffff"
+            android:textSize="50sp" />
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_marginTop="80dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:id="@+id/content_rlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/content_rlayout"
-        >
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginRight="20dp">
+
         <com.fenda.encyclopedia.view.EncyclopediaAutoScrollView
             android:id="@+id/scrollView"
-            android:layout_height="400dp"
-            android:layout_width="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="400dp">
 
             <TextView
-                android:gravity="left"
+                android:id="@+id/content_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/content_text"
-                android:textSize="50sp"
-                android:lineSpacingExtra="2dp"
+                android:gravity="left"
                 android:letterSpacing="0.05"
+                android:lineSpacingExtra="2dp"
                 android:text="Hello World!"
-                />
+                android:textSize="50sp" />
 
         </com.fenda.encyclopedia.view.EncyclopediaAutoScrollView>
 
     </RelativeLayout>
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/content_rlayout"
-        >
+        android:layout_below="@+id/content_rlayout">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="25sp"
+            android:layout_alignParentBottom="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
-            android:layout_alignParentBottom="true"
             android:text="@string/encyclopedia_other_problem"
-            />
+            android:textSize="25sp" />
     </RelativeLayout>
 </RelativeLayout>

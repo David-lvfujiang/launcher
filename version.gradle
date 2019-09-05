@@ -115,7 +115,6 @@ deps.junit = "junit:junit:$versions.junit"
 deps.test_runner = "com.android.support.test:runner:$versions.test_runner"
 deps.test_espresso_core = "com.android.support.test.espresso:espresso-core:$versions.test_espresso_core"
 deps.logger = "com.orhanobut:logger:$versions.logger"
-
 deps.fastjson = "com.alibaba:fastjson:$versions.fastjson"
 
 
