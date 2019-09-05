@@ -47,18 +47,22 @@ import io.reactivex.functions.Consumer;
 public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<SettingsPresenter, SettingsModel> implements SettingsContract.View {
     private static final String TAG = "SettingsDeviceContractsNickNameActivity";
 
-    ImageView backTv;
-    private TextView modifyNickNameTvDis, userName, modifyNickNameTv, delectThisUser, adminUnbind;
-    private CircleImageView nickNameIcon;
+    private ImageView ivBack;
+    private TextView tvDisNickName;
+    private TextView tvDisUserName;
+    private TextView tvModifyNickName;
+    private TextView tvDelectThisUser;
+    private TextView tvAdminUnbind;
+    private CircleImageView civUserIcon;
 
-    private String disNickName;
-    private String intentUserName;
-    private String intentUserName2;
-    private String intentIcon;
-    private String intentIconTmp;
-
+    private String mDisNickName;
+    private String mIntentUserName;
+    private String mIntentUserName2;
+    private String mIntentIcon;
+    private String mIntentIconTmp;
 
     private Uri mUri = Uri.parse(ContentProviderManager.BASE_URI + "/user");
+
     @Override
     protected void initPresenter() {
         mPresenter.setVM(this, mModel);
@@ -71,14 +75,14 @@ public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<Set
 
     @Override
     public void initView() {
-        backTv = findViewById(R.id. change_nameinfo_back);
-        modifyNickNameTvDis = findViewById(R.id.nick_name);
-        userName = findViewById(R.id.user_name);
-        modifyNickNameTv = findViewById(R.id.modify_nick_name);
-        delectThisUser = findViewById(R.id.delect_this_user);
-        adminUnbind = findViewById(R.id.admin_unbind_this);
-        nickNameIcon = findViewById(R.id.nic_name_icon);
-        disNickName = modifyNickNameTvDis.getText().toString();
+        ivBack = findViewById(R.id. change_nameinfo_back);
+        tvDisNickName = findViewById(R.id.nick_name);
+        tvDisUserName = findViewById(R.id.user_name);
+        tvModifyNickName = findViewById(R.id.modify_nick_name);
+        tvDelectThisUser = findViewById(R.id.delect_this_user);
+        tvAdminUnbind = findViewById(R.id.admin_unbind_this);
+        civUserIcon = findViewById(R.id.nic_name_icon);
+        mDisNickName = tvDisNickName.getText().toString();
     }
 
     @Override
@@ -86,63 +90,63 @@ public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<Set
         //4). 得到intent对象
         Intent intent = getIntent();
         //5). 通过intent读取额外数据
-        intentUserName = intent.getStringExtra("ContractName");
-        intentIcon = intent.getStringExtra("ContractIcon");
+        mIntentUserName = intent.getStringExtra("ContractName");
+        mIntentIcon = intent.getStringExtra("ContractIcon");
         String cancelNickNameIntent = intent.getStringExtra("cancelSetNickName");
         String cancelNickNameIntentIcon = intent.getStringExtra("cancelSetNickNameIcon");
         String changedNickNameIntent = intent.getStringExtra("ChangedEditNickName");
-        LogUtil.d(TAG, "intentUserName = " + intentUserName);
+        LogUtil.d(TAG, "intentUserName = " + mIntentUserName);
         LogUtil.d(TAG, "changedNickNameIntent = " + changedNickNameIntent);
-        LogUtil.d(TAG, "disNickName = " + disNickName);
+        LogUtil.d(TAG, "disNickName = " + mDisNickName);
         LogUtil.d(TAG, "cancelNickNameIntent = " + cancelNickNameIntent);
 
-        if(intentIcon ==null){
-            intentIconTmp = cancelNickNameIntentIcon;
+        if(mIntentIcon ==null){
+            mIntentIconTmp = cancelNickNameIntentIcon;
         } else {
-            intentIconTmp = intentIcon;
+            mIntentIconTmp = mIntentIcon;
         }
-        if(intentUserName == null){
-            modifyNickNameTvDis.setText(changedNickNameIntent);
-            intentUserName2 = changedNickNameIntent;
+        if(mIntentUserName == null){
+            tvDisNickName.setText(changedNickNameIntent);
+            mIntentUserName2 = changedNickNameIntent;
             if(changedNickNameIntent == null){
-                modifyNickNameTvDis.setText(cancelNickNameIntent);
-                intentUserName2 = cancelNickNameIntent;
+                tvDisNickName.setText(cancelNickNameIntent);
+                mIntentUserName2 = cancelNickNameIntent;
 
                 if(cancelNickNameIntent.indexOf("管理员") == -1){
                     //非管理员用户
-                    delectThisUser.setVisibility(View.VISIBLE);
+                    tvDelectThisUser.setVisibility(View.VISIBLE);
                 } else {
                     //管理员用户
-                    adminUnbind.setVisibility(View.VISIBLE);
+                    tvAdminUnbind.setVisibility(View.VISIBLE);
                 }
             } else {
                 if(changedNickNameIntent.indexOf("管理员") == -1){
                     //非管理员用户
-                    delectThisUser.setVisibility(View.VISIBLE);
+                    tvDelectThisUser.setVisibility(View.VISIBLE);
                 } else {
                     //管理员用户
-                    adminUnbind.setVisibility(View.VISIBLE);
+                    tvAdminUnbind.setVisibility(View.VISIBLE);
                 }
             }
         } else {
-            modifyNickNameTvDis.setText(intentUserName);
-            intentUserName2 = intentUserName;
-            if((intentUserName.indexOf("管理员")) == -1){
+            tvDisNickName.setText(mIntentUserName);
+            mIntentUserName2 = mIntentUserName;
+            if((mIntentUserName.indexOf("管理员")) == -1){
                 //非管理员用户
-                delectThisUser.setVisibility(View.VISIBLE);
+                tvDelectThisUser.setVisibility(View.VISIBLE);
             } else {
                 //管理员用户
-                adminUnbind.setVisibility(View.VISIBLE);
+                tvAdminUnbind.setVisibility(View.VISIBLE);
             }
         }
-        userName.setText(getString(R.string.settings_contract_info_username) + intentUserName);
-        ImageUtils.loadImg(getApplicationContext(), nickNameIcon, intentIconTmp);
+        tvDisUserName.setText(getString(R.string.settings_contract_info_username) + mIntentUserName);
+        ImageUtils.loadImg(getApplicationContext(), civUserIcon, mIntentIconTmp);
 
     }
 
     @Override
     public void initListener() {
-        backTv.setOnClickListener(new View.OnClickListener() {
+        ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent backIntent = new Intent(SettingsDeviceContractsNickNameActivity.this, SettingsDeviceContractsActivity.class);
@@ -150,26 +154,26 @@ public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<Set
                 finish();
             }
         });
-        modifyNickNameTv.setOnClickListener(new View.OnClickListener() {
+        tvModifyNickName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent clickChangeNickNameIntent = new Intent(SettingsDeviceContractsNickNameActivity.this, SettingsContractsNickNameEditActivity.class);
-                clickChangeNickNameIntent.putExtra("clickChangedNickName", intentUserName2);
-                clickChangeNickNameIntent.putExtra("clickChangedNickNameIcon", intentIcon);
+                clickChangeNickNameIntent.putExtra("clickChangedNickName", mIntentUserName2);
+                clickChangeNickNameIntent.putExtra("clickChangedNickNameIcon", mIntentIcon);
                 startActivity(clickChangeNickNameIntent);
                 finish();
             }
         });
-        delectThisUser.setOnClickListener(new View.OnClickListener() {
+        tvDelectThisUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String delecteUserName = null;
-                if((intentUserName2.indexOf("管理员")) == -1) {
+                if((mIntentUserName2.indexOf("管理员")) == -1) {
                     //非管理员用户
-                    delecteUserName = intentUserName2;
+                    delecteUserName = mIntentUserName2;
                 } else {
                     //管理员用户
-                    delecteUserName = intentUserName2.replace("(管理员)","");
+                    delecteUserName = mIntentUserName2.replace("(管理员)","");
                 }
                 final String delecteUserId=  ContentProviderManager.getInstance(SettingsDeviceContractsNickNameActivity.this, mUri).getUserID(delecteUserName);
                 if(SettingsWifiUtil.isWifiEnabled(getApplicationContext())){
@@ -197,7 +201,7 @@ public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<Set
                 }
             }
         });
-        adminUnbind.setOnClickListener(new View.OnClickListener() {
+        tvAdminUnbind.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(SettingsWifiUtil.isWifiEnabled(getApplicationContext())){

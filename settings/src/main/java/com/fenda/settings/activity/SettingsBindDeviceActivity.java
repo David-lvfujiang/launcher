@@ -51,13 +51,14 @@ import java.util.List;
 public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresenter, SettingsModel> implements SettingsContract.View {
     private static final String TAG = "SettingsBindDeviceActivity";
 
+    private ImageView ivDisQRcode;
+    private TextView tvDisVcodeNum;
+    private TextView tvDisVcodeText;
+
+    private final String mContentET = "http://www.fenda.com/?sn=" + SettingsContant.SETTINGS_SERIAL_NUM;
+    private String BaseEvn = SettingsContant.TEST_BASE_URL;
     public static final int DISABLE_EXPAND = 0x00010000;
     public static final int DISABLE_NONE = 0x00000000;
-    ImageView imageView;
-    TextView disQR, bindVcodeTv;
-
-    final String contentET = "http://www.fenda.com/?sn=" + SettingsContant.SETTINGS_SERIAL_NUM;
-    private String env = SettingsContant.TEST_BASE_URL;
 
     @Override
     protected void initPresenter() {
@@ -94,19 +95,19 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void initView() {
-        bindVcodeTv = findViewById(R.id.bind_vcode);
-        imageView = findViewById(R.id.create_qr_iv);
-        disQR = findViewById(R.id.bind_QRsn);
+        tvDisVcodeText = findViewById(R.id.bind_vcode);
+        ivDisQRcode = findViewById(R.id.create_qr_iv);
+        tvDisVcodeNum = findViewById(R.id.bind_QRsn);
 
-        LogUtil.d(TAG, "env = " + env);
-        if("http://192.168.100.127:8998/smartsound/".equals(env)) {
-            bindVcodeTv.setText("验证码(测试环境)");
-            bindVcodeTv.setTextColor(getColor(R.color.settings_colorAccent));
-            bindVcodeTv.setTextSize(22);
-        } else if("http://192.168.43.34:8998/smartsound/".equals(env)){
-            bindVcodeTv.setText("验证码(192.198.43.34)");
-            bindVcodeTv.setTextColor(getColor(R.color.settings_colorAccent));
-            bindVcodeTv.setTextSize(22);
+        LogUtil.d(TAG, "env = " + BaseEvn);
+        if("http://192.168.100.127:8998/smartsound/".equals(BaseEvn)) {
+            tvDisVcodeText.setText("验证码(测试环境)");
+            tvDisVcodeText.setTextColor(getColor(R.color.settings_colorAccent));
+            tvDisVcodeText.setTextSize(22);
+        } else if("http://192.168.43.34:8998/smartsound/".equals(BaseEvn)){
+            tvDisVcodeText.setText("验证码(192.198.43.34)");
+            tvDisVcodeText.setTextColor(getColor(R.color.settings_colorAccent));
+            tvDisVcodeText.setTextSize(22);
         }
         sendMicDisableBroad();
     }
@@ -207,19 +208,19 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
         new Thread(new Runnable() {
             @Override
             public void run() {
-                boolean success = QRcodeUtil.createQRImage(contentET, 1000, 1000, null, filePath2);
+                boolean success = QRcodeUtil.createQRImage(mContentET, 1000, 1000, null, filePath2);
 
                 if (success) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            imageView.setImageBitmap(BitmapFactory.decodeFile(filePath2));
+                            ivDisQRcode.setImageBitmap(BitmapFactory.decodeFile(filePath2));
                         }
                     });
                 }
             }
         }).start();
-        disQR.setText(response.getData().getVcode());
+        tvDisVcodeNum.setText(response.getData().getVcode());
     }
 
     @Override

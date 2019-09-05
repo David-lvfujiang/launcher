@@ -50,11 +50,11 @@ import io.reactivex.functions.Consumer;
 public class SettingsDeviceContractsActivity extends BaseMvpActivity {
     private static final String TAG = "SettingsDeviceContractsActivity";
 
-    RecyclerView recyclerView;
-    TextView cancel;
-    private ImageView addContacts;
+    private RecyclerView rvContrants;
+    private TextView tvCancel;
+    private ImageView ivAddContacts;
 
-    private MyContractAdapter mAadapter;
+    private MyContractAdapter mMyContractAdapter;
     private List<UserInfoBean> mContractList;
     private Uri mUri = Uri.parse(ContentProviderManager.BASE_URI + "/user");
     @Override
@@ -69,21 +69,21 @@ public class SettingsDeviceContractsActivity extends BaseMvpActivity {
 
     @Override
     public void initView() {
-        recyclerView = findViewById(R.id.bind_contacts_listview);
-        cancel = findViewById(R.id.bind_contacts_back_iv);
-        addContacts = findViewById(R.id.add_contacts_tv);
+        rvContrants = findViewById(R.id.bind_contacts_listview);
+        tvCancel = findViewById(R.id.bind_contacts_back_iv);
+        ivAddContacts = findViewById(R.id.add_contacts_tv);
 
         mContractList = new ArrayList<>();
-        addContacts.bringToFront();
+        ivAddContacts.bringToFront();
         mContractList = ContentProviderManager.getInstance(getApplicationContext(), mUri).queryUser(null, null);
         LogUtil.d(TAG, "getContactsListSuccess ContractList = " +mContractList);
 
         //设置为垂直5列
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(5,StaggeredGridLayoutManager.VERTICAL));
+        rvContrants.setLayoutManager(new StaggeredGridLayoutManager(5,StaggeredGridLayoutManager.VERTICAL));
         //设置默认动画
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        mAadapter = new MyContractAdapter(getLayoutInflater(), mContractList);
-        recyclerView.setAdapter(mAadapter);
+        rvContrants.setItemAnimator(new DefaultItemAnimator());
+        mMyContractAdapter = new MyContractAdapter(getLayoutInflater(), mContractList);
+        rvContrants.setAdapter(mMyContractAdapter);
     }
 
     @SuppressLint("CheckResult")
@@ -93,7 +93,7 @@ public class SettingsDeviceContractsActivity extends BaseMvpActivity {
 
     @Override
     public void initListener() {
-        addContacts.setOnClickListener(new View.OnClickListener() {
+        ivAddContacts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent addIntent = new Intent(SettingsDeviceContractsActivity.this, SettingsDeviceAddContractsQRActivity.class);
@@ -101,7 +101,7 @@ public class SettingsDeviceContractsActivity extends BaseMvpActivity {
                 finish();
             }
         });
-        cancel.setOnClickListener(new View.OnClickListener() {
+        tvCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent backBindInfoIntent = new Intent(SettingsDeviceContractsActivity.this, SettingsDeviceCenterActivity.class);

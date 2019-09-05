@@ -24,17 +24,17 @@ import com.fenda.settings.R;
 public class SettingsVolumeActivity extends BaseMvpActivity {
     private static final String TAG = "SettingsVolumeActivity";
 
-    private ImageView volumeBackIv;
-    private ImageView volumeIconIv;
+    private ImageView ivBack;
+    private ImageView ivVolumeIcon;
+    private SeekBar volumeBar;
 
-    SeekBar volumeBar;
-
-    private AudioManager mAudioManager;
-    private int maxVolume, currentVolume;
+    private int mMaxVolume;
+    private int mCurrentVolume;
     private boolean mRegistered;
 
-    MyVolumeReceiver mVolumeReceiver;
-    //    MyVolumeSeekBarChangeListener myVolumeSeekBarChangeListener;
+    private AudioManager mAudioManager;
+    private MyVolumeReceiver mMyVolumeReceiver;
+
     @Override
     protected void initPresenter() {
 
@@ -47,21 +47,21 @@ public class SettingsVolumeActivity extends BaseMvpActivity {
 
     @Override
     public void initView() {
-        volumeBackIv = findViewById(R.id.volume_back_iv);
+        ivBack = findViewById(R.id.volume_back_iv);
         volumeBar = findViewById(R.id.volume_seekbar);
-        volumeIconIv = findViewById(R.id.volume_icon);
-        mVolumeReceiver = new MyVolumeReceiver();
+        ivVolumeIcon = findViewById(R.id.volume_icon);
+        mMyVolumeReceiver = new MyVolumeReceiver();
 //        myVolumeSeekBarChangeListener = new MyVolumeSeekBarChangeListener();
         //获取系统的Audio管理者
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         //最大音量
-        maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        mMaxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         //当前音量
-        currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        LogUtil.d(TAG, "current volume = " + currentVolume);
+        mCurrentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        LogUtil.d(TAG, "current volume = " + mCurrentVolume);
         //seekbar设置最大值为最大音量，这样设置当前进度时不用换算百分比了
-        volumeBar.setMax(maxVolume);
-        volumeBar.setProgress(currentVolume);
+        volumeBar.setMax(mMaxVolume);
+        volumeBar.setProgress(mCurrentVolume);
         myRegisterVolumeReceiver();//注册同步更新的广播
 //        volumeBar.setOnSeekBarChangeListener(new MyVolumeSeekBarChangeListener());
     }
@@ -73,14 +73,14 @@ public class SettingsVolumeActivity extends BaseMvpActivity {
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 //设置媒体音量为当前seekbar进度
                 mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, i, 0);
-                currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+                mCurrentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
                 if(i == 0) {
-                    volumeIconIv.setImageResource(R.mipmap.settings_volume_mute);
+                    ivVolumeIcon.setImageResource(R.mipmap.settings_volume_mute);
                 } else {
-                    volumeIconIv.setImageResource(R.mipmap.settings_volume);
+                    ivVolumeIcon.setImageResource(R.mipmap.settings_volume);
                 }
                 LogUtil.d(TAG, "volume = " + i);
-                LogUtil.d(TAG, "currentVolume 2 = " + currentVolume);
+                LogUtil.d(TAG, "currentVolume 2 = " + mCurrentVolume);
                 volumeBar.setProgress(i);
             }
 
@@ -98,7 +98,7 @@ public class SettingsVolumeActivity extends BaseMvpActivity {
 
     @Override
     public void initListener() {
-        volumeBackIv.setOnClickListener(new View.OnClickListener() {
+        ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
@@ -112,7 +112,7 @@ public class SettingsVolumeActivity extends BaseMvpActivity {
     private void myRegisterVolumeReceiver(){
         IntentFilter filter = new IntentFilter() ;
         filter.addAction("android.media.VOLUME_CHANGED_ACTION") ;
-        this.registerReceiver(mVolumeReceiver, filter) ;
+        this.registerReceiver(mMyVolumeReceiver, filter) ;
         mRegistered = true;
     }
     /**
@@ -121,7 +121,7 @@ public class SettingsVolumeActivity extends BaseMvpActivity {
     public void unregisterVolumeReceiver() {
         if (mRegistered) {
             try {
-                this.unregisterReceiver(mVolumeReceiver);
+                this.unregisterReceiver(mMyVolumeReceiver);
 //            myVolumeSeekBarChangeListener = null;
                 mRegistered = false;
             }  catch (Exception e) {

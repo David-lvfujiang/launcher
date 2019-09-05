@@ -42,15 +42,15 @@ import java.util.Map;
 public class SettingsActivity extends BaseMvpActivity   {
     private static final String TAG = "SettingsActivity";
 
-    private ImageView setBackIv;
-    private TextView disDeviceNameTv;
-    private ListView disSetListItemLv;
-    private LinearLayout deviceCenterLL;
+    private ImageView ivBack;
+    private TextView tvDisDeviceName;
+    private ListView lvDisSetListItem;
+    private LinearLayout llDeviceCenter;
 
-    private String wifiSSID;
+    private String mConnectedWifiSSID;
+    private SimpleAdapter mSimpleAdapter;
+    private ArrayList<HashMap<String,String>> mArrayListData;
 
-    private SimpleAdapter listViewAdapter;
-    private ArrayList<HashMap<String,String>> listitemData;
     @Override
     protected void initPresenter() {
 
@@ -63,10 +63,10 @@ public class SettingsActivity extends BaseMvpActivity   {
 
     @Override
     public void initView() {
-        setBackIv = findViewById(R.id.set_back_iv);
-        disDeviceNameTv = findViewById(R.id.set_first_info_name);
-        disSetListItemLv = findViewById(R.id.set_items_iv);
-        deviceCenterLL = findViewById(R.id.set_first_info_layout);
+        ivBack = findViewById(R.id.set_back_iv);
+        tvDisDeviceName = findViewById(R.id.set_first_info_name);
+        lvDisSetListItem = findViewById(R.id.set_items_iv);
+        llDeviceCenter = findViewById(R.id.set_first_info_layout);
         IntentFilter filter = new IntentFilter();
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         registerReceiver(mwifiReceiver, filter);
@@ -77,29 +77,29 @@ public class SettingsActivity extends BaseMvpActivity   {
         String[] listItemName = new String[] {getString(R.string.settings_set_names_list_wifi), getString(R.string.settings_set_names_list_bluetooth), getString(R.string.settings_set_names_list_light), getString(R.string.settings_set_names_list_volume), getString(R.string.settings_set_names_list_deviceinfo), getString(R.string.settings_set_names_list_about)};
         String[] listItemStatus = new String[]{getString(R.string.settings_set_status_wifi_noconnect) ,"", "", "", "", ""};
 
-        listitemData = new ArrayList<>();
+        mArrayListData = new ArrayList<>();
         for (int i = 0; i < listItemName.length; i++) {
             HashMap<String, String> map = new HashMap<>();
             map.put("name", listItemName[i]);
             map.put("state", listItemStatus[i]);
-            listitemData.add(map);
+            mArrayListData.add(map);
         }
-        listViewAdapter = new SimpleAdapter(this, listitemData, R.layout.settings_main_items_layout, new String[]{"name", "state"}, new int[]{R.id.set_items, R.id.set_items_status});
-        disSetListItemLv.setAdapter(listViewAdapter);
+        mSimpleAdapter = new SimpleAdapter(this, mArrayListData, R.layout.settings_main_items_layout, new String[]{"name", "state"}, new int[]{R.id.set_items, R.id.set_items_status});
+        lvDisSetListItem.setAdapter(mSimpleAdapter);
 
         String deviceName = (String) SPUtils.get(BaseApplication.getInstance(), Constant.Settings.DEVICE_NAME, "");
-        disDeviceNameTv.setText(deviceName);
+        tvDisDeviceName.setText(deviceName);
     }
 
     @Override
     public void initListener() {
-        setBackIv.setOnClickListener(new View.OnClickListener() {
+        ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
-        deviceCenterLL.setOnClickListener(new View.OnClickListener() {
+        llDeviceCenter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent SetDeviceCenterIntent = new Intent(SettingsActivity.this, SettingsDeviceCenterActivity.class);
@@ -107,7 +107,7 @@ public class SettingsActivity extends BaseMvpActivity   {
                 finish();
             }
         });
-        disSetListItemLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lvDisSetListItem.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Map<String, Object> map = (Map<String, Object>) parent.getItemAtPosition(position);
@@ -142,7 +142,7 @@ public class SettingsActivity extends BaseMvpActivity   {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 200){
-            listitemData.remove(0);
+            mArrayListData.remove(0);
             HashMap<String,String> params = new HashMap<>();
             String wifiName = (String) SPUtils.get(this,"WifiName","");
             params.put("name","WIFI");
@@ -151,8 +151,8 @@ public class SettingsActivity extends BaseMvpActivity   {
             } else{
                 params.put("state",getString(R.string.settings_set_status_wifi_noconnect));
             }
-            listitemData.add(0,params);
-            listViewAdapter.notifyDataSetChanged();
+            mArrayListData.add(0,params);
+            mSimpleAdapter.notifyDataSetChanged();
         }
     }
 
@@ -168,17 +168,17 @@ public class SettingsActivity extends BaseMvpActivity   {
                     Log.i(TAG, "wifi没连接上");
                 } else if (NetworkInfo.State.CONNECTED == info.getState()) { //wifi连接上了
                     Log.i(TAG, "wifi连接上了");
-                    listitemData.remove(0);
+                    mArrayListData.remove(0);
                     HashMap<String,String> params = new HashMap<>();
                     WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-                    wifiSSID = wifiManager.getConnectionInfo().getSSID();
-                    wifiSSID = wifiSSID.substring(1,wifiSSID.length()-1);
-                    LogUtil.d(TAG,  "back wifi name = " + wifiSSID);
+                    mConnectedWifiSSID = wifiManager.getConnectionInfo().getSSID();
+                    mConnectedWifiSSID = mConnectedWifiSSID.substring(1,mConnectedWifiSSID.length()-1);
+                    LogUtil.d(TAG,  "back wifi name = " + mConnectedWifiSSID);
                     params.put("name","WIFI");
-                    params.put("state","已连接("+wifiSSID+")");
+                    params.put("state","已连接("+mConnectedWifiSSID+")");
 
-                    listitemData.add(0,params);
-                    listViewAdapter.notifyDataSetChanged();
+                    mArrayListData.add(0,params);
+                    mSimpleAdapter.notifyDataSetChanged();
 
 //                    deviceStatusActivity.judgeviceStatus(getApplicationContext());
                 } else if (NetworkInfo.State.CONNECTING == info.getState()) {//正在连接

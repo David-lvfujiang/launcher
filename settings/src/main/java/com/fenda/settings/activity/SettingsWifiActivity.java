@@ -48,25 +48,27 @@ import java.util.List;
 public class SettingsWifiActivity extends BaseMvpActivity{
     private static final String TAG = "SettingsWifiActivity";
 
-    Switch wifiSwitch;
-    private RecyclerView mlistView;
-    protected SettingsWifiUtil mWifiAdmin;
-    private List<SettingsWifiBean> mWifiList;
+    private Switch wifiSwitch;
+    private RecyclerView rvWifiList;
+    private TextView tvBack;
+    private ImageView ivScanWifiGif;
+    private TextView tvScanWifiTv;
+
+    private WifiManager mWifiManager;
+    private AnimationDrawable mAnimationDrawable;
+    protected SettingsWifiUtil mSettingsWifiUtil;
+    private List<SettingsWifiBean> mScanWifiListBeant;
+    private MyWifiAdapter mMyWifiAdapter;
+
     public int level;
     protected String ssid;
-    private TextView setWifiBack;
     private String wifiSSID;
-    private MyAdapter mAadapter;
     private int status  = 0;
 
     private final static int  OPEN_WIFI = 1;
     private final static int  CLOSE_WIFI = 0;
 
-    WifiManager wifiManager;
-    String connectedSSID;
-    private ImageView mScanWifiGif;
-    private TextView ScanWifiTv;
-    private AnimationDrawable animationDrawable;
+    private String connectedSSID;
 
     @Override
     protected void initPresenter() {
@@ -80,26 +82,26 @@ public class SettingsWifiActivity extends BaseMvpActivity{
 
     @Override
     public void initView() {
-        ScanWifiTv = findViewById(R.id.scan_wifi_tv);
-        mScanWifiGif = findViewById(R.id.scan_wifi_iv);
-        mlistView= findViewById(R.id.set_wifi_listview);
+        tvScanWifiTv = findViewById(R.id.scan_wifi_tv);
+        ivScanWifiGif = findViewById(R.id.scan_wifi_iv);
+        rvWifiList= findViewById(R.id.set_wifi_listview);
         wifiSwitch = findViewById(R.id.wifi_switch);
-        setWifiBack = findViewById(R.id.set_wifi_back_iv);
+        tvBack = findViewById(R.id.set_wifi_back_iv);
 
 
-        mlistView.setLayoutManager(new LinearLayoutManager(this));
-        mlistView.setItemAnimator(new DefaultItemAnimator());
-        mWifiList = new ArrayList<>();
-        mAadapter = new MyAdapter(getLayoutInflater(), mWifiList);
-        mlistView.setAdapter(mAadapter);
-        mWifiAdmin = new SettingsWifiUtil(SettingsWifiActivity.this);
+        rvWifiList.setLayoutManager(new LinearLayoutManager(this));
+        rvWifiList.setItemAnimator(new DefaultItemAnimator());
+        mScanWifiListBeant = new ArrayList<>();
+        mMyWifiAdapter = new MyWifiAdapter(getLayoutInflater(), mScanWifiListBeant);
+        rvWifiList.setAdapter(mMyWifiAdapter);
+        mSettingsWifiUtil = new SettingsWifiUtil(SettingsWifiActivity.this);
 
-        wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+        mWifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
 
-        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        WifiInfo wifiInfo = mWifiManager.getConnectionInfo();
         connectedSSID = wifiInfo.getSSID().replace("\"", "");
 
-        if (!wifiManager.isWifiEnabled()) {
+        if (!mWifiManager.isWifiEnabled()) {
             wifiSwitch.setChecked(false);
         } else {
             wifiSwitch.setChecked(true);
@@ -124,24 +126,24 @@ public class SettingsWifiActivity extends BaseMvpActivity{
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked) {
                     LogUtil.d(TAG, "wifi switch is on ");
-                    mWifiAdmin.openWifi(getApplicationContext());
-                    ScanWifiTv.setVisibility(View.VISIBLE);
-                    mScanWifiGif.setVisibility(View.VISIBLE);
-                    mScanWifiGif.setImageResource(R.drawable.settings_network_loading_gif);
-                    animationDrawable = (AnimationDrawable) mScanWifiGif.getDrawable();
-                    animationDrawable.start();
+                    mSettingsWifiUtil.openWifi(getApplicationContext());
+                    tvScanWifiTv.setVisibility(View.VISIBLE);
+                    ivScanWifiGif.setVisibility(View.VISIBLE);
+                    ivScanWifiGif.setImageResource(R.drawable.settings_network_loading_gif);
+                    mAnimationDrawable = (AnimationDrawable) ivScanWifiGif.getDrawable();
+                    mAnimationDrawable.start();
                     mHandler.post(runnable);
                 } else{
                     LogUtil.d(TAG, "wifi switch is off ");
-                    mWifiAdmin.closeWifi(SettingsWifiActivity.this);
-                    ScanWifiTv.setVisibility(View.GONE);
-                    mScanWifiGif.setVisibility(View.GONE);
-                    mScanWifiGif.setImageResource(R.drawable.settings_network_loading_gif);
-                    animationDrawable = (AnimationDrawable) mScanWifiGif.getDrawable();
-                    animationDrawable.stop();
+                    mSettingsWifiUtil.closeWifi(SettingsWifiActivity.this);
+                    tvScanWifiTv.setVisibility(View.GONE);
+                    ivScanWifiGif.setVisibility(View.GONE);
+                    ivScanWifiGif.setImageResource(R.drawable.settings_network_loading_gif);
+                    mAnimationDrawable = (AnimationDrawable) ivScanWifiGif.getDrawable();
+                    mAnimationDrawable.stop();
 
-                    mWifiList.clear();
-                    mlistView.setAdapter(null);
+                    mScanWifiListBeant.clear();
+                    rvWifiList.setAdapter(null);
                     mHandler.removeCallbacks(runnable);
                 }
             }
@@ -153,30 +155,30 @@ public class SettingsWifiActivity extends BaseMvpActivity{
         public void run() {
             LogUtil.d("Runnable");
 
-            if (!wifiManager.isWifiEnabled()) {
+            if (!mWifiManager.isWifiEnabled()) {
                 LogUtil.d(TAG, "wifi is unable ~");
             } else {
-                mWifiAdmin.startScan(getApplicationContext());
-                mWifiList.clear();
-                LogUtil.d(TAG, "mWifiList = " + mWifiList.size());
-                mWifiList.addAll(mWifiAdmin.getWifiList(2, connectedSSID));
-                LogUtil.d(TAG, "mWifiList 2 = " + mWifiList.size());
+                mSettingsWifiUtil.startScan(getApplicationContext());
+                mScanWifiListBeant.clear();
+                LogUtil.d(TAG, "mWifiList = " + mScanWifiListBeant.size());
+                mScanWifiListBeant.addAll(mSettingsWifiUtil.getWifiList(2, connectedSSID));
+                LogUtil.d(TAG, "mWifiList 2 = " + mScanWifiListBeant.size());
 
-                if(mWifiList.size() > 0) {
-                    ScanWifiTv.setVisibility(View.GONE);
-                    mScanWifiGif.setVisibility(View.GONE);
-                    mScanWifiGif.setImageResource(R.drawable.settings_network_loading_gif);
-                    animationDrawable = (AnimationDrawable) mScanWifiGif.getDrawable();
-                    animationDrawable.stop();
-                    mlistView.setAdapter(mAadapter);
-                    mAadapter.notifyDataSetChanged();
+                if(mScanWifiListBeant.size() > 0) {
+                    tvScanWifiTv.setVisibility(View.GONE);
+                    ivScanWifiGif.setVisibility(View.GONE);
+                    ivScanWifiGif.setImageResource(R.drawable.settings_network_loading_gif);
+                    mAnimationDrawable = (AnimationDrawable) ivScanWifiGif.getDrawable();
+                    mAnimationDrawable.stop();
+                    rvWifiList.setAdapter(mMyWifiAdapter);
+                    mMyWifiAdapter.notifyDataSetChanged();
                 } else {
-                    mlistView.setAdapter(null);
-                    ScanWifiTv.setVisibility(View.VISIBLE);
-                    mScanWifiGif.setVisibility(View.VISIBLE);
-                    mScanWifiGif.setImageResource(R.drawable.settings_network_loading_gif);
-                    animationDrawable = (AnimationDrawable) mScanWifiGif.getDrawable();
-                    animationDrawable.start();
+                    rvWifiList.setAdapter(null);
+                    tvScanWifiTv.setVisibility(View.VISIBLE);
+                    ivScanWifiGif.setVisibility(View.VISIBLE);
+                    ivScanWifiGif.setImageResource(R.drawable.settings_network_loading_gif);
+                    mAnimationDrawable = (AnimationDrawable) ivScanWifiGif.getDrawable();
+                    mAnimationDrawable.start();
                 }
             }
             mHandler.postDelayed(runnable,8000); // 执行后延迟1000毫秒再次执行，count已++
@@ -194,8 +196,8 @@ public class SettingsWifiActivity extends BaseMvpActivity{
 
                     break;
                 case CLOSE_WIFI:
-                    mWifiAdmin.closeWifi(SettingsWifiActivity.this);
-                    mWifiList.clear();
+                    mSettingsWifiUtil.closeWifi(SettingsWifiActivity.this);
+//                    rvWifiList.cl
                 default:
                     break;
             }
@@ -204,7 +206,7 @@ public class SettingsWifiActivity extends BaseMvpActivity{
 
     @Override
     public void initListener() {
-        setWifiBack.setOnClickListener(new View.OnClickListener() {
+        tvBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 setResult(100);
@@ -217,11 +219,11 @@ public class SettingsWifiActivity extends BaseMvpActivity{
 
     }
 
-    public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    public class MyWifiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         LayoutInflater inflater;
         List<SettingsWifiBean> list;
 
-        public MyAdapter(LayoutInflater inflater, List<SettingsWifiBean> list) {
+        public MyWifiAdapter(LayoutInflater inflater, List<SettingsWifiBean> list) {
             this.inflater = inflater;
             this.list = list;
         }
@@ -253,8 +255,8 @@ public class SettingsWifiActivity extends BaseMvpActivity{
 
                 mHolder.connectWifiLoading.setVisibility(View.VISIBLE);
                 mHolder.connectWifiLoading.setImageResource(R.drawable.settings_wifi_connecting_gif);
-                animationDrawable = (AnimationDrawable) mHolder.connectWifiLoading.getDrawable();
-                animationDrawable.start();
+                mAnimationDrawable = (AnimationDrawable) mHolder.connectWifiLoading.getDrawable();
+                mAnimationDrawable.start();
                 mHolder.connectWifiIcon.setVisibility(View.GONE);
             } else if (status == 2){  //wifi连接上了
                 LogUtil.d(TAG, "wifi 连接上了 connect sucess ");
@@ -264,8 +266,8 @@ public class SettingsWifiActivity extends BaseMvpActivity{
 
                 mHolder.connectWifiLoading.setVisibility(View.GONE);
                 mHolder.connectWifiLoading.setImageResource(R.drawable.settings_wifi_connecting_gif);
-                animationDrawable = (AnimationDrawable) mHolder.connectWifiLoading.getDrawable();
-                animationDrawable.stop();
+                mAnimationDrawable = (AnimationDrawable) mHolder.connectWifiLoading.getDrawable();
+                mAnimationDrawable.stop();
                 SPUtils.put(SettingsWifiActivity.this, "WifiName", wifiSSID);
 
                 //wifiSwitch.setClickable(true);
@@ -289,15 +291,15 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                 @Override
                 public void onClick(View v) {
                     WifiConfiguration config = new WifiConfiguration();
-                    WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+                    WifiInfo wifiInfo = mWifiManager.getConnectionInfo();
                     String connectedSSID = wifiInfo.getSSID().replace("\"", "");
 
-                    ssid = mWifiList.get(position).getResult().SSID;
+                    ssid = mScanWifiListBeant.get(position).getResult().SSID;
 
                     LogUtil.d(TAG, "connected wifi ssid = " + connectedSSID);
                     LogUtil.d(TAG, "clicked wifi ssid = " + ssid);
 
-                    List<WifiConfiguration> wifiConfigurationList = mWifiAdmin.getConfiguration();
+                    List<WifiConfiguration> wifiConfigurationList = mSettingsWifiUtil.getConfiguration();
                     LogUtil.d(TAG, "wifiConfigurationList = " + wifiConfigurationList);
 
                     if(connectedSSID.equals(ssid)) {// startActivity(new Intent(SettingsWifiActivity.this, FDWifiConnectConfigActivity.class));
@@ -309,13 +311,13 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                         finish();
                     } else {
                         //WiFi是否已经保存
-                        LogUtil.d(TAG,  "save wifi flag = " + mWifiAdmin.isWifiSave(ssid));
-                        if(mWifiAdmin.isWifiSave(ssid)){
+                        LogUtil.d(TAG,  "save wifi flag = " + mSettingsWifiUtil.isWifiSave(ssid));
+                        if(mSettingsWifiUtil.isWifiSave(ssid)){
                             //点击连接
-                            int ssidID = mWifiAdmin.getNetworkId(ssid);
+                            int ssidID = mSettingsWifiUtil.getNetworkId(ssid);
                             LogUtil.d(TAG,  "save wifi id clicked = " + ssidID);
 //                            mWifiAdmin.connectConfiguration(ssidID);
-                            wifiManager.enableNetwork(ssidID, true);
+                            mWifiManager.enableNetwork(ssidID, true);
                         } else {
                             if(scanResult.capabilities.contains("WEP")||scanResult.capabilities.contains("PSK") || scanResult.capabilities.contains("EAP")){
                                 //密码连接
@@ -374,8 +376,8 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                     case WifiManager.WIFI_STATE_DISABLED: {
                         Log.i(TAG, "已经关闭");
                         status = 0;
-                        mWifiList.clear();
-                        mlistView.setAdapter(null);
+                        mScanWifiListBeant.clear();
+                        rvWifiList.setAdapter(null);
 //                        mAadapter.notifyDataSetChanged();
                         mHandler.removeCallbacks(runnable);
                         SPUtils.remove(SettingsWifiActivity.this, "WifiName");
@@ -422,42 +424,42 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                     String extra = info.getExtraInfo();
                     Log.i(TAG, "extra = " + extra);
                     extra = extra.substring(1, extra.length() - 1);
-                    mWifiAdmin.startScan(SettingsWifiActivity.this);
-                    mWifiList.clear();
-                    mWifiList.addAll(mWifiAdmin.getWifiList(status, extra));
-                    mAadapter.notifyDataSetChanged();
+                    mSettingsWifiUtil.startScan(SettingsWifiActivity.this);
+                    mScanWifiListBeant.clear();
+                    mScanWifiListBeant.addAll(mSettingsWifiUtil.getWifiList(status, extra));
+                    mMyWifiAdapter.notifyDataSetChanged();
                 }
             } else if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(intent.getAction())) {
                 Log.i(TAG, "网络列表变化了");
-                if (!wifiManager.isWifiEnabled()) {
+                if (!mWifiManager.isWifiEnabled()) {
 
                 } else {
-                    mWifiAdmin.startScan(getApplicationContext());
-                    mWifiList.clear();
-                    LogUtil.d(TAG, "mWifiList = " + mWifiList.size());
+                    mSettingsWifiUtil.startScan(getApplicationContext());
+                    mScanWifiListBeant.clear();
+                    LogUtil.d(TAG, "mWifiList = " + mScanWifiListBeant.size());
                     if(status == 2){
-                        mWifiList.addAll(mWifiAdmin.getWifiList(2, connectedSSID));
-                        LogUtil.d(TAG, "mWifiList status 2 = " + mWifiList.size());
+                        mScanWifiListBeant.addAll(mSettingsWifiUtil.getWifiList(2, connectedSSID));
+                        LogUtil.d(TAG, "mWifiList status 2 = " + mScanWifiListBeant.size());
                     } else {
-                        mWifiList.addAll(mWifiAdmin.getWifiList(0, null));
-                        LogUtil.d(TAG, "mWifiList status 0 = " + mWifiList.size());
+                        mScanWifiListBeant.addAll(mSettingsWifiUtil.getWifiList(0, null));
+                        LogUtil.d(TAG, "mWifiList status 0 = " + mScanWifiListBeant.size());
                     }
 
-                    if(mWifiList.size() > 0) {
-                        ScanWifiTv.setVisibility(View.GONE);
-                        mScanWifiGif.setVisibility(View.GONE);
-                        mScanWifiGif.setImageResource(R.drawable.settings_network_loading_gif);
-                        animationDrawable = (AnimationDrawable) mScanWifiGif.getDrawable();
-                        animationDrawable.stop();
-                        mlistView.setAdapter(mAadapter);
-                        mAadapter.notifyDataSetChanged();
+                    if(mScanWifiListBeant.size() > 0) {
+                        tvScanWifiTv.setVisibility(View.GONE);
+                        ivScanWifiGif.setVisibility(View.GONE);
+                        ivScanWifiGif.setImageResource(R.drawable.settings_network_loading_gif);
+                        mAnimationDrawable = (AnimationDrawable) ivScanWifiGif.getDrawable();
+                        mAnimationDrawable.stop();
+                        rvWifiList.setAdapter(mMyWifiAdapter);
+                        mMyWifiAdapter.notifyDataSetChanged();
                     } else {
-                        mlistView.setAdapter(null);
-                        ScanWifiTv.setVisibility(View.VISIBLE);
-                        mScanWifiGif.setVisibility(View.VISIBLE);
-                        mScanWifiGif.setImageResource(R.drawable.settings_network_loading_gif);
-                        animationDrawable = (AnimationDrawable) mScanWifiGif.getDrawable();
-                        animationDrawable.start();
+                        rvWifiList.setAdapter(null);
+                        tvScanWifiTv.setVisibility(View.VISIBLE);
+                        ivScanWifiGif.setVisibility(View.VISIBLE);
+                        ivScanWifiGif.setImageResource(R.drawable.settings_network_loading_gif);
+                        mAnimationDrawable = (AnimationDrawable) ivScanWifiGif.getDrawable();
+                        mAnimationDrawable.start();
                     }
                 }
             } else if (WifiManager.SUPPLICANT_STATE_CHANGED_ACTION.equals(intent.getAction())) {
@@ -470,10 +472,10 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                     wifiSSID = wifiManager.getConnectionInfo()
                             .getSSID();
                     wifiSSID = wifiSSID.substring(1, wifiSSID.length() - 1);
-                    mWifiAdmin.startScan(SettingsWifiActivity.this);
-                    mWifiList.clear();
-                    mWifiList.addAll(mWifiAdmin.getWifiList(status, wifiSSID));
-                    mAadapter.notifyDataSetChanged();
+                    mSettingsWifiUtil.startScan(SettingsWifiActivity.this);
+                    mScanWifiListBeant.clear();
+                    mScanWifiListBeant.addAll(mSettingsWifiUtil.getWifiList(status, wifiSSID));
+                    mMyWifiAdapter.notifyDataSetChanged();
                 }
             }
         }

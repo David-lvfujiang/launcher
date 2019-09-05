@@ -10,7 +10,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
@@ -122,12 +121,25 @@ public class RetrofitHelper {
             }
 
 
-            String tBodyStr =  requestBodyToString(request.body());
-            if (tBodyStr.length() > 0){
+            if (request.body() instanceof FormBody) {
+                FormBody formBody = (FormBody) request.body();
 
-                Gson gson = new Gson();
-                TreeMap argsMap = gson.fromJson(tBodyStr, TreeMap.class);
-                allArgsTreeMap.putAll(argsMap);
+                for (int i = 0; i < formBody.size(); i++) {
+                    allArgsTreeMap.put(formBody.encodedName(i), formBody.encodedValue(i));
+                }
+                //               bodyBuilder.addEncoded(formBody.encodedName(i), formBody.encodedValue(i));
+            }
+            else {
+                String tBodyStr = requestBodyToString(request.body());
+                if (tBodyStr.length() > 0) {
+                    Gson gson = new Gson();
+                    try {
+                        TreeMap argsMap = gson.fromJson(tBodyStr, TreeMap.class);
+                        allArgsTreeMap.putAll(argsMap);
+                    } catch (Exception ex) {
+                        Log.e(TAG, "ex = " + ex + "+" + tBodyStr);
+                    }
+                }
             }
 
             String nonce = getRandomString(8);
@@ -159,8 +171,6 @@ public class RetrofitHelper {
             Log.d(TAG, "AddSignInterceptor = GET Param " + tWillMd5  + " " + tDoneMd5);
 
             request = request.newBuilder().url(httpUrl).build();
-
-
 
             return chain.proceed(request);
         }

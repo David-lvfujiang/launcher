@@ -43,9 +43,10 @@ import java.util.Map;
 public class SettingsDeviceCenterActivity extends BaseMvpActivity<SettingsPresenter, SettingsModel> implements SettingsContract.View {
     private static final String TAG = "SettingsDeviceCenterActivity";
 
-    ImageView bindInfoBack;
-    TextView bindInfoItems, bindInfoStatus;
-    ListView bindInfoListView;
+    private ImageView ivBack;
+    private TextView tvBindInfoItems;
+    private TextView tvBindInfoStatus;
+    private ListView lvBindInfo;
     private Uri mUri = Uri.parse(ContentProviderManager.BASE_URI + "/user");
 
     @Override
@@ -60,10 +61,10 @@ public class SettingsDeviceCenterActivity extends BaseMvpActivity<SettingsPresen
 
     @Override
     public void initView() {
-        bindInfoBack = findViewById(R.id.bind_info_back_iv);
-        bindInfoItems = findViewById(R.id.bind_info_items);
-        bindInfoStatus = findViewById(R.id.bind_info_items_status);
-        bindInfoListView = findViewById(R.id.bind_info_listview);
+        ivBack = findViewById(R.id.bind_info_back_iv);
+        tvBindInfoItems = findViewById(R.id.bind_info_items);
+        tvBindInfoStatus = findViewById(R.id.bind_info_items_status);
+        lvBindInfo = findViewById(R.id.bind_info_listview);
     }
 
     @Override
@@ -88,14 +89,14 @@ public class SettingsDeviceCenterActivity extends BaseMvpActivity<SettingsPresen
                 new String[]{"name", "state"}, new int[]{R.id.bind_info_items, R.id.bind_info_items_status});
         //第一个参数是上下文对象，第二个是listitem， 第三个是指定每个列表项的布局文件，第四个是指定Map对象中定义的两个键（这里通过字符串数组来指定），第五个是用于指定在布局文件中定义的id（也是用数组来指定）
 
-        bindInfoListView.setAdapter(adapter);
+        lvBindInfo.setAdapter(adapter);
 
         mPresenter.getContactsList();
     }
 
     @Override
     public void initListener() {
-        bindInfoBack.setOnClickListener(new View.OnClickListener() {
+        ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent Intent = new Intent(SettingsDeviceCenterActivity.this, SettingsActivity.class);
@@ -103,7 +104,7 @@ public class SettingsDeviceCenterActivity extends BaseMvpActivity<SettingsPresen
                 finish();
             }
         });
-        bindInfoListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lvBindInfo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Map<String, Object> map = (Map<String, Object>) parent.getItemAtPosition(position);

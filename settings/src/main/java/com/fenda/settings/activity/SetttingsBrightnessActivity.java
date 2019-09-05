@@ -27,9 +27,11 @@ import com.fenda.settings.R;
 public class SetttingsBrightnessActivity extends BaseMvpActivity {
     private static final String TAG = "SetttingsBrightnessActivity";
 
-    ImageView brightnessBack;
-    SeekBar brightnessBar;
-    int intScreenBrightness;
+    private ImageView ivBack;
+    private SeekBar brightnessBar;
+
+    private int mIntScreenBrightness;
+
     @Override
     protected void initPresenter() {
 
@@ -43,7 +45,7 @@ public class SetttingsBrightnessActivity extends BaseMvpActivity {
     @Override
     public void initView() {
         brightnessBar = findViewById(R.id.light_seekbar);
-        brightnessBack = findViewById(R.id.light_back_iv);
+        ivBack = findViewById(R.id.light_back_iv);
         brightnessBar.setMax(255);
     }
 
@@ -55,7 +57,7 @@ public class SetttingsBrightnessActivity extends BaseMvpActivity {
 
     @Override
     public void initListener() {
-        brightnessBack.setOnClickListener(new View.OnClickListener() {
+        ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
@@ -77,7 +79,7 @@ public class SetttingsBrightnessActivity extends BaseMvpActivity {
         }
         //获取当前亮度,获取失败则返回255
         try {
-            intScreenBrightness= Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
+            mIntScreenBrightness= Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
         } catch (Settings.SettingNotFoundException e) {
             e.printStackTrace();
         }
@@ -85,7 +87,7 @@ public class SetttingsBrightnessActivity extends BaseMvpActivity {
 //                Settings.System.SCREEN_BRIGHTNESS,
 //                255);
         //文本、进度条显示
-        brightnessBar.setProgress(intScreenBrightness);
+        brightnessBar.setProgress(mIntScreenBrightness);
         brightnessBar.setOnSeekBarChangeListener(new MyOnSeekBarChangeListener());
     }
 

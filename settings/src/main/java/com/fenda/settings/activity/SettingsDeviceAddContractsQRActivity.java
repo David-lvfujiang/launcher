@@ -55,9 +55,12 @@ import static com.fenda.common.util.QRcodeUtil.getFileRoot;
 public class SettingsDeviceAddContractsQRActivity extends BaseMvpActivity<SettingsPresenter, SettingsModel> implements SettingsContract.View {
     private static final String TAG = "SettingsDeviceAddContractsQRActivity";
 
-    ImageView enlargeQR;
-    TextView vcodeTV,  back;
+    private ImageView ivDisQRcode;
+    private TextView tvDisVcode;
+    private TextView tvBack;
+
     private Uri mUri = Uri.parse(ContentProviderManager.BASE_URI + "/user");
+
     @Override
     protected void initPresenter() {
         mPresenter.setVM(this, mModel);
@@ -70,9 +73,9 @@ public class SettingsDeviceAddContractsQRActivity extends BaseMvpActivity<Settin
 
     @Override
     public void initView() {
-        back = findViewById(R.id.enlarge_back);
-        enlargeQR = findViewById(R.id.enlarge_QR);
-        vcodeTV = findViewById(R.id.enlarge_vcode);
+        tvBack = findViewById(R.id.enlarge_back);
+        ivDisQRcode = findViewById(R.id.enlarge_QR);
+        tvDisVcode = findViewById(R.id.enlarge_vcode);
     }
 
     @Override
@@ -83,7 +86,7 @@ public class SettingsDeviceAddContractsQRActivity extends BaseMvpActivity<Settin
         String vcode1=getString(R.string.settings_add_qr_bind_vcode) + vcode2;
         LogUtil.d(TAG, "get vcode from SPUtils = "  + vcode1);
 
-        vcodeTV.setText(vcode1);
+        tvDisVcode.setText(vcode1);
 
         final String contentET= "http://www.fenda.com/?sn=" + SettingsContant.SETTINGS_SERIAL_NUM;
 
@@ -103,7 +106,7 @@ public class SettingsDeviceAddContractsQRActivity extends BaseMvpActivity<Settin
                         @Override
                         public void run()
                         {
-                            enlargeQR.setImageBitmap(BitmapFactory.decodeFile(filePath));
+                            ivDisQRcode.setImageBitmap(BitmapFactory.decodeFile(filePath));
                         }
                     });
                 }
@@ -113,7 +116,7 @@ public class SettingsDeviceAddContractsQRActivity extends BaseMvpActivity<Settin
 
     @Override
     public void initListener() {
-        back.setOnClickListener(new View.OnClickListener() {
+        tvBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(SettingsDeviceAddContractsQRActivity.this, SettingsDeviceContractsActivity.class));

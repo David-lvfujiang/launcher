@@ -32,15 +32,16 @@ import java.util.Map;
 public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
     private static final String TAG = "SettingsWifiConnectedInfoActivity";
 
-    ListView connectedWifiConfigListView;
-    TextView wifiNameText;
-    ImageView congifBack;
+    private ListView lvConnectedWifiConfig;
+    private TextView tvWifiName;
+    private ImageView ivBack;
 
-    SettingsWifiUtil  mWifiAdmin;
-    WifiManager mWifiManager;
-    String connectedSSID;
-    private ArrayList<HashMap<String,String>> listitem;
-    private SimpleAdapter adapter;
+    private SettingsWifiUtil  mSettingsWifiUtil;
+    private WifiManager mWifiManager;
+    private String mConnectedSSID;
+    private ArrayList<HashMap<String,String>> mListitem;
+    private SimpleAdapter mSimpleAdapter;
+
     @Override
     protected void initPresenter() {
 
@@ -53,38 +54,38 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
 
     @Override
     public void initView() {
-        connectedWifiConfigListView = findViewById(R.id.wifi_config_listview);
-        wifiNameText = findViewById(R.id.wifi_config_name_tv);
-        congifBack = findViewById(R.id.wifi_config_back_iv);
+        lvConnectedWifiConfig = findViewById(R.id.wifi_config_listview);
+        tvWifiName = findViewById(R.id.wifi_config_name_tv);
+        ivBack = findViewById(R.id.wifi_config_back_iv);
     }
 
     @Override
     public void initData() {
         Intent intent = getIntent();
-        connectedSSID = intent.getStringExtra("CONNECTED_MESSAGE");
-        wifiNameText.setText(connectedSSID);
+        mConnectedSSID = intent.getStringExtra("CONNECTED_MESSAGE");
+        tvWifiName.setText(mConnectedSSID);
 
         String[] ListName = new String[] {getString(R.string.settings_wifi_connected_cancel_save), getString(R.string.settings_wifi_connected_other)};
         String[] List1 = new String[]{"" ,"" , ""};
 
-        listitem = new ArrayList<>();
+        mListitem = new ArrayList<>();
 
         for (int i = 0; i < ListName.length; i++) {
             HashMap<String, String> map = new HashMap<>();
             map.put("name", ListName[i]);
             map.put("state", List1[i]);
-            listitem.add(map);
+            mListitem.add(map);
         }
 
-        adapter = new SimpleAdapter(this, listitem, R.layout.settings_wifi_connected_info_items_layout,
+        mSimpleAdapter = new SimpleAdapter(this, mListitem, R.layout.settings_wifi_connected_info_items_layout,
                 new String[]{"name", "state"}, new int[]{R.id.connected_wifi_config_listtv, R.id.connected_wifi_config_status});
 
-        connectedWifiConfigListView.setAdapter(adapter);
+        lvConnectedWifiConfig.setAdapter(mSimpleAdapter);
     }
 
     @Override
     public void initListener() {
-        congifBack.setOnClickListener(new View.OnClickListener() {
+        ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(SettingsWifiConnectedInfoActivity.this, SettingsWifiActivity.class));
@@ -92,13 +93,13 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
             }
         });
 
-        connectedWifiConfigListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lvConnectedWifiConfig.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Map<String, Object> map = (Map<String, Object>) parent.getItemAtPosition(position);
                 String setClickedListName = map.get("name").toString();
                 mWifiManager = (WifiManager) getApplicationContext().getSystemService(getApplicationContext().WIFI_SERVICE);
-                LogUtil.d(TAG, "取消网络保存connectedSSID = " + connectedSSID);
+                LogUtil.d(TAG, "取消网络保存connectedSSID = " + mConnectedSSID);
                 List<WifiConfiguration> wifiConfigurationList = mWifiManager.getConfiguredNetworks();
                 LogUtil.d(TAG, "wifiConfigurationList = " + wifiConfigurationList);
                 int netId1 = 0;
@@ -109,7 +110,7 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
                         String SSID  = wifiConfiguration.SSID.replace("\"", "");
                         LogUtil.d(TAG, "ssid = " + SSID);
                         // wifiSSID就是SSID
-                        if (SSID != null && SSID.equals(connectedSSID)) {
+                        if (SSID != null && SSID.equals(mConnectedSSID)) {
                             netId1 = wifiConfiguration.networkId;
                         }
                     }

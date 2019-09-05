@@ -35,10 +35,11 @@ import static java.lang.System.getProperty;
 public class SettingsDeviceInfoActivity extends BaseMvpActivity {
     private static final String TAG = "SettingsDeviceInfoActivity";
 
-    protected SettingsWifiUtil mWifiAdmin;
+    private ImageView ivBack;
+    private ListView lvDeviceInfo;
 
-    ImageView deviceInfoBack;
-    ListView deviceInfoListview;
+    protected SettingsWifiUtil mSettingsWifiUtil;
+
     @Override
     protected void initPresenter() {
 
@@ -51,11 +52,11 @@ public class SettingsDeviceInfoActivity extends BaseMvpActivity {
 
     @Override
     public void initView() {
-        mWifiAdmin = new SettingsWifiUtil(SettingsDeviceInfoActivity.this);
-        deviceInfoBack = findViewById(R.id.device_info_back_iv);
-        deviceInfoListview = findViewById(R.id.device_info_listview);
+        mSettingsWifiUtil = new SettingsWifiUtil(SettingsDeviceInfoActivity.this);
+        ivBack = findViewById(R.id.device_info_back_iv);
+        lvDeviceInfo = findViewById(R.id.device_info_listview);
 
-        deviceInfoBack.setOnClickListener(new View.OnClickListener() {
+        ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent Intent = new Intent(SettingsDeviceInfoActivity.this, SettingsActivity.class);
@@ -68,7 +69,7 @@ public class SettingsDeviceInfoActivity extends BaseMvpActivity {
         String[] deviceInfoStatusDis = new String[]{"FD-R03-001", "", "", "", "", ""};
 
         String deviceIPString = getIpAddress();
-        String deviceMac = mWifiAdmin.getMacAddress();
+        String deviceMac = mSettingsWifiUtil.getMacAddress();
         String systemVer = getProperty("ro.product.version", "unknown");
 
         String versionCode = AppUtils.getVersionCode(this) + "";
@@ -117,8 +118,8 @@ public class SettingsDeviceInfoActivity extends BaseMvpActivity {
                 new String[]{"name", "state"}, new int[]{R.id.deviceinfo_items, R.id.device_info_items_info});
         //第一个参数是上下文对象，第二个是listitem， 第三个是指定每个列表项的布局文件，第四个是指定Map对象中定义的两个键（这里通过字符串数组来指定），第五个是用于指定在布局文件中定义的id（也是用数组来指定）
 
-        deviceInfoListview.setAdapter(adapter);
-        deviceInfoListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lvDeviceInfo.setAdapter(adapter);
+        lvDeviceInfo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 

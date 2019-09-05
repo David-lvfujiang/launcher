@@ -35,9 +35,11 @@ import java.util.List;
 public class SettingsChangeDeviceNameActivity extends BaseMvpActivity<SettingsPresenter, SettingsModel> implements SettingsContract.View {
     private static final String TAG = "SettingsChangeDeviceNameActivity";
 
-    TextView cancelBtn, sureBtn;
-    EditText nameEdit;
-    String changedName;
+    private TextView tvSureBtn;
+    private TextView tvCancelBtn;
+    private EditText etName;
+    private String mChangedName;
+
     @Override
     protected void initPresenter() {
         mPresenter.setVM(this, mModel);
@@ -50,29 +52,29 @@ public class SettingsChangeDeviceNameActivity extends BaseMvpActivity<SettingsPr
 
     @Override
     public void initView() {
-        cancelBtn = findViewById(R.id.change_device_name_cancel);
-        sureBtn = findViewById(R.id.change_device_name_sure);
-        nameEdit = findViewById(R.id.edit_device_name);
+        tvCancelBtn = findViewById(R.id.change_device_name_cancel);
+        tvSureBtn = findViewById(R.id.change_device_name_sure);
+        etName = findViewById(R.id.edit_device_name);
 
         String OriginalName = (String) SPUtils.get(getApplicationContext(), Constant.Settings.DEVICE_NAME ,"");
-        nameEdit.setText(OriginalName);
+        etName.setText(OriginalName);
         final int maxTextCount = 10;
-        nameEdit.addTextChangedListener(new TextWatcher() {
+        etName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                nameEdit.removeTextChangedListener(this);//**** 注意的地方
+                etName.removeTextChangedListener(this);//**** 注意的地方
                 if (s.length() >= maxTextCount) {
-                    nameEdit.setText(s.toString().substring(0, maxTextCount));
-                    nameEdit.setSelection(maxTextCount);
+                    etName.setText(s.toString().substring(0, maxTextCount));
+                    etName.setSelection(maxTextCount);
 
                     Toast toast = Toast.makeText(getApplicationContext(),getString(R.string.settings_edittext_num_limit_name),Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER,0,0);
                     toast.show();
                 }
-                nameEdit.addTextChangedListener(this);//****  注意的地方
+                etName.addTextChangedListener(this);//****  注意的地方
             }
             @Override
             public void afterTextChanged(Editable s) {
@@ -86,7 +88,7 @@ public class SettingsChangeDeviceNameActivity extends BaseMvpActivity<SettingsPr
 
     @Override
     public void initListener() {
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
+        tvCancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent changeNameIntent = new Intent(SettingsChangeDeviceNameActivity.this, SettingsDeviceCenterActivity.class);
@@ -94,13 +96,13 @@ public class SettingsChangeDeviceNameActivity extends BaseMvpActivity<SettingsPr
                 finish();
             }
         });
-        sureBtn.setOnClickListener(new View.OnClickListener() {
+        tvSureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changedName = nameEdit.getText().toString();
+                mChangedName = etName.getText().toString();
                 SettingsUpdateDeviceNameRequest request= new SettingsUpdateDeviceNameRequest();
                 request.setDeviceId(SettingsContant.SETTINGS_SERIAL_NUM);
-                request.setName(changedName);
+                request.setName(mChangedName);
                 mPresenter.updateDeviceName(request);
             }
         });
@@ -113,7 +115,7 @@ public class SettingsChangeDeviceNameActivity extends BaseMvpActivity<SettingsPr
     @Override
     public void updateDeviceNameSuccess(BaseResponse response) {
         ToastUtils.show("修改成功");
-        SPUtils.put(getApplicationContext(), Constant.Settings.DEVICE_NAME, changedName);
+        SPUtils.put(getApplicationContext(), Constant.Settings.DEVICE_NAME, mChangedName);
         Intent changeNameIntent = new Intent(SettingsChangeDeviceNameActivity.this, SettingsDeviceCenterActivity.class);
         startActivity(changeNameIntent);
         finish();

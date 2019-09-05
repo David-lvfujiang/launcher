@@ -44,17 +44,20 @@ import java.util.List;
 @Route(path = RouterPath.SETTINGS.SettingsContractsNickNameEditActivity)
 public class SettingsContractsNickNameEditActivity extends BaseMvpActivity<SettingsPresenter, SettingsModel> implements SettingsContract.View {
     private static final String TAG = "SettingsContractsNickNameEditActivity";
+
+    private Button btnSetNickNameSure;
+    private Button btnSetNickNameCancel;
+    private EditText etSetNickName;
+
+    private String mSetedNickName;
+    private String mNewUserNameIntent;
+    private String mClickNickNameIntent;
+    private String mClickNickNameIcon;
+    private String mGetUserIdName;
+    private String mUserNameId;
+
     private Uri mUri = Uri.parse(ContentProviderManager.BASE_URI + "/user");
 
-    Button setNickNameSureBtn, setNickNameCancelBtn;
-    EditText setNickNameEdit;
-
-    String setedNickName;
-    private String newUserNameIntent;
-    private String clickNickNameIntent;
-    private String clickNickNameIcon;
-    private String getUserIdName;
-    private String UserNameId;
     @Override
     protected void initPresenter() {
         mPresenter.setVM(this, mModel);
@@ -67,85 +70,83 @@ public class SettingsContractsNickNameEditActivity extends BaseMvpActivity<Setti
 
     @Override
     public void initView() {
-        setNickNameSureBtn = findViewById(R.id.set_nickname_sure_btn);
-        setNickNameEdit = findViewById(R.id.set_nickname_edit);
-        setNickNameCancelBtn = findViewById(R.id.set_nickname_cancel_btn);
+        btnSetNickNameSure = findViewById(R.id.set_nickname_sure_btn);
+        etSetNickName = findViewById(R.id.set_nickname_edit);
+        btnSetNickNameCancel = findViewById(R.id.set_nickname_cancel_btn);
     }
 
     @Override
     public void initData() {
-        //4). 得到intent对象
         Intent intent = getIntent();
-        //5). 通过intent读取额外数据
-        newUserNameIntent = intent.getStringExtra("newAddUserName");   //新用户
-        clickNickNameIntent = intent.getStringExtra("clickChangedNickName");  //已经加入的用户
-        clickNickNameIcon = intent.getStringExtra("clickChangedNickNameIcon");  //已经加入的用户
+        mNewUserNameIntent = intent.getStringExtra("newAddUserName");    //新用户
+        mClickNickNameIntent = intent.getStringExtra("clickChangedNickName");    //已经加入的用户
+        mClickNickNameIcon = intent.getStringExtra("clickChangedNickNameIcon");    //已经加入的用户
 
-        LogUtil.d(TAG,  "new add user name  = " + newUserNameIntent);
+        LogUtil.d(TAG,  "new add user name  = " + mNewUserNameIntent);
 
         //不是最新加入的成员
-        if(newUserNameIntent == null){
-            setNickNameCancelBtn.setVisibility(View.VISIBLE);
-            if((clickNickNameIntent.indexOf("管理员")) == -1) {
+        if(mNewUserNameIntent == null){
+            btnSetNickNameCancel.setVisibility(View.VISIBLE);
+            if((mClickNickNameIntent.indexOf("管理员")) == -1) {
                 //非管理员用户
-                getUserIdName = clickNickNameIntent;
-                setNickNameEdit.setText(clickNickNameIntent);
+                mGetUserIdName = mClickNickNameIntent;
+                etSetNickName.setText(mClickNickNameIntent);
             } else {
                 //管理员用户
-                getUserIdName = clickNickNameIntent.replace("(管理员)","");
-                setNickNameEdit.setText(getUserIdName);
+                mGetUserIdName = mClickNickNameIntent.replace("(管理员)","");
+                etSetNickName.setText(mGetUserIdName);
             }
-            UserNameId = ContentProviderManager.getInstance(SettingsContractsNickNameEditActivity.this, mUri).getUserID(getUserIdName);
+            mUserNameId = ContentProviderManager.getInstance(SettingsContractsNickNameEditActivity.this, mUri).getUserID(mGetUserIdName);
         } else {
 //            setNickNameEdit.setText(newUserNameIntent);
 
-            UserNameId = ContentProviderManager.getInstance(SettingsContractsNickNameEditActivity.this, mUri).getUserID(newUserNameIntent);
-            LogUtil.d(TAG, "set nick name userId = " + UserNameId);
+            mUserNameId = ContentProviderManager.getInstance(SettingsContractsNickNameEditActivity.this, mUri).getUserID(mNewUserNameIntent);
+            LogUtil.d(TAG, "set nick name userId = " + mUserNameId);
         }
     }
 
     @Override
     public void initListener() {
-        setNickNameSureBtn.setOnClickListener(new View.OnClickListener() {
+        btnSetNickNameSure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setedNickName = setNickNameEdit.getText().toString();
-                LogUtil.d(TAG, "set nick name = " + setedNickName);
+                mSetedNickName = etSetNickName.getText().toString();
+                LogUtil.d(TAG, "set nick name = " + mSetedNickName);
                 SettingChangeContractNickNameRequest changeContractNickNameRequest = new SettingChangeContractNickNameRequest();
-                changeContractNickNameRequest.setNickName(setedNickName);
-                changeContractNickNameRequest.setUserId(UserNameId);
+                changeContractNickNameRequest.setNickName(mSetedNickName);
+                changeContractNickNameRequest.setUserId(mUserNameId);
                 mPresenter.changeContractNickName(changeContractNickNameRequest);
             }
         });
 
-        setNickNameCancelBtn.setOnClickListener(new View.OnClickListener() {
+        btnSetNickNameCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent backTolistIntent = new Intent(SettingsContractsNickNameEditActivity.this, SettingsDeviceContractsNickNameActivity.class);
-                backTolistIntent.putExtra("cancelSetNickName", clickNickNameIntent);
-                backTolistIntent.putExtra("cancelSetNickNameIcon", clickNickNameIcon);
+                backTolistIntent.putExtra("cancelSetNickName", mClickNickNameIntent);
+                backTolistIntent.putExtra("cancelSetNickNameIcon", mClickNickNameIcon);
                 startActivity(backTolistIntent);
                 finish();
             }
         });
 
         final int maxTextCount = 10;
-        setNickNameEdit.addTextChangedListener(new TextWatcher() {
+        etSetNickName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                setNickNameEdit.removeTextChangedListener(this);//**** 注意的地方
+                etSetNickName.removeTextChangedListener(this);//**** 注意的地方
                 if (s.length() >= maxTextCount) {
-                    setNickNameEdit.setText(s.toString().substring(0, maxTextCount));
-                    setNickNameEdit.setSelection(maxTextCount);
+                    etSetNickName.setText(s.toString().substring(0, maxTextCount));
+                    etSetNickName.setSelection(maxTextCount);
 
                     Toast toast = Toast.makeText(getApplicationContext(),getString(R.string.settings_nickname_edittext_num_limit_name),Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER,0,0);
                     toast.show();
                 }
-                setNickNameEdit.addTextChangedListener(this);//****  注意的地方
+                etSetNickName.addTextChangedListener(this);//****  注意的地方
             }
             @Override
             public void afterTextChanged(Editable s) {

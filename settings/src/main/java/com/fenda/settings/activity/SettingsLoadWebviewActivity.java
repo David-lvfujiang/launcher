@@ -37,11 +37,11 @@ import java.lang.reflect.Method;
 public class SettingsLoadWebviewActivity extends BaseMvpActivity {
     private static final String TAG = "SettingsLoadWebviewActivity";
 
-    LinearLayout aboutLinearlayout;
+    private LinearLayout llAbout;
+    private ImageView ivBack;
+    private WebView wvDisUrlContent;
+    private ProgressBar mProgressBar;
 
-    private ImageView aboutBack;
-    private WebView webView;
-    private ProgressBar progressBar;
     @Override
     protected void initPresenter() {
 
@@ -54,30 +54,30 @@ public class SettingsLoadWebviewActivity extends BaseMvpActivity {
 
     @Override
     public void initView() {
-        aboutBack = findViewById(R.id.about_back_iv);
-        aboutLinearlayout = findViewById(R.id.about_linearlayout);
-        progressBar= findViewById(R.id.progressbar);//进度条
+        ivBack = findViewById(R.id.about_back_iv);
+        llAbout = findViewById(R.id.about_linearlayout);
+        mProgressBar= findViewById(R.id.progressbar);//进度条
 
-        aboutBack.setOnClickListener(new View.OnClickListener() {
+        ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
 
-        webView = findViewById(R.id.webview);
+        wvDisUrlContent = findViewById(R.id.webview);
         //4). 得到intent对象
         Intent intent = getIntent();
         //5). 通过intent读取额外数据
         String loadUrl = intent.getStringExtra("APK_URL");
 
-        webView.loadUrl(loadUrl);//加载url
+        wvDisUrlContent.loadUrl(loadUrl);//加载url
 
-        webView.addJavascriptInterface(this,"android");//添加js监听 这样html就能调用客户端
-        webView.setWebChromeClient(webChromeClient);
-        webView.setWebViewClient(webViewClient);
+        wvDisUrlContent.addJavascriptInterface(this,"android");//添加js监听 这样html就能调用客户端
+        wvDisUrlContent.setWebChromeClient(webChromeClient);
+        wvDisUrlContent.setWebViewClient(webViewClient);
 
-        WebSettings webSettings=webView.getSettings();
+        WebSettings webSettings=wvDisUrlContent.getSettings();
         webSettings.setJavaScriptEnabled(true);//允许使用js
 
         /**
@@ -112,15 +112,15 @@ public class SettingsLoadWebviewActivity extends BaseMvpActivity {
     private WebViewClient webViewClient=new WebViewClient(){
         @Override
         public void onPageFinished(WebView view, String url) {//页面加载完成
-            progressBar.setVisibility(View.GONE);
+            mProgressBar.setVisibility(View.GONE);
 
         }
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {//页面开始加载
-            progressBar.setVisibility(View.VISIBLE);
-            aboutLinearlayout.bringToFront();
-            aboutLinearlayout.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.VISIBLE);
+            llAbout.bringToFront();
+            llAbout.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -163,15 +163,15 @@ public class SettingsLoadWebviewActivity extends BaseMvpActivity {
         //加载进度回调
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
-            progressBar.setProgress(newProgress);
+            mProgressBar.setProgress(newProgress);
         }
     };
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.i("ansen","是否有上一个页面:"+webView.canGoBack());
-        if (webView.canGoBack() && keyCode == KeyEvent.KEYCODE_BACK){//点击返回按钮的时候判断有没有上一页
-            webView.goBack(); // goBack()表示返回webView的上一页面
+        Log.i("ansen","是否有上一个页面:"+wvDisUrlContent.canGoBack());
+        if (wvDisUrlContent.canGoBack() && keyCode == KeyEvent.KEYCODE_BACK){//点击返回按钮的时候判断有没有上一页
+            wvDisUrlContent.goBack(); // goBack()表示返回webView的上一页面
             return true;
         }
         return super.onKeyDown(keyCode,event);
@@ -192,8 +192,8 @@ public class SettingsLoadWebviewActivity extends BaseMvpActivity {
         super.onDestroy();
 
         //释放资源
-        webView.destroy();
-        webView=null;
+        wvDisUrlContent.destroy();
+        wvDisUrlContent=null;
     }
 
     public static void hookWebView(){

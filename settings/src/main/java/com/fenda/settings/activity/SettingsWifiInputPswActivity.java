@@ -25,11 +25,15 @@ import com.fenda.settings.utils.SettingsWifiUtil;
 public class SettingsWifiInputPswActivity extends BaseMvpActivity {
     private static final String TAG = "SettingsWifiInputPswActivity";
 
-    TextView cancelConnect, sureConnect, connectName;
-    EditText wifiPsw;
-    String inputWifiPsw;
-    String ssid1;
-    protected SettingsWifiUtil mWifiAdmin;
+    private TextView tvCancelbtn;
+    private TextView tvSurebtn;
+    private TextView tvConnectName;
+    private EditText etPsw;
+
+    protected SettingsWifiUtil mSettingsWifiUtil;
+
+    private String mInputWifiPsw;
+    private String ssid1;
 
     @Override
     protected void initPresenter() {
@@ -43,19 +47,19 @@ public class SettingsWifiInputPswActivity extends BaseMvpActivity {
 
     @Override
     public void initView() {
-        cancelConnect = findViewById(R.id.connect_wifi_cancel);
-        sureConnect = findViewById(R.id.connect_wifi_sure);
-        connectName = findViewById(R.id.connect_wifi_name);
-        wifiPsw = findViewById(R.id.wifi_psw);
+        tvCancelbtn = findViewById(R.id.connect_wifi_cancel);
+        tvSurebtn = findViewById(R.id.connect_wifi_sure);
+        tvConnectName = findViewById(R.id.connect_wifi_name);
+        etPsw = findViewById(R.id.wifi_psw);
 
-        mWifiAdmin = new SettingsWifiUtil(SettingsWifiInputPswActivity.this);
-        wifiPsw.addTextChangedListener(textWatcher);
+        mSettingsWifiUtil = new SettingsWifiUtil(SettingsWifiInputPswActivity.this);
+        etPsw.addTextChangedListener(textWatcher);
 
         //4). 得到intent对象
         Intent intent = getIntent();
         //5). 通过intent读取额外数据
         ssid1 = intent.getStringExtra("MESSAGE");
-        connectName.setText("请连接" + ssid1);
+        tvConnectName.setText("请连接" + ssid1);
     }
 
     @Override
@@ -65,7 +69,7 @@ public class SettingsWifiInputPswActivity extends BaseMvpActivity {
 
     @Override
     public void initListener() {
-        cancelConnect.setOnClickListener(new View.OnClickListener() {
+        tvCancelbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(SettingsWifiInputPswActivity.this, SettingsWifiActivity.class));
@@ -90,19 +94,19 @@ public class SettingsWifiInputPswActivity extends BaseMvpActivity {
 
         @Override
         public void afterTextChanged(Editable s) {
-            if(wifiPsw.length() >= 8){
-                sureConnect.setVisibility(View.VISIBLE);
-                sureConnect.setClickable(true);
-                sureConnect.setOnClickListener(new View.OnClickListener() {
+            if(etPsw.length() >= 8){
+                tvSurebtn.setVisibility(View.VISIBLE);
+                tvSurebtn.setClickable(true);
+                tvSurebtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         LogUtil.d(TAG, "sure on clicked");
-                        inputWifiPsw = wifiPsw.getText().toString();
+                        mInputWifiPsw = etPsw.getText().toString();
                         final SharedPreferences preferences=getSharedPreferences("wifi_password", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = preferences.edit();
-                        editor.putString(ssid1, inputWifiPsw);
+                        editor.putString(ssid1, mInputWifiPsw);
                         editor.commit();
-                        mWifiAdmin.addNetwork(mWifiAdmin.CreateWifiInfo(ssid1, inputWifiPsw, 3));
+                        mSettingsWifiUtil.addNetwork(mSettingsWifiUtil.CreateWifiInfo(ssid1, mInputWifiPsw, 3));
 
                         startActivity(new Intent(SettingsWifiInputPswActivity.this, SettingsWifiActivity.class));
                         finish();
