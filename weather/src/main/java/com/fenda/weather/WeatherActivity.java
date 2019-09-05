@@ -9,13 +9,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
-import com.example.weather.R;
+import com.fenda.common.base.BaseActivity;
 import com.fenda.common.router.RouterPath;
 
 import java.util.ArrayList;
 
 @Route(path = RouterPath.Weather.WEATHER_MAIN)
-public class WeatherActivity extends Activity implements View.OnClickListener {
+public class WeatherActivity extends BaseActivity implements View.OnClickListener {
 
     private TextView mCityNameTv;
     private TextView mTempTv;
@@ -49,17 +49,14 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
     private ArrayList<TextView> mWeekDateTvArr = new ArrayList<>();
     private ArrayList<TextView> mWeekTempTvArr = new ArrayList<>();
 
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.weather_activity);
-
-        initView();
-        updateView(getIntent());
+    public int onBindLayout() {
+        return R.layout.weather_activity;
     }
 
-    void initView(){
+    @Override
+    public void initView(){
         findViewById(R.id.tv_navbar_back).setOnClickListener(this);
 
         mWeahterBgIv = findViewById(R.id.gif_weather_bg);
@@ -113,6 +110,11 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
     }
 
     @Override
+    public void initData() {
+        updateView(getIntent());
+    }
+
+    @Override
     public void onClick(View v) {
 
         switch (v.getId()){
@@ -121,6 +123,13 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
                 break;
             }
         }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        updateView(getIntent());
     }
 
     private void updateView(Intent weatherIntent){

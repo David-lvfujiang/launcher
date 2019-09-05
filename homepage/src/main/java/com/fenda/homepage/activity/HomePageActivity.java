@@ -26,7 +26,6 @@ import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.AppUtils;
 import com.fenda.common.util.GsonUtil;
 import com.fenda.common.util.LogUtil;
-import com.fenda.common.router.RouterPath;
 import com.fenda.homepage.Adapter.MainAdapter;
 import com.fenda.homepage.R;
 import com.fenda.homepage.Util.HomeUtil;

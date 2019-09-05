@@ -3,7 +3,12 @@ package com.fenda.weather;
 import android.content.Context;
 import android.content.Intent;
 
-import com.example.weather.R;
+import com.alibaba.android.arouter.facade.annotation.Route;
+import com.alibaba.android.arouter.launcher.ARouter;
+import com.fenda.common.provider.IWeatherProvider;
+import com.fenda.common.router.RouterPath;
+import com.fenda.weather.model.WeatherBean;
+import com.google.gson.Gson;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,16 +16,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
-public class WeatherHelper {
 
-    /**
-     * 天气界面是否已打开
-     */
-    public static String keyBroadcastWeatherAction = "keyBroadcastWeatherAction";
+@Route(path = RouterPath.Weather.WEATHER_SERVICE)
+public class WeatherHelper implements IWeatherProvider {
 
-
-
-    public static String keyWeatherCity        = "keyWeatherCity";
+    protected static String keyWeatherCity        = "keyWeatherCity";
     public static String keyWeatherName        = "keyWeatherName";
     public static String keyWeatherTemperature = "keyWeatherTemperature";
     public static String keyWeatherForecastDateArray   = "keyWeatherForecastDateArray";   //7天天气日期
@@ -258,5 +258,56 @@ public class WeatherHelper {
             w = 0;
         }
         return weekDays[w];
+    }
+
+    @Override
+    public void weatherFromVoiceControl(String weatherContent) {
+
+        try{
+            WeatherBean bean = new Gson().fromJson(weatherContent, WeatherBean.class);
+
+            WeatherBean.DataBena weatherData = bean.getForecast().get(0);
+
+            String[] weatherNameArr = new String[7];
+            String[] weatherDateArr = new String[7];
+            String[] weatherTempRangeArr = new String[7];
+
+            try {
+                for (int i = 0; i < 7; i++) {
+                    WeatherBean.DataBena tWeatherData = bean.getForecast().get(i);
+                    weatherNameArr[i] = tWeatherData.getConditionDayNight();
+                    weatherDateArr[i] = tWeatherData.getPredictDate();
+                    weatherTempRangeArr[i] = tWeatherData.getTempNight() + "℃ ~ " + tWeatherData.getTempDay() + "℃";
+                }
+            }
+            catch (Exception ex){
+                for (int i = 0; i < 7; i++) {
+                    weatherNameArr[i] = "30";
+                    weatherDateArr[i] = "";
+                    weatherTempRangeArr[i] = "";
+                }
+            }
+
+
+//            tIntent.putExtra(keyWeatherCity, (String)weatherMap.get(keyWeatherCity));
+//            tIntent.putExtra(keyWeatherTemperature, (String)weatherMap.get(keyWeatherTemperature));
+//
+//            tIntent.putExtra(keyWeatherName, (String[])weatherMap.get(keyWeatherName));
+//            tIntent.putExtra(keyWeatherForecastDateArray, (String[])weatherMap.get(keyWeatherForecastDateArray));
+//            tIntent.putExtra(keyWeatherForecastTempArray, (String[])weatherMap.get(keyWeatherForecastTempArray));
+
+
+            ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN)
+                    .withString(keyWeatherCity, bean.getCityName())
+                    .withString(keyWeatherTemperature, weatherData.getTempDay())
+                    .withObject(keyWeatherName, weatherNameArr)
+                    .withObject(keyWeatherForecastDateArray, weatherDateArr)
+                    .withObject(keyWeatherForecastTempArray, weatherTempRangeArr)
+                    .navigation();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

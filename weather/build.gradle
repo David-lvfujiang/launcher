@@ -6,13 +6,27 @@ android {
 
 
     defaultConfig {
-        applicationId "com.example.weather"
+        applicationId "com.fenda.weather"
         minSdkVersion 26
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    sourceSets {
+        main {
+            if (isModule.toBoolean()) {
+                manifest.srcFile "src/main/module/AndroidManifest.xml"
+                //集成开发模式下排除debug文件夹中的所有Java文件
+                java {
+                    exclude 'debug/**'
+                }
+            } else {
+                manifest.srcFile "src/main/AndroidManifest.xml"
+            }
+        }
     }
 
     buildTypes {
