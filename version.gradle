@@ -48,6 +48,8 @@ versions.test_espresso_core = "3.0.2"
 //log
 versions.logger = "2.2.0"
 
+versions.fastjson = "1.1.54.android"
+
 
 
 def deps = [:]
@@ -113,6 +115,8 @@ deps.junit = "junit:junit:$versions.junit"
 deps.test_runner = "com.android.support.test:runner:$versions.test_runner"
 deps.test_espresso_core = "com.android.support.test.espresso:espresso-core:$versions.test_espresso_core"
 deps.logger = "com.orhanobut:logger:$versions.logger"
+
+deps.fastjson = "com.alibaba:fastjson:$versions.fastjson"
 
 
 
