@@ -2,9 +2,11 @@ package com.fenda.weather;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.fenda.common.provider.IHomePageProvider;
 import com.fenda.common.provider.IWeatherProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.weather.model.WeatherBean;
@@ -263,6 +265,8 @@ public class WeatherHelper implements IWeatherProvider {
     @Override
     public void weatherFromVoiceControl(String weatherContent) {
 
+        Log.e("Weather", weatherContent);
+
         try{
             WeatherBean bean = new Gson().fromJson(weatherContent, WeatherBean.class);
 
@@ -314,6 +318,19 @@ public class WeatherHelper implements IWeatherProvider {
     @Override
     public void weatherFromVoiceControlToMainPage(String todayWeatherContent) {
 
+        Log.e("Weather", "todayWeatherContent " + todayWeatherContent);
+
+        try{
+            WeatherBean bean = new Gson().fromJson(todayWeatherContent, WeatherBean.class);
+
+            WeatherBean.DataBena weatherData = bean.getForecast().get(0);
+
+            IHomePageProvider iHomePageProvider = ARouter.getInstance().navigation(IHomePageProvider.class);
+            iHomePageProvider.homePageFromVoiceControl(weatherData.getTempDay(), weatherData.getConditionDayNight());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

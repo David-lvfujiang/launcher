@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.common.base.BaseActivity;
 import com.fenda.common.router.RouterPath;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -126,7 +127,9 @@ public class WeatherActivity extends BaseActivity implements View.OnClickListene
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        updateView(getIntent());
+        Log.e("Weather", "onNewIntent " + getIntent());
+
+        updateView(intent);
     }
 
     private void updateView(Intent weatherIntent){
@@ -135,9 +138,17 @@ public class WeatherActivity extends BaseActivity implements View.OnClickListene
         try{
             String tkeyCity = weatherIntent.getStringExtra(WeatherHelper.keyWeatherCity);
             String tkeyTmep = weatherIntent.getStringExtra(WeatherHelper.keyWeatherTemperature);
-            String[] tWeatherNameArr = weatherIntent.getStringArrayExtra(WeatherHelper.keyWeatherName);
-            String[] tWeatherDateArr = weatherIntent.getStringArrayExtra(WeatherHelper.keyWeatherForecastDateArray);
-            String[] tWeatherTempArr = weatherIntent.getStringArrayExtra(WeatherHelper.keyWeatherForecastTempArray);
+
+            String tWeatherNameStr = weatherIntent.getStringExtra(WeatherHelper.keyWeatherName);
+            String tWeatherDateStr = weatherIntent.getStringExtra(WeatherHelper.keyWeatherForecastDateArray);
+            String tWeatherTempStr = weatherIntent.getStringExtra(WeatherHelper.keyWeatherForecastTempArray);
+            Gson tGson = new Gson();
+            String[] tWeatherNameArr = tGson.fromJson(tWeatherNameStr, String[].class);
+            String[] tWeatherDateArr = tGson.fromJson(tWeatherDateStr, String[].class);
+            String[] tWeatherTempArr = tGson.fromJson(tWeatherTempStr, String[].class);
+
+
+            Log.e("Weather", tWeatherNameStr + " " + tWeatherDateStr + " " + tWeatherTempStr + " " + tkeyCity + " " + tkeyTmep);
 
             mCityNameTv.setText(tkeyCity);
             mTempTv.setText(tkeyTmep);

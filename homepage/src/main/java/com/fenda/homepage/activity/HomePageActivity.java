@@ -1,5 +1,6 @@
 package com.fenda.homepage.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,8 +21,10 @@ import com.fenda.common.base.BaseResponse;
 import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.db.ContentProviderManager;
+import com.fenda.common.provider.IHomePageProvider;
 import com.fenda.common.provider.ISettingsProvider;
 import com.fenda.common.provider.IVoiceInitProvider;
+import com.fenda.common.provider.IVoiceRequestProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.AppUtils;
 import com.fenda.common.util.GsonUtil;
@@ -36,15 +39,17 @@ import com.fenda.homepage.presenter.MainPresenter;
 import com.fenda.protocol.tcp.TCPConfig;
 import com.fenda.protocol.tcp.bean.BaseTcpMessage;
 import com.fenda.protocol.tcp.bean.EventMessage;
+import com.google.gson.Gson;
 
 import java.util.List;
 @Route(path = RouterPath.HomePage.HOMEPAGE_MAIN)
-public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener, View.OnTouchListener {
+public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener, View.OnTouchListener, IHomePageProvider {
 
 
     TextClock mHeaderTimeTv;
     RecyclerView mTipInfoRv;
-    ImageView mheaderWeatherIv;
+    ImageView mHeaderWeatherIv;
+    TextView mHeaderWeatherTv;
     ImageView mAiTipIv;
     TextView mAiTipTitleTv;
     TextView mAiTipMicTv;
@@ -54,6 +59,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
     @Autowired
     IVoiceInitProvider initProvider;
+    IVoiceRequestProvider initVoiceProvider;
 
     Runnable cycleRollRunabler = new Runnable() {
         @Override
@@ -85,7 +91,8 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     public void initView() {
         mHeaderTimeTv = findViewById(R.id.tv_header_time);
         mTipInfoRv = findViewById(R.id.rv_Tipinfo);
-        mheaderWeatherIv = findViewById(R.id.iv_header_weather);
+        mHeaderWeatherIv = findViewById(R.id.iv_header_weather);
+        mHeaderWeatherTv = findViewById(R.id.tv_header_temp_unit);
 
         mAiTipIv = findViewById(R.id.iv_main_tip_icon);
         mAiTipTitleTv = findViewById(R.id.tv_main_item_content);
@@ -96,7 +103,10 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         findViewById(R.id.iv_main_other).setOnClickListener(this);
         findViewById(R.id.iv_main_tools).setOnClickListener(this);
         findViewById(R.id.iv_main_study).setOnClickListener(this);
-        mheaderWeatherIv.setOnClickListener(this);
+
+        mHeaderWeatherTv.setOnClickListener(this);
+        mHeaderWeatherIv.setOnClickListener(this);
+
         showPageIndex = 0;
 
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -168,6 +178,13 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             initProvider.init(this);
             initProvider.initVoice();
         }
+
+
+        if (initVoiceProvider == null){
+            initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
+        }
+        initVoiceProvider.requestWeather();
+
         ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
         if (settingService != null) {
             settingService.deviceStatus(this);
@@ -234,6 +251,11 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             //通讯录
             ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
         }
+        else if (resId == R.id.iv_header_weather || resId == R.id.tv_header_temp){
+
+            ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN).navigation();
+            initVoiceProvider.nowWeather();
+        }
     }
 
     @Override
@@ -274,5 +296,17 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             }
         }
         return true;
+    }
+
+
+    @Override
+    public void init(Context context) {
+
+    }
+
+    @Override
+    public void homePageFromVoiceControl(String todayWeatherTemp, String todayWeatherName) {
+
+        mHeaderWeatherTv.setText(todayWeatherTemp);
     }
 }
