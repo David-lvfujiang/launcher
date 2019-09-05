@@ -24,6 +24,7 @@ import com.aispeech.dui.dds.DDS;
 import com.aispeech.dui.dds.DDSConfig;
 import com.aispeech.dui.dds.exceptions.DDSNotInitCompleteException;
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.fenda.ai.BuildConfig;
 import com.fenda.ai.R;
 import com.fenda.ai.VoiceConstant;
 import com.fenda.ai.author.MyDDSAuthListener;
@@ -37,6 +38,7 @@ import com.fenda.ai.observer.DuiUpdateObserver;
 import com.fenda.ai.skill.Util;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.baserx.RxSchedulers;
+import com.fenda.common.provider.ICalendarProvider;
 import com.fenda.common.provider.IEncyclopediaProvider;
 import com.fenda.common.provider.INewsProvider;
 import com.fenda.common.provider.IRemindProvider;
@@ -96,14 +98,16 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
     private MyDDSInitListener listener;
     private IEncyclopediaProvider provider;
     private IWeatherProvider weatherProvider;
+    private ICalendarProvider calendarProvider;
 
     public DDSService() {
     }
 
     @Override
     public void onCreate() {
+        LogUtil.e("onCreate========1");
         if(!AccessibilityMonitorService.isSettingOpen(AccessibilityMonitorService.class,getApplicationContext())){
-            AccessibilityMonitorService.jumpToSetting(getApplicationContext());
+            AccessibilityMonitorService.jumpToSetting(this);
         }
         //初始化广播和语音弹窗
         initReceiverAndSpeechView();
@@ -454,8 +458,13 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
 //            //包名com.fenda.launcher
 //            config.addConfig(DDSConfig.K_API_KEY, "ccfaebdea7f5ccfaebdea7f55d6e0baf");
 //        }
+        if (BuildConfig.LAUNCHER){
+            config.addConfig(DDSConfig.K_API_KEY, "ccfaebdea7f5ccfaebdea7f55d6e0baf");
+        }else {
+            config.addConfig(DDSConfig.K_API_KEY, "9e7baf5eae8f9e7baf5eae8f5d5284f0");
+        }
 //        config.addConfig(DDSConfig.K_API_KEY, "9e7baf5eae8f9e7baf5eae8f5d5284f0");
-        config.addConfig(DDSConfig.K_API_KEY, "ccfaebdea7f5ccfaebdea7f55d6e0baf");
+
 
 //        // 资源更新配置项
         // 预置在指定目录下的DUI内核资源包名, 避免在线下载内核消耗流量, 推荐使用
@@ -555,7 +564,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                                         provider.geTextMsg(state);
                                     }
                                 });
-                    }else if (skillName.equals("闲聊")){
+                    }else if (skillName.equals("闲聊") || skillName.equals("百科")){
                         Observable.create(new ObservableOnSubscribe<String>() {
                             @Override
                             public void subscribe(ObservableEmitter<String> emitter) throws Exception {
@@ -571,7 +580,8 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                                         provider.geSharesMsg(state);
                                     }
                                 });
-                    }else if (skillName.equals("百科")){
+                    }else if (skillName.equals("节假日查询") || skillName.equals("日历")){
+
                         Observable.create(new ObservableOnSubscribe<String>() {
                             @Override
                             public void subscribe(ObservableEmitter<String> emitter) throws Exception {
@@ -581,10 +591,10 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                                 .subscribe(new Consumer<String>() {
                                     @Override
                                     public void accept(String s) throws Exception {
-                                        if (provider == null){
-                                            provider = ARouter.getInstance().navigation(IEncyclopediaProvider.class);
+                                        if (calendarProvider == null){
+                                            calendarProvider = ARouter.getInstance().navigation(ICalendarProvider.class);
                                         }
-                                        provider.geSharesMsg(state);
+                                        calendarProvider.getCalendarMsg(state);
                                     }
                                 });
                     }
