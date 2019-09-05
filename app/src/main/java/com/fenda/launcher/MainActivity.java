@@ -23,6 +23,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void test(View view) {
-        ARouter.getInstance().build(RouterPath.Gallery.GALLERY_CATOGORY).navigation();
+        ARouter.getInstance().build(RouterPath.HomePage.HomePageActivity).navigation();
     }
 }

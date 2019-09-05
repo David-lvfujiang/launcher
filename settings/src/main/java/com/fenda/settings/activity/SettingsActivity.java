@@ -18,6 +18,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.fenda.common.BaseApplication;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.router.RouterPath;
@@ -85,6 +86,9 @@ public class SettingsActivity extends BaseMvpActivity   {
         }
         listViewAdapter = new SimpleAdapter(this, listitemData, R.layout.settings_main_items_layout, new String[]{"name", "state"}, new int[]{R.id.set_items, R.id.set_items_status});
         disSetListItemLv.setAdapter(listViewAdapter);
+
+        String deviceName = (String) SPUtils.get(BaseApplication.getInstance(), Constant.Settings.DEVICE_NAME, "");
+        disDeviceNameTv.setText(deviceName);
     }
 
     @Override
@@ -126,7 +130,7 @@ public class SettingsActivity extends BaseMvpActivity   {
                     Intent lightIntent = new Intent(SettingsActivity.this, SetttingsBrightnessActivity.class);
                     startActivity(lightIntent);
                 } else if(("音量").equals(setClickedListName)) {
-                    Intent lightIntent = new Intent(SettingsActivity.this, SettingsBindDeviceActivity.class);
+                    Intent lightIntent = new Intent(SettingsActivity.this, SettingsVolumeActivity.class);
                     startActivity(lightIntent);
                 } else {
                     ToastUtils.show("开发中...");

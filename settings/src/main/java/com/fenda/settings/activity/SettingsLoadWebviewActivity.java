@@ -99,6 +99,11 @@ public class SettingsLoadWebviewActivity extends BaseMvpActivity {
     }
 
     @Override
+    public void initStatusBar() {
+        hookWebView();
+    }
+
+    @Override
     public void showErrorTip(String msg) {
 
     }

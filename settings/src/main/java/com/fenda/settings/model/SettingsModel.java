@@ -62,7 +62,7 @@ public class SettingsModel implements SettingsContract.Model {
     @Override
     public Observable<BaseResponse> changeContractNickName(SettingChangeContractNickNameRequest changeContractNickNameRequest) {
         return RetrofitHelper.getInstance(SettingsContant.TEST_BASE_URL).getServer(SettingsApiService.class)
-                .changeContractNickName(changeContractNickNameRequest.getUserId(), changeContractNickNameRequest.getNickName())
+                .changeContractNickName(changeContractNickNameRequest.getNickName(), changeContractNickNameRequest.getUserId())
                 .compose(RxSchedulers.<BaseResponse>io_main());
     }
 
