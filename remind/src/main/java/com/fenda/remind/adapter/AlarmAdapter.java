@@ -9,6 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.android.arouter.launcher.ARouter;
+import com.fenda.common.provider.IVoiceRequestProvider;
+import com.fenda.common.router.RouterPath;
 import com.fenda.protocol.tcp.bus.EventBusUtils;
 import com.fenda.remind.R;
 import com.fenda.remind.bean.AlarmBean;
@@ -68,8 +71,10 @@ public class AlarmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         mHolder.imgDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                IVoiceRequestProvider requestProvider = (IVoiceRequestProvider) ARouter.getInstance().build(RouterPath.VOICE.REQUEST_PROVIDER).navigation();
                 String json = new Gson().toJson(bean);
-                EventBusUtils.post(json);
+                requestProvider.deleteAlarm(json);
+
 
             }
         });

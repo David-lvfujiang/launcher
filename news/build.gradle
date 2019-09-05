@@ -58,7 +58,5 @@ dependencies {
 
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation project(path: ':common')
-    implementation deps.arouter_api
     annotationProcessor deps.arouter_compiler
-    implementation deps.gson
 }

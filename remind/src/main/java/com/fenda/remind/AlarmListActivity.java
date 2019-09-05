@@ -12,7 +12,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.alibaba.android.arouter.facade.annotation.Route;
+import com.fenda.common.base.BaseActivity;
 import com.fenda.common.constant.Constant;
+import com.fenda.common.router.RouterPath;
 import com.fenda.protocol.tcp.bus.EventBusUtils;
 import com.fenda.remind.adapter.AlarmAdapter;
 import com.fenda.remind.bean.AlarmBean;
@@ -27,7 +30,8 @@ import java.util.ArrayList;
  * @author WangZL
  * @Date $date$ $time$
  */
-public class AlarmListActivity extends Activity {
+@Route(path = RouterPath.REMIND.ALARM_LIST)
+public class AlarmListActivity extends BaseActivity {
 
 
     ImageView imgAlarmBack;
@@ -39,22 +43,16 @@ public class AlarmListActivity extends Activity {
     private AlarmAdapter mAdapter;
     private CountDownTimer timer;
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.remind_activity_alarm_list);
-        EventBusUtils.register(this);
-        alarmBeans = getIntent().getParcelableArrayListExtra(Constant.Remind.ALARM_LIST);
-        alarmType   = getIntent().getStringExtra(Constant.Remind.ALARM_TYPE);
-        initView();
-        initData();
-        addListener();
-        countDownTime();
 
+
+    @Override
+    public int onBindLayout() {
+        return R.layout.remind_activity_alarm_list;
     }
 
 
-    private void initView(){
+    @Override
+    public void initView(){
         imgAlarmBack    = findViewById(R.id.img_alarm_back);
         tvAlarmEdit     = findViewById(R.id.tv_alarm_edit);
         alarmList       = findViewById(R.id.alarm_list);
@@ -62,7 +60,10 @@ public class AlarmListActivity extends Activity {
     }
 
 
-    private void initData() {
+    @Override
+    public void initData() {
+        alarmBeans = getIntent().getParcelableArrayListExtra(Constant.Remind.ALARM_LIST);
+        alarmType   = getIntent().getStringExtra(Constant.Remind.ALARM_TYPE);
         if (Constant.Remind.DELETE_REMIND.equals(alarmType)){
             tvAlarmEdit.setText("完成");
         }
@@ -71,10 +72,12 @@ public class AlarmListActivity extends Activity {
         alarmList.setItemAnimator(new DefaultItemAnimator());
         mAdapter = new AlarmAdapter(this, alarmBeans);
         alarmList.setAdapter(mAdapter);
+        countDownTime();
     }
 
-
-    private void addListener(){
+    @Override
+    public void initListener() {
+        super.initListener();
         imgAlarmBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,6 +118,7 @@ public class AlarmListActivity extends Activity {
             }
         });
     }
+
 
     private void countDownTime() {
         timer = new CountDownTimer(10000, 1000) {

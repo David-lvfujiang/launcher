@@ -92,17 +92,12 @@ public class NewsPlay implements INewsProvider {
             bean.setMsgName("新闻");
             bean.setMsgType(Constant.Player.NEW_CONSULT);
             bean.setAidlMsgType(Constant.Player.keyBroadcastMusicList);
-            ((Activity)mContext).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Intent mIntent = new Intent(mContext, NewsActivity.class);
-                    Bundle mBundle = new Bundle();
-                    mBundle.putParcelable(NewsPlay.keyNews,bean);
-                    mIntent.putExtras(mBundle);
-                    mContext.startActivity(mIntent);
-                    EventBusUtils.post(bean);
-                }
-            });
+            Intent mIntent = new Intent(mContext, NewsActivity.class);
+             Bundle mBundle = new Bundle();
+             mBundle.putParcelable(NewsPlay.keyNews,bean);
+             mIntent.putExtras(mBundle);
+             mContext.startActivity(mIntent);
+//             EventBusUtils.post(bean);
 
     }
     @Override

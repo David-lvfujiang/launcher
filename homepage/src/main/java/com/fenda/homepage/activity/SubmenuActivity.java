@@ -65,6 +65,7 @@ public class SubmenuActivity extends BaseActivity {
                     ToastUtils.show("日历");
                 } else if (applyId.equals(Constant.PHOTO)) {
                     ToastUtils.show("相册");
+                    ARouter.getInstance().build(RouterPath.Gallery.GALLERY_CATOGORY).navigation();
                 } else if (applyId.equals(Constant.TIME)) {
                     ToastUtils.show("时钟");
                 } else if (applyId.equals(Constant.FM)) {

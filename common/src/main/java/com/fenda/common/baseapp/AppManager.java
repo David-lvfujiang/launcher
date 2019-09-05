@@ -8,8 +8,11 @@ import android.content.Context;
 import java.util.Stack;
 
 /**
- * activity管理
- */
+  * @author mirrer.wangzhonglin
+  * @Date 2019/8/30 19:01
+  * @Description
+  *
+  */
 public class AppManager {
     private static Stack<Activity> activityStack;
     private volatile static AppManager instance;
