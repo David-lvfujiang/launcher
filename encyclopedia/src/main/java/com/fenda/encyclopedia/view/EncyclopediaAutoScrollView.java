@@ -1,4 +1,4 @@
-package com.example.fenda.view;
+package com.fenda.encyclopedia.view;
 
 import android.content.Context;
 import android.os.Handler;
@@ -41,7 +41,8 @@ public class EncyclopediaAutoScrollView extends ScrollView {
                     autoToScroll = true;
                     mHandler.sendEmptyMessageDelayed(MSG_SCROLL, fistTimeScroll);
                     break;
-                default: break;
+                default:
+                    break;
 
             }
 
@@ -79,9 +80,9 @@ public class EncyclopediaAutoScrollView extends ScrollView {
     }
 
 
-
     /**
      * 设置滑动到顶部或底部的监听
+     *
      * @param smartScrollChangedListener
      */
     public void setScanScrollChangedListener(ISmartScrollChangedListener smartScrollChangedListener) {
@@ -131,6 +132,7 @@ public class EncyclopediaAutoScrollView extends ScrollView {
 
     /**
      * 设置是否可以滚动
+     *
      * @param autoToScroll
      */
     public void setAutoToScroll(boolean autoToScroll) {
@@ -139,6 +141,7 @@ public class EncyclopediaAutoScrollView extends ScrollView {
 
     /**
      * 设置开始滚动的时间
+     *
      * @param fistTimeScroll
      */
     public void setFistTimeScroll(int fistTimeScroll) {
@@ -149,6 +152,7 @@ public class EncyclopediaAutoScrollView extends ScrollView {
 
     /**
      * 设置滚动的速度
+     *
      * @param scrollRate
      */
     public void setScrollRate(int scrollRate) {
@@ -157,6 +161,7 @@ public class EncyclopediaAutoScrollView extends ScrollView {
 
     /**
      * 设置是否循环滚动
+     *
      * @param scrollLoop
      */
     public void setScrollLoop(boolean scrollLoop) {

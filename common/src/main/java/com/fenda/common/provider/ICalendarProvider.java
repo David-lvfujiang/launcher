@@ -1,4 +1,4 @@
-package com.fenda.calendar.base;
+package com.fenda.common.provider;
 
 import com.alibaba.android.arouter.facade.template.IProvider;
 

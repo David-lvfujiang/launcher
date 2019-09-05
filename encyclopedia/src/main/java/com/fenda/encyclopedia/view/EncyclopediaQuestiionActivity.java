@@ -1,12 +1,12 @@
-package com.example.fenda.view;
-
+package com.fenda.encyclopedia.view;
 import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.encyclopedias.R;
+
 import com.fenda.common.base.BaseActivity;
+import com.fenda.encyclopedia.R;
 
 /**
  * @author: david.lvfujiang

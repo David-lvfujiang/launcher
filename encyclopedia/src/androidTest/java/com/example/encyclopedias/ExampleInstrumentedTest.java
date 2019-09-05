@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.example.fenda.presenter.EncyclopediaFragmentPensenTer;
+import com.fenda.encyclopedia.presenter.EncyclopediaFragmentPensenTer;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

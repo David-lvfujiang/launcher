@@ -1,10 +1,8 @@
-package com.example.fenda.view;
+package com.fenda.encyclopedia.view;
 
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
-import com.example.encyclopedias.R;
 import com.fenda.common.base.BaseActivity;
+import com.fenda.encyclopedia.R;
 
 public class EncyclopediaNotAnswerActivity extends BaseActivity {
 

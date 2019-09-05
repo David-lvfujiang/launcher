@@ -1,4 +1,4 @@
-package com.example.fenda.model;
+package com.fenda.encyclopedia.model;
 
 import com.fenda.common.mvp.BaseModel;
 

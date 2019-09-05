@@ -1,4 +1,4 @@
-package com.example.fenda.presenter;
+package com.fenda.encyclopedia.presenter;
 
 
 import android.content.Context;
@@ -7,11 +7,11 @@ import android.content.Intent;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.example.fenda.base.IEncyclopediaProvider;
-import com.example.fenda.model.EncyclopediaShares;
-import com.example.fenda.view.EncyclopediaQuestiionActivity;
-import com.example.fenda.view.EncyclopediaSharesActivity;
+import com.fenda.encyclopedia.model.EncyclopediaShares;
+import com.fenda.encyclopedia.view.EncyclopediaQuestiionActivity;
+import com.fenda.encyclopedia.view.EncyclopediaSharesActivity;
 import com.fenda.common.BaseApplication;
+import com.fenda.common.provider.IEncyclopediaProvider;
 
 import static com.fenda.common.router.RouterPath.Calendar.ENCYCLOPEDIA_PROVIDER;
 

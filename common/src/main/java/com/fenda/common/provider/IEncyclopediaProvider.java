@@ -1,6 +1,4 @@
-package com.example.fenda.base;
-
-import android.content.Context;
+package com.fenda.common.provider;
 
 import com.alibaba.android.arouter.facade.template.IProvider;
 

@@ -6,10 +6,10 @@ import android.util.Log;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.fastjson.JSONObject;
-import com.fenda.calendar.base.ICalendarProvider;
 import com.fenda.calendar.model.Calendar;
 import com.fenda.calendar.view.CalendarMainActivity;
 import com.fenda.common.BaseApplication;
+import com.fenda.common.provider.ICalendarProvider;
 
 import static com.fenda.common.router.RouterPath.Calendar.CALENDAR_PROVIDER;
 
@@ -19,10 +19,12 @@ import static com.fenda.common.router.RouterPath.Calendar.CALENDAR_PROVIDER;
  * @Description 处理业务逻辑实现类
  */
 @Route(path = CALENDAR_PROVIDER)
-public class CalendarPresenTer implements ICalendarProvider {
+public class CalendarPresenter implements ICalendarProvider {
     Context context;
+
     /**
      * 过滤json字符串获取日历信息
+     *
      * @param msg
      */
     @Override
@@ -36,11 +38,11 @@ public class CalendarPresenTer implements ICalendarProvider {
         String nlmonth = object.getString("nlmonth");
         String nlday = object.getString("nlday");
         Calendar calendar = new Calendar(weekDay, year, month, day, nlmonth, nlday);
-        Log.e("json",calendar.toString());
+        Log.e("json", calendar.toString());
 
         Intent intent = new Intent();
         intent.putExtra("calendar", calendar);
-        intent.setClass( BaseApplication.getInstance(), CalendarMainActivity.class);
+        intent.setClass(BaseApplication.getInstance(), CalendarMainActivity.class);
         BaseApplication.getInstance().startActivity(intent);
         //路由跳转
         //ARouter.getInstance().build(RouterPath.Calendar.CALENDAR_ACTIVITY).navigation();
