@@ -32,6 +32,11 @@ public class CallService implements ICallProvider {
     }
 
     @Override
+    public void initSdk() {
+        RongIM.init(BaseApplication.getInstance());
+    }
+
+    @Override
     public void login(String rongCloudToken) {
         LogUtils.i("CallService login:" + rongCloudToken);
         ImConnectUtil.connectIm(rongCloudToken);

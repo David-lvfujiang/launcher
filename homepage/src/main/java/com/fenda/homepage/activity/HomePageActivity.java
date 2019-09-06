@@ -21,6 +21,7 @@ import com.fenda.common.base.BaseResponse;
 import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.db.ContentProviderManager;
+import com.fenda.common.provider.ICallProvider;
 import com.fenda.common.provider.IHomePageProvider;
 import com.fenda.common.provider.ISettingsProvider;
 import com.fenda.common.provider.IVoiceInitProvider;
@@ -39,9 +40,9 @@ import com.fenda.homepage.presenter.MainPresenter;
 import com.fenda.protocol.tcp.TCPConfig;
 import com.fenda.protocol.tcp.bean.BaseTcpMessage;
 import com.fenda.protocol.tcp.bean.EventMessage;
-import com.google.gson.Gson;
 
 import java.util.List;
+
 @Route(path = RouterPath.HomePage.HOMEPAGE_MAIN)
 public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener, View.OnTouchListener, IHomePageProvider {
 
@@ -59,6 +60,8 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
     @Autowired
     IVoiceInitProvider initProvider;
+    @Autowired
+    ICallProvider mICallProvider;
     IVoiceRequestProvider initVoiceProvider;
 
     Runnable cycleRollRunabler = new Runnable() {
@@ -174,16 +177,19 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
     @Override
     public void initData() {
-        if (initProvider != null){
+        if (initProvider != null) {
             initProvider.init(this);
             initProvider.initVoice();
         }
 
 
-        if (initVoiceProvider == null){
+        if (initVoiceProvider == null) {
             initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
         }
         initVoiceProvider.requestWeather();
+        if (mICallProvider != null) {
+            mICallProvider.initSdk();
+        }
 
         ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
         if (settingService != null) {
@@ -250,8 +256,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         } else if (resId == R.id.iv_main_tools) {
             //通讯录
 //            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
-        }
-        else if (resId == R.id.iv_header_weather || resId == R.id.tv_header_temp){
+        } else if (resId == R.id.iv_header_weather || resId == R.id.tv_header_temp) {
 
             ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN).navigation();
             initVoiceProvider.nowWeather();
@@ -283,15 +288,15 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        float  startY = 0,  offsetY;
+        float startY = 0, offsetY;
         int eventAction = event.getAction();
-        if(eventAction==MotionEvent.ACTION_DOWN){
+        if (eventAction == MotionEvent.ACTION_DOWN) {
             startY = event.getY();
-        } else if (eventAction==MotionEvent.ACTION_UP){
+        } else if (eventAction == MotionEvent.ACTION_UP) {
             offsetY = event.getY() - startY;
             if (offsetY < -10) {
                 // up
-                Intent intent = new Intent(this,SubmenuActivity.class);
+                Intent intent = new Intent(this, SubmenuActivity.class);
                 startActivity(intent);
             }
         }
