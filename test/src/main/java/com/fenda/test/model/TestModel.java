@@ -38,4 +38,11 @@ public class TestModel  implements TestContract.Model {
                 .seachUserInfoByMobile(userPhone)
                 .compose(RxSchedulers.<BaseResponse>io_main());
     }
+
+    @Override
+    public Observable<BaseResponse> modfiyDeviceName(String deviceId, String deviceName) {
+        return RetrofitHelper.getInstance(Constant.TEST_BASE_URL).getServer(MyService.class)
+                .updateDeviceName(deviceId, deviceName)
+                .compose(RxSchedulers.<BaseResponse>io_main());
+    }
 }

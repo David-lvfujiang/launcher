@@ -53,6 +53,7 @@ public class TestActivity extends BaseMvpActivity <TestPresenter, TestModel> imp
         btTest  = findViewById(R.id.bt_test);
 
         findViewById(R.id.bt_test_searchuser).setOnClickListener(this);
+        findViewById(R.id.bt_test_uploadimage).setOnClickListener(this);
 
         hasRecordPermission = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED;
@@ -67,7 +68,7 @@ public class TestActivity extends BaseMvpActivity <TestPresenter, TestModel> imp
     public void initData() {
         if (hasRecordPermission){
             LoginRequest request = new LoginRequest();
-            request.setMobile("15673629224");
+            request.setMobile("你好你好你好");
             request.setPassword("123456");
             mPresenter.register(request);
         }
@@ -83,6 +84,11 @@ public class TestActivity extends BaseMvpActivity <TestPresenter, TestModel> imp
 
     @Override
     public void searchUserByPhone(BaseResponse response) {
+
+    }
+
+    @Override
+    public void modfiyDeviceName(BaseResponse response) {
 
     }
 
@@ -123,6 +129,9 @@ public class TestActivity extends BaseMvpActivity <TestPresenter, TestModel> imp
             case R.id.bt_test_searchuser:{
                 mPresenter.searchUserByPhone("13360548781");
                 break;
+            }
+            case R.id.bt_test_uploadimage:{
+                mPresenter.modfiyDeviceName("123456", "你好你好你好");
             }
             default:break;
         }

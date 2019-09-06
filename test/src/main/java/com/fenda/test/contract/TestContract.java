@@ -22,6 +22,8 @@ public interface TestContract {
         void registerDevice(BaseResponse<LoginResult> response);
         void searchUserByPhone(BaseResponse response);
 
+        void modfiyDeviceName(BaseResponse response);
+
     }
 
 
@@ -29,12 +31,14 @@ public interface TestContract {
     interface Model extends BaseModel {
         Observable<BaseResponse<LoginResult>> register(LoginRequest loginRequest);
         Observable<BaseResponse> searchUser(String userPhone);
+        Observable<BaseResponse> modfiyDeviceName(String deviceId, String deviceName);
 
     }
 
     abstract class Presenter extends BasePresenter<View,Model> {
         public abstract void register(LoginRequest loginRequest);
         public abstract void searchUserByPhone(String userPhone);
+        public abstract void modfiyDeviceName(String deviceId, String deviceName);
 
     }
 
