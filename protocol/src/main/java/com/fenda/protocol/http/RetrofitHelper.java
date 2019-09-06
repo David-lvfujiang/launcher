@@ -125,7 +125,9 @@ public class RetrofitHelper {
                 FormBody formBody = (FormBody) request.body();
 
                 for (int i = 0; i < formBody.size(); i++) {
-                    allArgsTreeMap.put(formBody.encodedName(i), formBody.encodedValue(i));
+                    allArgsTreeMap.put(formBody.encodedName(i), formBody.value(i));
+
+//                    Log.e(TAG, "encodedValue " + formBody.encodedValue(i) + " value " + formBody.value(i));
                 }
                 //               bodyBuilder.addEncoded(formBody.encodedName(i), formBody.encodedValue(i));
             }

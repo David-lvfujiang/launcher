@@ -57,4 +57,20 @@ public class TestPresenter extends TestContract.Presenter {
             }
         }));
     }
+
+    @Override
+    public void modfiyDeviceName(String deviceId, String deviceName) {
+        mRxManage.add(mModel.modfiyDeviceName(deviceId, deviceName).subscribeWith(new RxResourceObserver<BaseResponse>(mView,true) {
+            @Override
+            protected void _onNext(BaseResponse loginResultBaseResponse) {
+                //           loginResultBaseResponse.getMessage();
+                mView.searchUserByPhone(loginResultBaseResponse);
+            }
+
+            @Override
+            protected void _onError(String message) {
+
+            }
+        }));
+    }
 }
