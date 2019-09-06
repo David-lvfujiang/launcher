@@ -96,8 +96,9 @@ dependencies {
     api (name: 'news-release', ext: 'aar')
     api (name: 'weather-release', ext: 'aar')
 //    api (name: 'calendar-release', ext: 'aar')
-    api (name: 'settings-_dev-release', ext: 'aar')
-    api (name: 'encyclopedia-release', ext: 'aar')
+//    api (name: 'settings-_dev-release', ext: 'aar')
+    api (name: 'calendar-_dev-release', ext: 'aar')
+    api (name: 'encyclopedia-_dev-release', ext: 'aar')
 
     annotationProcessor deps.arouter_compiler
     implementation project(path: ':CallLib')

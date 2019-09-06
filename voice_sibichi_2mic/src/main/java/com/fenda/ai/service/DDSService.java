@@ -17,13 +17,13 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.aispeech.ailog.AILog;
 import com.aispeech.dui.dds.DDS;
 import com.aispeech.dui.dds.DDSConfig;
 import com.aispeech.dui.dds.exceptions.DDSNotInitCompleteException;
-import com.aispeech.dui.plugin.music.MusicPlugin;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.ai.BuildConfig;
 import com.fenda.ai.R;
@@ -145,8 +145,6 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
         smartFilter.addAction(VoiceConstant.ACTION_CLOSE_ALARM);
         //关闭提醒
         smartFilter.addAction(VoiceConstant.ACTION_CLOSE_REMIND);
-        //关闭QQ音乐
-        smartFilter.addAction(VoiceConstant.ACTION_CLOSE_QQMUSIC);
         registerReceiver(smartReceiver, smartFilter);
 
         speechView = new SpeechView(BaseApplication.getInstance());
@@ -175,7 +173,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
 
     /**
      *初始化dds组件
-      */
+     */
     private void init()  {
         //在调试时可以打开sdk调试日志，在发布版本时，请关闭 setDebugMode(5)
         DDS.getInstance().setDebugMode(5);
@@ -361,16 +359,6 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 if (listener != null){
                     listener.closeRemind();
                 }
-            }else if (VoiceConstant.ACTION_CLOSE_QQMUSIC.equals(intent.getAction())){
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if (!BaseApplication.QQMUSIC.isEmpty()){
-                    MusicPlugin.get().getMusicApi().exit();
-                    BaseApplication.QQMUSIC.remove(VoiceConstant.MUSIC_PKG);
-                }
             }
         }
     };
@@ -479,7 +467,6 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
 //        config.addConfig(DDSConfig.K_API_KEY, "9e7baf5eae8f9e7baf5eae8f5d5284f0");
 
 
-        config.addConfig(DDSConfig.K_WAKEUP_DEBUG,"true");
 //        // 资源更新配置项
         // 预置在指定目录下的DUI内核资源包名, 避免在线下载内核消耗流量, 推荐使用
         config.addConfig(DDSConfig.K_DUICORE_ZIP, "duicore.zip");
@@ -592,10 +579,11 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                             .subscribe(new Consumer<String>() {
                                 @Override
                                 public void accept(String s) throws Exception {
-//                                    if (calendarProvider == null){
-//                                        calendarProvider = ARouter.getInstance().navigation(ICalendarProvider.class);
-//                                    }
-//                                    calendarProvider.getCalendarMsg(state);
+                                    if (calendarProvider == null){
+                                        calendarProvider = ARouter.getInstance().navigation(ICalendarProvider.class);
+                                    }
+                                    Log.e("技能", state);
+                                    calendarProvider.getCalendarMsg(state);
                                 }
                             });
                 } else  if (task.equals("股票")){
@@ -611,6 +599,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                                     if (provider == null){
                                         provider = ARouter.getInstance().navigation(IEncyclopediaProvider.class);
                                     }
+                                    Log.e("技能", state);
                                     provider.processSharesMsg(state);
                                 }
                             });
@@ -631,9 +620,6 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                                 }
                             });
                 }
-                break;
-            case VoiceConstant.SIBICHI.CONTEXT_WIDGET_TEXT:
-
                 break;
             default:
 
