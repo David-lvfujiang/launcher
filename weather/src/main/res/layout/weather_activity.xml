@@ -59,6 +59,7 @@
         android:id="@+id/tv_weather_type"
         app:layout_constraintLeft_toRightOf="@+id/iv_weather_icon"
         app:layout_constraintTop_toTopOf="@+id/iv_weather_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_weather_icon"
         android:text="大雨"
         android:textColor="@color/color_ffffff"
         android:textSize="48px"

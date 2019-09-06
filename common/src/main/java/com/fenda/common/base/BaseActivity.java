@@ -67,6 +67,7 @@ public abstract class BaseActivity extends RxAppCompatActivity{
     }
 
     public void initStatusBar() {
+
     }
 
 

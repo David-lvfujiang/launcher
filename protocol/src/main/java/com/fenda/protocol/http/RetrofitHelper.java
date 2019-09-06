@@ -186,6 +186,7 @@ public class RetrofitHelper {
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException("UnsupportedEncodingException", e);
         }
+
         //对生成的16字节数组进行补零操作
         StringBuilder hex = new StringBuilder(hash.length * 2);
         for (byte b : hash) {

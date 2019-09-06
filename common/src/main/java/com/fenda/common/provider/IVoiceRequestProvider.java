@@ -30,5 +30,4 @@ public interface IVoiceRequestProvider extends IProvider {
     void cancelQQMusic();
 
 
-
 }

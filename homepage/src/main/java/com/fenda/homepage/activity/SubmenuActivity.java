@@ -59,7 +59,10 @@ public class SubmenuActivity extends BaseActivity {
             public void onItemClick( View view, String applyId) {
                 if (applyId.equals(Constant.CALCULATOR)){
                     ToastUtils.show("计算器");
-                } else if (applyId.equals(Constant.WEATHER)) {
+                }else if (applyId.equals(Constant.SETTINGS)){
+                    ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
+                }
+                else if (applyId.equals(Constant.WEATHER)) {
                     ToastUtils.show("天气");
                 } else if (applyId.equals(Constant.CALENDAR)) {
                     ToastUtils.show("日历");

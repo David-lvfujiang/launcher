@@ -9,6 +9,7 @@ package com.fenda.homepage.data;
  */
 public interface Constant {
     String CALCULATOR = "calculator";
+    String SETTINGS = "settings";
     String WEATHER = "weather";
     String CALENDAR = "calendar";
     String PHOTO = "photo";
