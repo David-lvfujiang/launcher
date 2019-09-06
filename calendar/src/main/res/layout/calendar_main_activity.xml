@@ -68,15 +68,20 @@
             android:id="@+id/calendar_month_img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="70dp"
-            android:layout_marginTop="170dp" />
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="170dp"
+            android:background="@mipmap/calendar_one_icon"
+            />
 
         <ImageView
             android:id="@+id/calendar_day_img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="220dp"
-            android:layout_marginTop="170dp" />
+            android:layout_marginTop="170dp"
+            android:background="@mipmap/calendar_zero_icon"
+
+            />
     </RelativeLayout>
 
     <TextView
