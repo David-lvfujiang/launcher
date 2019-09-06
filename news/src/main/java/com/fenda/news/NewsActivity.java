@@ -1,6 +1,7 @@
 package com.fenda.news;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.wifi.WifiManager;
@@ -12,14 +13,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
-import com.alibaba.android.arouter.launcher.ARouter;
+import com.fenda.common.BaseApplication;
 import com.fenda.common.base.BaseActivity;
+import com.fenda.common.basebean.player.FDMusic;
+import com.fenda.common.basebean.player.MusicPlayBean;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.router.RouterPath;
 import com.fenda.news.adapter.ViewPagerCardAdapter;
-import com.fenda.news.bean.FDMusic;
-import com.fenda.news.bean.MusicPlayBean;
-import com.fenda.protocol.tcp.bus.EventBusUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -96,6 +96,12 @@ public class NewsActivity extends BaseActivity {
         initMediaPlayer();
         randomBg();
         NewsPlay.isNewsAcitivytOpen = true;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
     }
 
     /**
@@ -224,7 +230,6 @@ public class NewsActivity extends BaseActivity {
         if (mCurrentItem < 0){
             mCurrentItem = newsListData.size() - 1;
         }
-        play();
         vpNewsList.setCurrentItem(mCurrentItem);
     }
 
@@ -284,7 +289,6 @@ public class NewsActivity extends BaseActivity {
         if (mCurrentItem >= newsListData.size()){
             mCurrentItem = 0;
         }
-        play();
         vpNewsList.setCurrentItem(mCurrentItem);
     }
     /**
@@ -302,8 +306,23 @@ public class NewsActivity extends BaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.e("qob", "NewsActivity onStart");
+        BaseApplication.getInstance().setNewsPlay(true);
+    }
+
+
+    @Override
     protected void onStop() {
         super.onStop();
+        BaseApplication.getInstance().setNewsPlay(false);
         stop();
         finish();
     }
@@ -339,8 +358,7 @@ public class NewsActivity extends BaseActivity {
         }else if (action.equals(Constant.Player.VOICE_PREV)){
             preMusic();
 
-        }else if (action.equals(Constant.Player.VOICE_PREV)){
-            Log.i("TAG","NEXT MUSIC========================>");
+        }else if (action.equals(Constant.Player.VOICE_NEXT)){
             nextMusic();
         }
     }

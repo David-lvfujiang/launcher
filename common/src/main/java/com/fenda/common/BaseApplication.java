@@ -21,10 +21,14 @@ public class BaseApplication extends Application {
     private static BaseApplication instance;
     public static HashMap<String,Integer> QQMUSIC = new HashMap<>();
     /**
-     * 播放状态
+     * 媒体播放状态
      *
      */
-    public boolean isPlay;
+    private boolean isMusicPlay;
+    /**
+     * 新闻播放
+     */
+    private boolean isNewsPlay;
 
     @Override
     public void onCreate() {
@@ -53,12 +57,22 @@ public class BaseApplication extends Application {
     }
 
 
-    public void setPlayState(boolean isPlay){
-        this.isPlay = isPlay;
+    public boolean isNewsPlay() {
+        return isNewsPlay;
     }
 
-    public boolean getPlayState(){
-        return isPlay;
+    public void setNewsPlay(boolean newsPlay) {
+        isNewsPlay = newsPlay;
     }
+
+    public void setMusicPlay(boolean isMusicPlay){
+        this.isMusicPlay = isMusicPlay;
+    }
+
+    public boolean isMusicPlay(){
+        return isMusicPlay;
+    }
+
+
 
 }

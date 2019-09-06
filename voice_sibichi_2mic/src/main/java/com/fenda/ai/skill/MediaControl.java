@@ -9,6 +9,7 @@ import com.aispeech.dui.plugin.mediactrl.MediaCtrlPlugin;
 import com.aispeech.dui.plugin.music.MusicPlugin;
 import com.fenda.ai.VoiceConstant;
 import com.fenda.ai.modle.ControlModel;
+import com.fenda.common.BaseApplication;
 
 import java.util.HashMap;
 
@@ -105,6 +106,7 @@ public class MediaControl extends MediaCtrl {
     @Override
     public int stop() {
         if (Util.isQQMusicPlay()){
+            BaseApplication.QQMUSIC.remove(MUSIC_PKG);
             return MusicPlugin.get().getMusicApi().exit();
         }else if (Util.isQIYIPlay()){
             return IQiyiPlugin.get().getVideoApi().exit();

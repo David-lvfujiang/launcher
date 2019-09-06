@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.fenda.common.BaseApplication;
 import com.fenda.common.baserx.RxSchedulers;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.provider.IPlayerProvider;
@@ -96,7 +97,9 @@ public class AccessibilityMonitorService extends AccessibilityService {
 //                    packageMap.put("key",mPackage);
 //                    packageMap.put("class",className);
 //                }
-                if (QIYIMOBILE_PKG.equals(mPackage)){
+                LogUtil.e("===============================>开始退出QQ音乐 "+BaseApplication.QQMUSIC.isEmpty());
+                if (QIYIMOBILE_PKG.equals(mPackage) && !BaseApplication.QQMUSIC.isEmpty()){
+                    LogUtil.e("====================================");
                     Observable.create(new ObservableOnSubscribe<String>() {
                         @Override
                         public void subscribe(ObservableEmitter<String> emitter) throws Exception {

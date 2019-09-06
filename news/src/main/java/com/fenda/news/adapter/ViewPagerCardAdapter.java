@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.fenda.common.basebean.player.FDMusic;
 import com.fenda.common.util.ImageUtil;
 import com.fenda.news.R;
-import com.fenda.news.bean.FDMusic;
 
 import java.util.ArrayList;
 

@@ -23,6 +23,7 @@ import com.aispeech.ailog.AILog;
 import com.aispeech.dui.dds.DDS;
 import com.aispeech.dui.dds.DDSConfig;
 import com.aispeech.dui.dds.exceptions.DDSNotInitCompleteException;
+import com.aispeech.dui.plugin.music.MusicPlugin;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.ai.BuildConfig;
 import com.fenda.ai.R;
@@ -144,6 +145,8 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
         smartFilter.addAction(VoiceConstant.ACTION_CLOSE_ALARM);
         //关闭提醒
         smartFilter.addAction(VoiceConstant.ACTION_CLOSE_REMIND);
+        //关闭QQ音乐
+        smartFilter.addAction(VoiceConstant.ACTION_CLOSE_QQMUSIC);
         registerReceiver(smartReceiver, smartFilter);
 
         speechView = new SpeechView(BaseApplication.getInstance());
@@ -358,6 +361,16 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 if (listener != null){
                     listener.closeRemind();
                 }
+            }else if (VoiceConstant.ACTION_CLOSE_QQMUSIC.equals(intent.getAction())){
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (!BaseApplication.QQMUSIC.isEmpty()){
+                    MusicPlugin.get().getMusicApi().exit();
+                    BaseApplication.QQMUSIC.remove(VoiceConstant.MUSIC_PKG);
+                }
             }
         }
     };
@@ -466,6 +479,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
 //        config.addConfig(DDSConfig.K_API_KEY, "9e7baf5eae8f9e7baf5eae8f5d5284f0");
 
 
+        config.addConfig(DDSConfig.K_WAKEUP_DEBUG,"true");
 //        // 资源更新配置项
         // 预置在指定目录下的DUI内核资源包名, 避免在线下载内核消耗流量, 推荐使用
         config.addConfig(DDSConfig.K_DUICORE_ZIP, "duicore.zip");
@@ -597,7 +611,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                                     if (provider == null){
                                         provider = ARouter.getInstance().navigation(IEncyclopediaProvider.class);
                                     }
-                                    provider.geSharesMsg(state);
+                                    provider.processSharesMsg(state);
                                 }
                             });
                 }else if (task.equals("闲聊") || task.equals("百科")){
@@ -613,10 +627,13 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                                     if (provider == null){
                                         provider = ARouter.getInstance().navigation(IEncyclopediaProvider.class);
                                     }
-                                    provider.geTextMsg(state);
+                                    provider.processQuestionTextMsg(state);
                                 }
                             });
                 }
+                break;
+            case VoiceConstant.SIBICHI.CONTEXT_WIDGET_TEXT:
+
                 break;
             default:
 

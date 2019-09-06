@@ -79,14 +79,13 @@ public class Util {
 
     /**
      * 判断音乐播放器是否在前台,在后台时是否有其它的播放器在前台
-     * @param musicName
      * @return
      */
     public static boolean isQQMusicPlay(){
-            if (VoiceConstant.MUSIC_PKG.equals(AppTaskUtil.getAppTopPackage())){
+            if (VoiceConstant.MUSIC_PKG.equals(AppTaskUtil.getAppTopPackage()) && !BaseApplication.QQMUSIC.isEmpty()){
                 return true;
             }else {
-                boolean isLauncher = AppTaskUtil.getAppTopPackage().equals(VoiceConstant.LAUNCHER) && BaseApplication.getInstance().getPlayState();
+                boolean isLauncher = AppTaskUtil.getAppTopPackage().equals(VoiceConstant.LAUNCHER) && (BaseApplication.getInstance().isNewsPlay() || BaseApplication.getInstance().isMusicPlay());
                 if (!AppTaskUtil.getAppTopPackage().equals(VoiceConstant.QIYIMOBILE_PKG) && !isLauncher){
                     return true;
                 }
@@ -109,11 +108,10 @@ public class Util {
 
     /**
      * 判断launcher播放器是否在前台
-     * @param launcherName
      * @return
      */
     public static boolean isLauncherMusic(){
-        if (AppTaskUtil.getAppTopPackage().equals(VoiceConstant.LAUNCHER) && BaseApplication.getInstance().getPlayState()){
+        if (AppTaskUtil.getAppTopPackage().equals(VoiceConstant.LAUNCHER) && (BaseApplication.getInstance().isMusicPlay() || BaseApplication.getInstance().isNewsPlay())){
             return true;
         }
         return false;

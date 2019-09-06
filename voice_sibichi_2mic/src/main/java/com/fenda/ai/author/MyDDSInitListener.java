@@ -33,6 +33,7 @@ import com.fenda.ai.VoiceConstant;
 import com.fenda.ai.skill.MediaControl;
 import com.fenda.ai.skill.SystemControl;
 import com.fenda.ai.skill.TVControl;
+import com.fenda.common.BaseApplication;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.provider.IRemindProvider;
 import com.fenda.common.router.RouterPath;
@@ -294,9 +295,10 @@ public class MyDDSInitListener implements DDSInitListener {
             @Override
             public void a() {
                 //网络歌曲、热门歌曲、流行歌曲、人气歌曲、KTV热歌、抖音热门歌曲
-                    Random random = new Random();
-                    int index = random.nextInt(searchMusicName.length-1);
-                    MusicPlugin.get().getMusicApi().searchAndPlay(searchMusicName[index]);
+                Random random = new Random();
+                int index = random.nextInt(searchMusicName.length-1);
+                MusicPlugin.get().getMusicApi().searchAndPlay(searchMusicName[index]);
+                BaseApplication.QQMUSIC.put(VoiceConstant.MUSIC_PKG,VoiceConstant.PLAY);
 
 //                String musicName = FDApplication.packageNameMap.get(Constant.qqMusic);
 //                if (TextUtils.isEmpty(musicName)){
