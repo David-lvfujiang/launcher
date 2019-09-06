@@ -111,14 +111,14 @@ public class CalendarMainActivity extends BaseActivity {
         tvMonth.setText(month);
         tvNlDay.setText("农历" + nlmonth + nlday);
         // 5秒后关闭界面
-        //  handler.sendEmptyMessageDelayed(AUDIO_CONVERSE_CLOSE, 5000);
+          handler.sendEmptyMessageDelayed(AUDIO_CONVERSE_CLOSE, 6000);
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        setIntent(intent);
-        calendar = getIntent().getParcelableExtra("calendar");
+       // setIntent(intent);
+        //calendar = getIntent().getParcelableExtra("calendar");
         initData();
 
     }

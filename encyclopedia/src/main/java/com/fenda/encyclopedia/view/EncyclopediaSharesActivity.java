@@ -1,6 +1,8 @@
 package com.fenda.encyclopedia.view;
 
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -23,10 +25,22 @@ import com.fenda.common.base.BaseActivity;
 public class EncyclopediaSharesActivity extends BaseActivity implements View.OnClickListener {
     @Autowired
     EncyclopediaSharesBean shares;
+    private final int AUDIO_CONVERSE_CLOSE = 0;
     private TextView tvChange, tvChangeNumber, tvPercentage, tvPercentageNumber, tvDate, tvTitle, tvHigh;
     private RadioButton radioButton;
     private ImageView imgReturnBack;
-
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case AUDIO_CONVERSE_CLOSE:    // 关闭界面
+                    EncyclopediaSharesActivity.this.finish();
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
     @Override
     public int onBindLayout() {
         return R.layout.activity_encyclopedia_shares;
@@ -64,6 +78,8 @@ public class EncyclopediaSharesActivity extends BaseActivity implements View.OnC
         tvTitle.setText(shares.getName());
         tvHigh.setText(shares.getHigh());
         tvDate.setText(shares.getDate());
+        handler.sendEmptyMessageDelayed(AUDIO_CONVERSE_CLOSE, 7000);
+
     }
 
     @Override
@@ -73,6 +89,10 @@ public class EncyclopediaSharesActivity extends BaseActivity implements View.OnC
         }
     }
 
+    /**
+     * singleTask启动模式回调
+     * @param intent
+     */
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
