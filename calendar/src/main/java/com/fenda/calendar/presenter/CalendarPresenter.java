@@ -45,7 +45,7 @@ public class CalendarPresenter implements ICalendarProvider {
             String nlday = object.getString("nlday");
             Calendar calendar = new Calendar(weekDay, year, month, day, nlmonth, nlday);
             Log.e("json", calendar.toString());
-            ARouter.getInstance().build(RouterPath.Calendar.CALENDAR_ACTIVITY).withObject("calendar", calendar).navigation();
+            ARouter.getInstance().build(RouterPath.Calendar.CALENDAR_ACTIVITY).withParcelable("calendar", calendar).navigation();
 
         }
         catch (Exception e) {

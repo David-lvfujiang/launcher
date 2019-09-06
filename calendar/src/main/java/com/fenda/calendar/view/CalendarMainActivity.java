@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -113,5 +114,12 @@ public class CalendarMainActivity extends BaseActivity {
         //  handler.sendEmptyMessageDelayed(AUDIO_CONVERSE_CLOSE, 5000);
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        calendar = getIntent().getParcelableExtra("calendar");
+        initData();
 
+    }
 }

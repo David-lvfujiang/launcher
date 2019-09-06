@@ -3,7 +3,9 @@
     package="com.fenda.calendar">
 
     <application>
-        <activity android:name="com.fenda.calendar.view.CalendarMainActivity">
+        <activity android:name="com.fenda.calendar.view.CalendarMainActivity"
+            android:launchMode="singleTask"
+            >
         </activity>
     </application>
 
