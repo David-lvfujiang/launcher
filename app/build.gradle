@@ -100,7 +100,6 @@ dependencies {
     api (name: 'skill_setting-release', ext: 'aar')
     api (name: 'skill_tvctrl-release', ext: 'aar')
     api (name: 'skill_remind-release_new', ext: 'aar')
-
     annotationProcessor deps.arouter_compiler
     implementation project(path: ':CallLib')
     implementation project(path: ':CallKit')

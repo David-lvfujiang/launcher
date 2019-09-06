@@ -145,7 +145,7 @@ public class MainActivity extends BaseActivity {
         int mode = 0;
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
-                    android.os.Process.myUid(), getPackageName());
+                    Process.myUid(), getPackageName());
         }
         return mode == AppOpsManager.MODE_ALLOWED;
     }
@@ -187,7 +187,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return;
         }
         if (requestCode == PERMISSION_REQ) {

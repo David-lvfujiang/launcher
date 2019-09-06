@@ -1,4 +1,5 @@
 package com.fenda.encyclopedia.view;
+
 import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,13 +19,14 @@ import com.fenda.encyclopedia.R;
  */
 @Route(path = RouterPath.Encyclopedia.ENCYCLOPEDIA_QUESTIION_ACTIVITY)
 public class EncyclopediaQuestiionActivity extends BaseActivity implements View.OnClickListener {
-    private TextView tvContent, tvTitle;
-    private ImageView imgReturnBack;
-    private EncyclopediaAutoScrollView autoScrollView;
+    private TextView mTvContent, mTvTitle;
+    private ImageView mImgReturnBack;
+    private EncyclopediaAutoScrollView mAutoScrollView;
     @Autowired
     String content;
     @Autowired
     String title;
+
     @Override
     public int onBindLayout() {
         return R.layout.activity_encyclopedia_questiion;
@@ -32,21 +34,21 @@ public class EncyclopediaQuestiionActivity extends BaseActivity implements View.
 
     @Override
     public void initView() {
-        tvTitle = findViewById(R.id.title_text);
-        tvContent = findViewById(R.id.content_text);
-        autoScrollView = findViewById(R.id.scrollView);
-        imgReturnBack = findViewById(R.id.title_return_img);
-        imgReturnBack.setOnClickListener(this);
+        mTvTitle = findViewById(R.id.title_text);
+        mTvContent = findViewById(R.id.content_text);
+        mAutoScrollView = findViewById(R.id.scrollView);
+        mImgReturnBack = findViewById(R.id.title_return_img);
+        mImgReturnBack.setOnClickListener(this);
     }
 
     @Override
     public void initData() {
-        tvContent.setText(content);
-        tvTitle.setText(title);
-        autoScrollView.setAutoToScroll(true);//设置可以自动滑动
-        autoScrollView.setFistTimeScroll(5000);//设置第一次自动滑动的时间
-        autoScrollView.setScrollRate(50);//设置滑动的速率
-        autoScrollView.setScrollLoop(false);//设置是否循环滑动
+        mTvContent.setText(content);
+        mTvTitle.setText(title);
+        mAutoScrollView.setAutoToScroll(true);//设置可以自动滑动
+        mAutoScrollView.setFistTimeScroll(5000);//设置第一次自动滑动的时间
+        mAutoScrollView.setScrollRate(50);//设置滑动的速率
+        mAutoScrollView.setScrollLoop(false);//设置是否循环滑动
     }
 
     @Override
@@ -54,5 +56,13 @@ public class EncyclopediaQuestiionActivity extends BaseActivity implements View.
         if (view.getId() == R.id.title_return_img) {
             finish();
         }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        content = intent.getStringExtra("content");
+        title = intent.getStringExtra("title");
+        initData();
+        super.onNewIntent(intent);
     }
 }
