@@ -72,6 +72,13 @@ public class EncyclopediaSharesActivity extends BaseActivity implements View.OnC
             EncyclopediaSharesActivity.this.finish();
         }
     }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        shares = intent.getParcelableExtra("shares");
+        initData();
+    }
 }
 
 

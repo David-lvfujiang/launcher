@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.fenda.encyclopedia">
+    package="com.fenda.encyclopedia" >
 
-    <application>
-        <activity android:name="com.fenda.encyclopedia.view.EncyclopediaNotAnswerActivity"></activity>
-        <activity android:name="com.fenda.encyclopedia.view.EncyclopediaQuestiionActivity" />
+    <application >
+        <activity android:name="com.fenda.encyclopedia.view.EncyclopediaNotAnswerActivity" android:launchMode="singleTask"></activity>
+        <activity android:name="com.fenda.encyclopedia.view.EncyclopediaQuestiionActivity" android:launchMode="singleTask"/>
         <activity android:name="com.fenda.encyclopedia.view.TextActivity"></activity>
-        <activity android:name="com.fenda.encyclopedia.view.EncyclopediaSharesActivity" />
+        <activity android:name="com.fenda.encyclopedia.view.EncyclopediaSharesActivity" android:launchMode="singleTask" />
     </application>
 
 </manifest>

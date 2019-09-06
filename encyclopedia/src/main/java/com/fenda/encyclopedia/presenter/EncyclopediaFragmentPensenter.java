@@ -28,6 +28,7 @@ public class EncyclopediaFragmentPensenter implements IEncyclopediaProvider {
 
     /**
      * 处理问答
+     *
      * @param msg
      */
     @Override
@@ -41,6 +42,7 @@ public class EncyclopediaFragmentPensenter implements IEncyclopediaProvider {
 
     /**
      * 处理股票
+     *
      * @param msg
      */
     @Override
@@ -51,13 +53,13 @@ public class EncyclopediaFragmentPensenter implements IEncyclopediaProvider {
             String skill = jsonObject.getJSONObject("nlu").get("input").toString();
             JSONObject content = array.getJSONObject(0);//时间
             String date = content.get("date").toString();//时间
-            String high = content.get("high").toString();//上证指数
+            String current = content.get("current").toString();//上证指数
             String change = content.get("change").toString();//上涨指数
             String percentage = content.get("percentage").toString();//涨幅百分比
-            EncyclopediaSharesBean shares = new EncyclopediaSharesBean(skill, date, high, change, percentage);
-            ARouter.getInstance().build(RouterPath.Encyclopedia.ENCYCLOPEDIA_SHARES_ACTIVITY).withObject("shares", shares).navigation();
+            EncyclopediaSharesBean shares = new EncyclopediaSharesBean(skill, date, current, change, percentage);
+            ARouter.getInstance().build(RouterPath.Encyclopedia.ENCYCLOPEDIA_SHARES_ACTIVITY).withParcelable("shares", shares).navigation();
         } catch (Exception e) {
-            Log.e(TAG, "processSharesMsg: "+e.getMessage());
+            Log.e(TAG, "processSharesMsg: " + e.getMessage());
         }
     }
 

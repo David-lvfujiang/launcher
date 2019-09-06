@@ -1,4 +1,5 @@
 package com.fenda.encyclopedia.view;
+
 import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
@@ -25,6 +26,7 @@ public class EncyclopediaQuestiionActivity extends BaseActivity implements View.
     String content;
     @Autowired
     String title;
+
     @Override
     public int onBindLayout() {
         return R.layout.activity_encyclopedia_questiion;
@@ -54,5 +56,13 @@ public class EncyclopediaQuestiionActivity extends BaseActivity implements View.
         if (view.getId() == R.id.title_return_img) {
             finish();
         }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        content = intent.getStringExtra("content");
+        title = intent.getStringExtra("title");
+        initData();
+        super.onNewIntent(intent);
     }
 }
