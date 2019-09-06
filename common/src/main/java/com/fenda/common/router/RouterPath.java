@@ -47,8 +47,9 @@ public interface RouterPath {
 
     }
     public interface Encyclopedia {
-        String ENCYCLOPEDIA_PROVIDER = "/encyclopedia/EncyclopediaFragmentPensenTer";
-        String ENCYCLOPEDIA_ACTIVITY = "/encyclopedia/EncyclopediaSharesActivity";
+        String ENCYCLOPEDIA_PROVIDER = "/encyclopedia/EncyclopediaFragmentPensenter";
+        String ENCYCLOPEDIA_SHARES_ACTIVITY = "/encyclopedia/EncyclopediaSharesActivity";
+        String ENCYCLOPEDIA_QUESTIION_ACTIVITY = "/encyclopedia/EncyclopediaQuestiionActivity";
     }
     interface SETTINGS {
         String SettingsService = "/settings/SettingsService";

@@ -32,14 +32,11 @@ public class EncyclopediaFragmentPensenter implements IEncyclopediaProvider {
      */
     @Override
     public void processQuestionTextMsg(String msg) {
-        //JSONObject jsonObject = JSONObject.parseObject(msg);//json对象转字符串
-        String content = "大大的黑眼圈，胖嘟嘟的身体，标志性的内八字的行走方式，也有解剖刀般锋大熊猫属于大大的黑眼圈，胖嘟嘟的身体，标志性的内八字的行走方式，也有解剖刀般锋大熊猫属于食肉目、熊科、大熊猫亚大大的黑眼圈，胖嘟嘟的身体大大的黑眼圈，胖嘟嘟的身体，标志性的内八字的行走方式，也有解剖刀般锋大熊猫属于大大的黑眼圈，胖嘟嘟的身体，标志性的内八字的行走方式，也有解剖刀般锋大熊猫属于食肉目、熊科、大熊猫亚大大的黑眼圈，胖嘟嘟的身体大大的黑眼圈，胖嘟嘟的身体，标志性的内八字的行走方式，也有解剖刀般锋大熊猫属于大大的黑眼圈，胖嘟嘟的身体，标志性的内八字的行走方式，也有解剖刀般锋大熊猫属于食肉目、熊科、大熊猫亚大大的黑眼圈，胖嘟嘟的身体";
-        String title = "熊猫是什么动物";
-        Intent intent = new Intent();
-        intent.putExtra("content", msg);
-        intent.putExtra("title", title);
-        intent.setClass(BaseApplication.getInstance(), EncyclopediaQuestiionActivity.class);
-        BaseApplication.getInstance().startActivity(intent);
+        JSONObject jsonObject = JSONObject.parseObject(msg);//json对象转字符串
+        String content = jsonObject.getString("text");
+        String title = jsonObject.getString("input");
+        ARouter.getInstance().build(RouterPath.Encyclopedia.ENCYCLOPEDIA_QUESTIION_ACTIVITY).withString("content", content).withString("title", title).navigation();
+
     }
 
     /**
@@ -49,16 +46,16 @@ public class EncyclopediaFragmentPensenter implements IEncyclopediaProvider {
     @Override
     public void processSharesMsg(String msg) {
         try {
-        JSONObject jsonObject = JSONObject.parseObject(msg);//json对象转字符串
-        JSONArray array = (JSONArray) jsonObject.getJSONObject("dm").getJSONObject("widget").get("content");
-        String skill = jsonObject.getJSONObject("nlu").get("input").toString();
-        JSONObject content = array.getJSONObject(0);//时间
-        String date = content.get("date").toString();//时间
-        String high = content.get("high").toString();//上证指数
-        String change = content.get("change").toString();//上涨指数
-        String percentage = content.get("percentage").toString();//涨幅百分比
-        EncyclopediaSharesBean shares = new EncyclopediaSharesBean(skill, date, high, change, percentage);
-        ARouter.getInstance().build(RouterPath.Encyclopedia.ENCYCLOPEDIA_ACTIVITY).withObject("shares", shares).navigation();
+            JSONObject jsonObject = JSONObject.parseObject(msg);//json对象转字符串
+            JSONArray array = (JSONArray) jsonObject.getJSONObject("dm").getJSONObject("widget").get("content");
+            String skill = jsonObject.getJSONObject("nlu").get("input").toString();
+            JSONObject content = array.getJSONObject(0);//时间
+            String date = content.get("date").toString();//时间
+            String high = content.get("high").toString();//上证指数
+            String change = content.get("change").toString();//上涨指数
+            String percentage = content.get("percentage").toString();//涨幅百分比
+            EncyclopediaSharesBean shares = new EncyclopediaSharesBean(skill, date, high, change, percentage);
+            ARouter.getInstance().build(RouterPath.Encyclopedia.ENCYCLOPEDIA_SHARES_ACTIVITY).withObject("shares", shares).navigation();
         } catch (Exception e) {
             Log.e(TAG, "processSharesMsg: "+e.getMessage());
         }

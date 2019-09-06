@@ -19,7 +19,7 @@ import com.fenda.common.base.BaseActivity;
  * @date: 2019/9/4
  * @describe: 股票Activity
  */
-@Route(path = RouterPath.Encyclopedia.ENCYCLOPEDIA_ACTIVITY)
+@Route(path = RouterPath.Encyclopedia.ENCYCLOPEDIA_SHARES_ACTIVITY)
 public class EncyclopediaSharesActivity extends BaseActivity implements View.OnClickListener {
     @Autowired
     EncyclopediaSharesBean shares;
