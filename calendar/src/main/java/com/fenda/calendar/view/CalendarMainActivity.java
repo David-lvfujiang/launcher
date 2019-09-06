@@ -30,8 +30,8 @@ public class CalendarMainActivity extends BaseActivity {
     @Autowired
     Calendar calendar;
     private final int AUDIO_CONVERSE_CLOSE = 0;
-    private TextView tvWeek, tvYear, tvMonth, tvNlDay;
-    private ImageView imgMonth, imgDay;
+    private TextView mTvWeekDay, mTvYear, mTvMonth, mTvNlDay;
+    private ImageView mImgMonth, mImgDay;
     private int[] datas = {R.mipmap.calendar_zero_icon, R.mipmap.calendar_one_icon, R.mipmap.calendar_two_icon, R.mipmap.calendar_three_icon, R.mipmap.calendar_four_icon, R.mipmap.calendar_five_icon, R.mipmap.calendar_six_icon, R.mipmap.calendar_seven_icon, R.mipmap.calendar_eight_icon, R.mipmap.calendar_nine_icon};
     private Handler handler = new Handler() {
         @Override
@@ -65,12 +65,12 @@ public class CalendarMainActivity extends BaseActivity {
             }
         }
         ARouter.getInstance().inject(this);
-        tvWeek = findViewById(R.id.week_tv);
-        tvYear = findViewById(R.id.year_tv);
-        tvMonth = findViewById(R.id.month_tv);
-        tvNlDay = findViewById(R.id.lunar_calendar_day_tv);
-        imgMonth = findViewById(R.id.calendar_month_img);
-        imgDay = findViewById(R.id.calendar_day_img);
+        mTvWeekDay = findViewById(R.id.week_tv);
+        mTvYear = findViewById(R.id.year_tv);
+        mTvMonth = findViewById(R.id.month_tv);
+        mTvNlDay = findViewById(R.id.lunar_calendar_day_tv);
+        mImgMonth = findViewById(R.id.calendar_month_img);
+        mImgDay = findViewById(R.id.calendar_day_img);
     }
 
 
@@ -99,17 +99,17 @@ public class CalendarMainActivity extends BaseActivity {
         if (day.length() > 1) {
             monthNumber = Integer.parseInt(String.valueOf(day.charAt(0)));
             dayNumber = Integer.parseInt(String.valueOf(day.charAt(1)));
-            imgMonth.setImageResource(datas[monthNumber]);
-            imgDay.setImageResource(datas[dayNumber]);
+            mImgMonth.setImageResource(datas[monthNumber]);
+            mImgDay.setImageResource(datas[dayNumber]);
         } else {
             dayNumber = Integer.parseInt(String.valueOf(day.charAt(0)));
-            imgMonth.setImageResource(datas[0]);
-            imgDay.setImageResource(datas[dayNumber]);
+            mImgMonth.setImageResource(datas[0]);
+            mImgDay.setImageResource(datas[dayNumber]);
         }
-        tvWeek.setText(weekDay);
-        tvYear.setText(year + "年");
-        tvMonth.setText(month);
-        tvNlDay.setText("农历" + nlmonth + nlday);
+        mTvWeekDay.setText(weekDay);
+        mTvYear.setText(year + "年");
+        mTvMonth.setText(month);
+        mTvNlDay.setText("农历" + nlmonth + nlday);
         // 5秒后关闭界面
           handler.sendEmptyMessageDelayed(AUDIO_CONVERSE_CLOSE, 6000);
     }
