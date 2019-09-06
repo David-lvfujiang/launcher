@@ -117,8 +117,8 @@ public class CalendarMainActivity extends BaseActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-       // setIntent(intent);
-        //calendar = getIntent().getParcelableExtra("calendar");
+        setIntent(intent);
+        calendar = getIntent().getParcelableExtra("calendar");
         initData();
 
     }
