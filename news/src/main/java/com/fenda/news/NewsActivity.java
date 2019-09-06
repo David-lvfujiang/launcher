@@ -230,7 +230,6 @@ public class NewsActivity extends BaseActivity {
         if (mCurrentItem < 0){
             mCurrentItem = newsListData.size() - 1;
         }
-        play();
         vpNewsList.setCurrentItem(mCurrentItem);
     }
 
@@ -290,7 +289,6 @@ public class NewsActivity extends BaseActivity {
         if (mCurrentItem >= newsListData.size()){
             mCurrentItem = 0;
         }
-        play();
         vpNewsList.setCurrentItem(mCurrentItem);
     }
     /**
