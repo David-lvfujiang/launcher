@@ -34,7 +34,7 @@ public class EncyclopediaFragmentPensenter implements IEncyclopediaProvider {
         String content ="大大的黑眼圈，胖嘟嘟的身体，标志性的内八字的行走方式，也有解剖刀般锋大熊猫属于大大的黑眼圈，胖嘟嘟的身体，标志性的内八字的行走方式，也有解剖刀般锋大熊猫属于食肉目、熊科、大熊猫亚大大的黑眼圈，胖嘟嘟的身体大大的黑眼圈，胖嘟嘟的身体，标志性的内八字的行走方式，也有解剖刀般锋大熊猫属于大大的黑眼圈，胖嘟嘟的身体，标志性的内八字的行走方式，也有解剖刀般锋大熊猫属于食肉目、熊科、大熊猫亚大大的黑眼圈，胖嘟嘟的身体大大的黑眼圈，胖嘟嘟的身体，标志性的内八字的行走方式，也有解剖刀般锋大熊猫属于大大的黑眼圈，胖嘟嘟的身体，标志性的内八字的行走方式，也有解剖刀般锋大熊猫属于食肉目、熊科、大熊猫亚大大的黑眼圈，胖嘟嘟的身体";
         String title = "熊猫是什么动物";
         Intent intent = new Intent();
-        intent.putExtra("content", content);
+        intent.putExtra("content", msg);
         intent.putExtra("title", title);
         intent.setClass( BaseApplication.getInstance(), EncyclopediaQuestiionActivity.class);
         BaseApplication.getInstance().startActivity(intent);

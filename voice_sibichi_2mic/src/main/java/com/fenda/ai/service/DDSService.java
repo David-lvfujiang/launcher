@@ -548,39 +548,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 try {
                     JSONObject jo = new JSONObject(state);
                     String skillName = jo.optString("skillName", "");
-                    if (skillName.equals("股票")){
-                        Observable.create(new ObservableOnSubscribe<String>() {
-                            @Override
-                            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
-                                emitter.onNext("");
-                            }
-                        }).compose(RxSchedulers.<String>io_main())
-                                .subscribe(new Consumer<String>() {
-                                    @Override
-                                    public void accept(String s) throws Exception {
-                                        if (provider == null){
-                                            provider = ARouter.getInstance().navigation(IEncyclopediaProvider.class);
-                                        }
-                                        provider.geTextMsg(state);
-                                    }
-                                });
-                    }else if (skillName.equals("闲聊") || skillName.equals("百科")){
-                        Observable.create(new ObservableOnSubscribe<String>() {
-                            @Override
-                            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
-                                emitter.onNext("");
-                            }
-                        }).compose(RxSchedulers.<String>io_main())
-                                .subscribe(new Consumer<String>() {
-                                    @Override
-                                    public void accept(String s) throws Exception {
-                                        if (provider == null){
-                                            provider = ARouter.getInstance().navigation(IEncyclopediaProvider.class);
-                                        }
-                                        provider.geSharesMsg(state);
-                                    }
-                                });
-                    }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -610,10 +578,42 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                             .subscribe(new Consumer<String>() {
                                 @Override
                                 public void accept(String s) throws Exception {
-                                    if (calendarProvider == null){
-                                        calendarProvider = ARouter.getInstance().navigation(ICalendarProvider.class);
+//                                    if (calendarProvider == null){
+//                                        calendarProvider = ARouter.getInstance().navigation(ICalendarProvider.class);
+//                                    }
+//                                    calendarProvider.getCalendarMsg(state);
+                                }
+                            });
+                } else  if (task.equals("股票")){
+                    Observable.create(new ObservableOnSubscribe<String>() {
+                        @Override
+                        public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                            emitter.onNext("");
+                        }
+                    }).compose(RxSchedulers.<String>io_main())
+                            .subscribe(new Consumer<String>() {
+                                @Override
+                                public void accept(String s) throws Exception {
+                                    if (provider == null){
+                                        provider = ARouter.getInstance().navigation(IEncyclopediaProvider.class);
                                     }
-                                    calendarProvider.getCalendarMsg(state);
+                                    provider.geSharesMsg(state);
+                                }
+                            });
+                }else if (task.equals("闲聊") || task.equals("百科")){
+                    Observable.create(new ObservableOnSubscribe<String>() {
+                        @Override
+                        public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                            emitter.onNext("");
+                        }
+                    }).compose(RxSchedulers.<String>io_main())
+                            .subscribe(new Consumer<String>() {
+                                @Override
+                                public void accept(String s) throws Exception {
+                                    if (provider == null){
+                                        provider = ARouter.getInstance().navigation(IEncyclopediaProvider.class);
+                                    }
+                                    provider.geTextMsg(state);
                                 }
                             });
                 }
