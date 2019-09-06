@@ -19,7 +19,6 @@ import com.fenda.common.provider.IVoiceInitProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.AppTaskUtil;
 import com.fenda.common.util.LogUtil;
-import com.fenda.news.NewsActivity;
 
 import java.util.ArrayList;
 import java.util.List;

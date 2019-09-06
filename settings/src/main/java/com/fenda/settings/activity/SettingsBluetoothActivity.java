@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.bluetooth.BluetoothA2dp;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -55,8 +57,8 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
     Button btFlashBtn;
     LinearLayout btOpening;
 
-    private BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();    //本地蓝牙适配器
-    private SettingsBluetoothAdapter blueAdapter;
+    private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();    //本地蓝牙适配器
+    private SettingsBluetoothAdapter mSettingsBluetoothAdapter;
     private IntentFilter mFilter;
     private Set<SettingsBluetoothDeviceBean> setDevices = new HashSet<>();
     private Set<BluetoothDevice> devices;
@@ -69,6 +71,8 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
      * 需要连接的蓝牙设备
      */
     private BluetoothDevice currentBluetoothDevice;
+    private BluetoothGattCallback mBluetoothGattCallback;
+
 
     @Override
     protected void initPresenter() {
@@ -89,39 +93,67 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
         btFlashBtn = findViewById(R.id.set_bt_flash_btn);
         btOpening = findViewById(R.id.bt_opening_layout);
 
-        if(bluetoothAdapter == null){
+        if (mSettingsBluetoothAdapter == null) {
+            mSettingsBluetoothAdapter = new SettingsBluetoothAdapter(SettingsBluetoothActivity.this, setDevices);
+            disBtInfosListView.setAdapter(mSettingsBluetoothAdapter);
+        }
+
+        if (mBluetoothAdapter == null) {
             ToastUtils.show("本地蓝牙不可用!");
             finish();   //退出应用
         }
-        String NameBt = bluetoothAdapter.getName();   //获取本机蓝牙名称
+
+        String NameBt = mBluetoothAdapter.getName();   //获取本机蓝牙名称
         disBtName.setText("本机蓝牙名称：" + NameBt);
         LogUtil.d(TAG, "bluetooth name  = " + NameBt);
 
-        boolean isBtOpen = bluetoothAdapter.isEnabled();
+        boolean isBtOpen = mBluetoothAdapter.isEnabled();
         LogUtil.d(TAG, "BT status-------  " + isBtOpen);
         //判断本机蓝牙是否打开
-        if (bluetoothAdapter.isEnabled()) {
+        if (isBtOpen) {
             btSwitch.setChecked(true);
+            btFlashBtn.setEnabled(true);
+            btFlashBtn.setBackgroundResource(R.drawable.settings_shape_bind_btn_on);
+            getBondedDevices();
+            mBluetoothAdapter.startDiscovery();
         } else {
+            btFlashBtn.setEnabled(false);
+            btFlashBtn.setBackgroundResource(R.drawable.settings_shape_bind_btn_off);
             btSwitch.setChecked(false);
         }
+
+        mBluetoothGattCallback = new BluetoothGattCallback() {
+            @Override
+            public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+                super.onConnectionStateChange(gatt, status, newState);
+                if (newState == BluetoothProfile.STATE_CONNECTED) {
+                    //成功连接
+                    LogUtil.d("连接蓝牙服务成功");
+
+                } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+                    //断开连接
+                    LogUtil.d("断开蓝牙服务");
+                }
+            }
+
+        };
 
     }
 
     @Override
     public void initData() {
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         /**注册搜索蓝牙receiver*/
         mFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         //绑定状态监听
         mFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         //搜索完成时监听
         mFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        mFilter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
         mFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-
-
+        mFilter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+        mFilter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
         registerReceiver(mReceiver, mFilter);
-        getBondedDevices();
     }
 
     @Override
@@ -136,23 +168,24 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
             @Override
             public void onClick(View view) {
                 // 如果正在搜索，就先取消搜索
-                if (bluetoothAdapter.isDiscovering()) {
-                    bluetoothAdapter.cancelDiscovery();
+                if (mBluetoothAdapter.isDiscovering()) {
+                    mBluetoothAdapter.cancelDiscovery();
                 }
-                LogUtil.d(TAG,"我在搜索");
-                boolean flashDiscoveryBool = bluetoothAdapter.startDiscovery();
+                getBondedDevices();
+                LogUtil.d(TAG, "我在搜索");
+                boolean flashDiscoveryBool = mBluetoothAdapter.startDiscovery();
 
                 LogUtil.d(TAG, "我在搜索 flash bool = " + flashDiscoveryBool);
-                blueAdapter.notifyDataSetChanged();
+                mSettingsBluetoothAdapter.notifyDataSetChanged();
             }
         });
 
         btSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
+                if (isChecked) {
                     LogUtil.d(TAG, "BT switch checked  " + isChecked);
-                    bluetoothAdapter.enable();
+                    mBluetoothAdapter.enable();
 //
 //                    MediaPlayer player  =   new MediaPlayer();
 //
@@ -165,25 +198,24 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
 //                        e.printStackTrace();
 //                    }
 //
-//                    player.start();
-                    getBondedDevices();
-
-                    // 如果正在搜索，就先取消搜索
-                    if (bluetoothAdapter.isDiscovering()) {
-                        bluetoothAdapter.cancelDiscovery();
-                    }
-                    LogUtil.d(TAG, "我在搜索");
-                    // 开始搜索蓝牙设备,搜索到的蓝牙设备通过广播返回
-                    boolean discoveryBool = bluetoothAdapter.startDiscovery();
-                    LogUtil.d(TAG, "我在搜索 bool = " + discoveryBool);
-                    disBtInfosListView.setAdapter(blueAdapter);
-                }
-                else
-                {
+////                    player.start();
+//                    getBondedDevices();
+//
+//                    // 如果正在搜索，就先取消搜索
+//                    if (mBluetoothAdapter.isDiscovering()) {
+//                        mBluetoothAdapter.cancelDiscovery();
+//                    }
+//                    LogUtil.d(TAG, "我在搜索");
+//                    // 开始搜索蓝牙设备,搜索到的蓝牙设备通过广播返回
+//                    boolean discoveryBool = mBluetoothAdapter.startDiscovery();
+//                    LogUtil.d(TAG, "我在搜索 bool = " + discoveryBool);
+//                    disBtInfosListView.setAdapter(mSettingsBluetoothAdapter);
+                } else {
                     LogUtil.d(TAG, "BT switch unchecked  " + isChecked);
                     ToastUtils.show("蓝牙已关闭");
-                    bluetoothAdapter.disable();
-                    disBtInfosListView.setAdapter(null);
+                    mBluetoothAdapter.disable();
+                    mSettingsBluetoothAdapter.getListDevices().clear();
+                    mSettingsBluetoothAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -191,7 +223,7 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
         disBtInfosListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                List<SettingsBluetoothDeviceBean> listDevices = blueAdapter.getListDevices();
+                List<SettingsBluetoothDeviceBean> listDevices = mSettingsBluetoothAdapter.getListDevices();
                 final SettingsBluetoothDeviceBean blueDevice = listDevices.get(i);
                 String msg = "";
                 /**还没有配对*/
@@ -199,6 +231,12 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
                     msg = "是否与设备" + blueDevice.getName() + "配对并连接？";
                 } else {
                     msg = "是否与设备" + blueDevice.getName() + "连接？";
+                }
+                if (blueDevice.getStatus().equals("已连接")) {
+                    return;
+                }
+                if (mBluetoothAdapter.isDiscovering()) {
+                    mBluetoothAdapter.cancelDiscovery();
                 }
                 showDailog(msg, new DialogInterface.OnClickListener() {
                     @Override
@@ -208,10 +246,12 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
                         /**还没有配对*/
                         if (blueDevice.getDevice().getBondState() != BluetoothDevice.BOND_BONDED) {
                             //baseActivity.showProgressDailog();
-                            startPariBlue(blueDevice);
+//                            startPariBlue(blueDevice);
+                            blueDevice.getDevice().createBond();
                         } else {
                             /**完成配对的,直接连接*/
-                            contectBuleDevices();
+//                            contectBuleDevices();
+                            contectDevices(blueDevice);
                         }
                     }
                 });
@@ -222,11 +262,14 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
         disBtInfosListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                List<SettingsBluetoothDeviceBean> listDevices = blueAdapter.getListDevices();
+                List<SettingsBluetoothDeviceBean> listDevices = mSettingsBluetoothAdapter.getListDevices();
                 final SettingsBluetoothDeviceBean blueDevices = listDevices.get(i);
+                if (mBluetoothAdapter.isDiscovering()) {
+                    mBluetoothAdapter.cancelDiscovery();
+                }
                 /**还没有配对*/
                 if (blueDevices.getDevice().getBondState() != BluetoothDevice.BOND_BONDED) {
-                    return false;
+                    return true;
                     /**完成配对的*/
                 } else {
                     showDailog("是否取消" + blueDevices.getName() + "配对？", new DialogInterface.OnClickListener() {
@@ -238,7 +281,8 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
                 }
                 return true;
             }
-        });    }
+        });
+    }
 
     @Override
     public void showErrorTip(String msg) {
@@ -252,23 +296,83 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
         if (!setDevices.isEmpty()) {
             setDevices.clear();
         }
-        devices = bluetoothAdapter.getBondedDevices();
+        mSettingsBluetoothAdapter.getListDevices().clear();
+        devices = mBluetoothAdapter.getBondedDevices();
+        LogUtil.d(TAG, "FD---bonded device size" + devices.size());
         for (BluetoothDevice bluetoothDevice : devices) {
             SettingsBluetoothDeviceBean blueDevice = new SettingsBluetoothDeviceBean();
             blueDevice.setName(bluetoothDevice.getName());
             blueDevice.setAddress(bluetoothDevice.getAddress());
             blueDevice.setDevice(bluetoothDevice);
-            blueDevice.setStatus("已配对");
-            setDevices.add(blueDevice);
+
+            LogUtil.d(TAG, "FD---bonded UUID" + bluetoothDevice.getUuids());
+
+            if (bluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
+                blueDevice.setStatus("已配对");
+            } else if (bluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
+                blueDevice.setStatus("正在配对");
+            } else if (bluetoothDevice.getBondState() == BluetoothDevice.BOND_NONE) {
+                blueDevice.setStatus("未配对");
+            } else {
+                blueDevice.setStatus("");
+            }
+            LogUtil.d(TAG, "FD---status" + bluetoothDevice.getBondState());
+            //blueDevice.setStatus("未连接");
+
+            mSettingsBluetoothAdapter.getListDevices().add(blueDevice);
         }
-        if (blueAdapter == null) {
-            blueAdapter = new SettingsBluetoothAdapter(SettingsBluetoothActivity.this, setDevices);
-            disBtInfosListView.setAdapter(blueAdapter);
+
+        if (mSettingsBluetoothAdapter == null) {
+            mSettingsBluetoothAdapter = new SettingsBluetoothAdapter(this, setDevices);
+            disBtInfosListView.setAdapter(mSettingsBluetoothAdapter);
         } else {
-            blueAdapter.setSetDevices(setDevices);
-            blueAdapter.notifyDataSetChanged();
+            //blueAdapter.setSetDevices(setDevices);
+            mSettingsBluetoothAdapter.notifyDataSetChanged();
         }
     }
+
+    private void ChangeBtItem(String name, String addr, String status) {
+        for (int i = 0; i < mSettingsBluetoothAdapter.getListDevices().size(); i++) {
+            String item_name = mSettingsBluetoothAdapter.getListDevices().get(i).getName();
+            String item_addr = mSettingsBluetoothAdapter.getListDevices().get(i).getAddress();
+            if (name != null) {
+                if (name.equals(item_name))
+                    mSettingsBluetoothAdapter.getListDevices().get(i).setStatus(status);
+            } else if (addr != null) {
+                if (addr.equals(item_addr))
+                    mSettingsBluetoothAdapter.getListDevices().get(i).setStatus(status);
+            }
+        }
+        mSettingsBluetoothAdapter.notifyDataSetChanged();
+    }
+
+    private void ChangeBtItemStatus(String name, String addr, String status) {
+        int index = 0;
+        for (int i = 0; i < mSettingsBluetoothAdapter.getListDevices().size(); i++) {
+            String item_name = mSettingsBluetoothAdapter.getListDevices().get(i).getName();
+            String item_addr = mSettingsBluetoothAdapter.getListDevices().get(i).getAddress();
+            if (name != null) {
+                if (name.equals(item_name)) {
+                    mSettingsBluetoothAdapter.getListDevices().get(i).setStatus(status);
+                    index = i;
+                    break;
+                }
+            } else if (addr != null) {
+                if (addr.equals(item_addr)) {
+                    mSettingsBluetoothAdapter.getListDevices().get(i).setStatus(status);
+                    index = i;
+                    break;
+                }
+            }
+        }
+
+        SettingsBluetoothDeviceBean bd = mSettingsBluetoothAdapter.getListDevices().get(index);
+        mSettingsBluetoothAdapter.getListDevices().remove(index);
+        mSettingsBluetoothAdapter.getListDevices().add(0, bd);
+        mSettingsBluetoothAdapter.notifyDataSetChanged();
+    }
+
+
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
         @Override
@@ -282,12 +386,23 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
                 // 搜索到的不是已经配对的蓝牙设备
                 if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
                     SettingsBluetoothDeviceBean blueDevice = new SettingsBluetoothDeviceBean();
-                    blueDevice.setName(device.getName()==null?device.getAddress():device.getName());
+                    blueDevice.setName(device.getName() == null ? device.getAddress() : device.getName());
                     blueDevice.setAddress(device.getAddress());
                     blueDevice.setDevice(device);
-                    setDevices.add(blueDevice);
-                    blueAdapter.setSetDevices(setDevices);
-                    blueAdapter.notifyDataSetChanged();
+                    LogUtil.d(TAG, "FD---SCAN bonded UUID" + device.getUuids());
+
+                    if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
+                        blueDevice.setStatus("已配对");
+                    } else if (device.getBondState() == BluetoothDevice.BOND_BONDING) {
+                        blueDevice.setStatus("正在配对");
+                    } else if (device.getBondState() == BluetoothDevice.BOND_NONE) {
+                        blueDevice.setStatus("未配对");
+                    } else {
+                        blueDevice.setStatus("");
+                    }
+                    mSettingsBluetoothAdapter.getListDevices().add(blueDevice);
+                    mSettingsBluetoothAdapter.notifyDataSetChanged();
+
                     LogUtil.d(TAG, "搜索结果......" + device.getName() + device.getAddress());
                 }
                 /**当绑定的状态改变时*/
@@ -296,20 +411,23 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
                 switch (device.getBondState()) {
                     case BluetoothDevice.BOND_BONDING:
                         LogUtil.d(TAG, "正在配对......");
-                        blueAdapter.notifyDataSetChanged();
+//                        mSettingsBluetoothAdapter.notifyDataSetChanged();
+                        ChangeBtItemStatus(device.getName(), device.getAddress(), "正在配对");
+
                         break;
                     case BluetoothDevice.BOND_BONDED:
                         LogUtil.d(TAG, "完成配对");
-                        hideProgressDailog();
-                        blueAdapter.notifyDataSetChanged();
-                        /**开始连接*/
-                        bluetoothAdapter.cancelDiscovery();
-                        contectBuleDevices();
+//                        hideProgressDailog();
+                        ChangeBtItemStatus(device.getName(), device.getAddress(), "已配对");
+//                        mSettingsBluetoothAdapter.notifyDataSetChanged();
+//                        /**开始连接*/
+//                        mBluetoothAdapter.cancelDiscovery();
+//                        contectBuleDevices();
                         break;
                     case BluetoothDevice.BOND_NONE:
-                        LogUtil.d(TAG,"取消配对");
+                        LogUtil.d(TAG, "取消配对");
                         ToastUtils.show("成功取消配对");
-                        getBondedDevices();
+                        ChangeBtItemStatus(device.getName(), device.getAddress(), "未配对");
                         break;
                     default:
                         break;
@@ -318,7 +436,7 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
                 setProgressBarIndeterminateVisibility(false);
                 LogUtil.d(TAG, "搜索完成......");
                 hideProgressDailog();
-            } else if(BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)){
+            } else if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
                 LogUtil.d(TAG, "BT status is changed~");
                 int blueState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 0);
                 switch (blueState) {
@@ -327,6 +445,11 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
                         break;
                     case BluetoothAdapter.STATE_ON:
                         btSwitch.setChecked(true);
+                        btFlashBtn.setEnabled(true);
+                        btFlashBtn.setBackgroundResource(R.drawable.settings_shape_bind_btn_on);
+                        btSwitch.setEnabled(true);
+                        getBondedDevices();
+                        mBluetoothAdapter.startDiscovery();
                         LogUtil.d(TAG, "STATE_ON");
                         break;
                     case BluetoothAdapter.STATE_TURNING_OFF:
@@ -334,8 +457,20 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
                         break;
                     case BluetoothAdapter.STATE_OFF:
                         btSwitch.setChecked(false);
+                        btFlashBtn.setEnabled(false);
+                        btFlashBtn.setBackgroundResource(R.drawable.settings_shape_bind_btn_off);
+                        btSwitch.setEnabled(true);
                         LogUtil.d(TAG, "STATE_OFF");
                         break;
+                }
+            } else if (action.equals(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                int state = intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE, 0);
+                LogUtil.d(TAG, "BT CONNECT staute " + device.getName() + state);
+                if (BluetoothAdapter.STATE_DISCONNECTED == state) {
+                    ChangeBtItemStatus(device.getName(), device.getAddress(), "已断开连接");
+                } else if (BluetoothAdapter.STATE_CONNECTED == state) {
+                    ChangeBtItemStatus(device.getName(), device.getAddress(), "已连接");
                 }
             }
         }
@@ -346,20 +481,23 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
      *
      * @param blueDevice
      */
-    private void startPariBlue(SettingsBluetoothDeviceBean   blueDevice) {
+    private void startPariBlue(SettingsBluetoothDeviceBean blueDevice) {
         SettingsBluetoothUtil blueUtils = new SettingsBluetoothUtil(blueDevice);
-        blueUtils.doPair();
-        hideDailog();
+        blueUtils.createBond(blueDevice.getDevice());
+        DismissDailog();
     }
 
     /**
      * 开始连接蓝牙设备
      */
-    private void contectBuleDevices() {
-        LogUtil.d(TAG,  "开始连接蓝牙");
-        /**使用A2DP协议连接设备*/
-        bluetoothAdapter.getProfileProxy(SettingsBluetoothActivity.this, mProfileServiceListener, BluetoothProfile.A2DP);
+    private void contectDevices(SettingsBluetoothDeviceBean blueDevice) {
+        SettingsBluetoothUtil blueUtils = new SettingsBluetoothUtil(blueDevice);
+        blueUtils.doPair();
+        DismissDailog();
     }
+//        LogUtil.d(TAG,  "开始连接蓝牙");
+//        /**使用A2DP协议连接设备*/
+//        mBluetoothAdapter.getProfileProxy(SettingsBluetoothActivity.this, mProfileServiceListener, BluetoothProfile.A2DP);
 
     /**
      * 连接蓝牙设备（通过监听蓝牙协议的服务，在连接服务的时候使用BluetoothA2dp协议）
@@ -374,7 +512,7 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
         public void onServiceConnected(int profile, BluetoothProfile proxy) {
 
             if (profile == BluetoothProfile.HEADSET) {
-                LogUtil.d(TAG,  "开始连接蓝牙 HEADSET");
+                LogUtil.d(TAG, "开始连接蓝牙 HEADSET");
 //                    bh = (BluetoothHeadset) proxy;
 //                    if (bh.getConnectionState(mTouchObject.bluetoothDevice) != BluetoothProfile.STATE_CONNECTED){
 //                        bh.getClass()
@@ -383,7 +521,7 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
                 // }
 
             } else if (profile == BluetoothProfile.A2DP) {
-               LogUtil.d(TAG,  "开始连接蓝牙 A2DP");
+                LogUtil.d(TAG, "开始连接蓝牙 A2DP");
                 /**ServiceListener（使用了反射技术调用连接的方法）*/
                 a2dp = (BluetoothA2dp) proxy;
                 if (a2dp.getConnectionState(currentBluetoothDevice) != BluetoothProfile.STATE_CONNECTED) {
@@ -404,8 +542,8 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
 
         }
     };
-    public void showDailog(String msg, DialogInterface.OnClickListener listeners)
-    {
+
+    public void showDailog(String msg, DialogInterface.OnClickListener listeners) {
         final AlertDialog alertDialog;
         alertDialog = new AlertDialog.Builder(SettingsBluetoothActivity.this).create();
         alertDialog.setMessage(msg);
@@ -415,23 +553,23 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
                 alertDialog.dismiss();
             }
         });
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE,"确认",listeners);
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "确认", listeners);
         alertDialog.show();
     }
 
-    public void hideDailog(){
+    public void DismissDailog() {
         final AlertDialog alertDialog = null;
-        if(alertDialog!=null){
-            if(alertDialog.isShowing()){
+        if (alertDialog != null) {
+            if (alertDialog.isShowing()) {
                 alertDialog.dismiss();
             }
         }
     }
 
-    public void hideProgressDailog(){
+    public void hideProgressDailog() {
         ProgressDialog progressDialog = null;
-        if(progressDialog!=null){
-            if(progressDialog.isShowing()){
+        if (progressDialog != null) {
+            if (progressDialog.isShowing()) {
                 progressDialog.dismiss();
             }
         }
@@ -442,6 +580,6 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
         super.onDestroy();
         unregisterReceiver(mReceiver);
     }
-
-
 }
+
+

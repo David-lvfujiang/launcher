@@ -8,34 +8,22 @@ android {
     compileSdkVersion BUILD_VERSIONS.COMPILE_SDK
     buildToolsVersion BUILD_VERSIONS.BUILD_TOOLS
 
-
     defaultConfig {
         if (!isModule.toBoolean()){
             applicationId "com.fenda.settings"
         }
         javaCompileOptions {
-
             annotationProcessorOptions {
-
                 arguments = [moduleName: project.getName()]
-
             }
         }
-        minSdkVersion 21
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
         flavorDimensions "default"
+        minSdkVersion BUILD_VERSIONS.MIN_SDK
+        targetSdkVersion BUILD_VERSIONS.TARGET_SDK
+        versionCode BUILD_VERSIONS.VERSION_CODE
+        versionName BUILD_VERSIONS.VERSION_NAME
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-//
-//        minSdkVersion BUILD_VERSIONS.MIN_SDK
-//        targetSdkVersion BUILD_VERSIONS.TARGET_SDK
-//        versionCode BUILD_VERSIONS.VERSION_CODE
-//        versionName BUILD_VERSIONS.VERSION_NAME
-//
-//        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
     signingConfigs {
         debug {

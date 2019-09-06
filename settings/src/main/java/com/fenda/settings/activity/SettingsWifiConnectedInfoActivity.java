@@ -57,6 +57,7 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
         lvConnectedWifiConfig = findViewById(R.id.wifi_config_listview);
         tvWifiName = findViewById(R.id.wifi_config_name_tv);
         ivBack = findViewById(R.id.wifi_config_back_iv);
+        mSettingsWifiUtil = new SettingsWifiUtil(SettingsWifiConnectedInfoActivity.this);
     }
 
     @Override
@@ -104,28 +105,13 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
                 LogUtil.d(TAG, "wifiConfigurationList = " + wifiConfigurationList);
                 int netId1 = 0;
 
-                if (wifiConfigurationList != null && wifiConfigurationList.size() != 0) {
-                    for (int i = 0; i < wifiConfigurationList.size(); i++) {
-                        WifiConfiguration wifiConfiguration = wifiConfigurationList.get(i);
-                        String SSID  = wifiConfiguration.SSID.replace("\"", "");
-                        LogUtil.d(TAG, "ssid = " + SSID);
-                        // wifiSSID就是SSID
-                        if (SSID != null && SSID.equals(mConnectedSSID)) {
-                            netId1 = wifiConfiguration.networkId;
-                        }
-                    }
-                }
-
-//                netId1 = mWifiAdmin.getNetworkId(connectedSSID);
+                netId1 = mSettingsWifiUtil.getNetworkId(mConnectedSSID);
                 LogUtil.d(TAG, "取消网络保存id = " + netId1);
 
                 if(("取消保存网络").equals(setClickedListName)) {
 
-//                    mWifiAdmin.removeWifi(netId1);
-//                    mWifiManager.saveConfiguration();
-                    mWifiManager.disableNetwork(netId1);
-                    mWifiManager.disconnect();
-                    mWifiManager.removeNetwork(netId1);
+                    mSettingsWifiUtil.removeWifi(netId1);
+                    mWifiManager.saveConfiguration();
 
                     Intent connectIntent = new Intent(SettingsWifiConnectedInfoActivity.this, SettingsWifiActivity.class);
                     int intentStatus = 0;

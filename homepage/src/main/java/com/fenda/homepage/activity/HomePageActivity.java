@@ -183,7 +183,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         if (initVoiceProvider == null){
             initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
         }
-        initVoiceProvider.requestWeather();
+//        initVoiceProvider.requestWeather();
 
         ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
         if (settingService != null) {

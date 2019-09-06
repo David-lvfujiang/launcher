@@ -8,8 +8,8 @@ package com.fenda.homepage.data;
  * 包名：
  */
 public interface Constant {
-    String CALCULATOR = "calculator";
     String SETTINGS = "settings";
+    String CALCULATOR = "calculator";
     String WEATHER = "weather";
     String CALENDAR = "calendar";
     String PHOTO = "photo";

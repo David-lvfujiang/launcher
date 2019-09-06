@@ -104,7 +104,7 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
             tvDisVcodeText.setText("验证码(测试环境)");
             tvDisVcodeText.setTextColor(getColor(R.color.settings_colorAccent));
             tvDisVcodeText.setTextSize(22);
-        } else if("http://192.168.43.34:8998/smartsound/".equals(BaseEvn)){
+        } else if("http://192.168.43.34:8998/smartsound/".equals(BaseEvn) || "http://192.168.43.37:8998/smartsound/".equals(BaseEvn)){
             tvDisVcodeText.setText("验证码(192.198.43.34)");
             tvDisVcodeText.setTextColor(getColor(R.color.settings_colorAccent));
             tvDisVcodeText.setTextSize(22);
@@ -201,7 +201,10 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
        // 调用音视频服务接口登录IM
         ICallProvider loginService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
         if(loginService != null){
+            LogUtil.d(TAG, "ICallProvider 登录IM");
             loginService.login(queryDeviceInfoResponse.getRongcloud_token());
+        } else {
+            LogUtil.d(TAG, "ICallProvider 登录IM为空");
         }
         final String filePath2 = QRcodeUtil.getFileRoot(SettingsBindDeviceActivity.this) + File.separator + "qr_" + System.currentTimeMillis() + ".jpg";
 //        二维码图片较大时，生成图片、保存文件的时间可能较长，因此放在新线程中

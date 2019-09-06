@@ -50,14 +50,16 @@ public class SubmenuActivity extends BaseActivity {
     public void initView() {
         mApplyList = new ArrayList<>();
         mApplyList = AllApplyData.dataList(mApplyList);
-        //这里的第二个参数6代表的是网格的列数
+        //这里的第二个参数4代表的是网格的列数
         mSubmenuListRv.setLayoutManager(new GridLayoutManager(this, 4));
         mGridAdapter = new GridAdapter(mApplyList);
         mSubmenuListRv.setAdapter(new GridAdapter(mApplyList));
         mGridAdapter.setOnItemClickListener(new GridAdapter.OnItemClickListener() {
             @Override
             public void onItemClick( View view, String applyId) {
-                if (applyId.equals(Constant.CALCULATOR)){
+                if(applyId.equals(Constant.SETTINGS)){
+                    ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
+                } else if (applyId.equals(Constant.CALCULATOR)){
                     ToastUtils.show("计算器");
                 }else if (applyId.equals(Constant.SETTINGS)){
                     ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
@@ -137,10 +139,8 @@ public class SubmenuActivity extends BaseActivity {
                     ToastUtils.show("咪咕阅读");
                 } else if (applyId.equals(Constant.MIGU_CITIC)) {
                     ToastUtils.show("咪咕中信书店");
-                } 
-
+                }
             }
-
         });
         mSubmenuListRv.setAdapter(mGridAdapter);
     }
@@ -149,7 +149,6 @@ public class SubmenuActivity extends BaseActivity {
     public void initData() {
 
     }
-
 
     @Override
     public void initListener() {

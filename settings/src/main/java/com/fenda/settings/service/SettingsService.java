@@ -171,6 +171,7 @@ public class SettingsService implements ISettingsProvider {
         // 调用音视频服务接口登录IM
         ICallProvider loginService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
         if(loginService != null){
+            LogUtil.d(TAG, "ICallProvider 登录IM ");
             loginService.login(response.getData().getRongcloud_token());
         }
 

@@ -14,8 +14,8 @@ import java.util.List;
  */
 public class AllApplyData {
     public static List<ApplyBean> dataList (List<ApplyBean> mList) {
+        mList.add(new ApplyBean(Constant.SETTINGS,"设置", R.mipmap.homepage_settings));
         mList.add(new ApplyBean(Constant.CALCULATOR,"计算器", R.mipmap.submenu_ico_calculator));
-        mList.add(new ApplyBean(Constant.SETTINGS,"设置", R.mipmap.submenu_ico_calculator));
         mList.add(new ApplyBean(Constant.WEATHER,"天气", R.mipmap.submenu_ico_weather));
         mList.add(new ApplyBean(Constant.CALENDAR,"日历", R.mipmap.submenu_icon_calendar));
         mList.add(new ApplyBean(Constant.PHOTO ,"相册", R.mipmap.submenu_ico_photo));

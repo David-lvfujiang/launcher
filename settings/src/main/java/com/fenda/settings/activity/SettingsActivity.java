@@ -50,6 +50,7 @@ public class SettingsActivity extends BaseMvpActivity   {
     private String mConnectedWifiSSID;
     private SimpleAdapter mSimpleAdapter;
     private ArrayList<HashMap<String,String>> mArrayListData;
+    private WifiManager mWifiManager;
 
     @Override
     protected void initPresenter() {
@@ -139,24 +140,26 @@ public class SettingsActivity extends BaseMvpActivity   {
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 200){
-            mArrayListData.remove(0);
-            HashMap<String,String> params = new HashMap<>();
-            String wifiName = (String) SPUtils.get(this,"WifiName","");
-            params.put("name","WIFI");
-            if (!TextUtils.isEmpty(wifiName) && SettingsWifiUtil.isWifiEnabled(this)){
-                params.put("state","已连接("+wifiName+")");
-            } else{
-                params.put("state",getString(R.string.settings_set_status_wifi_noconnect));
-            }
-            mArrayListData.add(0,params);
-            mSimpleAdapter.notifyDataSetChanged();
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == 200){
+//            mArrayListData.remove(0);
+//            HashMap<String,String> params = new HashMap<>();
+//            String wifiName = (String) SPUtils.get(this,"WifiName","");
+//            params.put("name","WIFI");
+//            if (!TextUtils.isEmpty(wifiName) && SettingsWifiUtil.isWifiEnabled(this)){
+//                params.put("state","已连接("+wifiName+")");
+//            } else{
+//                params.put("state",getString(R.string.settings_set_status_wifi_noconnect));
+//            }
+//            mArrayListData.add(0,params);
+//            mSimpleAdapter.notifyDataSetChanged();
+//        }
+//    }
 
     private BroadcastReceiver mwifiReceiver = new BroadcastReceiver () {
+        HashMap<String,String> params = new HashMap<>();
+
         @Override
         public void onReceive(Context context, Intent intent) {
             if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
@@ -165,24 +168,29 @@ public class SettingsActivity extends BaseMvpActivity   {
                 NetworkInfo wifiInfo = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
                 Log.i(TAG, "--NetworkInfo--" + info.toString());
                 if (NetworkInfo.State.DISCONNECTED == info.getState()) { //wifi没连接上
+                    mArrayListData.remove(0);
+                    params.put("name","WIFI");
+                    params.put("state","未连接");
+                    mArrayListData.add(0,params);
+                    mSimpleAdapter.notifyDataSetChanged();
                     Log.i(TAG, "wifi没连接上");
                 } else if (NetworkInfo.State.CONNECTED == info.getState()) { //wifi连接上了
                     Log.i(TAG, "wifi连接上了");
                     mArrayListData.remove(0);
-                    HashMap<String,String> params = new HashMap<>();
-                    WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-                    mConnectedWifiSSID = wifiManager.getConnectionInfo().getSSID();
+                    mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+                    mConnectedWifiSSID = mWifiManager.getConnectionInfo().getSSID();
                     mConnectedWifiSSID = mConnectedWifiSSID.substring(1,mConnectedWifiSSID.length()-1);
                     LogUtil.d(TAG,  "back wifi name = " + mConnectedWifiSSID);
                     params.put("name","WIFI");
                     params.put("state","已连接("+mConnectedWifiSSID+")");
-
                     mArrayListData.add(0,params);
                     mSimpleAdapter.notifyDataSetChanged();
-
-//                    deviceStatusActivity.judgeviceStatus(getApplicationContext());
                 } else if (NetworkInfo.State.CONNECTING == info.getState()) {//正在连接
-
+                    mArrayListData.remove(0);
+                    params.put("name","WIFI");
+                    params.put("state","正在连接");
+                    mArrayListData.add(0,params);
+                    mSimpleAdapter.notifyDataSetChanged();
                 }
             } else if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(intent.getAction())) {
                 Log.i(TAG, "网络列表变化了");

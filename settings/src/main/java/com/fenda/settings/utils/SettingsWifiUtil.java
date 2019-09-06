@@ -115,8 +115,7 @@ public class SettingsWifiUtil {
     }
 
     // 得到配置好的网络
-    public List<WifiConfiguration> getConfiguration()
-    {
+    public List<WifiConfiguration> getConfiguration() {
         return mWifiConfiguration;
     }
 

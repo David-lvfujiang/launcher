@@ -71,6 +71,8 @@ public interface RouterPath {
         String SettingsDeviceAddContractsQRActivity = "/settings/SettingsDeviceAddContractsQRActivity";
         String SettingsDeviceContractsNickNameActivity = "/settings/SettingsDeviceContractsNickNameActivity";
 
+        String SettingsWifiTestActivity = "/settings/SettingsWifiTestActivity";
+
     }
 
     interface VOICE{

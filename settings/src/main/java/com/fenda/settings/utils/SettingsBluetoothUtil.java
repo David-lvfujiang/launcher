@@ -22,7 +22,11 @@ public class SettingsBluetoothUtil {
     private final SettingsBluetoothDeviceBean blueDevice;
     private Handler mOthHandler;
     private BluetoothSocket blueSocket;       //蓝牙连接socket
-    private static final UUID MY_UUID_SECURE = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    //UUID: Audio Source (0000110a-0000-1000-8000-00805f9b34fb)
+    //UUID: Audio Sink (0000110b-0000-1000-8000-00805f9b34fb)
+    //UUID: Headset AG (00001112-0000-1000-8000-00805f9b34fb)
+    // private static final UUID MY_UUID_SECURE = UUID.fromString("0000110a-0000-1000-8000-00805f9b34fb");
+    private static final UUID MY_UUID_SECURE = UUID.fromString("00001112-0000-1000-8000-00805f9b34fb");
 
     public SettingsBluetoothUtil(SettingsBluetoothDeviceBean blueDevice) {
         this.blueDevice = blueDevice;
@@ -33,7 +37,7 @@ public class SettingsBluetoothUtil {
      * @param btDevice
      * @return
      */
-    public static  boolean createBond(BluetoothDevice btDevice){
+    public  boolean createBond(BluetoothDevice btDevice){
         boolean result = false;
         try{
             Method m = btDevice.getClass().getDeclaredMethod("createBond",new Class[]{});
@@ -59,9 +63,14 @@ public class SettingsBluetoothUtil {
             public void run() {
                 initSocket();   //取得socket
                 try {
-                    blueSocket.connect();
+                    if(blueSocket!=null) {
+                        blueSocket.connect();
+                    }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    try {
+                        blueSocket.close();
+                    } catch (IOException e2) {
+                    }
                 }
             }
         });
@@ -87,24 +96,51 @@ public class SettingsBluetoothUtil {
     public void initSocket() {
         BluetoothSocket temp = null;
         try {
-//            temp = blueDevice.getDevice().createRfcommSocketToServiceRecord(
-//                    MY_UUID_SECURE);
+            temp = blueDevice.getDevice().createInsecureRfcommSocketToServiceRecord(MY_UUID_SECURE);
 //			temp = mTouchObject.bluetoothDevice.createRfcommSocketToServiceRecord(UUID.fromString(CONNECT_UUID));
 //            以上取得socket方法不能正常使用， 用以下方法代替
-            Method m = blueDevice.getDevice().getClass().getMethod("createRfcommSocket", new Class[] {int.class});
-            temp = (BluetoothSocket) m.invoke(blueDevice.getDevice(), 1);
+            //Method m = blueDevice.getDevice().getClass().getMethod("createRfcommSocket", new Class[] {int.class});
+            //temp = (BluetoothSocket) m.invoke(blueDevice.getDevice(), 1);
             //怪异错误： 直接赋值给socket,对socket操作可能出现异常，  要通过中间变量temp赋值给socket
         }catch (SecurityException e) {
             e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            // } catch (NoSuchMethodException e) {
+            //    e.printStackTrace();
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+            //} catch (IllegalAccessException e) {
+            //    e.printStackTrace();
+            // } catch (InvocationTargetException e) {
+            //    e.printStackTrace();
+        }catch (IOException e)
+        {
             e.printStackTrace();
         }
         blueSocket = temp;
+
+
+
+//
+//        BluetoothSocket temp = null;
+//        try {
+////            temp = blueDevice.getDevice().createRfcommSocketToServiceRecord(
+////                    MY_UUID_SECURE);
+////			temp = mTouchObject.bluetoothDevice.createRfcommSocketToServiceRecord(UUID.fromString(CONNECT_UUID));
+////            以上取得socket方法不能正常使用， 用以下方法代替
+//            Method m = blueDevice.getDevice().getClass().getMethod("createRfcommSocket", new Class[] {int.class});
+//            temp = (BluetoothSocket) m.invoke(blueDevice.getDevice(), 1);
+//            //怪异错误： 直接赋值给socket,对socket操作可能出现异常，  要通过中间变量temp赋值给socket
+//        }catch (SecurityException e) {
+//            e.printStackTrace();
+//        } catch (NoSuchMethodException e) {
+//            e.printStackTrace();
+//        } catch (IllegalArgumentException e) {
+//            e.printStackTrace();
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        } catch (InvocationTargetException e) {
+//            e.printStackTrace();
+//        }
+//        blueSocket = temp;
     }
 }
