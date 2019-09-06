@@ -7,8 +7,11 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 
+import com.alibaba.android.arouter.facade.annotation.Autowired;
+import com.alibaba.android.arouter.facade.annotation.Route;
+import com.fenda.common.router.RouterPath;
 import com.fenda.encyclopedia.R;
-import com.fenda.encyclopedia.model.EncyclopediaShares;
+import com.fenda.encyclopedia.model.EncyclopediaSharesBean;
 import com.fenda.common.base.BaseActivity;
 
 /**
@@ -16,8 +19,10 @@ import com.fenda.common.base.BaseActivity;
  * @date: 2019/9/4
  * @describe: 股票Activity
  */
+@Route(path = RouterPath.Encyclopedia.ENCYCLOPEDIA_ACTIVITY)
 public class EncyclopediaSharesActivity extends BaseActivity implements View.OnClickListener {
-    private EncyclopediaShares shares;
+    @Autowired
+    EncyclopediaSharesBean shares;
     private TextView tvChange, tvChangeNumber, tvPercentage, tvPercentageNumber, tvDate, tvTitle, tvHigh;
     private RadioButton radioButton;
     private ImageView imgReturnBack;
@@ -44,8 +49,6 @@ public class EncyclopediaSharesActivity extends BaseActivity implements View.OnC
     @Override
     public void initData() {
         //获取股票实体
-        Intent intent = getIntent();
-        shares = (EncyclopediaShares) intent.getSerializableExtra("shares");
         if (Float.valueOf(shares.getChange().trim()) < 0) {
             tvChange.setText(R.string.encyclopedia_fall_text);
             tvPercentage.setText(R.string.encyclopedia_fall_percentage_text);

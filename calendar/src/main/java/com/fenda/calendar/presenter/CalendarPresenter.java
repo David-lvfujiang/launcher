@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.alibaba.fastjson.JSONObject;
 import com.fenda.calendar.R;
 import com.fenda.calendar.model.Calendar;
@@ -12,6 +13,8 @@ import com.fenda.calendar.view.CalendarMainActivity;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.provider.ICalendarProvider;
 import com.fenda.common.router.RouterPath;
+
+import static android.support.constraint.Constraints.TAG;
 
 
 /**
@@ -30,23 +33,25 @@ public class CalendarPresenter implements ICalendarProvider {
      */
     @Override
     public void getCalendarMsg(String msg) {
-        JSONObject jsonObject = JSONObject.parseObject(msg);//json对象转字符串
-        JSONObject object = jsonObject.getJSONObject("dm").getJSONObject("widget").getJSONObject("extra");
-        String weekDay = object.getString("weekday");
-        String year = object.getString("year");
-        String month = object.getString("month");
-        String day = object.getString("day");
-        String nlmonth = object.getString("nlmonth");
-        String nlday = object.getString("nlday");
-        Calendar calendar = new Calendar(weekDay, year, month, day, nlmonth, nlday);
-        Log.e("json", calendar.toString());
+        try {
 
-        Intent intent = new Intent();
-        intent.putExtra("calendar", calendar);
-        intent.setClass(BaseApplication.getInstance(), CalendarMainActivity.class);
-        BaseApplication.getInstance().startActivity(intent);
-        //路由跳转
-        //ARouter.getInstance().build(RouterPath.Calendar.CALENDAR_ACTIVITY).navigation();
+            JSONObject jsonObject = JSONObject.parseObject(msg);//json对象转字符串
+            JSONObject object = jsonObject.getJSONObject("dm").getJSONObject("widget").getJSONObject("extra");
+            String weekDay = object.getString("weekday");
+            String year = object.getString("year");
+            String month = object.getString("month");
+            String day = object.getString("day");
+            String nlmonth = object.getString("nlmonth");
+            String nlday = object.getString("nlday");
+            Calendar calendar = new Calendar(weekDay, year, month, day, nlmonth, nlday);
+            Log.e("json", calendar.toString());
+            ARouter.getInstance().build(RouterPath.Calendar.CALENDAR_ACTIVITY).withObject("calendar", calendar).navigation();
+
+        }
+        catch (Exception e) {
+            Log.e(TAG, "getCalendarMsg:"+e.getMessage());
+        }
+
 
     }
 

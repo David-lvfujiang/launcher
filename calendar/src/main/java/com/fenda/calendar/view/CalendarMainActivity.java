@@ -8,6 +8,7 @@ import android.os.Message;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
 
@@ -25,8 +26,8 @@ import java.lang.reflect.Field;
  */
 @Route(path = RouterPath.Calendar.CALENDAR_ACTIVITY)
 public class CalendarMainActivity extends BaseActivity {
-
-    private Calendar calendar;
+    @Autowired
+    Calendar calendar;
     private final int AUDIO_CONVERSE_CLOSE = 0;
     private TextView tvWeek, tvYear, tvMonth, tvNlDay;
     private ImageView imgMonth, imgDay;
@@ -74,8 +75,6 @@ public class CalendarMainActivity extends BaseActivity {
 
     @Override
     public void initData() {
-        Intent intent = getIntent();
-        calendar = (Calendar) intent.getSerializableExtra("calendar");
         if (calendar != null) {
             changeData(calendar.getWeekday(), calendar.getYear(), calendar.getMonth(), calendar.getDay(), calendar.getNlmonth(), calendar.getNlday());
         }
@@ -95,17 +94,20 @@ public class CalendarMainActivity extends BaseActivity {
     public void changeData(String weekDay, String year, String month, String day, String nlmonth, String nlday) {
         int monthNumber = 0;
         int dayNumber = 0;
-        if (Character.isDigit(day.charAt(0))) {  // 判断是否是数字
+
+        if (day.length() > 1) {
             monthNumber = Integer.parseInt(String.valueOf(day.charAt(0)));
-        }
-        if (Character.isDigit(day.charAt(1))) {  // 判断是否是数字
             dayNumber = Integer.parseInt(String.valueOf(day.charAt(1)));
+            imgMonth.setImageResource(datas[monthNumber]);
+            imgDay.setImageResource(datas[dayNumber]);
+        } else {
+            dayNumber = Integer.parseInt(String.valueOf(day.charAt(0)));
+            imgMonth.setImageResource(datas[0]);
+            imgDay.setImageResource(datas[dayNumber]);
         }
         tvWeek.setText(weekDay);
         tvYear.setText(year + "年");
         tvMonth.setText(month);
-        imgMonth.setImageResource(datas[monthNumber]);
-        imgDay.setImageResource(datas[dayNumber]);
         tvNlDay.setText("农历" + nlmonth + nlday);
         // 5秒后关闭界面
         //  handler.sendEmptyMessageDelayed(AUDIO_CONVERSE_CLOSE, 5000);

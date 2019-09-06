@@ -9,7 +9,7 @@ import com.alibaba.android.arouter.facade.template.IProvider;
  */
 public interface IEncyclopediaProvider extends IProvider {
 
-    public void geTextMsg(String msg);
-    public void geSharesMsg(String msg);
+    public void processQuestionTextMsg(String msg);
+    public void processSharesMsg(String msg);
 
 }
