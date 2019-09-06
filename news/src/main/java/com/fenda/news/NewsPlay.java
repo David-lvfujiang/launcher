@@ -1,6 +1,5 @@
 package com.fenda.news;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,13 +7,12 @@ import android.text.TextUtils;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.common.BaseApplication;
+import com.fenda.common.basebean.player.FDMusic;
+import com.fenda.common.basebean.player.MusicPlayBean;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.provider.INewsProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.Md5Utils;
-import com.fenda.news.bean.FDMusic;
-import com.fenda.news.bean.MusicPlayBean;
-import com.fenda.protocol.tcp.bus.EventBusUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;

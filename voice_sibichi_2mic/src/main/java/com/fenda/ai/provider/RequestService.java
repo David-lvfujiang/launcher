@@ -1,6 +1,7 @@
 package com.fenda.ai.provider;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.aispeech.dui.dds.DDS;
 import com.aispeech.dui.dds.agent.SkillIntent;
@@ -12,7 +13,9 @@ import com.aispeech.dui.plugin.remind.RemindPlugin;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.ai.VoiceConstant;
 import com.fenda.ai.skill.Util;
+import com.fenda.common.BaseApplication;
 import com.fenda.common.bean.UserInfoBean;
+import com.fenda.common.constant.Constant;
 import com.fenda.common.provider.IVoiceRequestProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.LogUtil;
@@ -29,8 +32,11 @@ import java.util.List;
  */
 @Route(path = RouterPath.VOICE.REQUEST_PROVIDER)
 public class RequestService implements IVoiceRequestProvider {
+    private Context mContext;
+
     @Override
     public void init(Context context) {
+        mContext = context;
 
     }
 
@@ -150,7 +156,10 @@ public class RequestService implements IVoiceRequestProvider {
 
     @Override
     public void cancelQQMusic() {
-       MusicPlugin.get().getMusicApi().pause();
+        LogUtil.e("===============================>退出QQ音乐中.... "+BaseApplication.QQMUSIC.isEmpty());
+        Intent intent = new Intent(VoiceConstant.ACTION_CLOSE_QQMUSIC);
+        mContext.sendBroadcast(intent);
+
     }
 
 

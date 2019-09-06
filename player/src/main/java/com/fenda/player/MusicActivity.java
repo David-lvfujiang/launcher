@@ -116,6 +116,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
     private int contentType;
 
 
+    private Intent mIntent;
     private int runTimeSecond;
     private MyFragmentPagerAdapter adapter;
     private Handler mProgressHandler = new Handler();
@@ -193,16 +194,18 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         mMusicListBt.setOnClickListener(this);
         tvBack.setOnClickListener(this);
 
-        BaseApplication.getInstance().setPlayState(true);
         addListener();
+        mIntent = getIntent();
 
 
     }
 
     @Override
     public void initData() {
-
-        Intent mIntent = getIntent();
+        current_item = 0;
+        if (mMusicList != null){
+            mMusicList.clear();
+        }
         MusicPlayBean bean = mIntent.getParcelableExtra(Constant.Player.keyDataMusicKey);
         String title = bean.getMsgName();
         contentType = bean.getMsgType();
@@ -230,6 +233,9 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
 
 
     private void addFragment(FDMusic tMusic) {
+        if (fragmentList != null){
+            fragmentList.clear();
+        }
         fragmentList.add(playerFragment);
         if (contentType == Constant.Player.POETRY){
             lyricFragment = LyricFragment.getInstance(tMusic);
@@ -391,15 +397,33 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         tsHint.setText(texts[curStr = (++curStr % texts.length)]);
     }
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.e("qob", "MusicActivity onStart");
+        BaseApplication.getInstance().setMusicPlay(true);
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
         Log.e("qob", "MusicActivity onStop");
         if (isPlay) {
-            BaseApplication.getInstance().setPlayState(false);
+            BaseApplication.getInstance().setMusicPlay(false);
             stop();
             finish();
         }
+    }
+
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        mIntent = intent;
+        initData();
+
     }
 
     @Override

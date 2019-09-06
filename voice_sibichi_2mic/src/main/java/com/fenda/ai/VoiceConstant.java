@@ -26,6 +26,7 @@ public class VoiceConstant {
     public static final String SMART_CALL_CLASSNAME = "io.rong.callkit.SingleCallActivity";
     public static final String ACTION_CLOSE_ALARM = "com.fenda.lucher.ACTION_CLOSE_ALARM";
     public static final String ACTION_CLOSE_REMIND = "com.fenda.lucher.ACTION_CLOSE_REMIND";
+    public static final String ACTION_CLOSE_QQMUSIC = "com.fenda.lucher.ACTION_CLOSE_QQMUSIC";
 
 
     public static final int PLAY = 0;
@@ -62,6 +63,7 @@ public class VoiceConstant {
         String CONTEXT_WIDGET_MEDIA = "context.widget.media";
         String CONTEXT_WIDGET_WEB = "context.widget.web";
         String CONTEXT_WIDGET_LIST = "context.widget.list";
+        String CONTEXT_WIDGET_TEXT = "context.widget.text";
         String CONTEXT_WIDGET_CONTENT = "context.widget.content";
         String CONTEXT_WIDGET_CUSTOM = "context.widget.custom";
         String AVATAR_SILENCE = "avatar.silence";

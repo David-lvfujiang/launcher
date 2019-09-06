@@ -11,6 +11,7 @@ import com.aispeech.dui.plugin.music.MusicPlugin;
 import com.aispeech.dui.plugin.tvctrl.TVCtrl;
 import com.aispeech.dui.plugin.tvctrl.TVCtrlPlugin;
 import com.fenda.common.util.AppTaskUtil;
+import com.fenda.common.util.LogUtil;
 
 /**
  * Created by chuck.liuzhaopeng on 2019/6/24.
@@ -56,11 +57,18 @@ public class TVControl extends TVCtrl {
         }
     }
 
+
     @Override
     public int openMode(String s) {
-//        LogUtil.e("openMode = "+s);
+        LogUtil.e("openMode = "+s);
         return super.openMode(s);
 
+    }
+
+    @Override
+    public int openTV() {
+        LogUtil.e("openTV");
+        return super.openTV();
     }
 
     @Override

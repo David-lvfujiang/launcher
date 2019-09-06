@@ -8,6 +8,7 @@
 
         <activity android:name=".MusicActivity"
             android:theme="@style/NoTitleFullscreen"
+            android:launchMode="singleTask"
             />
 
         <activity android:name=".MusicListActivity"

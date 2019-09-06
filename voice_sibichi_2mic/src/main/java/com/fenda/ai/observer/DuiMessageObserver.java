@@ -17,7 +17,7 @@ public class DuiMessageObserver implements MessageObserver {
     private MessageCallback mMessageCallback;
 
     private String[] mSubscribeKeys = new String[]{"sys.dialog.start","sys.dialog.state","sys.dialog.error","sys.dialog.end","context.input.text","context.output.text",
-            "context.widget.list","context.widget.content","context.widget.web","context.widget.media","context.widget.custom","asr.speech.result","dm.output"};
+            "context.widget.list","context.widget.content","context.widget.web","context.widget.media","context.widget.custom","asr.speech.result","dm.output","context.widget.text"};
 
     /**
      * 注册当前更新消息

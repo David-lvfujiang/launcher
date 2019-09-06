@@ -10,8 +10,10 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.baserx.RxSchedulers;
 import com.fenda.common.provider.ICalendarProvider;
+import com.fenda.common.provider.IVoiceRequestProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.AppTaskUtil;
+import com.fenda.common.util.LogUtil;
 
 import org.androidannotations.annotations.App;
 
@@ -27,6 +29,7 @@ import io.reactivex.functions.Consumer;
 public class SystemControl extends SystemCtrl {
     private static final String TAG = "SystemControl";
     private static final String QIYIMOBILE_PKG = "com.qiyi.video.speaker";
+    private IVoiceRequestProvider provider;
 
     public SystemControl(Context context) {
         super(context);
@@ -47,7 +50,10 @@ public class SystemControl extends SystemCtrl {
     }
 
 
-
+    @Override
+    public int openApp(String s) {
+        return super.openApp(s);
+    }
 
     @Override
     public int shutdown(String s, String s1, String s2, String s3) {
@@ -100,5 +106,15 @@ public class SystemControl extends SystemCtrl {
                     }
                 });
         return SettingPlugin.ERR_OK;
+    }
+
+
+
+    @Override
+    public int goHome() {
+        if (Util.isQIYIPlay()){
+            IQiyiPlugin.get().getVideoApi().exit();
+        }
+        return super.goHome();
     }
 }
