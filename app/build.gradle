@@ -105,6 +105,7 @@ dependencies {
     implementation project(path: ':CallKit')
     implementation project(path: ':IMKit')
     implementation project(path: ':IMLib')
+    androidTestImplementation 'junit:junit:4.12'
 
 //    annotationProcessor deps.androidannotations
 //    annotationProcessor deps.arouter_compiler
