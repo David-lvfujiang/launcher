@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 28
-    buildToolsVersion "29.0.1"
 
 
     defaultConfig {
@@ -49,6 +48,8 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':common')
+
+    implementation 'com.jaredrummler:android-processes:1.1.1'
 
 
 }

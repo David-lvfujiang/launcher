@@ -86,7 +86,7 @@ public class Util {
                 return true;
             }else {
                 boolean isLauncher = AppTaskUtil.getAppTopPackage().equals(VoiceConstant.LAUNCHER) && (BaseApplication.getInstance().isNewsPlay() || BaseApplication.getInstance().isMusicPlay());
-                if (!AppTaskUtil.getAppTopPackage().equals(VoiceConstant.QIYIMOBILE_PKG) && !isLauncher){
+                if (!AppTaskUtil.getAppTopPackage().equals(VoiceConstant.QIYIMOBILE_PKG) && !isLauncher && !BaseApplication.QQMUSIC.isEmpty()){
                     return true;
                 }
             }

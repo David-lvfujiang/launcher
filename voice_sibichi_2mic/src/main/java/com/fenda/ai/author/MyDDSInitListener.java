@@ -84,20 +84,8 @@ public class MyDDSInitListener implements DDSInitListener {
             //初始化控制技能
             initControl();
             //初始化提醒技能
+            initRemind();
 
-            Observable.create(new ObservableOnSubscribe<String>() {
-                @Override
-                public void subscribe(ObservableEmitter<String> emitter) throws Exception {
-                    emitter.onNext("");
-                }
-            }).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<String>() {
-                        @Override
-                        public void accept(String s) throws Exception {
-                            initRemind();
-                        }
-                    });
 
 
 
@@ -106,32 +94,48 @@ public class MyDDSInitListener implements DDSInitListener {
     }
 
     private void initRemind() {
+        Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                emitter.onNext("");
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String s) throws Exception {
+                        if (provider == null){
+                            provider = (IRemindProvider) ARouter.getInstance().build(RouterPath.REMIND.ALARM_SERVICE).navigation();
+                        }
 
-        provider = (IRemindProvider) ARouter.getInstance().build(RouterPath.REMIND.ALARM_SERVICE).navigation();
+                    }
+                });
+
         //提醒技能
         RemindPlugin.init(mContext);
         RemindPlugin.get().setOnRemindFinishListener(new RemindPlugin.OnRemindFinishListener() {
             @RequiresApi(api = Build.VERSION_CODES.P)
             @Override
             public void onFinish(final Event event) {
-                AILog.d(TAG, "提醒事件时间到了 "+event.toString());
-                try {
-                    String json = new Gson().toJson(event);
 
+                String json = new Gson().toJson(event);
+                if (provider != null){
+                    provider.alarmRing(json);
+                }
+                try {
                     if (TextUtils.isEmpty(event.getEvent())) {
-                        if (provider != null){
-                            provider.alarmRing(json);
-                        }
                         startAlarm(event);
                     } else {
-                        if (provider != null){
-                            provider.remindRing(json);
-                        }
                         startRemind(event);
                     }
+
                 } catch (DDSNotInitCompleteException e) {
                     e.printStackTrace();
                 }
+
+
+                AILog.d(TAG, "提醒事件时间到了 "+event.toString());
+
             }
         });
 
@@ -208,7 +212,7 @@ public class MyDDSInitListener implements DDSInitListener {
             }
             @Override
             public void onFinish() {
-//                DispatchManager.startService(Constant.AIDL.CLOCE_ALARM,Constant.Alarm.CREATE_REMIND,Constant.AIDL.CLOCE_ALARM,Constant.AIDL.LAUNCHER);
+                remindTimer.cancel();
 
             }
         };
@@ -236,8 +240,8 @@ public class MyDDSInitListener implements DDSInitListener {
             public void onTick(long millisUntilFinished) {}
             @Override
             public void onFinish() {
-                timer.cancel();
                 ringtone.stop();
+                timer.cancel();
 //                DispatchManager.startService(Constant.AIDL.CLOCE_ALARM,Constant.Alarm.CREATE_REMIND,Constant.AIDL.CLOCE_ALARM,Constant.AIDL.LAUNCHER);
             }
         };

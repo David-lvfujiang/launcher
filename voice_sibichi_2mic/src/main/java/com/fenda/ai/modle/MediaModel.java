@@ -3,7 +3,9 @@ package com.fenda.ai.modle;
 
 import android.text.TextUtils;
 
+import com.aispeech.dui.plugin.music.MusicPlugin;
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.fenda.common.BaseApplication;
 import com.fenda.common.basebean.player.MusicPlayBean;
 import com.fenda.common.basebean.player.FDMusic;
 import com.fenda.common.baserx.RxSchedulers;
@@ -28,7 +30,6 @@ import io.reactivex.functions.Consumer;
  * @Description
  */
 public class MediaModel {
-
 
     private INewsProvider provider;
 
@@ -60,6 +61,9 @@ public class MediaModel {
             playlist.addAll(getCrossTallk(contentArray));
             contentType = Constant.Player.CROSS_TALLK;
         }else if ("新闻".equals(type)){
+            if (!BaseApplication.QQMUSIC.isEmpty()){
+                MusicPlugin.get().getMusicApi().pause();
+            }
             Observable.create(new ObservableOnSubscribe<String>() {
                 @Override
                 public void subscribe(ObservableEmitter<String> emitter) throws Exception {
@@ -75,15 +79,12 @@ public class MediaModel {
                             provider.news(dataJsonObject);
                         }
                     });
-
-
             return;
         }else if ("诗词".equals(type)){
             playlist.addAll(getPoetrys(contentArray));
             contentType = Constant.Player.POETRY;
         }else {
             playlist.addAll(getNewConsult(contentArray));
-
         }
 
         if (playlist == null){
@@ -96,7 +97,9 @@ public class MediaModel {
         bean.setMsgType(contentType);
         bean.setAidlMsgType(Constant.Player.keyBroadcastMusicList);
 
-
+        if (!BaseApplication.QQMUSIC.isEmpty()){
+            MusicPlugin.get().getMusicApi().pause();
+        }
         Observable.create(new ObservableOnSubscribe<String>() {
             @Override
             public void subscribe(ObservableEmitter<String> emitter) throws Exception {
@@ -110,17 +113,6 @@ public class MediaModel {
                     }
                 });
 
-//        ((Activity)mContext).runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                Intent mIntent = new Intent(mContext, MusicActivity.class);
-//                Bundle mBundle = new Bundle();
-//                mBundle.putParcelable(FDMusicPlay.keyDataMusicKey,bean);
-//                mIntent.putExtras(mBundle);
-//                mContext.startActivity(mIntent);
-//                EventBusUtils.post(bean);
-//            }
-//        });
 
 
     }
@@ -257,7 +249,6 @@ public class MediaModel {
             fdMusic.setMusicTitle(title);
             fdMusic.setContent(text);
             poetryList.add(fdMusic);
-
         }
         return poetryList;
     }

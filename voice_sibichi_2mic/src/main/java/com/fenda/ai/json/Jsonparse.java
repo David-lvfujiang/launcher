@@ -1,6 +1,5 @@
 package com.fenda.ai.json;
 
-import com.fenda.common.util.LogUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;

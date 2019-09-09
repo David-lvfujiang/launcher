@@ -1,17 +1,14 @@
 package com.fenda.ai.skill;
 
 
-import android.util.Log;
 
 import com.aispeech.dui.plugin.iqiyi.IQiyiPlugin;
 import com.aispeech.dui.plugin.mediactrl.MediaCtrl;
 import com.aispeech.dui.plugin.mediactrl.MediaCtrlPlugin;
 import com.aispeech.dui.plugin.music.MusicPlugin;
-import com.fenda.ai.VoiceConstant;
 import com.fenda.ai.modle.ControlModel;
 import com.fenda.common.BaseApplication;
 
-import java.util.HashMap;
 
 import static com.fenda.ai.VoiceConstant.*;
 
@@ -21,9 +18,7 @@ import static com.fenda.ai.VoiceConstant.*;
  */
 
 public class MediaControl extends MediaCtrl {
-    private static final String TAG = "MediaControl";
 
-    public static HashMap<String,Integer> mediaControlMap = new HashMap<>();
     private ControlModel controlModel;
 
 
@@ -40,32 +35,7 @@ public class MediaControl extends MediaCtrl {
             return IQiyiPlugin.get().getVideoApi().resume();
         }else if (Util.isLauncherMusic()){
            return controlModel.controlPlayer(MEDIA_PLAY);
-
         }
-//        for (Map.Entry<String, String> entry : FDApplication.packageNameMap.entrySet()) {
-//            String value = entry.getValue();
-//            if (Util.isQQMusicPlay(value)){
-//                //QQ音乐
-//                if (mediaControlMap.get(value) == PAUSE || mediaControlMap.get(value) == PLAY){
-//                    mediaControlMap.put(MUSIC_PKG,PLAY);
-//                    Log.i(TAG," mediaControlMap ==> Put = "+PLAY);
-////                    MusicPlugin.get().getMusicApi().searchAndPlay()
-//                    return MusicPlugin.get().getMusicApi().resume();
-//                }
-//            }else if (Util.isQIYIPlay(value) ){
-//                //爱奇艺
-//                mediaControlMap.put(QIYIMOBILE_PKG,PLAY);
-//                if (mediaControlMap.get(value) == PAUSE){
-//                    return IQiyiPlugin.get().getVideoApi().resume();
-//
-//                }
-//            }else if (Util.isLauncherMusic(value)){
-//                if (mediaControlMap.get(value) == PAUSE || mediaControlMap.get(value) == PLAY){
-//                    mediaControlMap.put(LAUNCHER,PLAY);
-//                    DispatchManager.startService("play","","", Constant.AIDL.LAUNCHER);
-//                }
-//            }
-//        }
             return IQiyiPlugin.ERR_NOT_SUPPORT;
     }
 
@@ -79,27 +49,8 @@ public class MediaControl extends MediaCtrl {
         }else if (Util.isLauncherMusic()){
             //自己创建的音乐播放器
             return controlModel.controlPlayer(MEDIA_PAUSE);
-
         }
 
-//        for (Map.Entry<String, String> entry : FDApplication.packageNameMap.entrySet()) {
-//            String value = entry.getValue();
-//            if (Util.isQQMusicPlay(value)){
-//                //QQ音乐
-//                mediaControlMap.put(MUSIC_PKG,PAUSE);
-//                Log.i(TAG," mediaControlMap ==> Put = "+PAUSE);
-//                return MusicPlugin.get().getMusicApi().pause();
-//            }else if (Util.isQIYIPlay(value) ){
-//                //爱奇艺
-//                 mediaControlMap.put(QIYIMOBILE_PKG,PAUSE);
-//                 return IQiyiPlugin.get().getVideoApi().pause();
-//            }else if (Util.isLauncherMusic(value)){
-//                if (mediaControlMap.get(value) == PLAY){
-//                    mediaControlMap.put(LAUNCHER,PAUSE);
-////                    DispatchManager.startService("pause","","", Constant.AIDL.LAUNCHER);
-//                }
-//            }
-//        }
             return MediaCtrlPlugin.ERR_NOT_SUPPORT;
     }
 
@@ -113,32 +64,6 @@ public class MediaControl extends MediaCtrl {
         }else if (Util.isLauncherMusic()){
             return controlModel.controlPlayer(MEDIA_STOP);
         }
-//        for (Map.Entry<String, String> entry : FDApplication.packageNameMap.entrySet()) {
-//            String value = entry.getValue();
-//            if (Util.isQQMusicPlay(value)){
-//                //QQ音乐
-//                if (mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE){
-//                    Log.e(TAG,"mediaControlMap ==> remove MUSIC_PKG  "+entry.getKey()+" - "+STOP);
-//                    mediaControlMap.put(MUSIC_PKG,STOP);
-//                    FDApplication.packageNameMap.remove(entry.getKey());
-//                    return MusicPlugin.get().getMusicApi().exit();
-//                }
-//            }else if (Util.isQIYIPlay(value) ){
-//                //爱奇艺
-//                if (mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE){
-//                    mediaControlMap.put(QIYIMOBILE_PKG,STOP);
-//                    FDApplication.packageNameMap.remove(entry.getKey());
-//                    return IQiyiPlugin.get().getVideoApi().exit();
-//                }
-//            }else if (Util.isLauncherMusic(value)){
-//                boolean isPlayOrPause = mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE;
-//                if (isPlayOrPause ){
-//                    mediaControlMap.put(LAUNCHER,STOP);
-//                    FDApplication.packageNameMap.remove(entry.getKey());
-//                    DispatchManager.startService("stop","","", Constant.AIDL.LAUNCHER);
-//                }
-//            }
-//        }
 
         return MediaCtrlPlugin.ERR_NOT_SUPPORT;
     }
@@ -152,24 +77,6 @@ public class MediaControl extends MediaCtrl {
         }else if (Util.isLauncherMusic()){
             return controlModel.controlPlayer(MEDIA_REPLAY);
         }
-//        for (Map.Entry<String, String> entry : FDApplication.packageNameMap.entrySet()) {
-//            String value = entry.getValue();
-//            if (Util.isQQMusicPlay(value)){
-//                //QQ音乐
-//                return MediaCtrlPlugin.ERR_NOT_SUPPORT;
-//            }else if (Util.isQIYIPlay(value) ){
-//                //爱奇艺
-//                if (mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE){
-//                    return IQiyiPlugin.get().getVideoApi().replay();
-//                }
-//            }else if (Util.isLauncherMusic(value)){
-//                boolean isPlayOrPause = mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE;
-//                if (isPlayOrPause ){
-//                    mediaControlMap.put(LAUNCHER,PLAY);
-//                    DispatchManager.startService("rePlay","","", Constant.AIDL.LAUNCHER);
-//                }
-//            }
-//        }
         return MediaCtrlPlugin.ERR_NOT_SUPPORT;
     }
 
@@ -182,30 +89,6 @@ public class MediaControl extends MediaCtrl {
         }else if (Util.isLauncherMusic()){
             return controlModel.controlPlayer(MEDIA_PREV);
         }
-//        Intent intent = new Intent();
-//        intent.setAction("moveTaskToFront");
-//        FDApplication.getContext().getApplicationContext().sendBroadcast(intent);
-//        for (Map.Entry<String, String> entry : FDApplication.packageNameMap.entrySet()) {
-//            String value = entry.getValue();
-//            if (Util.isQQMusicPlay(value)){
-//                //QQ音乐
-//                if (mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE){
-//                    mediaControlMap.put(MUSIC_PKG,PLAY);
-//                    return MusicPlugin.get().getMusicApi().prev();
-//                }
-//            }else if (Util.isQIYIPlay(value)){
-//                //爱奇艺
-//                if (mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE){
-//                    return IQiyiPlugin.get().getVideoApi().prevEpisode();
-//                }
-//            }else if (Util.isLauncherMusic(value)){
-//                boolean isPlayOrPause = mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE;
-//                if (isPlayOrPause){
-//                    mediaControlMap.put(LAUNCHER,PLAY);
-//                    DispatchManager.startService("prev","","", Constant.AIDL.LAUNCHER);
-//                }
-//            }
-//        }
             return MediaCtrlPlugin.ERR_NOT_SUPPORT;
     }
 
@@ -220,27 +103,6 @@ public class MediaControl extends MediaCtrl {
         }else if (Util.isLauncherMusic()){
             return controlModel.controlPlayer(MEDIA_NEXT);
         }
-//        for (Map.Entry<String, String> entry : FDApplication.packageNameMap.entrySet()) {
-//            String value = entry.getValue();
-//            if (Util.isQQMusicPlay(value)){
-//                //QQ音乐
-//                if (mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE){
-//                    mediaControlMap.put(MUSIC_PKG,PLAY);
-//                    return MusicPlugin.get().getMusicApi().next();
-//                }
-//            }else if (Util.isQIYIPlay(value)){
-//                //爱奇艺
-//                if (mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE){
-//                    return IQiyiPlugin.get().getVideoApi().nextEpisode();
-//                }
-//            }else if (Util.isLauncherMusic(value)){
-//                boolean isPlayOrPause = mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE;
-//                if (isPlayOrPause ){
-//                    mediaControlMap.put(LAUNCHER,PLAY);
-//                    DispatchManager.startService("next","","", Constant.AIDL.LAUNCHER);
-//                }
-//            }
-//        }
 
             return MediaCtrlPlugin.ERR_NOT_SUPPORT;
     }
@@ -254,20 +116,6 @@ public class MediaControl extends MediaCtrl {
             return controlModel.controlPlayer(MEDIA_ORDER_PLAY);
         }
 
-//        for (Map.Entry<String, String> entry : FDApplication.packageNameMap.entrySet()) {
-//            String value = entry.getValue();
-//            if (Util.isQQMusicPlay(value)){
-//                //QQ音乐
-//                if (mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE){
-//                    return MusicPlugin.get().getMusicApi().orderPlay();
-//                }
-//            }else if (Util.isQIYIPlay(value)){
-//                //爱奇艺
-//                if (mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE){
-//                    return MediaCtrlPlugin.ERR_NOT_SUPPORT;
-//                }
-//            }
-//        }
 
         return MediaCtrlPlugin.ERR_NOT_SUPPORT;
     }
@@ -281,26 +129,6 @@ public class MediaControl extends MediaCtrl {
         }else if (Util.isLauncherMusic()){
             return controlModel.controlPlayer(MEDIA_LOOP_LIST_PLAY);
         }
-//        for (Map.Entry<String, String> entry : FDApplication.packageNameMap.entrySet()) {
-//            String value = entry.getValue();
-//            if (Util.isQQMusicPlay(value)){
-//                //QQ音乐
-//                if (mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE){
-//                    return MusicPlugin.get().getMusicApi().orderPlay();
-//                }
-//            }else if (Util.isQIYIPlay(value)){
-//                //爱奇艺
-//                if (mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE){
-//                    return MediaCtrlPlugin.ERR_NOT_SUPPORT;
-//                }
-//            }else if (Util.isLauncherMusic(value)){
-//                boolean isPlayOrPause = mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE;
-//                if (isPlayOrPause ){
-//                    DispatchManager.startService(AIDL.LIST_PLAY,"","", Constant.AIDL.LAUNCHER);
-//                }
-//            }
-//        }
-
         return MediaCtrlPlugin.ERR_NOT_SUPPORT;
     }
 
@@ -314,25 +142,6 @@ public class MediaControl extends MediaCtrl {
         }else if (Util.isLauncherMusic()){
             return controlModel.controlPlayer(MEDIA_LOOP_SINGLE_PLAY);
         }
-//        for (Map.Entry<String, String> entry : FDApplication.packageNameMap.entrySet()) {
-//            String value = entry.getValue();
-//            if (Util.isQQMusicPlay(value)){
-//                //QQ音乐
-//                if (mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE){
-//                    return MusicPlugin.get().getMusicApi().singleLoop();
-//                }
-//            }else if (Util.isQIYIPlay(value)){
-//                //爱奇艺
-//                if (mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE){
-//                    return MediaCtrlPlugin.ERR_NOT_SUPPORT;
-//                }
-//            }else if (Util.isLauncherMusic(value)){
-//                boolean isPlayOrPause = mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE;
-//                if (isPlayOrPause ){
-//                    DispatchManager.startService(AIDL.SINGLE_PLAY,"","", Constant.AIDL.LAUNCHER);
-//                }
-//            }
-//        }
 
         return MediaCtrlPlugin.ERR_NOT_SUPPORT;
     }
@@ -346,26 +155,6 @@ public class MediaControl extends MediaCtrl {
         }else if (Util.isLauncherMusic()){
             return controlModel.controlPlayer(MEDIA_RANDOM_PLAY);
         }
-//        for (Map.Entry<String, String> entry : FDApplication.packageNameMap.entrySet()) {
-//            String value = entry.getValue();
-//            if (Util.isQQMusicPlay(value)){
-//                //QQ音乐
-//                if (mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE){
-//                    return MusicPlugin.get().getMusicApi().randomPlay();
-//                }
-//            }else if (Util.isQIYIPlay(value)){
-//                //爱奇艺
-//                if (mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE){
-//                    return MediaCtrlPlugin.ERR_NOT_SUPPORT;
-//                }
-//            }else if (Util.isLauncherMusic(value)){
-//                boolean isPlayOrPause = mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE;
-//                if (isPlayOrPause ){
-//                    DispatchManager.startService(AIDL.RANDOM_PLAY,"","", Constant.AIDL.LAUNCHER);
-//                }
-//            }
-//        }
-
         return MediaCtrlPlugin.ERR_NOT_SUPPORT;
     }
 
@@ -378,37 +167,13 @@ public class MediaControl extends MediaCtrl {
                     return MusicPlugin.get().getMusicApi().cancelFavorite();
                }
         }else if (Util.isQIYIPlay()){
-                  if (b) {
+               if (b) {
                         return IQiyiPlugin.get().getVideoApi().favorite();
                     } else {
                         return IQiyiPlugin.get().getVideoApi().unFavorite();
                     }
 
         }
-//        for (Map.Entry<String, String> entry : FDApplication.packageNameMap.entrySet()) {
-//            String value = entry.getValue();
-//            if (Util.isQQMusicPlay(value)){
-//                //QQ音乐
-//                if (mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE){
-//                    if (b) {
-//                        return MusicPlugin.get().getMusicApi().favorite();
-//                    } else {
-//                        return MusicPlugin.get().getMusicApi().cancelFavorite();
-//                    }
-//                }
-//            }else if (Util.isQIYIPlay(value) ){
-//                //爱奇艺
-//                if (mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE){
-//                    if (b) {
-//                        return IQiyiPlugin.get().getVideoApi().favorite();
-//                    } else {
-//                        return IQiyiPlugin.get().getVideoApi().unFavorite();
-//                    }
-//                }
-//            }
-//        }
-//
-//
         return MediaCtrlPlugin.ERR_NOT_SUPPORT;
     }
 
@@ -424,24 +189,6 @@ public class MediaControl extends MediaCtrl {
              }
 
         }
-//        Log.d(TAG, "fullScreen: " + b);
-//
-//        for (Map.Entry<String, String> entry : FDApplication.packageNameMap.entrySet()) {
-//            String value = entry.getValue();
-//            if (Util.isQQMusicPlay(value)){
-//                //QQ音乐
-//                return MediaCtrlPlugin.ERR_NOT_SUPPORT;
-//            }else if (Util.isQIYIPlay(value) ){
-//                //爱奇艺
-//                if (mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE){
-//                    if (b) {
-//                        return IQiyiPlugin.get().getVideoApi().screenPlay();
-//                    } else {
-//                        return IQiyiPlugin.get().getVideoApi().unScreenPlay();
-//                    }
-//                }
-//            }
-//        }
 
         return MediaCtrlPlugin.ERR_NOT_SUPPORT;
     }
@@ -454,18 +201,6 @@ public class MediaControl extends MediaCtrl {
             return IQiyiPlugin.get().getVideoApi().definition(s);
         }
 
-//        for (Map.Entry<String, String> entry : FDApplication.packageNameMap.entrySet()) {
-//            String value = entry.getValue();
-//            if (Util.isQQMusicPlay(value)){
-//                //QQ音乐
-//                return MediaCtrlPlugin.ERR_NOT_SUPPORT;
-//            }else if (Util.isQIYIPlay(value) ){
-//                //爱奇艺
-//                if (mediaControlMap.get(value) == PLAY || mediaControlMap.get(value) == PAUSE){
-//                    return IQiyiPlugin.get().getVideoApi().definition(s);
-//                }
-//            }
-//        }
 
         return MediaCtrlPlugin.ERR_NOT_SUPPORT;
     }
@@ -505,14 +240,12 @@ public class MediaControl extends MediaCtrl {
 
     @Override
     public int setSpeed(String speed) {
-
             if (Util.isQQMusicPlay()){
                 //QQ音乐
                 return MediaCtrlPlugin.ERR_NOT_SUPPORT;
             }else if (Util.isQIYIPlay() ){
                 //爱奇艺
-                    return IQiyiPlugin.get().getVideoApi().setSpeed(speed);
-
+                return IQiyiPlugin.get().getVideoApi().setSpeed(speed);
         }
 
         return MediaCtrlPlugin.ERR_NOT_SUPPORT;
