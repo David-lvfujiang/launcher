@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.fenda.settings.activity.SettingsWifiInputPswActivity"
+    android:background="@mipmap/settings_bind_netset_background">
+
+
+    <TextView
+        android:id="@+id/connect_wifi_cancel"
+        android:layout_width="90dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="35dp"
+        android:text="@string/settings_wifi_input_psw_cancel"
+        android:textColor="@color/white"
+        android:layout_marginTop="20dp"
+        android:textSize="30dp"
+        app:layout_constraintBottom_toBottomOf="@+id/connect_wifi_name"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/connect_wifi_name"
+        android:clickable="true"/>
+
+    <TextView
+        android:id="@+id/connect_wifi_name"
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:background="@mipmap/settings_main"
+        android:gravity="center"
+        android:textColor="#ff00f0ff"
+        android:textSize="35dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/connect_wifi_sure"
+        android:layout_width="90dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="910dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/settings_wifi_input_psw_sure"
+        android:textColor="@color/white"
+        android:textSize="30dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.333"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        android:layout_marginTop="108dp">
+
+        <EditText
+            android:id="@+id/wifi_psw"
+            android:layout_width="match_parent"
+            android:layout_height="95dp"
+            android:textColor="@color/white"
+            android:textSize="35dp"
+            android:singleLine="true"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:hint="@string/settings_wifi_hint_input_wifi_psw"
+            android:textColorHint="@color/color_B559CBD9"
+            android:layout_marginLeft="10dp"/>
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
+

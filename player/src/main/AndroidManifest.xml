@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.fenda.player">
+
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <application>
+
+        <activity android:name=".MusicActivity"
+            android:theme="@style/NoTitleFullscreen"
+            android:launchMode="singleTask"
+            />
+
+        <activity android:name=".MusicListActivity"
+            android:theme="@style/NoTitleFullscreen"
+            />
+    </application>
+
+</manifest>

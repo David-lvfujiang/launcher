@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.SettingsDeviceInfoActivity"
+    android:background="@mipmap/settings_bind_netset_background">
+
+    <ImageView
+        android:id="@+id/device_info_back_iv"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:src="@mipmap/settings_set_back"
+        app:layout_constraintBottom_toBottomOf="@+id/device_info_tv"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/device_info_tv" />
+
+    <TextView
+        android:id="@+id/device_info_tv"
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:background="@mipmap/settings_main"
+        android:gravity="center"
+        android:text="@string/settings_device_info"
+        android:textColor="#ff00f0ff"
+        android:textSize="35dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ListView
+        android:id="@+id/device_info_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="108dp">
+
+    </ListView>
+
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rl_ware"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="140px"
+        android:background="@drawable/shape_wave"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_vertical"
+        >
+
+
+
+        <ImageView
+            android:id="@+id/img_voice_dialog"
+            android:layout_width="120px"
+            android:layout_height="120px"
+
+            />
+
+        <!--<com.fenda.ai.view.WaveView-->
+            <!--android:id="@+id/waveview_main"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="120dp"-->
+            <!--android:layout_marginLeft="150dp"-->
+            <!--android:layout_marginRight="150dp"-->
+            <!--android:layout_gravity="bottom"-->
+            <!--app:amplitude="0.6"-->
+            <!--app:amplitudeFactor="0.5"-->
+            <!--app:autoStart="true"-->
+            <!--app:speed="0.1"-->
+            <!--app:standByAmplitude="0.2" />-->
+
+        <TextView
+            android:id="@+id/tv_input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:textColor="@android:color/white"
+            android:textSize="21sp"
+            android:gravity="center"
+            android:padding="2dp"
+            />
+    </LinearLayout>
+
+
+
+</RelativeLayout>

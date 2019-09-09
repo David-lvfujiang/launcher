@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MusicListActivity"
+    android:background="@mipmap/player_xiangsheng_list_bg"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:id="@+id/tv_navbar_blck"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:text="@string/player_play_list"
+        android:textColor="@color/player_white"
+        android:textSize="30sp"
+        android:gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:drawableLeft="@mipmap/life_back"
+        android:drawablePadding="20px"
+        android:paddingLeft="55px"
+        android:layout_height="wrap_content"
+        android:paddingRight="55px"
+        android:paddingTop="27px"
+        android:paddingBottom="13px"
+
+        />
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rlv_music_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="8dp"
+        >
+
+    </android.support.v7.widget.RecyclerView>
+
+</LinearLayout>

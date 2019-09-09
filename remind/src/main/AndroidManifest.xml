@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.fenda.remind">
+
+    <application>
+        <activity android:name=".AlarmListActivity"
+            android:theme="@style/NoTitleFullscreen"
+            />
+        <activity android:name=".AlarmActivity"
+            android:theme="@style/NoTitleFullscreen"
+            />
+
+
+    </application>
+
+</manifest>

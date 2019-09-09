@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.fenda.gallery">
+
+    <application>
+        <activity
+            android:name=".activity.GalleryCategoryActivity"
+            android:theme="@style/NoTitleFullscreen" />
+        <activity
+            android:name=".activity.FamilyGalleryActivity"
+            android:theme="@style/NoTitleFullscreen" />
+        <activity
+            android:name=".activity.PhotoDetailActivity"
+            android:theme="@style/NoTitleFullscreen" />
+        <activity
+            android:name=".activity.PhotosActivity"
+            android:theme="@style/NoTitleFullscreen" />
+    </application>
+
+</manifest>

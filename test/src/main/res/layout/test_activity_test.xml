@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+
+    <Button
+        android:id="@+id/bt_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="点击跳转"
+        android:padding="30px"
+
+        />
+
+    <Button
+        android:id="@+id/bt_test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/bt_start"
+        app:layout_constraintLeft_toLeftOf="@id/bt_start"
+        android:layout_marginTop="20px"
+        android:text="点击测试"
+
+        />
+
+    <Button
+        android:id="@+id/bt_test_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/bt_test"
+        app:layout_constraintLeft_toLeftOf="@id/bt_test"
+        android:layout_marginTop="20px"
+        android:text="点击测试注册接口" />
+
+    <Button
+        android:id="@+id/bt_test_uploadimage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/bt_test_register"
+        app:layout_constraintLeft_toLeftOf="@id/bt_test_register"
+        android:layout_marginTop="20px"
+        android:text="点击上传图片接口" />
+
+    <Button
+        android:id="@+id/bt_test_searchuser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/bt_test_uploadimage"
+        app:layout_constraintLeft_toLeftOf="@id/bt_test_uploadimage"
+        android:layout_marginTop="20px"
+        android:text="搜索用户" />
+
+
+</android.support.constraint.ConstraintLayout>

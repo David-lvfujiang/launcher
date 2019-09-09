@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/rc_voip_bg">
+
+    <FrameLayout
+        android:id="@+id/rc_voip_call_large_preview"
+        android:layout_width="match_parent"
+        android:background="@color/rc_voip_transparent"
+        android:layout_height="match_parent"
+        android:visibility="gone"></FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/rc_voip_call_small_preview"
+        android:layout_width="@dimen/callkit_dimen_size_219"
+        android:layout_height="@dimen/callkit_dimen_size_146"
+        android:layout_gravity="left|top"
+        android:layout_marginLeft="@dimen/callkit_dimen_size_22"
+        android:layout_marginTop="@dimen/callkit_dimen_size_26"
+        android:visibility="gone"></FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/rc_voip_call_information"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/rc_voip_user_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_below="@+id/rc_voip_call_minimize"
+            android:gravity="center"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/rc_tv_connection_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="100dp"
+            android:textColor="@color/rc_voip_white"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+        <FrameLayout
+            android:id="@+id/rc_voip_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/callkit_dimen_size_16"></FrameLayout>
+
+    </RelativeLayout>
+</FrameLayout>

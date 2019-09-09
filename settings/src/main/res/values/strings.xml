@@ -1,0 +1,110 @@
+<resources>
+    <string name="app_name">Settings</string>
+    <string name="settings_sure">确定</string>
+    <string name="settings_cancel">取消</string>
+
+    <!--SettingsActivity start -->
+    <string name="settings_setting">设置</string>
+    <string name="settings_set_names_list_wifi">WIFI</string>
+    <string name="settings_set_names_list_bluetooth">蓝牙</string>
+    <string name="settings_set_names_list_light">屏幕与亮度</string>
+    <string name="settings_set_names_list_volume">音量</string>
+    <string name="settings_set_names_list_deviceinfo">设备信息</string>
+    <string name="settings_set_names_list_about">关于小乐</string>
+    <string name="settings_set_status_wifi_noconnect">未连接</string>
+    <string name="settings_set_status_wifi_connected">已连接</string>
+    <string name="settings_set_status_wifi_connecting">正在连接中...</string>
+
+    <!--SettingsVolumeActivity start -->
+    <string name="settings_volume">音量</string>
+
+    <!--SetttingsBrightnessActivity start -->
+    <string name="settings_brightness">亮度</string>
+
+    <!--SettingsWifiActivity start -->
+    <string name="settings_wifi">WiFi</string>
+    <string name="settings_argee_open_wifi">允许无线网络接入</string>
+    <string name="settings_wifi_psw_error">密码错误,请重新检查</string>
+    <string name="settings_wifi_connected_status">已连接</string>
+
+    <!--SettingsWifiInputPswActivity start -->
+    <string name="settings_wifi_input_psw_cancel">取消</string>
+    <string name="settings_wifi_input_psw_sure">确定</string>
+    <string name="settings_wifi_hint_input_wifi_psw">请输入wifi密码</string>
+
+    <!--SettingsDeviceInfoActivity start -->
+    <string name="settings_device_info">设备信息</string>
+    <string name="settings_device_info_sn">序列号</string>
+    <string name="settings_device_info_ip">IP地址</string>
+    <string name="settings_device_info_mac">MAC地址</string>
+    <string name="settings_device_info_launcher_version">软件版本</string>
+    <string name="settings_device_info_system_version">系统版本</string>
+    <string name="settings_device_info_software_update">升级更新</string>
+    <string name="settings_device_info_no_new_version_tips">暂无新版本</string>
+
+    <!--SettingsBluetoothActivity start -->
+    <string name="settings_bt">蓝牙</string>
+    <string name="settings_bt_reflash">刷新</string>
+    <string name="settings_bt_agree_open_bt">允许蓝牙开启</string>
+
+    <!--SettingsDeviceCenterActivity start -->
+    <string name="settings_device_center">设备中心</string>
+    <string name="settings_device_center_devicename">设备名称</string>
+    <string name="settings_device_center_add_family">加入亲友圈</string>
+    <string name="settings_device_center_dismiss_family">解散亲友圈</string>
+    <string name="settings_device_center_dismiss_family_confirm">确认解散家庭圈吗?解散后这台设备上的数据都将消失</string>
+    <string name="settings_device_center_nowifi_no_unbind">网络未连接，无法解绑，请连接网络后重试</string>
+    <string name="settings_device_center_nowifi_no_changedevicename">网络未连接，无法修改设备名称，请连接网络后重试</string>
+
+    <!--SettingsDeviceContractsActivity start -->
+    <string name="settings_device_constacts">亲友圈联系人</string>
+
+    <!--SettingsChangeDeviceNameActivity start -->
+    <string name="settings_device_name">设备名称</string>
+    <string name="settings_edittext_num_limit_name">输入字符已达到10个字符，无法再输入了</string>
+    <string name="settings_change_device_name_fail">设备名称修改失败</string>
+
+    <!--SettingsBindDeviceActivity start -->
+    <string name="settings_bind_device_vcode">验证码：</string>
+    <string name="settings_bind_device_first_step">首先下载</string>
+    <string name="settings_bind_device_first_step_todownload">请扫描右侧二维码或者在应用市场中下载小达智能app</string>
+    <string name="settings_bind_device_second_step">接下来扫描绑定音箱</string>
+    <string name="settings_bind_device_second_step_tobind">登录app再次扫描右侧二维码绑定音箱</string>
+
+    <!--SettingsWifiConnectedInfoActivity start -->
+    <string name="settings_wifi_connected_cancel_save">取消保存网络</string>
+    <string name="settings_wifi_connected_other">网络配置</string>
+
+
+    <!--SettingsInitDeviceStatusManager start -->
+    <string name="settings_init_device_status_query_fail">查询设备信息失败，请稍后重试</string>
+    <string name="settingsconnected_other">网络配置</string>
+
+    <!--SettingsDeviceContractsNickNameActivity start -->
+    <string name="settings_contracts_detail_info">详细信息</string>
+    <string name="settings_contract_info_change_nickname">修改亲友圈称呼</string>
+    <string name="settings_set_nickname">设置亲友圈称呼</string>
+    <string name="settings_contract_info_delect_number">删除此成员</string>
+    <string name="settings_contract_info_unbind">解绑此音箱</string>
+    <string name="settings_contract_info_username">用户名：</string>
+    <string name="settings_delecte_user_tips">删除此成员后将无法再与他进行视频通话，确定删除吗？</string>
+    <string name="settings_delecte_nowifi_tips">网络未连接，无法删除成员，请连接网络后重试</string>
+    <string name="settings_dismiss_family_confirm">确认解散家庭圈吗?解散后这台设备上的数据都将消失</string>
+    <string name="settings_nowifi_no_unbind">网络未连接，无法解绑，请连接网络后重试</string>
+    <string name="settings_delecte_linkman_success">删除成功</string>
+
+    <!--SettingsContractsNickNameEditActivity start -->
+    <string name="settings_set_nickname_title">设置亲友圈称呼</string>
+    <string name="settings_set_nickname_tv">设置后，你可以对音箱说”你好小乐，打电话给XXXX"</string>
+    <string name="settings_quikily_select_nickname">快速选择</string>
+    <string name="settings_nickname_sure">确定</string>
+    <string name="settings_nickname_cancel">取消</string>
+    <string name="settings_nickname_edittext_num_limit_name">输入字符已达到10个字符，无法再输入了</string>
+
+    <!--SettingsDeviceAddContractsQRActivity start -->
+    <string name="settings_add_contracts">添加亲友</string>
+    <string name="settings_add_qr_step1">1. 扫码或通过应用市场下载小达智能APP</string>
+    <string name="settings_add_qr_step2">2. 使用小达智能APP再次扫描绑定此音箱</string>
+    <string name="settings_add_qr_bind_vcode">验证码：</string>
+    <string name="settings_add_family">是否同意加入家庭圈</string>
+</resources>

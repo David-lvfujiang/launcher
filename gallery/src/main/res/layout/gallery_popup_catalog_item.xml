@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/demension_dp60"
+    android:orientation="horizontal">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/img_pic"
+            android:layout_width="@dimen/demension_dp60"
+            android:layout_height="@dimen/demension_dp54"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/demension_dp10" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/demension_dp10"
+            android:layout_toRightOf="@id/img_pic"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/demension_dp10"
+            android:text="@string/gallery_picture_size"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textsize_sp16" />
+
+        <RadioButton
+            android:id="@+id/rb_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/demension_dp10"
+            android:checked="true"
+            android:clickable="false" />
+    </RelativeLayout>
+
+</LinearLayout>

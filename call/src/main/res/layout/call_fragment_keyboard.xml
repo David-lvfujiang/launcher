@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/call_main_bg"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/demension_dp101">
+
+
+        <View
+            android:id="@+id/vDevide"
+            android:layout_width="@dimen/demension_dp2"
+            android:layout_height="@dimen/demension_dp39"
+            android:layout_centerInParent="true"
+            android:background="@color/white" />
+
+        <EditText
+            android:id="@+id/etNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/demension_dp25"
+            android:layout_toLeftOf="@id/vDevide"
+            android:background="@null"
+            android:singleLine="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textsize_sp36" />
+
+        <ImageView
+            android:id="@+id/ivDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="@dimen/demension_dp50"
+            android:layout_toRightOf="@id/vDevide"
+            android:src="@mipmap/call_btn_delete" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/demension_dp38"
+            android:layout_marginBottom="@dimen/demension_dp20"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tvRemainingHint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="剩余通话时长:"
+                android:textColor="@color/fd_text_normal"
+                android:textSize="@dimen/textsize_sp24" />
+
+            <LinearLayout
+                android:id="@+id/llRemainingTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/demension_dp20"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="50"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textsize_sp50" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="分钟"
+                    android:textColor="@color/fd_text_normal"
+                    android:textSize="@dimen/textsize_sp24" />
+
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="@dimen/demension_dp100"
+                android:layout_height="@dimen/demension_dp40"
+                android:layout_below="@id/llRemainingTime"
+                android:background="@mipmap/call_btn_pay"
+                android:gravity="center"
+                android:text="充值"
+                android:textColor="@color/fd_text_pay"
+                android:textSize="@dimen/textsize_sp20" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/demension_dp40"
+            android:layout_weight="3"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/demension_dp20"
+                android:orientation="horizontal">
+
+                <com.fenda.call.view.NumberView
+                    android:id="@+id/nvOne"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:number="1" />
+
+                <com.fenda.call.view.NumberView
+                    android:id="@+id/nvTwo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:letter="ABC"
+                    app:number="2" />
+
+                <com.fenda.call.view.NumberView
+                    android:id="@+id/nvThree"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:letter="DEF"
+                    app:number="3" />
+
+                <com.fenda.call.view.NumberView
+                    android:id="@+id/nvStar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:number="*" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/demension_dp10"
+                android:layout_marginBottom="@dimen/demension_dp20"
+                android:orientation="horizontal">
+
+                <com.fenda.call.view.NumberView
+                    android:id="@+id/nvFour"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:letter="GHI"
+                    app:number="4" />
+
+                <com.fenda.call.view.NumberView
+                    android:id="@+id/nvFive"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:letter="JKL"
+                    app:number="5" />
+
+                <com.fenda.call.view.NumberView
+                    android:id="@+id/nvSix"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:letter="MNO"
+                    app:number="6" />
+
+                <com.fenda.call.view.NumberView
+                    android:id="@+id/nvJing"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:number="#" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/demension_dp10"
+                android:layout_marginBottom="@dimen/demension_dp20"
+                android:orientation="horizontal">
+
+                <com.fenda.call.view.NumberView
+                    android:id="@+id/nvSeven"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:letter="PQRS"
+                    app:number="7" />
+
+                <com.fenda.call.view.NumberView
+                    android:id="@+id/nvEight"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:letter="TUV"
+                    app:number="8" />
+
+                <com.fenda.call.view.NumberView
+                    android:id="@+id/nvNine"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:letter="WXYZ"
+                    app:number="9" />
+
+                <com.fenda.call.view.NumberView
+                    android:id="@+id/nvZero"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:letter="+"
+                    app:number="0" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/ivCall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/demension_dp40"
+            android:layout_marginRight="@dimen/demension_dp80"
+            android:src="@mipmap/call_btn_call" />
+    </LinearLayout>
+
+</LinearLayout>

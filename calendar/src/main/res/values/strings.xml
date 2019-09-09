@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">calendar</string>
+    <string name="calendar_year">年</string>
+    <string name="calendar_nl">农历</string>
+</resources>

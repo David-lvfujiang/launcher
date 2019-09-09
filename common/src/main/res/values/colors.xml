@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="color_ffffff">#ffffff</color>
+    <color name="color_B559CBD9">#B559CBD9</color>
+    <color name="color_51000000">#51000000</color>
+    <color name="color_4cffffff">#4cffffff</color>
+    <color name="color_4c000">#bc000000</color>
+
+
+    <color name="speed_normal_text_color">#333F50</color>
+    <color name="accent_material_light">#2196f3</color>
+    <color name="color_warebg">#3c000000</color>
+
+    <color name="transparent">#00000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="page_dot_unselected">#c9c9c9</color>
+    <color name="page_dot_selected">#00bbae</color>
+
+    <color name="secondary_text">#727272</color>
+    <color name="black">#000000</color>
+    <color name="color_CBCBCB">#CBCBCB</color>
+    <color name="music_detail_dark">#333333</color>
+    <color name="music_detail_gray">#cccccc</color>
+    <color name="callkit_search_highlight">#3A91F3</color>
+    <color name="color_5800D0">#5800D0</color>
+    <color name="color_00000000">#00000000</color>
+    <color name="color_ff000000">#ff000000</color>
+    <color name="color_33FDFDFD">#33FDFDFD</color>
+
+    <color name="fd_text_menu">#333333</color>
+    <color name="fd_text_gray">#666666</color>
+    <color name="control_background">#cc4285f4</color>
+    <color name="color_999999">#999999</color>
+    <color name="color_EEEEEE">#EEEEEE</color>
+    <color name="DarkBlue">#00008B</color>
+    <color name="fd_text_select">#59FB53</color>
+    <color name="fd_text_normal">#66FCFCFF</color>
+    <color name="fd_text_pay">#FCFCFF</color>
+    <color name="fd_number_bg">#80FFFFFF</color>
+
+
+</resources>

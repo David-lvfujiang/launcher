@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">encyclopedias</string>
+    <string name="encyclopedia_panda">熊猫是什么动物</string>
+    <string name="encyclopedia_cannot_answer">我的知识有限，需要学习，可以问我其他的</string>
+    <string name="encyclopedia_other_problem">可以试试“你好小乐，百合是什么花”</string>
+    <string name="encyclopedia_fall_text">下跌</string>
+    <string name="encyclopedia_rise_text">上涨</string>
+
+    <string name="encyclopedia_fall_percentage_text">跌幅</string>
+    <string name="encyclopedia_rise_percentage_text">涨幅</string>
+
+</resources>

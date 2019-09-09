@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">gallery</string>
+    <string name="gallery_photo_count_indicator">%1$d张照片</string>
+    <string name="gallery_family_gallery">家庭相册</string>
+    <string name="gallery_page_indicator">%1$d/%2$d</string>
+    <string name="gallery_delete_size">已选中%s项</string>
+    <string name="gallery_family_cancel">取消</string>
+    <string name="gallery_send">发送</string>
+    <string name="gallery_photo_send">发送%s/9</string>
+    <string name="gallery_picture_size">%s&#046;&#046;(%s)</string>
+    <string name="gallery_upload_success">上传成功</string>
+    <string name="gallery_select_photo">请选择照片</string>
+</resources>

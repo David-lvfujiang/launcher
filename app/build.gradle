@@ -1,0 +1,111 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion BUILD_VERSIONS.COMPILE_SDK
+    buildToolsVersion BUILD_VERSIONS.BUILD_TOOLS
+    defaultConfig {
+        applicationId "com.fenda.launcher"
+        minSdkVersion BUILD_VERSIONS.MIN_SDK
+        targetSdkVersion BUILD_VERSIONS.TARGET_SDK
+        versionCode BUILD_VERSIONS.VERSION_CODE
+        versionName BUILD_VERSIONS.VERSION_NAME
+        flavorDimensions "default"
+        lintOptions {
+            checkReleaseBuilds false
+            abortOnError false
+        }
+
+        javaCompileOptions {
+
+            annotationProcessorOptions {
+
+                arguments = [moduleName: project.getName()]
+
+            }
+        }
+    }
+    signingConfigs {
+        debug {
+            storeFile file('../keystore/platform.jks')
+            storePassword 'Fendakeji'
+            keyAlias 'fenda'
+            keyPassword 'Fendakeji'
+        }
+        release {
+            keyAlias 'fenda'
+            keyPassword 'Fendakeji'
+            storeFile file('../keystore/platform.jks')
+            storePassword 'Fendakeji'
+        }
+    }
+    productFlavors {
+        _dev {//开发环境
+            //设置baseUrl 使用方法Application.getContext().getResources().getString(R.string.API_SERVER)
+            resValue "string", "BASE_SERVER_URL", "http://192.168.43.37:8998/smartsound/"
+            resValue "string", "TCP_IP", "192.168.43.37"
+            resValue "string", "DEVICE_SN", " "
+        }
+
+        _test {//测试环境
+            resValue "string", "BASE_SERVER_URL", "http://192.168.100.127:8998/smartsound/"
+            resValue "string", "TCP_IP", "192.168.100.127"
+            resValue "string", "DEVICE_SN", " "
+        }
+
+        _prod {//正式环境
+            resValue "string", "BASE_SERVER_URL", "https://ai.fenda.com/smartsound/"
+            resValue "string", "TCP_IP", "47.106.223.29"
+            resValue "string", "DEVICE_SN", "-pro"
+        }
+    }
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+}
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(path: ':common')
+
+    api (name: 'calendar-_test-debug', ext: 'aar')
+    api (name: 'call-_test-debug', ext: 'aar')
+    api (name: 'encyclopedia-_test-debug', ext: 'aar')
+    api (name: 'gallery-_test-debug', ext: 'aar')
+    api (name: 'homepage-_test-debug', ext: 'aar')
+    api (name: 'news-debug', ext: 'aar')
+    api (name: 'player-debug', ext: 'aar')
+    api (name: 'remind-debug', ext: 'aar')
+    api (name: 'settings-_test-debug', ext: 'aar')
+    api (name: 'voice_sibichi_2mic-debug', ext: 'aar')
+    api (name: 'weather-debug', ext: 'aar')
+
+    api (name: 'skill_iqiyi-release', ext: 'aar')
+    api (name: 'lib-dds-1.1.8.1-release', ext: 'aar')
+    api (name: 'skill_music-release', ext: 'aar')
+    api (name: 'skill_mediactrl-release1', ext: 'aar')
+    api (name: 'skill_setting-release', ext: 'aar')
+    api (name: 'skill_tvctrl-release', ext: 'aar')
+    api (name: 'skill_remind-release_new', ext: 'aar')
+    annotationProcessor deps.arouter_compiler
+    implementation project(path: ':CallLib')
+    implementation project(path: ':CallKit')
+    implementation project(path: ':IMKit')
+    implementation project(path: ':IMLib')
+
+//    annotationProcessor deps.androidannotations
+//    annotationProcessor deps.arouter_compiler
+}

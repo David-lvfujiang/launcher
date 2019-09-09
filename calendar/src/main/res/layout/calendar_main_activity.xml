@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/calendar_backgroud_icon"
+    android:fitsSystemWindows="true"
+    tools:context="com.fenda.calendar.view.CalendarMainActivity">
+
+    <TextView
+        android:id="@+id/week_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="星期五"
+        android:textColor="#ffcccccc"
+        android:textSize="42sp" />
+
+    <RelativeLayout
+        android:id="@+id/calendar_book"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:background="@mipmap/calendar_book_icon"
+        android:scaleType="fitStart">
+
+        <TextView
+            android:id="@+id/year_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="25px"
+            android:text="2019年"
+            android:textColor="#ffffffff"
+            android:textSize="40sp" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/year_tv"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="-20dp">
+
+            <TextView
+                android:id="@+id/month_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="6"
+                android:textColor="#ffffffff"
+                android:textSize="65sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="77dp"
+                android:layout_marginLeft="4dp"
+                android:layout_toRightOf="@+id/month_tv"
+                android:gravity="bottom"
+                android:text="月"
+                android:textColor="#ffffffff"
+                android:textSize="50sp" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/calendar_month_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="170dp"
+            />
+
+        <ImageView
+            android:id="@+id/calendar_day_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="220dp"
+            android:layout_marginTop="170dp"
+            />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/lunar_calendar_day_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="500dp"
+        android:text=""
+        android:textColor="#ffcccccc"
+        android:textSize="42sp" />
+</RelativeLayout>

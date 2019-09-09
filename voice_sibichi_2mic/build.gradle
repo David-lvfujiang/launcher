@@ -1,0 +1,128 @@
+if (isModule.toBoolean()){
+    apply plugin: 'com.android.library'
+}else {
+    apply plugin: 'com.android.application'
+}
+
+
+android {
+    compileSdkVersion BUILD_VERSIONS.COMPILE_SDK
+    buildToolsVersion BUILD_VERSIONS.BUILD_TOOLS
+
+
+    defaultConfig {
+        if (!isModule.toBoolean()){
+            applicationId "com.fenda.ai"
+        }
+
+        minSdkVersion BUILD_VERSIONS.MIN_SDK
+        targetSdkVersion BUILD_VERSIONS.TARGET_SDK
+        versionCode BUILD_VERSIONS.VERSION_CODE
+        versionName BUILD_VERSIONS.VERSION_NAME
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+
+            annotationProcessorOptions {
+
+                arguments = [moduleName: project.getName()]
+
+            }
+        }
+        lintOptions {
+            abortOnError false
+        }
+
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file('../keystore/platform.jks')
+            storePassword 'Fendakeji'
+            keyAlias 'fenda'
+            keyPassword 'Fendakeji'
+        }
+        release {
+            keyAlias 'fenda'
+            keyPassword 'Fendakeji'
+            storeFile file('../keystore/platform.jks')
+            storePassword 'Fendakeji'
+        }
+    }
+
+
+
+
+    sourceSets {
+        main {
+            if (isModule.toBoolean()) {
+
+                manifest.srcFile "src/main/AndroidManifest.xml"
+                //集成开发模式下排除debug文件夹中的所有Java文件
+                java {
+                    exclude 'debug/**'
+                }
+            } else {
+                manifest.srcFile "src/main/module/AndroidManifest.xml"
+
+
+            }
+        }
+    }
+
+
+    buildTypes {
+        release {
+
+            if (isModule.toBoolean()){
+                // 集成模式 授权
+                buildConfigField "boolean", "LAUNCHER", "true"
+            }else {
+                // 集成模式 授权
+                buildConfigField "boolean", "LAUNCHER", "false"
+            }
+            // 不显示Log
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            if (isModule.toBoolean()){
+                // 集成模式 授权
+                buildConfigField "boolean", "LAUNCHER", "true"
+            }else {
+                // 集成模式 授权
+                buildConfigField "boolean", "LAUNCHER", "false"
+            }
+            // 不显示Log
+            buildConfigField "boolean", "LOG_DEBUG", "true"
+            signingConfig signingConfigs.debug
+        }
+    }
+
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
+        //this way we can find the .aar file in libs folder
+    }
+}
+
+dependencies {
+    api fileTree(dir: 'libs', include: ['*.jar'])
+    //AI语音
+    api (name: 'lib-dds-1.1.8.1-release', ext: 'aar')
+    api (name: 'skill_music-release', ext: 'aar')
+    api (name: 'skill_iqiyi-release', ext: 'aar')
+    api (name: 'skill_mediactrl-release1', ext: 'aar')
+    api (name: 'skill_setting-release', ext: 'aar')
+    api (name: 'skill_tvctrl-release', ext: 'aar')
+    api (name: 'skill_remind-release_new', ext: 'aar')
+    implementation project(path: ':common')
+    annotationProcessor deps.arouter_compiler
+
+
+}
