@@ -1,6 +1,7 @@
 package com.fenda.ai.skill;
 
 
+import android.util.Log;
 
 import com.aispeech.dui.plugin.iqiyi.IQiyiPlugin;
 import com.aispeech.dui.plugin.mediactrl.MediaCtrl;
@@ -9,6 +10,11 @@ import com.aispeech.dui.plugin.music.MusicPlugin;
 import com.fenda.ai.modle.ControlModel;
 import com.fenda.common.BaseApplication;
 
+import com.fenda.ai.VoiceConstant;
+import com.fenda.ai.modle.ControlModel;
+import com.fenda.common.BaseApplication;
+
+import java.util.HashMap;
 
 import static com.fenda.ai.VoiceConstant.*;
 
@@ -18,7 +24,9 @@ import static com.fenda.ai.VoiceConstant.*;
  */
 
 public class MediaControl extends MediaCtrl {
+    private static final String TAG = "MediaControl";
 
+    public static HashMap<String,Integer> mediaControlMap = new HashMap<>();
     private ControlModel controlModel;
 
 
@@ -49,6 +57,7 @@ public class MediaControl extends MediaCtrl {
         }else if (Util.isLauncherMusic()){
             //自己创建的音乐播放器
             return controlModel.controlPlayer(MEDIA_PAUSE);
+
         }
 
             return MediaCtrlPlugin.ERR_NOT_SUPPORT;
@@ -167,7 +176,7 @@ public class MediaControl extends MediaCtrl {
                     return MusicPlugin.get().getMusicApi().cancelFavorite();
                }
         }else if (Util.isQIYIPlay()){
-               if (b) {
+                  if (b) {
                         return IQiyiPlugin.get().getVideoApi().favorite();
                     } else {
                         return IQiyiPlugin.get().getVideoApi().unFavorite();

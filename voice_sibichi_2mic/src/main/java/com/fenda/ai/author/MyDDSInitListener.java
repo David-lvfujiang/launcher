@@ -87,6 +87,20 @@ public class MyDDSInitListener implements DDSInitListener {
             initRemind();
 
 
+            Observable.create(new ObservableOnSubscribe<String>() {
+                @Override
+                public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                    emitter.onNext("");
+                }
+            }).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<String>() {
+                        @Override
+                        public void accept(String s) throws Exception {
+                            initRemind();
+                        }
+                    });
+
 
 
         }
@@ -110,6 +124,7 @@ public class MyDDSInitListener implements DDSInitListener {
 
                     }
                 });
+
 
         //提醒技能
         RemindPlugin.init(mContext);
@@ -135,7 +150,6 @@ public class MyDDSInitListener implements DDSInitListener {
 
 
                 AILog.d(TAG, "提醒事件时间到了 "+event.toString());
-
             }
         });
 
@@ -240,9 +254,8 @@ public class MyDDSInitListener implements DDSInitListener {
             public void onTick(long millisUntilFinished) {}
             @Override
             public void onFinish() {
-                ringtone.stop();
                 timer.cancel();
-//                DispatchManager.startService(Constant.AIDL.CLOCE_ALARM,Constant.Alarm.CREATE_REMIND,Constant.AIDL.CLOCE_ALARM,Constant.AIDL.LAUNCHER);
+                ringtone.stop();
             }
         };
         timer.start();

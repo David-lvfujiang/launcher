@@ -3,6 +3,13 @@ package com.fenda.homepage.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.net.ConnectivityManager;
+import android.net.LinkProperties;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.os.Build;
+import android.os.Handler;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +37,7 @@ import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.AppUtils;
 import com.fenda.common.util.GsonUtil;
 import com.fenda.common.util.LogUtil;
+import com.fenda.common.util.ToastUtils;
 import com.fenda.homepage.Adapter.MainAdapter;
 import com.fenda.homepage.R;
 import com.fenda.homepage.Util.HomeUtil;
@@ -45,7 +53,7 @@ import java.util.List;
 
 @Route(path = RouterPath.HomePage.HOMEPAGE_MAIN)
 public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener, View.OnTouchListener, IHomePageProvider {
-
+    private final static String TAG = "HomePageActivity";
 
     TextClock mHeaderTimeTv;
     RecyclerView mTipInfoRv;
@@ -175,6 +183,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void initData() {
         if (initProvider != null) {
@@ -186,19 +195,21 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         if (initVoiceProvider == null) {
             initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
         }
-<<<<<<< HEAD
-//        initVoiceProvider.requestWeather();
-=======
         initVoiceProvider.requestWeather();
         if (mICallProvider != null) {
             mICallProvider.initSdk();
         }
->>>>>>> 64bf0d0d3754e726a7e88edcc2509d6b38a369ce
 
         ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
         if (settingService != null) {
             settingService.deviceStatus(this);
         }
+        isNetWodrkConnect();
+
+//        ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
+//        if (settingService != null) {
+//            settingService.deviceStatus(this);
+//        }
         // 清除本地联系人数据时重新请求网络数据并保存到本地数据库
         if (ContentProviderManager.getInstance(this, Constant.common.URI).isEmpty()) {
             mPresenter.getFamilyContacts();
@@ -218,7 +229,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             ContentProviderManager.getInstance(mContext, Constant.common.URI).clear();
             AppUtils.saveBindedDevice(getApplicationContext(), false);
             ARouter.getInstance().build(RouterPath.SETTINGS.SettingsBindDeviceActivity).navigation();
-
         }
         //普通成员退出家庭通知
         else if (message.getCode() == TCPConfig.MessageType.USER_EXIT_FAMILY) {
@@ -235,6 +245,64 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 }
 
             }
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void isNetWodrkConnect() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        Network activeInfo = connectivityManager.getActiveNetwork();
+        LogUtil.d(TAG, "activeInfo = " + activeInfo);
+
+        if (activeInfo == null) {//|| !activeInfo. || !activeInfo.isAvailable) {
+            //  tv.text = "网络不可用—NetworkCallback"
+            //noNetWorkSnackBar();
+            ToastUtils.show("网络未连接，请先连接网络！");
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            connectivityManager.registerDefaultNetworkCallback(new ConnectivityManager.NetworkCallback() {
+                @Override
+                public void onAvailable(Network network) {
+                    super.onAvailable(network);
+                    LogUtil.d(TAG, "wifi onAvailable: " + network);
+                    ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
+                    if (settingService != null) {
+                        settingService.deviceStatus(getApplicationContext());
+                    }
+                }
+
+                @Override
+                public void onLosing(Network network, int maxMsToLive) {
+                    super.onLosing(network, maxMsToLive);
+                    LogUtil.d(TAG, "onLosing: " + network);
+                }
+
+                @Override
+                public void onLost(Network network) {
+                    super.onLost(network);
+                    LogUtil.d(TAG, "onLost: " + network);
+                    // ToastUtils.show(getString(R.string.network_not_connect));
+                }
+
+                @Override
+                public void onUnavailable() {
+                    super.onUnavailable();
+                    LogUtil.d(TAG, "onUnavailable: ");
+                }
+
+                @Override
+                public void onCapabilitiesChanged(Network network, NetworkCapabilities networkCapabilities) {
+                    super.onCapabilitiesChanged(network, networkCapabilities);
+                    LogUtil.d(TAG, "onCapabilitiesChanged: " + network);
+                }
+
+                @Override
+                public void onLinkPropertiesChanged(Network network, LinkProperties linkProperties) {
+                    super.onLinkPropertiesChanged(network, linkProperties);
+                    LogUtil.d(TAG, "onLinkPropertiesChanged: " + network);
+                }
+            });
         }
     }
 

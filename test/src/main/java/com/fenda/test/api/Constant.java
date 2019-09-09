@@ -1,11 +1,5 @@
 package com.fenda.test.api;
 
-import android.app.ActivityManager;
-import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
-
 import com.fenda.common.BaseApplication;
 import com.fenda.test.R;
 
@@ -19,9 +13,4 @@ public class Constant {
     public static final String TCP_IP = BaseApplication.getInstance().getResources().getString(R.string.TCP_IP);
     public static final int TCP_PORT = 11211;
     public static final String SERIAL_NUM = android.os.Build.SERIAL;
-
-
-
-
-
 }

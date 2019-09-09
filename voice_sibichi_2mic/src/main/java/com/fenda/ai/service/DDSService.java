@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.aispeech.ailog.AILog;
@@ -479,7 +480,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
 //        config.addConfig(DDSConfig.K_API_KEY, "9e7baf5eae8f9e7baf5eae8f5d5284f0");
 
 
-        config.addConfig(DDSConfig.K_WAKEUP_DEBUG,"true");
+//        config.addConfig(DDSConfig.K_WAKEUP_DEBUG,"true");
 //        // 资源更新配置项
         // 预置在指定目录下的DUI内核资源包名, 避免在线下载内核消耗流量, 推荐使用
         config.addConfig(DDSConfig.K_DUICORE_ZIP, "duicore.zip");

@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.aispeech.dui.plugin.music.MusicPlugin;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.BaseApplication;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.basebean.player.MusicPlayBean;
 import com.fenda.common.basebean.player.FDMusic;
 import com.fenda.common.baserx.RxSchedulers;
