@@ -61,7 +61,6 @@ public class SpeechView {
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-
                 switch (event.getAction()){
                     case MotionEvent.ACTION_UP:
                         wManager.removeView(view);
