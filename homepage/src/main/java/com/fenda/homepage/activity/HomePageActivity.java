@@ -40,6 +40,7 @@ import com.fenda.common.provider.IVoiceRequestProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.AppUtils;
 import com.fenda.common.util.GsonUtil;
+import com.fenda.common.util.ImageUtil;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.homepage.Adapter.MainAdapter;
@@ -115,7 +116,8 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mAiTipMicTv = findViewById(R.id.tv_ai_tiptext);
 
         mPull = findViewById(R.id.iv_homepage_pull);
-        setFlickerAnimation(mPull);
+//        setFlickerAnimation(mPull);
+        ImageUtil.loadGIFImage(R.mipmap.cm_pull,mPull,R.mipmap.a123456);
         mTipInfoRv.setOnTouchListener(this);
 
         findViewById(R.id.iv_main_phone).setOnClickListener(this);
@@ -203,7 +205,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         if (initVoiceProvider == null) {
             initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
         }
-        initVoiceProvider.requestWeather();
+//        initVoiceProvider.requestWeather();
         if (mICallProvider != null) {
             mICallProvider.initSdk();
         }
