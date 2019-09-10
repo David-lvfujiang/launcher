@@ -385,28 +385,10 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 overridePendingTransition(R.anim.submenu_push_up_in,R.anim.submenu_push_up_out);
             }
         }
-        //一定要返回false，让viewpager监听左右滑动
+        //一定要返回false，让RecyclerView监听左右滑动
         return false;
     }
 
-    private void setFlickerAnimation(ImageView iv) {
-        //创建动画容器，并且将是否使用动画补间（shareInterpolator）设置为true;
-        AnimationSet set=new AnimationSet(true);
-        //透明效果动画
-        AlphaAnimation alpha=new AlphaAnimation(1,0);
-        alpha.setDuration(750);
-        alpha.setRepeatCount(Animation.INFINITE);
-        alpha.setRepeatMode(Animation.REVERSE);
-        //移动效果动画
-        TranslateAnimation trans=new TranslateAnimation(0, 0, 0, -20);
-        trans.setDuration(750);
-        trans.setRepeatCount(Animation.INFINITE);
-        trans.setRepeatMode(Animation.REVERSE);
-        set.addAnimation(alpha);
-        set.addAnimation(trans);
-        iv.startAnimation(set);
-
-    }
 
     @Override
     public void init(Context context) {

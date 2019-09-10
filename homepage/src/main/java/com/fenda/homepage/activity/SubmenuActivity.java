@@ -1,16 +1,15 @@
 package com.fenda.homepage.activity;
-
-import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
 import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.base.BaseActivity;
@@ -22,6 +21,8 @@ import com.fenda.homepage.bean.ApplyBean;
 import com.fenda.homepage.data.AllApplyData;
 import com.fenda.homepage.data.Constant;
 import com.fenda.homepage.data.UndevelopedApplyData;
+import com.fenda.homepage.scrollview.ObservableScrollView;
+import com.fenda.homepage.scrollview.ScrollViewListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,16 +30,19 @@ import java.util.List;
 /**
  * @author matt.liaojianpeng
  */
-public class SubmenuActivity extends BaseActivity {
+public class SubmenuActivity extends BaseActivity implements View.OnTouchListener, ScrollViewListener {
     @Autowired
     List<ApplyBean> mApplyList;
     List<ApplyBean> mUndevelopedApplyList;
 
     private RecyclerView mSubmenuListRv;
     private RecyclerView mSubmenuListRv2;
-    private ImageView mSubmenuBackIv;
+    private LinearLayout mSubmenuBackLl;
     private GridAdapter mGridAdapter;
     private GridAdapter mGridAdapter2;
+    private ObservableScrollView mScrollView;
+    private ImageView submenuDropLeft;
+    private ImageView submenuDropRight;
 
     @Override
     public int onBindLayout() {
@@ -48,11 +52,15 @@ public class SubmenuActivity extends BaseActivity {
     @Override
     protected void initCommonView() {
         super.initCommonView();
-        mSubmenuBackIv = findViewById(R.id.iv_submenu_back);
+        mSubmenuBackLl = findViewById(R.id.ll_submenu_back);
         mSubmenuListRv = findViewById(R.id.rv_submenu_list);
         mSubmenuListRv2 = findViewById(R.id.rv_submenu_list2);
-//        mSubmenuListRv2.getBackground().setAlpha(100);//0~255透明度值
-
+        submenuDropLeft = findViewById(R.id.iv_submenu_drop_left);
+        submenuDropRight = findViewById(R.id.iv_submenu_drop_right);
+        mSubmenuBackLl.setOnTouchListener(this);
+        //        mSubmenuListRv2.getBackground().setAlpha(100);//0~255透明度值
+        mScrollView = findViewById(R.id.sv_submenu);
+        mScrollView.setScrollViewListener(this);
     }
 
     @Override
@@ -86,6 +94,7 @@ public class SubmenuActivity extends BaseActivity {
                     ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
                 } else if (applyId.equals(Constant.CALCULATOR)){
                     ToastUtils.show("计算器");
+
                 }
                 else if (applyId.equals(Constant.WEATHER)) {
                     ToastUtils.show("天气");
@@ -174,14 +183,50 @@ public class SubmenuActivity extends BaseActivity {
     }
 
     @Override
-    public void initListener() {
-        mSubmenuBackIv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+    public boolean onTouchEvent(MotionEvent event) {
+        // TODO Auto-generated method stub
+        //如果这个方法消费了这个这个event事件，就返回True，否则false。
+        return super.onTouchEvent(event);
+    }
+
+    float startY = 0;
+    float endY = 0;
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        int eventAction = event.getAction();
+
+        if(eventAction==MotionEvent.ACTION_DOWN){
+            startY = event.getY();
+
+        } else if (eventAction==MotionEvent.ACTION_UP){
+            endY = event.getY();
+            if ((endY-startY)>50) {
                 finish();
+                overridePendingTransition(R.anim.submenu_push_up_in,R.anim.submenu_push_up_out);
             }
-        });
+        }
+        return true;
     }
 
 
+    @Override
+    public void onScrollChanged(ObservableScrollView scrollView, int x, int y, int oldx, int oldy) {
+//        Log.v("ashgdfaskdfh","y="+y);
+//        Log.v("ashgdfaskdfh","oldx="+oldy);
+        Animation rotateAnimation = new RotateAnimation(y/125,oldy/125,0,18);
+        rotateAnimation.setFillAfter(true);
+        rotateAnimation.setDuration(0);
+        rotateAnimation.setRepeatCount(0);
+        rotateAnimation.setInterpolator(new LinearInterpolator());
+        rotateAnimation.setDetachWallpaper(true);
+        submenuDropLeft.startAnimation(rotateAnimation);
+        Animation rotateAnimation2 = new RotateAnimation(-(y/125),-(oldy/125),30,18);
+        rotateAnimation2.setFillAfter(true);
+        rotateAnimation2.setDuration(0);
+        rotateAnimation2.setRepeatCount(0);
+        rotateAnimation2.setInterpolator(new LinearInterpolator());
+        rotateAnimation2.setDetachWallpaper(true);
+        submenuDropRight.startAnimation(rotateAnimation2);
+
+    }
 }
