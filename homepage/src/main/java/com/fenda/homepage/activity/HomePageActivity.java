@@ -116,7 +116,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mAiTipMicTv = findViewById(R.id.tv_ai_tiptext);
 
         mPull = findViewById(R.id.iv_homepage_pull);
-//        setFlickerAnimation(mPull);
         ImageUtil.loadGIFImage(R.mipmap.cm_pull,mPull,R.mipmap.a123456);
         mTipInfoRv.setOnTouchListener(this);
 
