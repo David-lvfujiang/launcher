@@ -1,5 +1,7 @@
 package com.fenda.settings.activity;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +28,7 @@ import com.fenda.common.util.AppUtils;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.SPUtils;
 import com.fenda.common.util.ToastUtils;
+import com.fenda.common.view.MyListView;
 import com.fenda.settings.R;
 import com.fenda.settings.utils.SettingsWifiUtil;
 
@@ -44,13 +47,15 @@ public class SettingsActivity extends BaseMvpActivity   {
 
     private ImageView ivBack;
     private TextView tvDisDeviceName;
-    private ListView lvDisSetListItem;
+    private MyListView lvDisSetListItem;
     private LinearLayout llDeviceCenter;
 
     private String mConnectedWifiSSID;
     private SimpleAdapter mSimpleAdapter;
     private ArrayList<HashMap<String,String>> mArrayListData;
     private WifiManager mWifiManager;
+
+    private String mBtName;
 
     @Override
     protected void initPresenter() {
@@ -70,13 +75,17 @@ public class SettingsActivity extends BaseMvpActivity   {
         llDeviceCenter = findViewById(R.id.set_first_info_layout);
         IntentFilter filter = new IntentFilter();
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-        registerReceiver(mwifiReceiver, filter);
+        registerReceiver(mWifiReceiver, filter);
+        IntentFilter btIntentFilter = new IntentFilter();
+        btIntentFilter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
+        btIntentFilter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        registerReceiver(mBtReceiver, btIntentFilter);
     }
 
     @Override
     public void initData() {
-        String[] listItemName = new String[] {getString(R.string.settings_set_names_list_wifi), getString(R.string.settings_set_names_list_bluetooth), getString(R.string.settings_set_names_list_light), getString(R.string.settings_set_names_list_volume), getString(R.string.settings_set_names_list_deviceinfo), getString(R.string.settings_set_names_list_about)};
-        String[] listItemStatus = new String[]{getString(R.string.settings_set_status_wifi_noconnect) ,"", "", "", "", ""};
+        String[] listItemName = new String[] {getString(R.string.settings_set_names_list_wifi), getString(R.string.settings_set_names_list_bluetooth), getString(R.string.settings_set_names_list_light), getString(R.string.settings_set_names_list_volume), getString(R.string.settings_set_names_list_deviceinfo), getString(R.string.settings_set_names_list_about), getString(R.string.settings_set_names_list_endlink)};
+        String[] listItemStatus = new String[]{getString(R.string.settings_set_status_wifi_noconnect) ,"", "", "", "", "", ""};
 
         mArrayListData = new ArrayList<>();
         for (int i = 0; i < listItemName.length; i++) {
@@ -133,6 +142,9 @@ public class SettingsActivity extends BaseMvpActivity   {
                 } else if(("音量").equals(setClickedListName)) {
                     Intent lightIntent = new Intent(SettingsActivity.this, SettingsVolumeActivity.class);
                     startActivity(lightIntent);
+                } else if(("Andlink").equals(setClickedListName)){
+                    Intent andlinkIntent = new Intent(SettingsActivity.this, SettingsAndLinkQRCodeActivity.class);
+                    startActivity(andlinkIntent);
                 } else {
                     ToastUtils.show("开发中...");
                 }
@@ -140,24 +152,29 @@ public class SettingsActivity extends BaseMvpActivity   {
         });
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == 200){
-//            mArrayListData.remove(0);
-//            HashMap<String,String> params = new HashMap<>();
-//            String wifiName = (String) SPUtils.get(this,"WifiName","");
-//            params.put("name","WIFI");
-//            if (!TextUtils.isEmpty(wifiName) && SettingsWifiUtil.isWifiEnabled(this)){
-//                params.put("state","已连接("+wifiName+")");
-//            } else{
-//                params.put("state",getString(R.string.settings_set_status_wifi_noconnect));
-//            }
-//            mArrayListData.add(0,params);
-//            mSimpleAdapter.notifyDataSetChanged();
-//        }
-//    }
+    private BroadcastReceiver mBtReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED)) {
+                BluetoothDevice mConnectionBluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                int state = intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE, 0);
+                LogUtil.d(TAG, "BT CONNECT staute " + mConnectionBluetoothDevice.getName() + state);
+                if (BluetoothAdapter.STATE_DISCONNECTED == state) {
+                    LogUtil.d(TAG, "蓝牙断开了");
+                    SPUtils.remove(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME);
+                    LogUtil.d(TAG, "STATE_DISCONNECTED getName = " + mConnectionBluetoothDevice.getName() + ", STATE_DISCONNECTED getAddress = " + mConnectionBluetoothDevice.getAddress());
+                } else if (BluetoothAdapter.STATE_CONNECTED == state) {
+                    LogUtil.d(TAG, "蓝牙连上了");
+                    mBtName = mConnectionBluetoothDevice.getName();
+                    SPUtils.put(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME, mBtName);
+                    LogUtil.d(TAG, "STATE_CONNECTED getName = " + mConnectionBluetoothDevice.getName() + ", STATE_CONNECTED getAddress = " + mConnectionBluetoothDevice.getAddress());
+                }
+            }
+        }
+    };
 
-    private BroadcastReceiver mwifiReceiver = new BroadcastReceiver () {
+    private BroadcastReceiver mWifiReceiver = new BroadcastReceiver () {
         HashMap<String,String> params = new HashMap<>();
 
         @Override
@@ -205,7 +222,8 @@ public class SettingsActivity extends BaseMvpActivity   {
 
     @Override
     protected void onDestroy() {
-        unregisterReceiver(mwifiReceiver);
+        unregisterReceiver(mWifiReceiver);
+        unregisterReceiver(mBtReceiver);
         super.onDestroy();
     }
 }

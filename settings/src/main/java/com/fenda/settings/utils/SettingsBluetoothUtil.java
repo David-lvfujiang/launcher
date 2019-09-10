@@ -82,8 +82,7 @@ public class SettingsBluetoothUtil {
      */
     public static void unpairDevice(BluetoothDevice device) {
         try {
-            Method m = device.getClass()
-                    .getMethod("removeBond", (Class[]) null);
+            Method m = device.getClass().getMethod("removeBond", (Class[]) null);
             m.invoke(device, (Object[]) null);
         } catch (Exception e) {
             Log.d("BlueUtils", e.getMessage());

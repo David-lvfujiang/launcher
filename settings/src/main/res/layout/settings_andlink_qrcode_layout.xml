@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@mipmap/settings_bind_netset_background">
+
+
+    <TextView
+        android:id="@+id/andlink_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:text="@string/settings_andlink"
+        android:textColor="#ff00f0ff"
+        android:drawableLeft="@mipmap/settings_set_back"
+        android:textSize="35dp"
+        android:paddingLeft="30dp"
+        android:drawablePadding="30dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:clickable="true"/>
+
+    <ImageView
+        android:id="@+id/andlink_enlarge_QR"
+        android:layout_width="305dp"
+        android:layout_height="280dp"
+        android:layout_marginLeft="324dp"
+        android:layout_marginTop="160dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/enlarge_vcode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="404dp"
+        android:layout_marginTop="400dp"
+        android:textColor="@color/white"
+        android:textSize="25dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="284dp"
+        android:layout_marginTop="452dp"
+        android:text="@string/settings_add_qr_step1"
+        android:textColor="@color/white"
+        android:textSize="25dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="284dp"
+        android:layout_marginTop="484dp"
+        android:text="@string/settings_add_qr_step2"
+        android:textColor="@color/white"
+        android:textSize="25dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
+
+</android.support.constraint.ConstraintLayout>

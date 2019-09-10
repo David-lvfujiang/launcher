@@ -57,7 +57,7 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
         lvConnectedWifiConfig = findViewById(R.id.wifi_config_listview);
         tvWifiName = findViewById(R.id.wifi_config_name_tv);
         ivBack = findViewById(R.id.wifi_config_back_iv);
-        mSettingsWifiUtil = new SettingsWifiUtil(SettingsWifiConnectedInfoActivity.this);
+        mSettingsWifiUtil = new SettingsWifiUtil(getApplicationContext());
     }
 
     @Override
@@ -109,13 +109,9 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
                 LogUtil.d(TAG, "取消网络保存id = " + netId1);
 
                 if(("取消保存网络").equals(setClickedListName)) {
-
                     mSettingsWifiUtil.removeWifi(netId1);
                     mWifiManager.saveConfiguration();
-
                     Intent connectIntent = new Intent(SettingsWifiConnectedInfoActivity.this, SettingsWifiActivity.class);
-                    int intentStatus = 0;
-                    connectIntent.putExtra("STATUS", intentStatus);
                     startActivity(connectIntent);
                     finish();
                 } else if(("网络配置").equals(setClickedListName)) {

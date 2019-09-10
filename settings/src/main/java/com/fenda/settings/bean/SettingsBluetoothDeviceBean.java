@@ -11,7 +11,7 @@ public class SettingsBluetoothDeviceBean {
     private String name;
     private String address;
     private BluetoothDevice device;
-    private String status="未配对";
+    private String status="";
 
     public String getStatus() {
         return status;

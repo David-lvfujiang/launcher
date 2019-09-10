@@ -128,6 +128,12 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mHeaderWeatherTv.setOnClickListener(this);
         mHeaderWeatherIv.setOnClickListener(this);
 
+        IVoiceRequestProvider mIVoiceRequestProvider = (IVoiceRequestProvider) ARouter.getInstance().build(RouterPath.VOICE.REQUEST_PROVIDER).navigation();
+        if (mIVoiceRequestProvider != null) {
+            LogUtil.d(TAG, "init device status");
+            mIVoiceRequestProvider.openVoice();
+        }
+
         showPageIndex = 0;
 
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -278,6 +284,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     LogUtil.d(TAG, "wifi onAvailable: " + network);
                     ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
                     if (settingService != null) {
+                        LogUtil.d(TAG, "init device status");
                         settingService.deviceStatus(getApplicationContext());
                     }
                 }
@@ -397,7 +404,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
     @Override
     public void homePageFromVoiceControl(String todayWeatherTemp, String todayWeatherName) {
-
         mHeaderWeatherTv.setText(todayWeatherTemp);
     }
 }
