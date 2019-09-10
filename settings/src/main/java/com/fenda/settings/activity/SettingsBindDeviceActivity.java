@@ -19,6 +19,8 @@ import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.db.ContentProviderManager;
 import com.fenda.common.provider.ICallProvider;
+import com.fenda.common.provider.ISettingsProvider;
+import com.fenda.common.provider.IVoiceRequestProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.AppUtils;
 import com.fenda.common.util.LogUtil;
@@ -109,7 +111,13 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
             tvDisVcodeText.setTextColor(getColor(R.color.settings_colorAccent));
             tvDisVcodeText.setTextSize(22);
         }
-        sendMicDisableBroad();
+
+        IVoiceRequestProvider mIVoiceRequestProvider = (IVoiceRequestProvider) ARouter.getInstance().build(RouterPath.VOICE.REQUEST_PROVIDER).navigation();
+        if (mIVoiceRequestProvider != null) {
+            mIVoiceRequestProvider.closeVoice();
+        }
+
+//        sendMicDisableBroad();
     }
 
     @Override
@@ -167,19 +175,19 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
     @Override
     public void onResume() {
         super.onResume();
-        setStatusBarDisable(DISABLE_EXPAND);
+//        setStatusBarDisable(DISABLE_EXPAND);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        setStatusBarDisable(DISABLE_NONE);
+//        setStatusBarDisable(DISABLE_NONE);
     }
 
     @Override
     protected void onDestroy() {
         setStatusBarDisable(DISABLE_NONE);
-        sendMicAbleBroad();
+//        sendMicAbleBroad();
         super.onDestroy();
     }
 

@@ -32,6 +32,7 @@ import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.SPUtils;
+import com.fenda.common.util.ToastUtils;
 import com.fenda.settings.R;
 import com.fenda.settings.bean.SettingsWifiBean;
 import com.fenda.settings.utils.SettingsWifiUtil;
@@ -59,16 +60,18 @@ public class SettingsWifiActivity extends BaseMvpActivity{
     protected SettingsWifiUtil mSettingsWifiUtil;
     private List<SettingsWifiBean> mScanWifiListBean;
     private MyWifiAdapter mMyWifiAdapter;
-
-    public int level;
-    protected String ssid;
-    private String wifiSSID;
-    private int status  = 0;
+    private SettingsWifiBean mSettingsWifiBean;
+    private WifiInfo mWifiInfo;
 
     private final static int  OPEN_WIFI = 1;
     private final static int  CLOSE_WIFI = 0;
 
-    private String connectedSSID;
+    private String mConnectedSSID;
+    protected String mListItemClickedSsid;
+    private int mBroadcastStatus;
+    public int level;
+
+
 
     @Override
     protected void initPresenter() {
@@ -93,28 +96,24 @@ public class SettingsWifiActivity extends BaseMvpActivity{
         mScanWifiListBean = new ArrayList<>();
         mMyWifiAdapter = new MyWifiAdapter(getLayoutInflater(), mScanWifiListBean);
         rvWifiList.setAdapter(mMyWifiAdapter);
-            mSettingsWifiUtil = new SettingsWifiUtil(SettingsWifiActivity.this);
+        mSettingsWifiUtil = new SettingsWifiUtil(SettingsWifiActivity.this);
+        mSettingsWifiBean = new SettingsWifiBean();
 
         mWifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
 
-        WifiInfo wifiInfo = mWifiManager.getConnectionInfo();
-        connectedSSID = wifiInfo.getSSID().replace("\"", "");
-
         if (!mWifiManager.isWifiEnabled()) {
             wifiSwitch.setChecked(false);
+            mSettingsWifiBean.setStatus(0);
         } else {
             wifiSwitch.setChecked(true);
+            mSettingsWifiBean.setStatus(6);
         }
 
         IntentFilter filter = new IntentFilter();
-        //监听wifi是开关变化的状态
         filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        //监听wifiwifi连接状态广播
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-        //监听wifi列表变化（开启一个热点或者关闭一个热点）
         filter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         filter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
-
         registerReceiver(mWifiReceiver, filter);
     }
 
@@ -152,15 +151,13 @@ public class SettingsWifiActivity extends BaseMvpActivity{
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            LogUtil.d("Runnable");
-
             if (!mWifiManager.isWifiEnabled()) {
                 LogUtil.d(TAG, "wifi is unable ~");
             } else {
                 mSettingsWifiUtil.startScan(getApplicationContext());
                 mScanWifiListBean.clear();
                 LogUtil.d(TAG, "mWifiList = " + mScanWifiListBean.size());
-                mScanWifiListBean.addAll(mSettingsWifiUtil.getWifiList(2, connectedSSID));
+                mScanWifiListBean.addAll(mSettingsWifiUtil.getWifiList(1, mConnectedSSID));
                 LogUtil.d(TAG, "mWifiList 2 = " + mScanWifiListBean.size());
 
                 if(mScanWifiListBean.size() > 0) {
@@ -180,7 +177,7 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                     mAnimationDrawable.start();
                 }
             }
-            mHandler.postDelayed(runnable,8000); // 执行后延迟1000毫秒再次执行，count已++
+            mHandler.postDelayed(runnable,8000); // 执行后延迟8000毫秒再次执行
         }
     };
 
@@ -190,13 +187,9 @@ public class SettingsWifiActivity extends BaseMvpActivity{
             LogUtil.d("  Msg " + msg.what);
             switch (msg.what) {
                 case OPEN_WIFI :
-                    //在这里可以进行UI操作
-                    //对msg.obj进行String强制转换
-
                     break;
                 case CLOSE_WIFI:
                     mSettingsWifiUtil.closeWifi(SettingsWifiActivity.this);
-//                    rvWifiList.cl
                 default:
                     break;
             }
@@ -208,7 +201,6 @@ public class SettingsWifiActivity extends BaseMvpActivity{
         tvBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setResult(100);
                 finish();
             }
         });
@@ -219,17 +211,17 @@ public class SettingsWifiActivity extends BaseMvpActivity{
     }
 
     private class MyWifiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-        LayoutInflater inflater;
-        List<SettingsWifiBean> list;
+        LayoutInflater mLayoutInflater;
+        List<SettingsWifiBean> mWifiBeanList;
 
-        public MyWifiAdapter(LayoutInflater inflater, List<SettingsWifiBean> list) {
-            this.inflater = inflater;
-            this.list = list;
+        public MyWifiAdapter(LayoutInflater mLayoutInflater, List<SettingsWifiBean> mWifiBeanList) {
+            this.mLayoutInflater = mLayoutInflater;
+            this.mWifiBeanList = mWifiBeanList;
         }
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = inflater.inflate(R.layout.settings_wifi_listitem_layout, parent,false);
+            View view = mLayoutInflater.inflate(R.layout.settings_wifi_listitem_layout, parent,false);
             return new ViewHolder(view);
         }
 
@@ -237,9 +229,10 @@ public class SettingsWifiActivity extends BaseMvpActivity{
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
             final ViewHolder mHolder = (ViewHolder) holder;
-            SettingsWifiBean bean = list.get(position);
-            final ScanResult scanResult = bean.getResult();
-            final int status = bean.getStatus();
+            mSettingsWifiBean = mWifiBeanList.get(position);
+            final ScanResult scanResult = mSettingsWifiBean.getResult();
+            final int status = mSettingsWifiBean.getStatus();
+            LogUtil.d(TAG,  "onBindViewHolder status = " + status);
 
             mHolder.wifi_ssid.setText(scanResult.SSID);
             level=WifiManager.calculateSignalLevel(scanResult.level,5);
@@ -248,85 +241,85 @@ public class SettingsWifiActivity extends BaseMvpActivity{
             }else{
                 mHolder.wifi_level.setImageResource(R.drawable.settings_wifi_signal_open);
             }
+            mHolder.wifi_level.setImageLevel(level);
 
-            if (status == 1){  //wifi正在连接
+            if (status == 2){  //wifi正在连接
                 LogUtil.d(TAG, "wifi 正在连接 connecting ");
-
                 mHolder.connectWifiLoading.setVisibility(View.VISIBLE);
                 mHolder.connectWifiLoading.setImageResource(R.drawable.settings_wifi_connecting_gif);
                 mAnimationDrawable = (AnimationDrawable) mHolder.connectWifiLoading.getDrawable();
                 mAnimationDrawable.start();
                 mHolder.connectWifiIcon.setVisibility(View.GONE);
-            } else if (status == 2){  //wifi连接上了
+            } else if (status == 1){  //wifi连接上了
                 LogUtil.d(TAG, "wifi 连接上了 connect sucess ");
                 mHolder.tvStatus.setVisibility(View.VISIBLE);
                 mHolder.tvStatus.setText(getString(R.string.settings_wifi_connected_status));
                 mHolder.connectWifiIcon.setVisibility(View.VISIBLE);
-
                 mHolder.connectWifiLoading.setVisibility(View.GONE);
                 mHolder.connectWifiLoading.setImageResource(R.drawable.settings_wifi_connecting_gif);
                 mAnimationDrawable = (AnimationDrawable) mHolder.connectWifiLoading.getDrawable();
                 mAnimationDrawable.stop();
-//                SPUtils.put(SettingsWifiActivity.this, "WifiName", wifiSSID);
-
-                //wifiSwitch.setClickable(true);
             } else if(status ==3) {
+                LogUtil.d(TAG, "wifi psw error ");
                 mHolder.tvStatus.setText(getString(R.string.settings_wifi_psw_error));
                 mHolder.tvStatus.setVisibility(View.VISIBLE);
                 mHolder.connectWifiIcon.setVisibility(View.GONE);
-                LogUtil.d(TAG, "wifi psw error ");
             } else if(status == 4){
-                mHolder.tvStatus.setText("wifi未连接");
+                LogUtil.d(TAG, "wifi not connect ");
                 mHolder.tvStatus.setVisibility(View.VISIBLE);
                 mHolder.connectWifiIcon.setVisibility(View.GONE);
-                LogUtil.d(TAG, "wifi not connect ");
             } else {
                 mHolder.tvStatus.setVisibility(View.GONE);
                 mHolder.connectWifiIcon.setVisibility(View.GONE);
             }
-            mHolder.wifi_level.setImageLevel(level);
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    mListItemClickedSsid = mScanWifiListBean.get(position).getResult().SSID;
+
                     WifiConfiguration config = new WifiConfiguration();
-                    WifiInfo wifiInfo = mWifiManager.getConnectionInfo();
-                    String connectedSSID = wifiInfo.getSSID().replace("\"", "");
-
-                    ssid = mScanWifiListBean.get(position).getResult().SSID;
-
-                    LogUtil.d(TAG, "connected wifi ssid = " + connectedSSID);
-                    LogUtil.d(TAG, "clicked wifi ssid = " + ssid);
+                    config.allowedAuthAlgorithms.clear();
+                    config.allowedGroupCiphers.clear();
+                    config.allowedKeyManagement.clear();
+                    config.allowedPairwiseCiphers.clear();
+                    config.allowedProtocols.clear();
+                    config.SSID = "\"" + mListItemClickedSsid + "\"";
 
                     List<WifiConfiguration> wifiConfigurationList = mSettingsWifiUtil.getConfiguration();
                     LogUtil.d(TAG, "wifiConfigurationList = " + wifiConfigurationList);
+                    LogUtil.d(TAG, "connected wifi ssid = " + mConnectedSSID);
+                    LogUtil.d(TAG, "clicked wifi ssid = " + mListItemClickedSsid);
 
-                    if(connectedSSID.equals(ssid)) {
-                        // startActivity(new Intent(SettingsWifiActivity.this, FDWifiConnectConfigActivity.class));
+                    if(mConnectedSSID.equals(mListItemClickedSsid)) {
                         Intent connectedIntent = new Intent(SettingsWifiActivity.this, SettingsWifiConnectedInfoActivity.class);
-                        connectedIntent.putExtra("CONNECTED_MESSAGE", ssid);
+                        connectedIntent.putExtra("CONNECTED_MESSAGE", mListItemClickedSsid);
                         startActivity(connectedIntent);
                         finish();
                     } else {
                         //WiFi是否已经保存
-                        LogUtil.d(TAG,  "save wifi flag = " + mSettingsWifiUtil.isWifiSave(ssid));
-                        if(mSettingsWifiUtil.isWifiSave(ssid)){
+                        LogUtil.d(TAG,  "save wifi flag = " + mSettingsWifiUtil.isWifiSave(mListItemClickedSsid));
+                        if(mSettingsWifiUtil.isWifiSave(mListItemClickedSsid)){
                             //点击连接
-                            int ssidID = mSettingsWifiUtil.getNetworkId(ssid);
+                            int ssidID = mSettingsWifiUtil.getNetworkId(mListItemClickedSsid);
                             LogUtil.d(TAG,  "save wifi id clicked = " + ssidID);
-//                            mWifiAdmin.connectConfiguration(ssidID);
                             mWifiManager.enableNetwork(ssidID, true);
                         } else {
-                            if(scanResult.capabilities.contains("WEP")||scanResult.capabilities.contains("PSK") || scanResult.capabilities.contains("EAP")){
+                            if(scanResult.capabilities.contains("WEP") || scanResult.capabilities.contains("PSK") || scanResult.capabilities.contains("EAP")){
                                 //密码连接
                                 Intent connectIntent = new Intent(SettingsWifiActivity.this, SettingsWifiInputPswActivity.class);
-                                connectIntent.putExtra("MESSAGE", ssid);
+                                connectIntent.putExtra("MESSAGE", mListItemClickedSsid);
                                 startActivity(connectIntent);
                                 finish();
                             } else{
                                 //无密码直接连接
                                 LogUtil.d(TAG, "no psw wifi connect");
+//                                config.hiddenSSID = true;
+//                                config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+
+                                config.wepKeys[0] = "\"" + "\"";
                                 config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+                                config.wepTxKeyIndex = 0;
                             }
                         }
                     }
@@ -336,7 +329,7 @@ public class SettingsWifiActivity extends BaseMvpActivity{
 
         @Override
         public int getItemCount() {
-            return list.size();
+            return mWifiBeanList.size();
         }
         class ViewHolder extends RecyclerView.ViewHolder{
             public TextView wifi_ssid;
@@ -363,21 +356,12 @@ public class SettingsWifiActivity extends BaseMvpActivity{
             if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {
                 int state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, 0);
                 switch (state) {
-                    /**
-                     * WIFI_STATE_DISABLED    WLAN已经关闭
-                     * WIFI_STATE_DISABLING   WLAN正在关闭
-                     * WIFI_STATE_ENABLED     WLAN已经打开
-                     * WIFI_STATE_ENABLING    WLAN正在打开
-                     * WIFI_STATE_UNKNOWN     未知
-                     */
                     case WifiManager.WIFI_STATE_DISABLED: {
                         Log.i(TAG, "已经关闭");
-                        status = 0;
+                        mSettingsWifiBean.setStatus(0);
                         mScanWifiListBean.clear();
                         rvWifiList.setAdapter(null);
-//                        mAadapter.notifyDataSetChanged();
                         mHandler.removeCallbacks(runnable);
-//                        SPUtils.remove(SettingsWifiActivity.this, "WifiName");
                         break;
                     }
                     case WifiManager.WIFI_STATE_DISABLING: {
@@ -401,78 +385,80 @@ public class SettingsWifiActivity extends BaseMvpActivity{
             } else if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
                 NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
                 ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo wifiInfo = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-                Log.i(TAG, "--NetworkInfo--" + info.toString());
+                NetworkInfo mNetworkInfo = manager.getActiveNetworkInfo();
+//                NetworkInfo.DetailedState state = mNetworkInfo.getDetailedState();
+
                 if (NetworkInfo.State.DISCONNECTED == info.getState()) {//wifi没连接上
                     Log.i(TAG, "wifi没连接上");
-                    status = 4;
+                    mSettingsWifiBean.setStatus(4);
+                    mConnectedSSID = "";
                 } else if (NetworkInfo.State.CONNECTED == info.getState()) {//wifi连接上了
-                    status = 2;
-                    Log.i(TAG, "wifi连接上了 status = " + status);
-                    WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-                    wifiSSID = wifiManager.getConnectionInfo().getSSID();
-                    wifiSSID = wifiSSID.substring(1, wifiSSID.length() - 1);
-//                    SPUtils.put(SettingsWifiActivity.this, "WifiName", wifiSSID);
+                    mSettingsWifiBean.setStatus(1);
+                    mWifiInfo = mWifiManager.getConnectionInfo();
+                    mConnectedSSID = mWifiInfo.getSSID().replace("\"", "");
+                    LogUtil.d(TAG, "BroadcastReceiver wifiSSID = "+ mConnectedSSID);
                     wifiSwitch.setChecked(true);
                 } else if (NetworkInfo.State.CONNECTING == info.getState()) {//正在连接
-                    status = 1;
-                    Log.i(TAG, "wifi正在连接 status = " + status);
+                    mSettingsWifiBean.setStatus(2);
+                    mBroadcastStatus =2;
+                    Log.i(TAG, "wifi正在连接 status = " + mSettingsWifiBean.getStatus());
 
                     String extra = info.getExtraInfo();
                     Log.i(TAG, "extra = " + extra);
                     extra = extra.substring(1, extra.length() - 1);
                     mSettingsWifiUtil.startScan(SettingsWifiActivity.this);
                     mScanWifiListBean.clear();
-                    mScanWifiListBean.addAll(mSettingsWifiUtil.getWifiList(status, extra));
+                    mScanWifiListBean.addAll(mSettingsWifiUtil.getWifiList(mBroadcastStatus, extra));
                     mMyWifiAdapter.notifyDataSetChanged();
                 }
             } else if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(intent.getAction())) {
                 Log.i(TAG, "网络列表变化了");
-                if (!mWifiManager.isWifiEnabled()) {
-
-                } else {
-                    mSettingsWifiUtil.startScan(getApplicationContext());
-                    mScanWifiListBean.clear();
-                    LogUtil.d(TAG, "mWifiList = " + mScanWifiListBean.size());
-                    if(status == 2){
-                        mScanWifiListBean.addAll(mSettingsWifiUtil.getWifiList(2, connectedSSID));
-                        LogUtil.d(TAG, "mWifiList status 2 = " + mScanWifiListBean.size());
-                    } else {
-                        mScanWifiListBean.addAll(mSettingsWifiUtil.getWifiList(0, null));
-                        LogUtil.d(TAG, "mWifiList status 0 = " + mScanWifiListBean.size());
-                    }
-
-                    if(mScanWifiListBean.size() > 0) {
-                        tvScanWifiTv.setVisibility(View.GONE);
-                        ivScanWifiGif.setVisibility(View.GONE);
-                        ivScanWifiGif.setImageResource(R.drawable.settings_network_loading_gif);
-                        mAnimationDrawable = (AnimationDrawable) ivScanWifiGif.getDrawable();
-                        mAnimationDrawable.stop();
-                        rvWifiList.setAdapter(mMyWifiAdapter);
-                        mMyWifiAdapter.notifyDataSetChanged();
-                    } else {
-                        rvWifiList.setAdapter(null);
-                        tvScanWifiTv.setVisibility(View.VISIBLE);
-                        ivScanWifiGif.setVisibility(View.VISIBLE);
-                        ivScanWifiGif.setImageResource(R.drawable.settings_network_loading_gif);
-                        mAnimationDrawable = (AnimationDrawable) ivScanWifiGif.getDrawable();
-                        mAnimationDrawable.start();
-                    }
-                }
+//                if (!mWifiManager.isWifiEnabled()) {
+//
+//                } else {
+//                    mSettingsWifiUtil.startScan(getApplicationContext());
+//                    mScanWifiListBean.clear();
+//                    LogUtil.d(TAG, "mWifiList = " + mScanWifiListBean.size());
+//                    if(status == 2){
+//                        mScanWifiListBean.addAll(mSettingsWifiUtil.getWifiList(2, connectedSSID));
+//                        LogUtil.d(TAG, "mWifiList status 2 = " + mScanWifiListBean.size());
+//                    } else {
+//                        mScanWifiListBean.addAll(mSettingsWifiUtil.getWifiList(0, null));
+//                        LogUtil.d(TAG, "mWifiList status 0 = " + mScanWifiListBean.size());
+//                    }
+//
+//                    if(mScanWifiListBean.size() > 0) {
+//                        tvScanWifiTv.setVisibility(View.GONE);
+//                        ivScanWifiGif.setVisibility(View.GONE);
+//                        ivScanWifiGif.setImageResource(R.drawable.settings_network_loading_gif);
+//                        mAnimationDrawable = (AnimationDrawable) ivScanWifiGif.getDrawable();
+//                        mAnimationDrawable.stop();
+//                        rvWifiList.setAdapter(mMyWifiAdapter);
+//                        mMyWifiAdapter.notifyDataSetChanged();
+//                    } else {
+//                        rvWifiList.setAdapter(null);
+//                        tvScanWifiTv.setVisibility(View.VISIBLE);
+//                        ivScanWifiGif.setVisibility(View.VISIBLE);
+//                        ivScanWifiGif.setImageResource(R.drawable.settings_network_loading_gif);
+//                        mAnimationDrawable = (AnimationDrawable) ivScanWifiGif.getDrawable();
+//                        mAnimationDrawable.start();
+//                    }
+//                }
             } else if (WifiManager.SUPPLICANT_STATE_CHANGED_ACTION.equals(intent.getAction())) {
                 int linkWifiResult = intent.getIntExtra(WifiManager.EXTRA_SUPPLICANT_ERROR, 123);
                 if (linkWifiResult == WifiManager.ERROR_AUTHENTICATING) {
-                    status = 3;
-                    Log.e(TAG, "wifi密码错误");
-                    WifiManager wifiManager = (WifiManager) context
-                            .getSystemService(Context.WIFI_SERVICE);
-                    wifiSSID = wifiManager.getConnectionInfo()
-                            .getSSID();
-                    wifiSSID = wifiSSID.substring(1, wifiSSID.length() - 1);
-                    mSettingsWifiUtil.startScan(SettingsWifiActivity.this);
-                    mScanWifiListBean.clear();
-                    mScanWifiListBean.addAll(mSettingsWifiUtil.getWifiList(status, wifiSSID));
-                    mMyWifiAdapter.notifyDataSetChanged();
+                    mSettingsWifiBean.setStatus(3);
+                    LogUtil.d(TAG, "密码错误");
+                    ToastUtils.show("wifi密码错误，请重试");
+                    String wifiSSID1 = mWifiManager.getConnectionInfo().getSSID();
+                    Log.e(TAG, "wifi密码错误 SSID11 = " + wifiSSID1);
+                    String wifiSSID2 = wifiSSID1.substring(1, wifiSSID1.length() - 1);
+                    ToastUtils.show(wifiSSID1 + "  密码错误，请重试");
+                    Log.e(TAG, "wifi密码错误 SSID22 = " + wifiSSID2);
+                    int ssidId = mSettingsWifiUtil.getNetworkId(wifiSSID2);
+                    Log.e(TAG, "wifi密码错误 SSID ID = " + ssidId);
+                    mSettingsWifiUtil.removeWifi(ssidId);
+
                 }
             }
         }

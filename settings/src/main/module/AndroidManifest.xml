@@ -54,6 +54,8 @@
         <activity android:name=".activity.SettingsContractsNickNameEditActivity" />
         <activity android:name=".activity.SettingsDeviceAddContractsQRActivity" />
         <activity android:name=".activity.SettingsWifiTestActivity" />
+        <activity android:name=".activity.SettingsAndLinkQRCodeActivity"/>
+        <activity android:name=".activity.SettingsChangeBtNameAcivity"/>
 
         <provider
             android:name="com.fenda.common.db.UserContentProvider"

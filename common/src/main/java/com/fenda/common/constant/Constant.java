@@ -111,7 +111,8 @@ public interface Constant {
         String VCODE = "dimensional_code";
         String RONGYUNCLOUDTOKEN = "rongyunCloud_Token";
         String DEVICE_STATUS = "device_status";
-//        boolean DEVICE_STATUS = "false";
+        String BT_CONNECTED_NAME = "bt_connected_name";
+        String BT_CONNECTED_ADDRESS= "bt_connected_address";
     }
 
     interface common {

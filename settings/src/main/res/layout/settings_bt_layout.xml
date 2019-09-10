@@ -85,9 +85,11 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <LinearLayout
+                        android:id="@+id/change_bt_name_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:clickable="true">
                         <TextView
                             android:id="@+id/set_bt_dis_bt_name"
                             android:layout_width="wrap_content"
@@ -95,14 +97,12 @@
                             android:paddingLeft="32dp"
                             android:textColor="@color/white"
                             android:textSize="15dp"
-                            android:layout_marginTop="10dp"
-                            android:clickable="true"/>
+                            android:layout_marginTop="10dp" />
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="14dp"
                             android:layout_marginTop="14dp"
-                            android:src="@mipmap/settings_white_back"
-                            android:visibility="visible"/>
+                            android:src="@mipmap/settings_white_back" />
                     </LinearLayout>
 
                 </LinearLayout>
