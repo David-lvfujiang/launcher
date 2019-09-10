@@ -17,11 +17,18 @@ import com.fenda.homepage.Util.HomeUtil;
 
 
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.HomeItemHolder> {
-
     private Context mContext;
+    private int bgImageValueArr[] = {R.mipmap.cm_bg_a1, R.mipmap.cm_bg_a2, R.mipmap.cm_bg_a3, R.mipmap.cm_bg_04, R.mipmap.cm_bg_05};
+    private  static Bitmap[] beforeBmp = new Bitmap[HomeUtil.PAGE_NUM_MAX];
+    private  static Bitmap[] afterBmp = new Bitmap[HomeUtil.PAGE_NUM_MAX];
 
     public MainAdapter(Context context){
+
         mContext = context;
+        for (int a=0;a<getItemCount();a++){
+            beforeBmp[a] = BitmapFactory.decodeResource(mContext.getResources(),bgImageValueArr[a]);
+            afterBmp[a] = GsdFastBlur.fastblur(mContext,beforeBmp[a],50);
+        }
     }
 
     @NonNull
@@ -39,14 +46,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.HomeItemHolder
     @Override
     public void onBindViewHolder(@NonNull HomeItemHolder viewHolder, int i) {
 
-        int bgImageValueArr[] = {R.mipmap.cm_bg_a1, R.mipmap.cm_bg_a2, R.mipmap.cm_bg_a3, R.mipmap.cm_bg_04, R.mipmap.cm_bg_05};
-        int bgLength = bgImageValueArr.length;
-        Bitmap[] beforeBmp = new Bitmap[bgLength];
-        Bitmap[] afterBmp = new Bitmap[bgLength];
-        for (int a=0;a<bgLength;a++){
-            beforeBmp[a] = BitmapFactory.decodeResource(mContext.getResources(),bgImageValueArr[a]);
-            afterBmp[a] = GsdFastBlur.fastblur(mContext,beforeBmp[a],50);
-        }
         viewHolder.homeItemBgIv.setBackground(new BitmapDrawable(afterBmp[i]));
         viewHolder.homeItemBgIv.setImageResource(bgImageValueArr[i]);
     }
