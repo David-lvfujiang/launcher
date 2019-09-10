@@ -16,6 +16,10 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextClock;
 import android.widget.TextView;
@@ -60,6 +64,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     ImageView mHeaderWeatherIv;
     TextView mHeaderWeatherTv;
     ImageView mAiTipIv;
+    ImageView mPull;
     TextView mAiTipTitleTv;
     TextView mAiTipMicTv;
 
@@ -108,12 +113,15 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mAiTipIv = findViewById(R.id.iv_main_tip_icon);
         mAiTipTitleTv = findViewById(R.id.tv_main_item_content);
         mAiTipMicTv = findViewById(R.id.tv_ai_tiptext);
-        findViewById(R.id.linearlayout_layout).setOnTouchListener(this);
-        findViewById(R.id.iv_main_jd).setOnClickListener(this);
+
+        mPull = findViewById(R.id.iv_homepage_pull);
+        setFlickerAnimation(mPull);
+        mTipInfoRv.setOnTouchListener(this);
+
         findViewById(R.id.iv_main_phone).setOnClickListener(this);
-        findViewById(R.id.iv_main_other).setOnClickListener(this);
-        findViewById(R.id.iv_main_tools).setOnClickListener(this);
-        findViewById(R.id.iv_main_study).setOnClickListener(this);
+        findViewById(R.id.iv_main_cmcc).setOnClickListener(this);
+        findViewById(R.id.iv_main_qqmusic).setOnClickListener(this);
+        findViewById(R.id.iv_main_iqiyi).setOnClickListener(this);
 
         mHeaderWeatherTv.setOnClickListener(this);
         mHeaderWeatherIv.setOnClickListener(this);
@@ -325,7 +333,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         if (resId == R.id.iv_main_phone) {
             //通讯录
             ARouter.getInstance().build(RouterPath.Call.MAIN_ACTIVITY).navigation();
-        } else if (resId == R.id.iv_main_tools) {
+        } else if (resId == R.id.iv_main_cmcc) {
             //通讯录
 //            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
         } else if (resId == R.id.iv_header_weather || resId == R.id.tv_header_temp) {
@@ -358,23 +366,45 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         return super.onTouchEvent(event);
     }
 
+    float startY = 0;
+    float endY = 0;
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        float startY = 0, offsetY;
         int eventAction = event.getAction();
-        if (eventAction == MotionEvent.ACTION_DOWN) {
+
+        if(eventAction==MotionEvent.ACTION_DOWN){
             startY = event.getY();
-        } else if (eventAction == MotionEvent.ACTION_UP) {
-            offsetY = event.getY() - startY;
-            if (offsetY < -10) {
-                // up
-                Intent intent = new Intent(this, SubmenuActivity.class);
+
+        } else if (eventAction==MotionEvent.ACTION_UP){
+            endY = event.getY();
+            if ((endY-startY)<-80) {
+                Intent intent = new Intent(this,SubmenuActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.submenu_push_up_in,R.anim.submenu_push_up_out);
             }
         }
-        return true;
+        //一定要返回false，让viewpager监听左右滑动
+        return false;
     }
 
+    private void setFlickerAnimation(ImageView iv) {
+        //创建动画容器，并且将是否使用动画补间（shareInterpolator）设置为true;
+        AnimationSet set=new AnimationSet(true);
+        //透明效果动画
+        AlphaAnimation alpha=new AlphaAnimation(1,0);
+        alpha.setDuration(750);
+        alpha.setRepeatCount(Animation.INFINITE);
+        alpha.setRepeatMode(Animation.REVERSE);
+        //移动效果动画
+        TranslateAnimation trans=new TranslateAnimation(0, 0, 0, -20);
+        trans.setDuration(750);
+        trans.setRepeatCount(Animation.INFINITE);
+        trans.setRepeatMode(Animation.REVERSE);
+        set.addAnimation(alpha);
+        set.addAnimation(trans);
+        iv.startAnimation(set);
+
+    }
 
     @Override
     public void init(Context context) {

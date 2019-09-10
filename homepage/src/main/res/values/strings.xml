@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">HomePage</string>
     <string name="cm_main_chinamobile_title">中国移动</string>
-    <string name="cm_main_hot_title">热门推荐</string>
+    <string name="cm_main_iqiyi">爱奇艺</string>
     <string name="cm_chinamobile_title">中国移动</string>
     <string name="cm_main_phone_title">通讯录</string>
-    <string name="cm_main_tools_title">生活工具</string>
+    <string name="cm_main_QQ_music">QQ音乐</string>
     <string name="cm_main_other_title">其它应用</string>
     <string name="cm_main_study_title">学习推荐</string>
     <string name="cm_main_page_title_0">咪咕咪咕，我要了解更多</string>

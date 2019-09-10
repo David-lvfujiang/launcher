@@ -13,7 +13,6 @@ import android.os.Parcelable;
 public class ApplyBean implements Parcelable {
     private String applyId;
     private String applyName;
-    private String submenuTitle;
     private int applyImage;
 
     public String getApplyId() {
@@ -24,11 +23,9 @@ public class ApplyBean implements Parcelable {
         this.applyId = applyId;
     }
 
-    public ApplyBean(String applyId, String applyName, int applyImage, String submenuTitle){
-        this.applyId = applyId;
+    public ApplyBean( String applyName, int applyImage){
         this.applyName = applyName;
         this.applyImage = applyImage;
-        this.submenuTitle = submenuTitle;
     }
     public ApplyBean(String applyId , String applyName, int applyImage){
         this.applyId = applyId;
@@ -58,14 +55,6 @@ public class ApplyBean implements Parcelable {
         this.applyName = applyName;
     }
 
-    public String getSubmenuTitle() {
-        return submenuTitle;
-    }
-
-    public void setSubmenuTitle(String submenuTitle) {
-        this.submenuTitle = submenuTitle;
-    }
-
     public int getApplyImage() {
         return applyImage;
     }
@@ -76,7 +65,7 @@ public class ApplyBean implements Parcelable {
     public ApplyBean(Parcel source) {
         applyId = source.readString();
         applyName = source.readString();
-        submenuTitle = source.readString();
+
         applyImage = source.readInt();
     }
 
@@ -89,7 +78,6 @@ public class ApplyBean implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(applyId);
         dest.writeString(applyName);
-        dest.writeString(submenuTitle);
         dest.writeInt(applyImage);
     }
 

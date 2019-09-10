@@ -1,45 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/submenu_bg"
-    tools:context=".activity.SubmenuActivity">
-
+    android:gravity="center"
+    android:background="@mipmap/submenu_bg">
 
     <ImageView
         android:id="@+id/iv_submenu_back"
-        android:layout_width="100dp"
+        android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="37dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_gravity="center"
         android:src="@mipmap/submenu_back" />
 
-    <TextView
-        android:id="@+id/tv_submenu_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="全部应用"
-        android:textColor="#FFFFFF"
-        android:textSize="38sp"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_submenu_back"
-        app:layout_constraintStart_toEndOf="@+id/iv_submenu_back"
-        app:layout_constraintTop_toTopOf="@+id/iv_submenu_back" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_submenu_list"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="22dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_submenu_title"
-        app:layout_constraintVertical_bias="0.0" />
-</android.support.constraint.ConstraintLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_submenu_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginEnd="@dimen/demension_dp10"
+                android:layout_marginStart="@dimen/demension_dp10" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:id="@+id/ll_tip"
+                android:layout_height="@dimen/demension_dp60"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/rv_submenu_list">
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="主人，下面这些功能我们正在快马加鞭地开发，敬请期待～"
+                    android:textColor="#FFF"
+                    android:textSize="28px" />
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_submenu_list2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/ll_tip"
+                android:layout_marginEnd="@dimen/demension_dp10"
+                android:layout_marginStart="@dimen/demension_dp10" />
+        </RelativeLayout>
+
+    </ScrollView>
+</LinearLayout>

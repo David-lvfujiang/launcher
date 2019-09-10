@@ -1,14 +1,17 @@
 package com.fenda.homepage.activity;
 
-import android.content.Context;
+import android.app.Activity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import com.alibaba.android.arouter.facade.annotation.Autowired;
-import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.base.BaseActivity;
 import com.fenda.common.router.RouterPath;
@@ -18,7 +21,7 @@ import com.fenda.homepage.R;
 import com.fenda.homepage.bean.ApplyBean;
 import com.fenda.homepage.data.AllApplyData;
 import com.fenda.homepage.data.Constant;
-
+import com.fenda.homepage.data.UndevelopedApplyData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +32,13 @@ import java.util.List;
 public class SubmenuActivity extends BaseActivity {
     @Autowired
     List<ApplyBean> mApplyList;
+    List<ApplyBean> mUndevelopedApplyList;
 
     private RecyclerView mSubmenuListRv;
+    private RecyclerView mSubmenuListRv2;
     private ImageView mSubmenuBackIv;
     private GridAdapter mGridAdapter;
+    private GridAdapter mGridAdapter2;
 
     @Override
     public int onBindLayout() {
@@ -44,16 +50,35 @@ public class SubmenuActivity extends BaseActivity {
         super.initCommonView();
         mSubmenuBackIv = findViewById(R.id.iv_submenu_back);
         mSubmenuListRv = findViewById(R.id.rv_submenu_list);
+        mSubmenuListRv2 = findViewById(R.id.rv_submenu_list2);
+//        mSubmenuListRv2.getBackground().setAlpha(100);//0~255透明度值
+
     }
 
     @Override
     public void initView() {
         mApplyList = new ArrayList<>();
         mApplyList = AllApplyData.dataList(mApplyList);
+        mUndevelopedApplyList = new ArrayList<>();
+        mUndevelopedApplyList = UndevelopedApplyData.dataList(mUndevelopedApplyList);
         //这里的第二个参数4代表的是网格的列数
-        mSubmenuListRv.setLayoutManager(new GridLayoutManager(this, 4));
+        mSubmenuListRv.setLayoutManager(new GridLayoutManager(mContext, 4){
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
+        mSubmenuListRv2.setLayoutManager(new GridLayoutManager(mContext, 4){
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
+
         mGridAdapter = new GridAdapter(mApplyList);
-        mSubmenuListRv.setAdapter(new GridAdapter(mApplyList));
+        mGridAdapter2 = new GridAdapter(mUndevelopedApplyList);
+        mSubmenuListRv.setAdapter(mGridAdapter);
+        mSubmenuListRv2.setAdapter(mGridAdapter2);
         mGridAdapter.setOnItemClickListener(new GridAdapter.OnItemClickListener() {
             @Override
             public void onItemClick( View view, String applyId) {
@@ -61,8 +86,6 @@ public class SubmenuActivity extends BaseActivity {
                     ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
                 } else if (applyId.equals(Constant.CALCULATOR)){
                     ToastUtils.show("计算器");
-                }else if (applyId.equals(Constant.SETTINGS)){
-                    ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
                 }
                 else if (applyId.equals(Constant.WEATHER)) {
                     ToastUtils.show("天气");
