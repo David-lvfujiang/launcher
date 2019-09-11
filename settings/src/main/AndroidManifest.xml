@@ -39,9 +39,11 @@
         <activity android:name=".activity.SettingsDeviceContractsNickNameActivity"/>
         <activity android:name=".activity.SettingsContractsNickNameEditActivity"/>
         <activity android:name=".activity.SettingsDeviceAddContractsQRActivity"/>
-        <activity android:name=".activity.SettingsWifiTestActivity"/>
         <activity android:name=".activity.SettingsAndLinkQRCodeActivity"/>
         <activity android:name=".activity.SettingsChangeBtNameAcivity"/>
+        <activity android:name=".activity.SettingsScreenActivity"/>
+        <activity android:name=".activity.SettingsScreenIntoStandbyActivity"/>
+        <activity android:name=".activity.SettingsScreenStyleActivity"/>
 
         <provider
             android:name="com.fenda.common.db.UserContentProvider"

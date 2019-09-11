@@ -79,8 +79,7 @@ public class SettingsBluetoothAdapter extends BaseAdapter {
             viewHolder.blueName =  convertView.findViewById(R.id.tv_blueName);
             viewHolder.blueState = convertView.findViewById(R.id.tv_status);
             convertView.setTag(viewHolder);
-        } else
-        {
+        } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         SettingsBluetoothDeviceBean blueDevice = listDevices.get(i);
@@ -90,7 +89,6 @@ public class SettingsBluetoothAdapter extends BaseAdapter {
         }
         return convertView;
     }
-
 
     static class ViewHolder {
         TextView blueName;

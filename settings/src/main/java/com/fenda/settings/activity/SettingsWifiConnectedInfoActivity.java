@@ -58,6 +58,8 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
         tvWifiName = findViewById(R.id.wifi_config_name_tv);
         ivBack = findViewById(R.id.wifi_config_back_iv);
         mSettingsWifiUtil = new SettingsWifiUtil(getApplicationContext());
+
+        mWifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
     }
 
     @Override
@@ -66,15 +68,15 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
         mConnectedSSID = intent.getStringExtra("CONNECTED_MESSAGE");
         tvWifiName.setText(mConnectedSSID);
 
-        String[] ListName = new String[] {getString(R.string.settings_wifi_connected_cancel_save), getString(R.string.settings_wifi_connected_other)};
-        String[] List1 = new String[]{"" ,"" , ""};
+        String[] listName = new String[] {getString(R.string.settings_wifi_connected_cancel_save), getString(R.string.settings_wifi_connected_other)};
+        String[] list1 = new String[]{"" ,"" , ""};
 
         mListitem = new ArrayList<>();
 
-        for (int i = 0; i < ListName.length; i++) {
+        for (int i = 0; i < listName.length; i++) {
             HashMap<String, String> map = new HashMap<>();
-            map.put("name", ListName[i]);
-            map.put("state", List1[i]);
+            map.put("name", listName[i]);
+            map.put("state", list1[i]);
             mListitem.add(map);
         }
 
@@ -99,7 +101,6 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Map<String, Object> map = (Map<String, Object>) parent.getItemAtPosition(position);
                 String setClickedListName = map.get("name").toString();
-                mWifiManager = (WifiManager) getApplicationContext().getSystemService(getApplicationContext().WIFI_SERVICE);
                 LogUtil.d(TAG, "取消网络保存connectedSSID = " + mConnectedSSID);
                 List<WifiConfiguration> wifiConfigurationList = mWifiManager.getConfiguredNetworks();
                 LogUtil.d(TAG, "wifiConfigurationList = " + wifiConfigurationList);

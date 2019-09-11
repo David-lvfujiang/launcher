@@ -1,6 +1,7 @@
 package com.fenda.common.util;
 
 import android.app.ActivityManager;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;

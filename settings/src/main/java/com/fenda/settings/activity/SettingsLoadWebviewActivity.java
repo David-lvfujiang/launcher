@@ -126,7 +126,7 @@ public class SettingsLoadWebviewActivity extends BaseMvpActivity {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.i("ansen","拦截url:"+url);
-            if(url.equals("http://www.google.com/")){
+            if(("http://www.google.com/").equals(url)){
                 ToastUtils.show("国内不能访问google,拦截该url");
                 return true;//表示我已经处理过了
             }

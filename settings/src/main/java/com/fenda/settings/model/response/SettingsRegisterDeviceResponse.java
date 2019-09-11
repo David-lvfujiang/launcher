@@ -11,16 +11,16 @@ public class SettingsRegisterDeviceResponse {
     private String name;
     private String icon;
     private String dimensionalCode;
-    private String rongcloud_token;
+    private String rongcloudToken;
 
 
-    public SettingsRegisterDeviceResponse(String id, String dimensionalCode, String deviceId, String name, String icon, String rongcloud_token) {
+    public SettingsRegisterDeviceResponse(String id, String dimensionalCode, String deviceId, String name, String icon, String rongcloudToken) {
         this.id = id;
         this.dimensionalCode = dimensionalCode;
         this.deviceId = deviceId;
         this.name = name;
         this.icon = icon;
-        this.rongcloud_token = rongcloud_token;
+        this.rongcloudToken = rongcloudToken;
     }
 
     public String getId() {
@@ -56,11 +56,11 @@ public class SettingsRegisterDeviceResponse {
     }
 
     public String getRongcloud_token() {
-        return rongcloud_token;
+        return rongcloudToken;
     }
 
     public void setRongcloud_token(String rongcloud_token) {
-        this.rongcloud_token = rongcloud_token;
+        this.rongcloudToken = rongcloud_token;
     }
     public String getVcode() {
         return dimensionalCode;
@@ -78,7 +78,7 @@ public class SettingsRegisterDeviceResponse {
                 ", deviceId='" + deviceId + '\'' +
                 ", name='" + name + '\'' +
                 ", icon='" + icon + '\'' +
-                ", rongcloud_token='" + rongcloud_token + '\'' +
+                ", rongcloud_token='" + rongcloudToken + '\'' +
                 '}';
     }
 

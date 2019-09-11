@@ -201,6 +201,8 @@ public class SettingsWifiActivity extends BaseMvpActivity{
         tvBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent mIntent = new Intent(SettingsWifiActivity.this, SettingsActivity.class);
+                startActivity(mIntent);
                 finish();
             }
         });
@@ -234,7 +236,7 @@ public class SettingsWifiActivity extends BaseMvpActivity{
             final int status = mSettingsWifiBean.getStatus();
             LogUtil.d(TAG,  "onBindViewHolder status = " + status);
 
-            mHolder.wifi_ssid.setText(scanResult.SSID);
+            mHolder.wifiSsid.setText(scanResult.SSID);
             level=WifiManager.calculateSignalLevel(scanResult.level,5);
             if(scanResult.capabilities.contains("WEP")||scanResult.capabilities.contains("PSK") || scanResult.capabilities.contains("EAP")){
                 mHolder.wifi_level.setImageResource(R.drawable.settings_wifi_signal_lock);
@@ -279,12 +281,14 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                     mListItemClickedSsid = mScanWifiListBean.get(position).getResult().SSID;
 
                     WifiConfiguration config = new WifiConfiguration();
+
                     config.allowedAuthAlgorithms.clear();
                     config.allowedGroupCiphers.clear();
                     config.allowedKeyManagement.clear();
                     config.allowedPairwiseCiphers.clear();
                     config.allowedProtocols.clear();
                     config.SSID = "\"" + mListItemClickedSsid + "\"";
+                    config.hiddenSSID=true;
 
                     List<WifiConfiguration> wifiConfigurationList = mSettingsWifiUtil.getConfiguration();
                     LogUtil.d(TAG, "wifiConfigurationList = " + wifiConfigurationList);
@@ -315,11 +319,11 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                                 //无密码直接连接
                                 LogUtil.d(TAG, "no psw wifi connect");
 //                                config.hiddenSSID = true;
-//                                config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-
-                                config.wepKeys[0] = "\"" + "\"";
                                 config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-                                config.wepTxKeyIndex = 0;
+
+//                                config.wepKeys[0] = "\"" + "\"";
+//                                config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+//                                config.wepTxKeyIndex = 0;
                             }
                         }
                     }
@@ -332,7 +336,7 @@ public class SettingsWifiActivity extends BaseMvpActivity{
             return mWifiBeanList.size();
         }
         class ViewHolder extends RecyclerView.ViewHolder{
-            public TextView wifi_ssid;
+            public TextView wifiSsid;
             public ImageView wifi_level;
             public ImageView connectWifiIcon;
             public ImageView connectWifiLoading;
@@ -340,7 +344,7 @@ public class SettingsWifiActivity extends BaseMvpActivity{
 
             public ViewHolder(View itemView) {
                 super(itemView);
-                wifi_ssid= itemView.findViewById(R.id.wifi_ssid);
+                wifiSsid= itemView.findViewById(R.id.wifi_ssid);
                 wifi_level= itemView.findViewById(R.id.wifi_level);
                 tvStatus = itemView.findViewById(R.id.tv_status);
                 connectWifiIcon = itemView.findViewById(R.id.connected_wifi_status_icon);
@@ -381,6 +385,8 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                         Log.i(TAG, "未知状态");
                         break;
                     }
+                    default:
+                        break;
                 }
             } else if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
                 NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);

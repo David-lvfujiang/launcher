@@ -7,8 +7,9 @@
     <string name="settings_setting">设置</string>
     <string name="settings_set_names_list_wifi">WIFI</string>
     <string name="settings_set_names_list_bluetooth">蓝牙</string>
-    <string name="settings_set_names_list_light">屏幕与亮度</string>
+    <string name="settings_set_names_list_light">亮度</string>
     <string name="settings_set_names_list_volume">音量</string>
+    <string name="settings_set_names_list_screen">屏幕保护</string>
     <string name="settings_set_names_list_deviceinfo">设备信息</string>
     <string name="settings_set_names_list_about">关于小乐</string>
     <string name="settings_set_names_list_endlink">Andlink</string>
@@ -115,4 +116,13 @@
     <!--SettingsChangeBtNameAcivity start -->
     <string name="settings_bt_name">蓝牙名称</string>
     <string name="settings_change_bt_name_fail">蓝牙名称修改失败！</string>
+
+    <!--SettingsScreenActivity start -->
+    <string name="settings_screen">屏幕保护</string>
+    <string name="settings_screen_name_autointo">自动进入</string>
+    <string name="settings_screen_name_style">屏幕样式</string>
+
+    <!--SettingsScreenIntoStandbyActivity start -->
+    <string name="settings_standby">屏保时间</string>
+
 </resources>

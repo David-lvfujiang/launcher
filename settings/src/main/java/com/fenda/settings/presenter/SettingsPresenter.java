@@ -78,9 +78,9 @@ public class SettingsPresenter extends SettingsContract.Presenter {
         mRxManage.add(mModel.registerDevice(deviceRegisterRequest).subscribeWith(new RxResourceObserver<BaseResponse>(mView,false) {
             @Override
             protected void _onNext(BaseResponse response) {
-                if (response.getCode() == 200 && response.getMessage().equals("操作成功")) {
+                if (response.getCode() == 200 && ("操作成功").equals(response.getMessage())) {
                     mView.registerDeviceSuccess(response);
-                } else if(response.getCode() == 200 && response.getMessage().equals("设备已经注册")){
+                } else if(response.getCode() == 200 && ("设备已经注册").equals(response.getMessage())){
                     mView.haveRegisterDevice(response);
                 } else {
                     mView.registerDeviceFailure(response);

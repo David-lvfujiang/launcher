@@ -1,7 +1,11 @@
 package com.fenda.homepage.activity;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Handler;
 import android.net.ConnectivityManager;
 import android.net.LinkProperties;
@@ -38,6 +42,7 @@ import com.fenda.common.util.AppUtils;
 import com.fenda.common.util.GsonUtil;
 import com.fenda.common.util.ImageUtil;
 import com.fenda.common.util.LogUtil;
+import com.fenda.common.util.SPUtils;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.homepage.Adapter.MainAdapter;
 import com.fenda.homepage.R;
@@ -67,6 +72,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
     private int showPageIndex;
     private Handler mCyclicRollHandler = new Handler();
+    private String mBtName;
 
     @Autowired
     IVoiceInitProvider initProvider;
@@ -93,7 +99,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             }
         }
     };
-
 
     @Override
     public int onBindLayout() {
@@ -123,6 +128,11 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mHeaderWeatherTv.setOnClickListener(this);
         mHeaderWeatherIv.setOnClickListener(this);
 
+
+        IntentFilter btIntentFilter = new IntentFilter();
+        btIntentFilter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
+        btIntentFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        registerReceiver(mBtReceiver, btIntentFilter);
 
         showPageIndex = 0;
 
@@ -320,6 +330,48 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         }
     }
 
+    private BroadcastReceiver mBtReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED)) {
+                BluetoothDevice mConnectionBluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                int state = intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE, 0);
+                LogUtil.d(TAG, "BT CONNECT staute " + mConnectionBluetoothDevice.getName() + state);
+                if (BluetoothAdapter.STATE_DISCONNECTED == state) {
+                    LogUtil.d(TAG, "蓝牙断开了");
+                    SPUtils.remove(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME);
+                    LogUtil.d(TAG, "STATE_DISCONNECTED getName = " + mConnectionBluetoothDevice.getName() + ", STATE_DISCONNECTED getAddress = " + mConnectionBluetoothDevice.getAddress());
+                } else if (BluetoothAdapter.STATE_CONNECTED == state) {
+                    LogUtil.d(TAG, "蓝牙连上了");
+                    mBtName = mConnectionBluetoothDevice.getName();
+                    SPUtils.put(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME, mBtName);
+                    LogUtil.d(TAG, "STATE_CONNECTED getName = " + mConnectionBluetoothDevice.getName() + ", STATE_CONNECTED getAddress = " + mConnectionBluetoothDevice.getAddress());
+                }
+            } else if (action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                switch (device.getBondState()) {
+                    case BluetoothDevice.BOND_BONDING:
+                        LogUtil.d(TAG, "正在配对......");
+                        break;
+                    case BluetoothDevice.BOND_BONDED:
+                        LogUtil.d(TAG, "完成配对");
+                        SPUtils.put(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME, device.getName());
+                        SPUtils.put(getApplicationContext(), String.valueOf(Constant.Settings.BT_CONNECTED_ADDRESS), device.getAddress());
+                        break;
+                    case BluetoothDevice.BOND_NONE:
+                        LogUtil.d(TAG, "取消配对");
+                        ToastUtils.show("成功取消配对");
+                        SPUtils.remove(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME);
+                        SPUtils.remove(getApplicationContext(), String.valueOf(Constant.Settings.BT_CONNECTED_ADDRESS));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    };
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -330,6 +382,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     protected void onStop() {
         super.onStop();
         mCyclicRollHandler.removeCallbacks(cycleRollRunabler);
+        unregisterReceiver(mBtReceiver);
     }
 
 

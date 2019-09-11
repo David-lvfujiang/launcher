@@ -8,14 +8,14 @@ package com.fenda.settings.model.request;
 public class SettingsRegisterDeviceRequest {
     private String deviceId;
     private String name;
-    private String client_version;
-    private String mac_addr;
+    private String clientVersion;
+    private String macAddr;
 
-    public SettingsRegisterDeviceRequest(String deviceId, String name, String client_version, String mac_addr) {
+    public SettingsRegisterDeviceRequest(String deviceId, String name, String clientVersion, String macAddr) {
         this.deviceId = deviceId;
         this.name = name;
-        this.client_version = client_version;
-        this.mac_addr = mac_addr;
+        this.clientVersion = clientVersion;
+        this.macAddr = macAddr;
     }
     public SettingsRegisterDeviceRequest() {
     }
@@ -36,19 +36,19 @@ public class SettingsRegisterDeviceRequest {
     }
 
     public String getClientVersion() {
-        return client_version;
+        return clientVersion;
     }
 
     public void setClientVersion(String client_version) {
-        this.client_version = client_version;
+        this.clientVersion = client_version;
     }
 
     public String getMacAddr() {
-        return mac_addr;
+        return macAddr;
     }
 
     public void setMacAddr(String mac_addr) {
-        this.mac_addr = mac_addr;
+        this.macAddr = mac_addr;
     }
 
     @Override
@@ -56,8 +56,8 @@ public class SettingsRegisterDeviceRequest {
         return "SettingsRegisterDeviceRequest{" +
                 "deviceId='" + deviceId + '\'' +
                 ", name='" + name + '\'' +
-                ", client_version=" + client_version +
-                ", mac_addr='" + mac_addr + '\'' +
+                ", client_version=" + clientVersion +
+                ", mac_addr='" + macAddr + '\'' +
                 '}';
     }
 }

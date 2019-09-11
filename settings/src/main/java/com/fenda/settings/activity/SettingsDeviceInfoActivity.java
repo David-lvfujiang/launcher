@@ -59,8 +59,8 @@ public class SettingsDeviceInfoActivity extends BaseMvpActivity {
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent Intent = new Intent(SettingsDeviceInfoActivity.this, SettingsActivity.class);
-                startActivity(Intent);
+//                Intent Intent = new Intent(SettingsDeviceInfoActivity.this, SettingsActivity.class);
+//                startActivity(Intent);
                 finish();
             }
         });
@@ -122,10 +122,8 @@ public class SettingsDeviceInfoActivity extends BaseMvpActivity {
         lvDeviceInfo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 Map<String, Object> map = (Map<String, Object>) parent.getItemAtPosition(position);
                 String setClickedListName = map.get("name").toString();
-                LogUtil.d(TAG, "select name is =" + setClickedListName);
 
                 if(setClickedListName.equals(getString(R.string.settings_device_info_software_update))) {
                     ToastUtils.show(getString(R.string.settings_device_info_no_new_version_tips));
@@ -168,9 +166,8 @@ public class SettingsDeviceInfoActivity extends BaseMvpActivity {
             value = (String)(get.invoke(c, key, "unknown" ));
         } catch (Exception e) {
             e.printStackTrace();
-        }finally {
-            return value;
         }
+            return value;
     }
     //设置系统属性
     public static void setProperty(String key, String value) {

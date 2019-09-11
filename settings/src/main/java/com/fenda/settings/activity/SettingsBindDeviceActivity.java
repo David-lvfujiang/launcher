@@ -58,7 +58,7 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
     private TextView tvDisVcodeText;
 
     private final String mContentET = "http://www.fenda.com/?sn=" + SettingsContant.SETTINGS_SERIAL_NUM;
-    private String BaseEvn = SettingsContant.TEST_BASE_URL;
+    private String baseEvn = SettingsContant.TEST_BASE_URL;
     public static final int DISABLE_EXPAND = 0x00010000;
     public static final int DISABLE_NONE = 0x00000000;
 
@@ -101,12 +101,12 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
         ivDisQRcode = findViewById(R.id.create_qr_iv);
         tvDisVcodeNum = findViewById(R.id.bind_QRsn);
 
-        LogUtil.d(TAG, "env = " + BaseEvn);
-        if("http://192.168.100.127:8998/smartsound/".equals(BaseEvn)) {
+        LogUtil.d(TAG, "env = " + baseEvn);
+        if("http://192.168.100.127:8998/smartsound/".equals(baseEvn)) {
             tvDisVcodeText.setText("验证码(测试环境)");
             tvDisVcodeText.setTextColor(getColor(R.color.settings_colorAccent));
             tvDisVcodeText.setTextSize(22);
-        } else if("http://192.168.43.34:8998/smartsound/".equals(BaseEvn) || "http://192.168.43.37:8998/smartsound/".equals(BaseEvn)){
+        } else if("http://192.168.43.34:8998/smartsound/".equals(baseEvn) || "http://192.168.43.37:8998/smartsound/".equals(baseEvn)){
             tvDisVcodeText.setText("验证码(192.198.43.34)");
             tvDisVcodeText.setTextColor(getColor(R.color.settings_colorAccent));
             tvDisVcodeText.setTextSize(22);
@@ -160,13 +160,13 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
         sendBroadcast(intent);
     }
 
-    private void setStatusBarDisable(int disable_status) {//调用statusBar的disable方法
+    private void setStatusBarDisable(int disableStatus) {//调用statusBar的disable方法
         @SuppressLint("WrongConstant") Object service = getSystemService("statusbar");
         try {
             Class<?> statusBarManager = Class.forName
                     ("android.app.StatusBarManager");
             Method expand = statusBarManager.getMethod("disable", int.class);
-            expand.invoke(service, disable_status);
+            expand.invoke(service, disableStatus);
         } catch (Exception e) {
             e.printStackTrace();
         }

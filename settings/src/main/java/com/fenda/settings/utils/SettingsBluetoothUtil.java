@@ -1,11 +1,13 @@
 package com.fenda.settings.utils;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
+import com.fenda.common.util.LogUtil;
 import com.fenda.settings.bean.SettingsBluetoothDeviceBean;
 
 import java.io.IOException;
@@ -19,6 +21,8 @@ import java.util.UUID;
  * Date:   2019/8/31 10:43
  */
 public class SettingsBluetoothUtil {
+    private static final String TAG = "SettingsBluetoothUtil";
+
     private final SettingsBluetoothDeviceBean blueDevice;
     private Handler mOthHandler;
     private BluetoothSocket blueSocket;       //蓝牙连接socket
@@ -82,6 +86,8 @@ public class SettingsBluetoothUtil {
      */
     public static void unpairDevice(BluetoothDevice device) {
         try {
+            LogUtil.d(TAG, "unpairDevice = " + device.getClass());
+            LogUtil.d(TAG, "unpairDevice 2 = " + device.getClass().getMethod("removeBond", (Class[]) null));
             Method m = device.getClass().getMethod("removeBond", (Class[]) null);
             m.invoke(device, (Object[]) null);
         } catch (Exception e) {
@@ -141,5 +147,36 @@ public class SettingsBluetoothUtil {
 //            e.printStackTrace();
 //        }
 //        blueSocket = temp;
+    }
+
+    public static void closeDiscoverableTimeout() {
+        LogUtil.d(TAG, "closeDiscoverableTimeout");
+        BluetoothAdapter adapter=BluetoothAdapter.getDefaultAdapter();
+        try {
+            Method setDiscoverableTimeout = BluetoothAdapter.class.getMethod("setDiscoverableTimeout", int.class);
+            setDiscoverableTimeout.setAccessible(true);
+            Method setScanMode =BluetoothAdapter.class.getMethod("setScanMode", int.class,int.class);
+            setScanMode.setAccessible(true);
+
+            setDiscoverableTimeout.invoke(adapter, 1);
+            setScanMode.invoke(adapter, BluetoothAdapter.SCAN_MODE_CONNECTABLE,1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setDiscoverableTimeout(int timeout) {
+        BluetoothAdapter adapter=BluetoothAdapter.getDefaultAdapter();
+        try {
+            Method setDiscoverableTimeout = BluetoothAdapter.class.getMethod("setDiscoverableTimeout", int.class);
+            setDiscoverableTimeout.setAccessible(true);
+            Method setScanMode =BluetoothAdapter.class.getMethod("setScanMode", int.class,int.class);
+            setScanMode.setAccessible(true);
+
+            setDiscoverableTimeout.invoke(adapter, timeout);
+            setScanMode.invoke(adapter, BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE,timeout);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

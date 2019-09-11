@@ -106,7 +106,7 @@ public class SettingsWifiInputPswActivity extends BaseMvpActivity {
                         SharedPreferences.Editor editor = preferences.edit();
                         editor.putString(ssid1, mInputWifiPsw);
                         editor.commit();
-                        mSettingsWifiUtil.addNetwork(mSettingsWifiUtil.CreateWifiInfo(ssid1, mInputWifiPsw, 3));
+                        mSettingsWifiUtil.addNetwork(mSettingsWifiUtil.createWifiInfo(ssid1, mInputWifiPsw, 3));
 
                         startActivity(new Intent(SettingsWifiInputPswActivity.this, SettingsWifiActivity.class));
                         finish();
