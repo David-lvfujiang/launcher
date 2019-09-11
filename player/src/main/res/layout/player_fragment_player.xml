@@ -10,6 +10,7 @@
         android:layout_height="212px"
         android:layout_centerVertical="true"
         android:scaleType="centerCrop"
+        android:src="@mipmap/player_cover_pic_default"
         />
 
     <TextView

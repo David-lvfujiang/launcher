@@ -139,16 +139,16 @@ public class MyDDSInitListener implements DDSInitListener {
                 }
                 try {
                     if (TextUtils.isEmpty(event.getEvent())) {
-                        startAlarm(event);
+                        DDS.getInstance().getAgent().getTTSEngine().speak("现在是,"+event.getPeriod()+" ,"+event.getTime().substring(0,event.getTime().length()-2),
+                                1, "1101", AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK);
                     } else {
-                        startRemind(event);
+                        DDS.getInstance().getAgent().getTTSEngine().speak("现在是,"+event.getPeriod()+" ,"+event.getTime().substring(0,event.getTime().length()-3)+"。主人你该" + event.getEvent() + "了",
+                                1, "1101", AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK);
                     }
 
                 } catch (DDSNotInitCompleteException e) {
                     e.printStackTrace();
                 }
-
-
                 AILog.d(TAG, "提醒事件时间到了 "+event.toString());
             }
         });
@@ -180,7 +180,6 @@ public class MyDDSInitListener implements DDSInitListener {
                 if (provider != null){
                     provider.createAlarm(json);
                 }
-
 
             }
 
@@ -283,6 +282,32 @@ public class MyDDSInitListener implements DDSInitListener {
             remindTimer = null;
         }
     }
+
+
+    public void queryRemind(){
+
+        RemindPlugin.get().queryRemindEvent(new RemindPlugin.QueryCallback() {
+            @Override
+            public void onSuccess(List<Event> list) {
+                LogUtil.e("关闭提醒 onSuccess = "+list.toString());
+
+                if (list != null){
+                    Gson gson = new Gson();
+                    String json = gson.toJson(list);
+                    if (provider != null){
+                        provider.queryAlarm(json);
+                    }
+
+                    LogUtil.e(json);
+                }
+            }
+            @Override
+            public void onError(int i, String s) {
+                LogUtil.e("onError ==> "+s);
+            }
+        });
+    }
+
 
     private void initControl() {
         //播控技能

@@ -4,6 +4,8 @@ package com.fenda.common.view;
 
 
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -22,6 +24,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 
 @SuppressLint("AppCompatCustomView")
@@ -56,6 +59,7 @@ public class CircleImageView extends ImageView {
     private boolean runAnimation = false;
     private Rect mFlagTextBounds = new Rect();
     Shader mSweepGradient = null;
+    private ValueAnimator objectAnimator;
 
 
     public CircleImageView(Context context) {
@@ -314,6 +318,27 @@ public class CircleImageView extends ImageView {
     }
 
 
+
+    public void startAnimation(){
+        if (objectAnimator != null){
+            objectAnimator.start();
+//            objectAnimator.setCurrentPlayTime(0);
+        }
+    }
+
+
+    private void initAnimation(){
+        if (objectAnimator == null){
+            objectAnimator = ObjectAnimator.ofFloat(this,"rotation",0.0f,360f);
+            objectAnimator.setDuration(20000);
+            //循环模式
+            objectAnimator.setRepeatMode(ValueAnimator.RESTART);
+            //无线循环
+            objectAnimator.setRepeatCount(ValueAnimator.INFINITE);
+            objectAnimator.setInterpolator(new LinearInterpolator());
+        }
+
+    }
 
 
 

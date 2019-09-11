@@ -125,7 +125,6 @@ public class AccessibilityMonitorService extends AccessibilityService {
                 packageMap.put("key",mPack);
                 packageMap.put("class",className);
 
-                LogUtil.e("mPackage = "+mPackage +" className = "+className+" mPack = "+mPack);
                 break;
             default:
                 break;

@@ -3,6 +3,7 @@ package com.fenda.protocol.http;
 
 import android.util.Log;
 
+import com.fenda.protocol.util.DeviceIdUtil;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -45,6 +46,7 @@ public class RetrofitHelper {
     private long WRITE_TIMEOUT = 20L;
     private static RetrofitHelper mInstance = null;
     private Retrofit mRetrofit = null;
+    private static final String DEVICE_ID = DeviceIdUtil.getDeviceId();
 
     private static final String HTTP_APIKEY = "fendar03smartsound";
     private static final String HTTP_APISECRET = "sLR8ZC-855550-77536756780035706";
@@ -233,9 +235,10 @@ public class RetrofitHelper {
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request.Builder builder = chain.request().newBuilder();
-            builder.addHeader("south-device-access-token", android.os.Build.SERIAL);
 
-            Log.d(TAG, "south-device-access-token = " + android.os.Build.SERIAL);
+            builder.addHeader("south-device-access-token", DEVICE_ID);
+
+            Log.d(TAG, "south-device-access-token = " + DEVICE_ID);
 
             return chain.proceed(builder.build());
         }

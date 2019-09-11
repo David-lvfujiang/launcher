@@ -29,6 +29,14 @@ public class BaseApplication extends Application {
      * 新闻播放
      */
     private boolean isNewsPlay;
+    /**
+     * 闹钟响铃
+     */
+    private boolean isRemindRing;
+    /**
+     * 语音是否初始化成功
+     */
+    private boolean isVoiceInit;
 
     @Override
     public void onCreate() {
@@ -74,5 +82,19 @@ public class BaseApplication extends Application {
     }
 
 
+    public boolean isRemindRing() {
+        return isRemindRing;
+    }
 
+    public void setRemindRing(boolean remindRing) {
+        isRemindRing = remindRing;
+    }
+
+    public boolean isVoiceInit() {
+        return isVoiceInit;
+    }
+
+    public void setVoiceInit(boolean voiceInit) {
+        isVoiceInit = voiceInit;
+    }
 }

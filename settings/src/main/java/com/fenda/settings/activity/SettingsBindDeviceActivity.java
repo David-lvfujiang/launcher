@@ -185,8 +185,14 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onStop() {
         setStatusBarDisable(DISABLE_NONE);
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+
 //        sendMicAbleBroad();
         super.onDestroy();
     }

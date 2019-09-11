@@ -117,6 +117,9 @@ public interface Constant {
 
     interface common {
         Uri URI = Uri.parse(ContentProviderManager.BASE_URI + "/user");
+
+        int INIT_VOICE_SUCCESS = Integer.MAX_VALUE;
+
     }
 
 }

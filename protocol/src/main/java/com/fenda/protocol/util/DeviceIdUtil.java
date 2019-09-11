@@ -1,4 +1,4 @@
-package com.fenda.common.util;
+package com.fenda.protocol.util;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -32,7 +32,33 @@ public class DeviceIdUtil {
 
         try {
             //获取设备的MACAddress地址 去掉中间相隔的冒号
-            deviceId = getLocalMac(mContext).replace(":", "");
+            deviceId = getLocalMac().replace(":", "");
+            s.append(deviceId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //如果以上搜没有获取相应的则自己生成相应的UUID作为相应设备唯一标识符
+        if (s == null || s.length() <= 0) {
+            UUID uuid = UUID.randomUUID();
+            deviceId = uuid.toString().replace("-", "");
+            s.append(deviceId);
+        }
+        //为了统一格式对设备的唯一标识进行md5加密 最终生成32位字符串
+        String md5 = getMD5(s.toString(), false);
+        return md5;
+
+    }
+
+    public static String getDeviceId(){
+
+        //用于生成最终的唯一标识符
+        StringBuffer s = new StringBuffer();
+        String deviceId;
+
+        try {
+            //获取设备的MACAddress地址 去掉中间相隔的冒号
+            deviceId = getLocalMac().replace(":", "");
             s.append(deviceId);
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,10 +96,9 @@ public class DeviceIdUtil {
     /**
      * 获取设备MAC 地址 由于 6.0 以后 WifiManager 得到的 MacAddress得到都是 相同的没有意义的内容
      * 所以采用以下方法获取Mac地址
-     * @param context
      * @return
      */
-    private static String getLocalMac(Context context) {
+    private static String getLocalMac() {
         String macAddress = null;
         StringBuffer buf = new StringBuffer();
         NetworkInterface networkInterface = null;

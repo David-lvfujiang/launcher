@@ -17,7 +17,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.aispeech.ailog.AILog;
@@ -40,16 +39,19 @@ import com.fenda.ai.observer.DuiUpdateObserver;
 import com.fenda.ai.skill.Util;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.baserx.RxSchedulers;
+import com.fenda.common.constant.Constant;
 import com.fenda.common.provider.ICalendarProvider;
 import com.fenda.common.provider.IEncyclopediaProvider;
-import com.fenda.common.provider.INewsProvider;
 import com.fenda.common.provider.IRemindProvider;
 import com.fenda.common.provider.IWeatherProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.service.AccessibilityMonitorService;
-import com.fenda.common.util.DeviceIdUtil;
+import com.fenda.protocol.util.DeviceIdUtil;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.view.SpeechView;
+import com.fenda.protocol.tcp.bean.BaseTcpMessage;
+import com.fenda.protocol.tcp.bean.EventMessage;
+import com.fenda.protocol.tcp.bus.EventBusUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -237,6 +239,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                     if (DDS.getInstance().isAuthSuccess()) {
                         //PlayWelcomeTTS();
                         LogUtil.i( "FD------auth ok 1");
+                        sendInitSuccessEventBus();
                         showToast("授权成功!");
                         break;
                     } else {
@@ -283,13 +286,22 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
             }
             else if (TextUtils.equals(intent.getAction(), VoiceConstant.ACTION_AUTH_SUCCESS)) {
 //                LogUtil.i("TAG",  "FD------auth ok 2");
+                sendInitSuccessEventBus();
                 PlayWelcomeTTS();
                 showToast("授权成功!");
+
             } else if (TextUtils.equals(intent.getAction(), VoiceConstant.ACTION_AUTH_FAILED)) {
                 doAutoAuth();
             }
         }
     };
+
+    private void sendInitSuccessEventBus() {
+        EventMessage message = new EventMessage();
+        message.setCode(Constant.common.INIT_VOICE_SUCCESS);
+        message.setData(new BaseTcpMessage());
+        EventBusUtils.post(message);
+    }
 
     private void doauth_when_net_ok()
     {
@@ -490,7 +502,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
         config.addConfig(DDSConfig.K_USE_UPDATE_DUICORE, "false");
         // 是否使用内置的资源更新通知栏
         config.addConfig(DDSConfig.K_USE_UPDATE_NOTIFICATION, "false");
-        config.addConfig(DDSConfig.K_MIC_TYPE, "5");
+        config.addConfig(DDSConfig.K_MIC_TYPE, "2");
         config.addConfig(DDSConfig.K_AEC_MODE, "external");
 //        config.addConfig(DDSConfig.K_AUDIO_FOCUS_MODE, "external"); //TTS
         // 用于唤醒音频调试, 开启后在 "/sdcard/Android/data/包名/cache" 目录下会生成唤醒音频
@@ -536,10 +548,9 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
         switch(message)
         {
             case VoiceConstant.SIBICHI.SYS_DIALOG_START:
-                if (listener != null && listener.isCountDownTime()){
+                if (BaseApplication.getInstance().isRemindRing()){
                     IRemindProvider provider = (IRemindProvider) ARouter.getInstance().build(RouterPath.REMIND.ALARM_SERVICE).navigation();
                     provider.closeAlarm(null);
-                    listener.closeAlarm();
                 }
                 break;
             case VoiceConstant.SIBICHI.SYS_DIALOG_END:
@@ -582,7 +593,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 }
                 JSONObject dm = jo.optJSONObject("dm" );
                 String task = dm.optString("task");
-                if ("节假日查询".equals(task) || "日历".equals(task)){
+                if ( "日历".equals(task)){
 
                     Observable.create(new ObservableOnSubscribe<String>() {
                         @Override
@@ -686,24 +697,13 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 try {
                     JSONObject jo = new JSONObject(data);
                     String intentName = jo.optString("intentName");
-//                     if (VoiceConstant.DELETE_HINT.equals(intentName)){
-//                         RemindPlugin.get().queryRemindEvent(new RemindPlugin.QueryCallback() {
-//                             @Override
-//                             public void onSuccess(List<Event> list) {
-//                                 if (list != null){
-//                                     Gson gson = new Gson();
-//                                     String json = gson.toJson(list);
-//                                     LogUtil.e(json);
-//                                     DispatchManager.startService(VoiceConstant.DELETE_HINT,VoiceConstant.DELETE_HINT,json,VoiceConstant.AIDL.LAUNCHER);
-//                                 }
-//                            }
-//                             @Override
-//                             public void onError(int i, String s) {
-//                                 LogUtil.e(s);
-//                             }
-//                         });
-//
-//                     }
+                     if ("关闭提醒".equals(intentName)){
+
+                         if (listener != null){
+                             listener.queryRemind();
+                         }
+
+                     }
 
                 } catch (JSONException e) {
                     e.printStackTrace();

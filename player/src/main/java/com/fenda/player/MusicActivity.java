@@ -121,6 +121,8 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
     private MyFragmentPagerAdapter adapter;
     private Handler mProgressHandler = new Handler();
 
+    private boolean isEventPuase;
+
     private Runnable mProgressRunable = new Runnable() {
         @Override
         public void run() {
@@ -212,7 +214,6 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         mMusicList.addAll(bean.getFdMusics());
         Log.e("qob", "MusicActivity List " + mMusicList);
         tvBack.setText(title);
-
         getRandomIndex();
 
         setPlayStatus();
@@ -222,7 +223,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         PlayerMessage message = new PlayerMessage();
         message.setMusicName(tMusic.getMusicArtist());
         message.setMusicTitle(tMusic.getMusicTitle());
-        message.setMusicUrl(tMusic.getMusicUri());
+        message.setMusicUrl(tMusic.getMusicImage());
         message.setContentType(contentType);
         playerFragment = PlayerFragment.getInstance(message);
 
@@ -247,9 +248,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
             linPage.setVisibility(View.VISIBLE);
             tvPageOne.setEnabled(true);
             tvPageTwo.setEnabled(false);
-
         }
-
     }
     private void notifyFragment(FDMusic fdMusic) {
         fragmentList.clear();
@@ -262,8 +261,9 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                 lyricFragment = null;
             }
         }
-        adapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
-        pagerPlay.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+//        adapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
+//        pagerPlay.setAdapter(adapter);
         if (fragmentList.size() > 1){
             linPage.setVisibility(View.VISIBLE);
             tvPageOne.setEnabled(true);
@@ -283,10 +283,6 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
 
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void playData(PlayerMessage message) {
-        LogUtil.i(message.toString());
-    }
 
 
     private void addListener() {
@@ -310,7 +306,6 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                     linText.setVisibility(View.GONE);
                     linMusicControl.setVisibility(View.VISIBLE);
                 }
-
             }
         });
         pagerPlay.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -340,7 +335,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                     FDMusic tMusic = mMusicList.get(current_item);
                     play(tMusic);
                 } else {
-                    pause();
+                    pause(false);
                 }
             }
         });
@@ -422,7 +417,30 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         super.onNewIntent(intent);
 
         mIntent = intent;
-        initData();
+//        initData();
+
+        MusicPlayBean bean = mIntent.getParcelableExtra(Constant.Player.keyDataMusicKey);
+        stop();
+        List<FDMusic> tMusicList = bean.getFdMusics();
+        String title = bean.getMsgName();
+        contentType = bean.getMsgType();
+        mMusicList.clear();
+        mMusicList.addAll(tMusicList);
+        tvBack.setText(title);
+        mProgressHandler.removeCallbacks(mProgressRunable);
+        mMusicProgressSb.setProgress(0);
+        FDMusic tMusic = mMusicList.get(current_item);
+        notifyFragment(tMusic);
+        Log.e("qob", "MyBroadcastReceiver List " + mMusicList);
+        current_item = 0;
+        getRandomIndex();
+        isPause = false;
+        play(tMusic);
+
+        PlayerMessage message = new PlayerMessage();
+        message.setMsgType(2);
+        EventBusUtils.post(message);
+
 
     }
 
@@ -444,45 +462,6 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         manager.abandonAudioFocus(changeListener);
     }
 
-    void findView() {
-
-        mMusicPreBt     = findViewById(R.id.bt_music_pre);
-        mMusicPlayBt    = findViewById(R.id.bt_music_play);
-        mMusicNextBt    = findViewById(R.id.bt_music_next);
-        mMusicRepeatBt  = findViewById(R.id.bt_music_repeat);
-        mMusicListBt    = findViewById(R.id.bt_music_list);
-        mMusicProgressSb = findViewById(R.id.pb_music_playProgress);
-
-        linText         = findViewById(R.id.lin_text);
-        linMusicControl = findViewById(R.id.lin_music_control);
-        imgMusicBg      = findViewById(R.id.con_music);
-        tsHint          = findViewById(R.id.tw_text_list);
-        tvBack          = findViewById(R.id.tv_navbar_back);
-        pagerPlay        = findViewById(R.id.pager_play);
-        tvMusicTime     = findViewById(R.id.tv_music_time);
-        tvMusicRunTime  = findViewById(R.id.tv_music_run_time);
-        relaPlay        = findViewById(R.id.rela_play);
-        linPage         = findViewById(R.id.lin_page);
-        tvPageOne       = findViewById(R.id.tv_page_one);
-        tvPageTwo       = findViewById(R.id.tv_page_two);
-        imgFmPlay       = findViewById(R.id.img_fm_play);
-
-
-        mMusicPreBt.setOnClickListener(this);
-        mMusicPlayBt.setOnClickListener(this);
-        mMusicNextBt.setOnClickListener(this);
-        mMusicRepeatBt.setOnClickListener(this);
-        mMusicListBt.setOnClickListener(this);
-        tvBack.setOnClickListener(this);
-
-
-        getRandomIndex();
-        addListener();
-
-        setPlayStatus();
-
-
-    }
 
 
 
@@ -587,7 +566,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                 FDMusic tMusic = mMusicList.get(current_item);
                 play(tMusic);
             } else {
-                pause();
+                pause(false);
             }
         }else if (id == R.id.bt_music_next){
             //下一曲
@@ -753,6 +732,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
     private void play(FDMusic tMusic) {
 
         try {
+            isEventPuase = false;
             Log.e("qob", "play current_item: " + current_item);
 
             if (mediaPlayer == null) {
@@ -784,6 +764,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                 // 重新加载音频资源
                 mediaPlayer.setDataSource(tMusic.getMusicUri());
 
+                LogUtil.e(tMusic.toString());
                 PlayerMessage message = new PlayerMessage();
                 message.setMusicUrl(tMusic.getMusicImage());
                 message.setMusicTitle(tMusic.getMusicTitle());
@@ -820,7 +801,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
      *
      * @return 当前播放的位置
      */
-    public int pause() {
+    public int pause(boolean isManager) {
         if (isPause) {
             return -1;
         }
@@ -834,10 +815,13 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         }else {
             mMusicPlayBt.setImageResource(R.mipmap.player_ico_play);
         }
+        if (!isManager){
+            PlayerMessage message = new PlayerMessage();
+            message.setMsgType(1);
+            EventBusUtils.post(message);
+        }
 
-        PlayerMessage message = new PlayerMessage();
-        message.setMsgType(1);
-        EventBusUtils.post(message);
+
 
         return current_item;
     }
@@ -934,19 +918,13 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                     e.printStackTrace();
                 }
             }
-            pause();
+            pause(false);
         }else if (action.equals(Constant.Player.VOICE_PLAY)){
             FDMusic tMusic = mMusicList.get(current_item);
             play(tMusic);
         }else if (action.equals(Constant.Player.VOICE_PAUSE)){
-            if (audioManagerSatatus != AudioManager.AUDIOFOCUS_GAIN){
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            pause();
+            isEventPuase = true;
+            pause(false);
         }else if (action.equals(Constant.Player.VOICE_REPLAY)){
             isPause = false;
             FDMusic tMusic = mMusicList.get(current_item);
@@ -1014,15 +992,18 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                 if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
                     // 展示失去音频焦点，暂停播放等待重新获得音频焦点
                     if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-                        mediaPlayer.setVolume(0.1f, 0.1f);
+//                        mediaPlayer.setVolume(0.1f, 0.1f);
+                        pause(true);
                     }
 
                     // Pause playback
 
                 } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
                     // 获得音频焦点
-                    if (mediaPlayer != null) {
-                        mediaPlayer.setVolume(0.5f, 0.5f);
+                    if (mediaPlayer != null && isPause && !isEventPuase) {
+//                        mediaPlayer.setVolume(0.5f, 0.5f);
+                        FDMusic music = mMusicList.get(current_item);
+                        play(music);
                     }
 
                     // Resume playback
@@ -1035,7 +1016,8 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                 } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
                     //失去焦点，降低音量
                     if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-                        mediaPlayer.setVolume(0.1f, 0.1f);
+//                        mediaPlayer.setVolume(0.1f, 0.1f);
+                        pause(true);
                     }
                 }
             }

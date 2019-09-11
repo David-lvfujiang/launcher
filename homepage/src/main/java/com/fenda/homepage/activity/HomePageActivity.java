@@ -16,10 +16,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextClock;
 import android.widget.TextView;
@@ -127,11 +123,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mHeaderWeatherTv.setOnClickListener(this);
         mHeaderWeatherIv.setOnClickListener(this);
 
-        IVoiceRequestProvider mIVoiceRequestProvider = (IVoiceRequestProvider) ARouter.getInstance().build(RouterPath.VOICE.REQUEST_PROVIDER).navigation();
-        if (mIVoiceRequestProvider != null) {
-            LogUtil.d(TAG, "init device status");
-            mIVoiceRequestProvider.openVoice();
-        }
 
         showPageIndex = 0;
 
@@ -210,7 +201,8 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         if (initVoiceProvider == null) {
             initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
         }
-//        initVoiceProvider.requestWeather();
+
+
         if (mICallProvider != null) {
             mICallProvider.initSdk();
         }
@@ -259,6 +251,12 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     ContentProviderManager.getInstance(mContext, Constant.common.URI).updateUserHeadByUserID(bean.getIcon(), bean.getUserId());
                 }
 
+            }
+        }else if (message.getCode() == Constant.common.INIT_VOICE_SUCCESS){
+            // @todo  勿删 语音初始化成功后会回调这里,在语音成功之前调用会导致应用崩溃
+            if (initVoiceProvider != null){
+                initVoiceProvider.requestWeather();
+                initVoiceProvider.openVoice();
             }
         }
     }

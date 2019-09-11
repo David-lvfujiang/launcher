@@ -52,7 +52,6 @@ public class InitService implements IVoiceInitProvider {
 
 
     private void initVoice(Context mContext){
-
         try {
             String[] models = mContext.getAssets().list("voice");
             File mFile = new File(VoiceConstant.sVoiceDir);
@@ -62,7 +61,6 @@ public class InitService implements IVoiceInitProvider {
             for (int i = 0; i < models.length; i++) {
                 assetsDataToSD("voice",models[i], VoiceConstant.sVoiceDir,mContext);
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -2,15 +2,22 @@ package com.fenda.remind;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.fenda.common.BaseApplication;
 import com.fenda.common.base.BaseActivity;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.router.RouterPath;
@@ -44,6 +51,7 @@ public class AlarmActivity extends BaseActivity {
 
     private ArrayList<AlarmBean> alarmBeans;
     private String type;
+    private CountDownTimer timer;
 
 
     @Override
@@ -102,9 +110,52 @@ public class AlarmActivity extends BaseActivity {
             imgBack.setVisibility(View.GONE);
             tvDate.setVisibility(View.GONE);
             tvStop.setVisibility(View.VISIBLE);
+            BaseApplication.getInstance().setRemindRing(true);
+            startAlarm();
         }
 
     }
+
+
+
+
+
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+    }
+
+    private void startAlarm()  {
+        Uri notify = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        final Ringtone ringtone = RingtoneManager.getRingtone(mContext,notify);
+        if (ringtone != null && !ringtone.isPlaying()){
+            ringtone.setLooping(true);
+            ringtone.play();
+        }
+
+        timer = new CountDownTimer(300000,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {}
+            @Override
+            public void onFinish() {
+                timer.cancel();
+                ringtone.stop();
+            }
+        };
+        timer.start();
+    }
+
+    public void closeAlarm(){
+        if (timer != null){
+            timer.onFinish();
+            timer = null;
+        }
+    }
+
+
+
 
 
     @Override
@@ -113,15 +164,18 @@ public class AlarmActivity extends BaseActivity {
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                closeAlarm();
                 AlarmActivity.this.finish();
             }
         });
         tvStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                closeAlarm();
                 AlarmActivity.this.finish();
-                Intent intent = new Intent(Constant.Remind.ACTION_CLOSE_ALARM);
-                sendBroadcast(intent);
+//                AlarmActivity.this.finish();
+//                Intent intent = new Intent(Constant.Remind.ACTION_CLOSE_ALARM);
+//                sendBroadcast(intent);
             }
         });
     }
@@ -131,6 +185,7 @@ public class AlarmActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(AlarmBean bean){
         if (bean.getType() == Constant.Remind.CLOSE_ALARM){
+            closeAlarm();
             this.finish();
         }
 
@@ -140,6 +195,7 @@ public class AlarmActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         EventBusUtils.unregister(this);
+        BaseApplication.getInstance().setRemindRing(false);
         super.onDestroy();
     }
 }

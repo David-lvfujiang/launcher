@@ -15,6 +15,7 @@ import com.fenda.ai.VoiceConstant;
 import com.fenda.ai.skill.Util;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.bean.UserInfoBean;
+import com.fenda.common.constant.Constant;
 import com.fenda.common.provider.IVoiceRequestProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.LogUtil;
@@ -72,6 +73,7 @@ public class RequestService implements IVoiceRequestProvider {
 
         if (Util.isQQMusicPlay()){
             MusicPlugin.get().getMusicApi().exit();
+            BaseApplication.QQMUSIC.clear();
         }
         try {
             if (DDS.getInstance().getInitStatus() == DDS.INIT_COMPLETE_FULL){
@@ -80,7 +82,6 @@ public class RequestService implements IVoiceRequestProvider {
         } catch (DDSNotInitCompleteException e) {
             e.printStackTrace();
         }
-
 
     }
 
@@ -122,6 +123,7 @@ public class RequestService implements IVoiceRequestProvider {
         try {
             LogUtil.d( "FD-------closeVoice ");
             DDS.getInstance().getAgent().getWakeupEngine().disableWakeup();
+            cancelMusic();
         } catch (DDSNotInitCompleteException e) {
             e.printStackTrace();
         }
@@ -158,6 +160,8 @@ public class RequestService implements IVoiceRequestProvider {
         LogUtil.e("===============================>退出QQ音乐中.... "+ BaseApplication.QQMUSIC.isEmpty());
         Intent intent = new Intent(VoiceConstant.ACTION_CLOSE_QQMUSIC);
         mContext.sendBroadcast(intent);
+
+
 
     }
 

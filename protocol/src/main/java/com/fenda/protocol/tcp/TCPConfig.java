@@ -54,6 +54,12 @@ public class TCPConfig {
         int FAMILY_DISSOLVE = 1005;//家庭解散通知
         int USER_EXIT_FAMILY = 1006;//普通成员退出家庭通知
         int USER_REPAIR_HEAD = 1010;//用户修改头像
+
+
+
     }
+
+
+
 
 }
