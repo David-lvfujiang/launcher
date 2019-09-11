@@ -29,6 +29,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.SubmenuActivity"/>
+        <activity android:name=".activity.PromptActivity"/>
         <provider
             android:name="com.fenda.common.db.UserContentProvider"
             android:authorities="com.fenda.ai"

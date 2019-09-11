@@ -20,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.TextClock;
 import android.widget.TextView;
 
+import com.aispeech.dui.plugin.iqiyi.IQiyiPlugin;
+import com.aispeech.dui.plugin.music.MusicPlugin;
 import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
@@ -346,6 +348,12 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
             ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN).navigation();
             initVoiceProvider.nowWeather();
+        } else if (resId == R.id.iv_main_qqmusic) {
+            MusicPlugin.init(mContext,MusicPlugin.TYPE_QQCAR);
+            MusicPlugin.get().getMusicApi().openMusicApp();
+        } else if (resId == R.id.iv_main_iqiyi) {
+            IQiyiPlugin.init(mContext);
+            IQiyiPlugin.get().getVideoApi().open();
         }
     }
 

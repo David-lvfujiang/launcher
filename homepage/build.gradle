@@ -72,10 +72,17 @@ android {
     }
 
 }
-
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     annotationProcessor deps.arouter_compiler
     implementation project(path: ':common')
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    api (name: 'skill_iqiyi-release', ext: 'aar')
+    api (name: 'skill_mediactrl-release1', ext: 'aar')
+    api (name: 'skill_music-release', ext: 'aar')
 }

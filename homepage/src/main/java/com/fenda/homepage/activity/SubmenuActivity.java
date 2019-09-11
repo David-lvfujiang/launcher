@@ -10,19 +10,32 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import com.aispeech.dui.plugin.iqiyi.IQiyiPlugin;
+import com.aispeech.dui.plugin.music.MusicPlugin;
 import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.base.BaseActivity;
+import com.fenda.common.db.ContentProviderManager;
+import com.fenda.common.provider.IRemindProvider;
+import com.fenda.common.provider.IVoiceRequestProvider;
 import com.fenda.common.router.RouterPath;
+import com.fenda.common.util.AppUtils;
+import com.fenda.common.util.GsonUtil;
+import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.homepage.Adapter.GridAdapter;
 import com.fenda.homepage.R;
 import com.fenda.homepage.bean.ApplyBean;
+import com.fenda.homepage.bean.RepairPersonHeadBean;
 import com.fenda.homepage.data.AllApplyData;
 import com.fenda.homepage.data.Constant;
 import com.fenda.homepage.data.UndevelopedApplyData;
 import com.fenda.homepage.scrollview.ObservableScrollView;
 import com.fenda.homepage.scrollview.ScrollViewListener;
+import com.fenda.protocol.tcp.TCPConfig;
+import com.fenda.protocol.tcp.bean.BaseTcpMessage;
+import com.fenda.protocol.tcp.bean.EventMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +43,7 @@ import java.util.List;
 /**
  * @author matt.liaojianpeng
  */
-public class SubmenuActivity extends BaseActivity implements View.OnTouchListener, ScrollViewListener {
+public class SubmenuActivity extends BaseActivity implements View.OnTouchListener, ScrollViewListener , View.OnClickListener {
     @Autowired
     List<ApplyBean> mApplyList;
     List<ApplyBean> mUndevelopedApplyList;
@@ -43,7 +56,7 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
     private ObservableScrollView mScrollView;
     private ImageView submenuDropLeft;
     private ImageView submenuDropRight;
-
+    IVoiceRequestProvider initVoiceProvider;
     @Override
     public int onBindLayout() {
         return R.layout.activity_submenu;
@@ -58,6 +71,8 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
         submenuDropLeft = findViewById(R.id.iv_submenu_drop_left);
         submenuDropRight = findViewById(R.id.iv_submenu_drop_right);
         mSubmenuBackLl.setOnTouchListener(this);
+        submenuDropLeft.setOnClickListener(this);
+        submenuDropRight.setOnClickListener(this);
         //        mSubmenuListRv2.getBackground().setAlpha(100);//0~255透明度值
         mScrollView = findViewById(R.id.sv_submenu);
         mScrollView.setScrollViewListener(this);
@@ -90,63 +105,103 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
         mGridAdapter.setOnItemClickListener(new GridAdapter.OnItemClickListener() {
             @Override
             public void onItemClick( View view, String applyId) {
+                Intent intent = new Intent(SubmenuActivity.this,PromptActivity.class);
                 if(applyId.equals(Constant.SETTINGS)){
                     ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
                 } else if (applyId.equals(Constant.CALCULATOR)){
                     ToastUtils.show("计算器");
-
                 }
                 else if (applyId.equals(Constant.WEATHER)) {
-                    ToastUtils.show("天气");
+//                    ToastUtils.show("天气");
+                    ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN).navigation();
+                    initVoiceProvider.nowWeather();
                 } else if (applyId.equals(Constant.CALENDAR)) {
-                    ToastUtils.show("日历");
+                    //                    ToastUtils.show("日历");
+                    intent.putExtra("applyId", applyId);
+                    startActivity(intent);
                 } else if (applyId.equals(Constant.PHOTO)) {
-                    ToastUtils.show("相册");
+                    //                    ToastUtils.show("相册");
                     ARouter.getInstance().build(RouterPath.Gallery.GALLERY_CATOGORY).navigation();
                 } else if (applyId.equals(Constant.TIME)) {
                     ToastUtils.show("时钟");
                 } else if (applyId.equals(Constant.FM)) {
-                    ToastUtils.show("收音机");
+                    //                    ToastUtils.show("收音机");
+                    intent.putExtra("applyId", applyId);
+                    startActivity(intent);
                 } else if (applyId.equals(Constant.CAMERA)) {
                     ToastUtils.show("相机");
                 } else if (applyId.equals(Constant.PLAY)) {
                     ToastUtils.show("播放器");
+//                    intent.putExtra("applyId", applyId);
+//                    startActivity(intent);
                 } else if (applyId.equals(Constant.QQ_MUSIC)) {
-                    ToastUtils.show("QQ音乐");
+                    //                    ToastUtils.show("QQ音乐");
+                    MusicPlugin.init(mContext,MusicPlugin.TYPE_QQCAR);
+                    MusicPlugin.get().getMusicApi().openMusicApp();
                 } else if (applyId.equals(Constant.IQIYI)) {
-                    ToastUtils.show("爱奇艺");
+                    //                    ToastUtils.show("爱奇艺");
+                    IQiyiPlugin.init(mContext);
+                    IQiyiPlugin.get().getVideoApi().open();
                 } else if (applyId.equals(Constant.NEWS)) {
                     ToastUtils.show("新闻");
                 } else if (applyId.equals(Constant.CROSS_TALK)) {
-                    ToastUtils.show("相声");
+                    //                    ToastUtils.show("相声");
+                    intent.putExtra("applyId", applyId);
+                    startActivity(intent);
                 } else if (applyId.equals(Constant.CHILDREN)) {
-                    ToastUtils.show("儿歌");
+                    //                    ToastUtils.show("儿歌");
+                    intent.putExtra("applyId", applyId);
+                    startActivity(intent);
                 } else if (applyId.equals(Constant.POETRY)) {
-                    ToastUtils.show("诗词");
+                    //                    ToastUtils.show("诗词");
+                    intent.putExtra("applyId", applyId);
+                    startActivity(intent);
                 } else if (applyId.equals(Constant.JOKE)) {
-                    ToastUtils.show("笑话");
+//                    ToastUtils.show("笑话");
+                    intent.putExtra("applyId", applyId);
+                    startActivity(intent);
                 } else if (applyId.equals(Constant.IDIOM)) {
-                    ToastUtils.show("成语");
+                    //                    ToastUtils.show("成语");
+                    intent.putExtra("applyId", applyId);
+                    startActivity(intent);
                 } else if (applyId.equals(Constant.ENCYCLOPEDIA)) {
-                    ToastUtils.show("百科");
+                    //                    ToastUtils.show("百科");
+                    intent.putExtra("applyId", applyId);
+                    startActivity(intent);
                 } else if (applyId.equals(Constant.GUOXUE)) {
-                    ToastUtils.show("国学");
+                    //                    ToastUtils.show("国学");
+                    intent.putExtra("applyId", applyId);
+                    startActivity(intent);
                 } else if (applyId.equals(Constant.HOLIDAYS)) {
-                    ToastUtils.show("节假日查询");
+                    //                    ToastUtils.show("节假日查询");
+                    intent.putExtra("applyId", applyId);
+                    startActivity(intent);
                 } else if (applyId.equals(Constant.REMIND)) {
                     ToastUtils.show("提醒");
                 } else if (applyId.equals(Constant.STORY)) {
-                    ToastUtils.show("故事");
+                    //                    ToastUtils.show("故事");
+                    intent.putExtra("applyId", applyId);
+                    startActivity(intent);
                 } else if (applyId.equals(Constant.TRANSLATION)) {
-                    ToastUtils.show("翻译");
+                    //                    ToastUtils.show("翻译");
+                    intent.putExtra("applyId", applyId);
+                    startActivity(intent);
                 } else if (applyId.equals(Constant.STOCK)) {
-                    ToastUtils.show("股票");
+                    //                    ToastUtils.show("股票");
+                    intent.putExtra("applyId", applyId);
+                    startActivity(intent);
                 } else if (applyId.equals(Constant.UNITS)) {
-                    ToastUtils.show("单位换算");
+                    //                    ToastUtils.show("单位换算");
+                    intent.putExtra("applyId", applyId);
+                    startActivity(intent);
                 } else if (applyId.equals(Constant.RELATIVE)) {
-                    ToastUtils.show("亲戚关系计算");
+                    //                    ToastUtils.show("亲戚关系计算");
+                    intent.putExtra("applyId", applyId);
+                    startActivity(intent);
                 } else if (applyId.equals(Constant.CONSTELLATION)) {
-                    ToastUtils.show("星座运势");
+                    //                    ToastUtils.show("星座运势");
+                    intent.putExtra("applyId", applyId);
+                    startActivity(intent);
                 } else if (applyId.equals(Constant.CMCC)) {
                     ToastUtils.show("10086");
                 } else if (applyId.equals(Constant.GDYD)) {
@@ -174,12 +229,32 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
                 }
             }
         });
-        mSubmenuListRv.setAdapter(mGridAdapter);
+        mGridAdapter2.setOnItemClickListener(new GridAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, String applyId) {
+                ToastUtils.show("建设中，敬请期待。。。");
+            }
+        });
+
     }
 
     @Override
     public void initData() {
 
+        if (initVoiceProvider == null) {
+            initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
+        }
+
+    }
+    @Override
+    public void onEvent(final EventMessage<BaseTcpMessage> message) {
+        if (message.getCode() == com.fenda.common.constant.Constant.common.INIT_VOICE_SUCCESS){
+            // @todo  勿删 语音初始化成功后会回调这里,在语音成功之前调用会导致应用崩溃
+            if (initVoiceProvider != null){
+                initVoiceProvider.requestWeather();
+                initVoiceProvider.openVoice();
+            }
+        }
     }
 
     @Override
@@ -211,8 +286,8 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
 
     @Override
     public void onScrollChanged(ObservableScrollView scrollView, int x, int y, int oldx, int oldy) {
-//        Log.v("ashgdfaskdfh","y="+y);
-//        Log.v("ashgdfaskdfh","oldx="+oldy);
+        //        Log.v("ashgdfaskdfh","y="+y);
+        //        Log.v("ashgdfaskdfh","oldx="+oldy);
         Animation rotateAnimation = new RotateAnimation(y/125,oldy/125,0,18);
         rotateAnimation.setFillAfter(true);
         rotateAnimation.setDuration(0);
@@ -228,5 +303,11 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
         rotateAnimation2.setDetachWallpaper(true);
         submenuDropRight.startAnimation(rotateAnimation2);
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        finish();
+        overridePendingTransition(R.anim.submenu_push_up_in,R.anim.submenu_push_up_out);
     }
 }

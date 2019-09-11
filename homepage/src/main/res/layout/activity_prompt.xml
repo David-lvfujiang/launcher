@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/cm_bg_03">
+
+    <ImageView
+        android:id="@+id/iv_prompt_back"
+        android:layout_width="100dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="35dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/submenu_back" />
+
+    <TextView
+        android:id="@+id/tv_prompt_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="语音提示"
+        android:textColor="#fff"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_prompt_back"
+        app:layout_constraintStart_toEndOf="@+id/iv_prompt_back"
+        app:layout_constraintTop_toTopOf="@+id/iv_prompt_back" />
+
+    <TextView
+        android:id="@+id/tv_prompt1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:text="可以试试“你好小乐， 返回”"
+        android:textColor="#fff"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_prompt2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_prompt2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:text="可以试试“你好小乐， 我想听侯宝林的相声”"
+        android:textColor="#fff"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_prompt3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_prompt3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="可以试试“你好小乐， 我想听单口相声”"
+        android:textColor="#fff"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_prompt4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="可以试试“你好小乐， 我想听冯巩的相声”"
+        android:textColor="#fff"
+        android:textSize="28sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_prompt3" />
+
+    <TextView
+        android:id="@+id/tv_prompt5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="可以试试“你好小乐， 我想听相声“我这一辈子”"
+        android:textColor="#fff"
+        android:textSize="28sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_prompt4" />
+</android.support.constraint.ConstraintLayout>
