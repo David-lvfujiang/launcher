@@ -1,6 +1,5 @@
 package com.fenda.settings.activity;
 
-import android.content.Intent;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.view.View;

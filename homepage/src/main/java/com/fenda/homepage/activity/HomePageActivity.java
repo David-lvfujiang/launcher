@@ -14,7 +14,6 @@ import android.net.LinkProperties;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.os.Build;
-import android.os.Handler;
 import android.os.PowerManager;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.LinearLayoutManager;

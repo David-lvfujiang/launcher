@@ -1,7 +1,5 @@
 package com.fenda.settings.activity;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,13 +7,11 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
@@ -24,7 +20,6 @@ import com.fenda.common.BaseApplication;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.router.RouterPath;
-import com.fenda.common.util.AppUtils;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.SPUtils;
 import com.fenda.common.util.ToastUtils;
@@ -32,12 +27,10 @@ import com.fenda.common.view.MyListView;
 import com.fenda.settings.R;
 import com.fenda.settings.adapter.SettingsBluetoothAdapter;
 import com.fenda.settings.bean.SettingsBluetoothDeviceBean;
-import com.fenda.settings.utils.SettingsWifiUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
