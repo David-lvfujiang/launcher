@@ -3,16 +3,17 @@ package com.fenda.common.baseapp;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 
+import java.util.List;
 import java.util.Stack;
 
 /**
-  * @author mirrer.wangzhonglin
-  * @Date 2019/8/30 19:01
-  * @Description
-  *
-  */
+ * @author mirrer.wangzhonglin
+ * @Date 2019/8/30 19:01
+ * @Description
+ */
 public class AppManager {
     private static Stack<Activity> activityStack;
     private volatile static AppManager instance;
@@ -20,13 +21,14 @@ public class AppManager {
     private AppManager() {
 
     }
+
     /**
      * 单一实例
      */
     public static AppManager getAppManager() {
         if (instance == null) {
-            synchronized (AppManager.class){
-                if(instance==null){
+            synchronized (AppManager.class) {
+                if (instance == null) {
                     instance = new AppManager();
                     instance.activityStack = new Stack();
                 }
@@ -145,11 +147,12 @@ public class AppManager {
 
     /**
      * 是否已经打开指定的activity
+     *
      * @param cls
      * @return
      */
     public boolean isOpenActivity(Class<?> cls) {
-        if (activityStack!=null){
+        if (activityStack != null) {
             for (int i = 0, size = activityStack.size(); i < size; i++) {
                 if (cls == activityStack.peek().getClass()) {
                     return true;
@@ -157,6 +160,20 @@ public class AppManager {
             }
         }
         return false;
+    }
+
+    /**
+     * 判断某个Activity 界面是否在前台
+     * @param className 某个界面名称
+     * @return
+     */
+    public boolean isForeground(String className) {
+        Activity activity = currentActivity();
+        if (activity != null && activity.getClass().getSimpleName().equals(className)) {
+            return true;
+        }
+        return false;
+
     }
 
     /**

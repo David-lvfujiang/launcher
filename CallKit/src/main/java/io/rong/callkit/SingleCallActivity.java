@@ -73,7 +73,7 @@ public class SingleCallActivity extends BaseCallActivity implements Handler.Call
 
     private int EVENT_FULL_SCREEN = 1;
 
-    private String targetId = null;
+    private String targetId ="";
     private RongCallCommon.CallMediaType mediaType;
     private RongCallCommon.CallMediaType remoteMediaType;
     public static final int DISABLE_EXPAND = 0x00010000;
@@ -512,7 +512,7 @@ public class SingleCallActivity extends BaseCallActivity implements Handler.Call
     @Override
     public void onCallConnected(RongCallSession callSession, SurfaceView localVideo) {
         super.onCallConnected(callSession, localVideo);
-        sendMicDisableBroad();
+//        sendMicDisableBroad();
         this.callSession = callSession;
         FinLog.v(TAG, "onCallConnected----mediaType=" + callSession.getMediaType().getValue());
         if (callSession.getMediaType().equals(RongCallCommon.CallMediaType.AUDIO)) {
@@ -750,7 +750,7 @@ public class SingleCallActivity extends BaseCallActivity implements Handler.Call
     @Override
     public void onCallDisconnected(RongCallSession callSession, RongCallCommon.CallDisconnectedReason reason) {
         super.onCallDisconnected(callSession, reason);
-        sendMicAbleBroad();
+//        sendMicAbleBroad();
         String senderId;
         String extra = "";
 

@@ -47,8 +47,7 @@ public class SettingsAndLinkQRCodeActivity extends BaseMvpActivity {
         final String filePath = getFileRoot(SettingsAndLinkQRCodeActivity.this) + File.separator
                 + "qr_" + System.currentTimeMillis() + ".jpg";
         //二维码图片较大时，生成图片、保存文件的时间可能较长，因此放在新线程中
-        new Thread(new Runnable()
-        {
+        new Thread(new Runnable() {
             @Override
             public void run()
             {

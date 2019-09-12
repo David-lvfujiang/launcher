@@ -51,7 +51,7 @@ public class SetttingsBrightnessActivity extends BaseMvpActivity {
 
     @Override
     public void initData() {
-        screenBrightness_check();
+        screenBrightnessCheck();
 
     }
 
@@ -62,9 +62,10 @@ public class SetttingsBrightnessActivity extends BaseMvpActivity {
             public void onClick(View v) {
                 finish();
             }
-        });    }
+        });
+    }
 
-    private void screenBrightness_check() {
+    private void screenBrightnessCheck() {
         //先关闭系统的亮度自动调节
         try {
             if(android.provider.Settings.System.getInt(getContentResolver(),android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE) == android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC) {

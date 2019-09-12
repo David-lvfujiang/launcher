@@ -45,11 +45,9 @@ public class SettingsBluetoothDeviceBean {
         this.device = device;
     }
 
-
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-        {
+        if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
@@ -62,7 +60,6 @@ public class SettingsBluetoothDeviceBean {
             return false;
         }
         return address.equals(that.address);
-
     }
 
     @Override

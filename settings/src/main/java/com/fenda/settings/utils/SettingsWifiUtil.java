@@ -27,8 +27,8 @@ public class SettingsWifiUtil {
     private static final String TAG = "SettingsWifiUtil";
 
     public static final int CLOSING_WIFI = 0;
-    public static final int CLOSE_WIFI_FlAG = 1;
-    public static final int OPEN_WIFI_FlAG = 2;
+    public static final int CLOSE_WIFI_FLAG = 1;
+    public static final int OPEN_WIFI_FLAG = 2;
     public static final int OPENED_WIFI = 3;
 
     // 定义WifiManager对象
@@ -57,7 +57,7 @@ public class SettingsWifiUtil {
         if (!mWifiManager.isWifiEnabled()) {
             mWifiManager.setWifiEnabled(true);
             LogUtil.d(TAG, "start open wifi 2222!");
-        } else if (mWifiManager.getWifiState() == OPEN_WIFI_FlAG) {
+        } else if (mWifiManager.getWifiState() == OPEN_WIFI_FLAG) {
             Toast.makeText(context,"亲，Wifi正在开启，不用再开了", Toast.LENGTH_SHORT).show();
         } else{
             Toast.makeText(context,"亲，Wifi已经开启,不用再开了", Toast.LENGTH_SHORT).show();
@@ -84,9 +84,9 @@ public class SettingsWifiUtil {
     public void checkState(Context context) {
         if (mWifiManager.getWifiState() == CLOSING_WIFI) {
             ToastUtils.show("Wifi正在关闭");
-        } else if (mWifiManager.getWifiState() == CLOSE_WIFI_FlAG) {
+        } else if (mWifiManager.getWifiState() == CLOSE_WIFI_FLAG) {
             ToastUtils.show("Wifi已经关闭");
-        } else if (mWifiManager.getWifiState() == OPEN_WIFI_FlAG) {
+        } else if (mWifiManager.getWifiState() == OPEN_WIFI_FLAG) {
             ToastUtils.show("Wifi正在开启");
         } else if (mWifiManager.getWifiState() == OPENED_WIFI) {
             ToastUtils.show("Wifi已经开启");
@@ -143,10 +143,8 @@ public class SettingsWifiUtil {
             Log.d(TAG, "wifi scan results null");
             if(mWifiManager.getWifiState()==OPENED_WIFI) {
                 // Toast.makeText(context,"当前区域没有无线网络",Toast.LENGTH_SHORT).show();
-            } else if(mWifiManager.getWifiState()==OPEN_WIFI_FlAG) {
+            } else if(mWifiManager.getWifiState()==OPEN_WIFI_FLAG) {
                 ToastUtils.show("wifi正在开启，请稍后扫描");
-            } else if(mWifiManager.getWifiState()== mWifiManager.WIFI_STATE_DISABLED) {
-                Toast.makeText(context,"wifi不可用", Toast.LENGTH_SHORT).show();
             } else {
                 Log.d(TAG,"WiFi没有开启");
                 Toast.makeText(context,"WiFi没有开启", Toast.LENGTH_SHORT).show();
@@ -284,7 +282,7 @@ public class SettingsWifiUtil {
     }
 
     //创建wifi热点的。
-    public WifiConfiguration CreateWifiInfo(String SSID, String Password, int Type) {
+    public WifiConfiguration createWifiInfo(String SSID, String password, int Type) {
         WifiConfiguration config = new WifiConfiguration();
         config.allowedAuthAlgorithms.clear();
         config.allowedGroupCiphers.clear();
@@ -293,7 +291,7 @@ public class SettingsWifiUtil {
         config.allowedProtocols.clear();
         config.SSID = "\"" + SSID + "\"";
 
-        WifiConfiguration tempConfig = this.IsExsits(SSID);
+        WifiConfiguration tempConfig = this.isExsits(SSID);
         if(tempConfig != null) {
             mWifiManager.removeNetwork(tempConfig.networkId);
         }
@@ -307,7 +305,7 @@ public class SettingsWifiUtil {
         if(Type == 2) //WIFICIPHER_WEP
         {
             config.hiddenSSID = true;
-            config.wepKeys[0]= "\""+Password+"\"";
+            config.wepKeys[0]= "\""+password+"\"";
             config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.SHARED);
             config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
             config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
@@ -318,7 +316,7 @@ public class SettingsWifiUtil {
         }
         if(Type == 3) //WIFICIPHER_WPA
         {
-            config.preSharedKey = "\""+Password+"\"";
+            config.preSharedKey = "\""+password+"\"";
             config.hiddenSSID = true;
             config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
             config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
@@ -332,7 +330,7 @@ public class SettingsWifiUtil {
         return config;
     }
 
-    private WifiConfiguration IsExsits(String SSID)
+    private WifiConfiguration isExsits(String SSID)
     {
         List<WifiConfiguration> existingConfigs = mWifiManager.getConfiguredNetworks();
         for (WifiConfiguration existingConfig : existingConfigs)

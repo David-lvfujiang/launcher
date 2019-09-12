@@ -50,7 +50,16 @@ public class AppTaskUtil {
 
         return null;
     }
-
+    /**
+     * 判断launcher是否在前台
+     * @return
+     */
+    public static boolean isLauncherForeground(){
+        if (getAppTopPackage().equals(BaseApplication.getInstance().getPackageName()) ){
+            return true;
+        }
+        return false;
+    }
 
 
 

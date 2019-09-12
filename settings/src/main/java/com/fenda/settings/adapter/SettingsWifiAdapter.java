@@ -193,7 +193,7 @@ public class SettingsWifiAdapter  {
             mWifiManager.enableNetwork(wcgId, true);
         }
 
-        public WifiConfiguration createWifiInfo(String SSID, String Password,
+        public WifiConfiguration createWifiInfo(String SSID, String password,
                                                 int Type) {
             WifiConfiguration config = new WifiConfiguration();
             config.allowedAuthAlgorithms.clear();
@@ -217,7 +217,7 @@ public class SettingsWifiAdapter  {
             if (Type == 2) // WIFICIPHER_WEP
             {
                 config.hiddenSSID = true;
-                config.wepKeys[0] = "\"" + Password + "\"";
+                config.wepKeys[0] = "\"" + password + "\"";
                 config.allowedAuthAlgorithms
                         .set(WifiConfiguration.AuthAlgorithm.SHARED);
                 config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
@@ -230,7 +230,7 @@ public class SettingsWifiAdapter  {
             }
             if (Type == 3) // WIFICIPHER_WPA
             {
-                config.preSharedKey = "\"" + Password + "\"";
+                config.preSharedKey = "\"" + password + "\"";
                 config.hiddenSSID = true;
                 config.allowedAuthAlgorithms
                         .set(WifiConfiguration.AuthAlgorithm.OPEN);
@@ -278,7 +278,7 @@ public class SettingsWifiAdapter  {
          * @param wifiId
          * @return
          */
-        public boolean ConnectWifi(int wifiId) {
+        public boolean connectWifi(int wifiId) {
             for (int i = 0; i < wifiConfigList.size(); i++) {
                 WifiConfiguration wifi = wifiConfigList.get(i);
                 if (wifi.networkId == wifiId) {
@@ -311,7 +311,7 @@ public class SettingsWifiAdapter  {
          * @param SSID
          * @return
          */
-        public int IsConfiguration(String SSID) {
+        public int isConfiguration(String SSID) {
             Log.i("IsConfiguration", String.valueOf(wifiConfigList.size()));
             for (int i = 0; i < wifiConfigList.size(); i++) {
                 Log.i(wifiConfigList.get(i).SSID,
@@ -331,7 +331,7 @@ public class SettingsWifiAdapter  {
          * @param pwd
          * @return
          */
-        public int AddWifiConfig(List<ScanResult> wifiList, String ssid, String pwd) {
+        public int addWifiConfig(List<ScanResult> wifiList, String ssid, String pwd) {
             int wifiId = -1;
             for (int i = 0; i < wifiList.size(); i++) {
                 ScanResult wifi = wifiList.get(i);

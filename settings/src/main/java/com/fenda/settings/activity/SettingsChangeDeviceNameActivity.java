@@ -56,8 +56,8 @@ public class SettingsChangeDeviceNameActivity extends BaseMvpActivity<SettingsPr
         tvSureBtn = findViewById(R.id.change_device_name_sure);
         etName = findViewById(R.id.edit_device_name);
 
-        String OriginalName = (String) SPUtils.get(getApplicationContext(), Constant.Settings.DEVICE_NAME ,"");
-        etName.setText(OriginalName);
+        String originalName = (String) SPUtils.get(getApplicationContext(), Constant.Settings.DEVICE_NAME ,"");
+        etName.setText(originalName);
         final int maxTextCount = 10;
         etName.addTextChangedListener(new TextWatcher() {
             @Override

@@ -153,10 +153,10 @@ public class SettingsDeviceContractsActivity extends BaseMvpActivity {
                         String clickedName = (String) holder1.contractName.getText();
                         LogUtil.d(TAG, "clicked contract name  = " + clickedName + " = " + constactsListBean.getUserName());
                         LogUtil.d(TAG, "clicked contract icon = " + constactsListBean.getIcon());
-                        Intent ContractInfoIntent = new Intent(SettingsDeviceContractsActivity.this, SettingsDeviceContractsNickNameActivity.class);
-                        ContractInfoIntent.putExtra("ContractName", clickedName);
-                        ContractInfoIntent.putExtra("ContractIcon", constactsListBean.getIcon());
-                        startActivity(ContractInfoIntent);
+                        Intent contractInfoIntent = new Intent(SettingsDeviceContractsActivity.this, SettingsDeviceContractsNickNameActivity.class);
+                        contractInfoIntent.putExtra("ContractName", clickedName);
+                        contractInfoIntent.putExtra("ContractIcon", constactsListBean.getIcon());
+                        startActivity(contractInfoIntent);
                         finish();
                     }
                 });

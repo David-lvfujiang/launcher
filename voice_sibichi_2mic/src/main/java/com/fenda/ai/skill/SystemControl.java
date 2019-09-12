@@ -4,23 +4,27 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.aispeech.dui.plugin.iqiyi.IQiyiPlugin;
+import com.aispeech.dui.plugin.music.MusicPlugin;
 import com.aispeech.dui.plugin.setting.SettingPlugin;
 import com.aispeech.dui.plugin.setting.SystemCtrl;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.BaseApplication;
+import com.fenda.common.baseapp.AppManager;
 import com.fenda.common.baserx.RxSchedulers;
-import com.fenda.common.provider.ICalendarProvider;
+import com.fenda.common.constant.Constant;
+import com.fenda.common.provider.IPlayerProvider;
 import com.fenda.common.provider.IVoiceRequestProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.AppTaskUtil;
-import com.fenda.common.util.LogUtil;
-
-import org.androidannotations.annotations.App;
+import com.fenda.protocol.tcp.bus.EventBusUtils;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.functions.Consumer;
+
+import static com.fenda.ai.VoiceConstant.MEDIA_STOP;
+import static com.fenda.ai.VoiceConstant.MUSIC_PKG;
 
 /**
  * Created by chuck.liuzhaopeng on 2019/6/24.
@@ -52,12 +56,36 @@ public class SystemControl extends SystemCtrl {
 
     @Override
     public int openApp(String s) {
-        return super.openApp(s);
+        if (s.equals("相册")) {
+            if (!AppManager.getAppManager().isForeground("GalleryCategoryActivity") || !AppTaskUtil.isLauncherForeground()) {
+                try {
+                    AppManager.getAppManager().finishActivity(Class.forName("com.fenda.gallery.activity.GalleryCategoryActivity"));
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                ARouter.getInstance().build(RouterPath.Gallery.GALLERY_CATOGORY).navigation();
+            }
+            return SettingPlugin.ERR_OK;
+        } else {
+            return super.openApp(s);
+        }
     }
 
     @Override
     public int shutdown(String s, String s1, String s2, String s3) {
 //        DispatchManager.startService(Constant.AIDL.SCREEN_OFF, Constant.AIDL.SCREEN_OFF,"",Constant.AIDL.LAUNCHER);
+        // 锁屏
+        EventBusUtils.post(Constant.Common.SCREEN_OFF);
+        // 退出播放
+        if (!BaseApplication.QQMUSIC.isEmpty()) {
+            BaseApplication.QQMUSIC.clear();
+            MusicPlugin.get().getMusicApi().exit();
+        }
+        IQiyiPlugin.get().getVideoApi().exit();
+        IPlayerProvider provider = ARouter.getInstance().navigation(IPlayerProvider.class);
+        if (provider != null) {
+            provider.stop();
+        }
         return SettingPlugin.ERR_OK;
     }
 
@@ -80,13 +108,14 @@ public class SystemControl extends SystemCtrl {
     @Override
     public int screenOff() {
 //        DispatchManager.startService(Constant.AIDL.SCREEN_OFF, Constant.AIDL.SCREEN_OFF,"",Constant.AIDL.LAUNCHER);
-
+        EventBusUtils.post(Constant.Common.SCREEN_OFF);
         return SettingPlugin.ERR_OK;
     }
 
     @Override
     public int screenOn() {
 //        DispatchManager.startService(Constant.AIDL.SCREEN_ON, Constant.AIDL.SCREEN_ON,"",Constant.AIDL.LAUNCHER);
+        EventBusUtils.post(Constant.Common.SCREEN_ON);
         return SettingPlugin.ERR_OK;
     }
 
@@ -101,20 +130,70 @@ public class SystemControl extends SystemCtrl {
                 .subscribe(new Consumer<String>() {
                     @Override
                     public void accept(String s) throws Exception {
-                        ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
-
+                        if (!AppManager.getAppManager().isForeground("SettingsActivity") || !AppTaskUtil.isLauncherForeground()) {
+                            try {
+                                AppManager.getAppManager().finishActivity(Class.forName("com.fenda.settings.activity.SettingsActivity"));
+                            } catch (ClassNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
+                        }
                     }
                 });
         return SettingPlugin.ERR_OK;
     }
 
 
+    @Override
+    public int setWIFI(Operation operation) {
+        if (operation != SystemCtrl.Operation.Open) {
+            Observable.create(new ObservableOnSubscribe<String>() {
+                @Override
+                public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                    emitter.onNext("");
+                }
+            }).compose(RxSchedulers.<String>io_main())
+                    .subscribe(new Consumer<String>() {
+                        @Override
+                        public void accept(String s) throws Exception {
+                            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsWifiActivity).navigation();
+
+                        }
+                    });
+        }
+        return SettingPlugin.ERR_OK;
+    }
+
+    @Override
+    public int setBluetooth(final Operation operation) {
+
+        Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                emitter.onNext("");
+            }
+        }).compose(RxSchedulers.<String>io_main())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String s) throws Exception {
+                        if (operation == SystemCtrl.Operation.Open) {
+                            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsBluetoothActivity).withBoolean(Constant.Common.OPEN_BLUE_TOOTH, true).withBoolean(Constant.Common.VOICE_CONTROL, true).navigation();
+                        } else {
+                            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsBluetoothActivity).withBoolean(Constant.Common.OPEN_BLUE_TOOTH, false).withBoolean(Constant.Common.VOICE_CONTROL, true).navigation();
+                        }
+
+                    }
+                });
+
+        return SettingPlugin.ERR_OK;
+    }
 
     @Override
     public int goHome() {
-        if (Util.isQIYIPlay()){
+        if (Util.isQIYIPlay()) {
             IQiyiPlugin.get().getVideoApi().exit();
         }
+
         return super.goHome();
     }
 }

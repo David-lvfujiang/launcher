@@ -1,5 +1,6 @@
 package com.fenda.common.constant;
 
+import android.bluetooth.BluetoothDevice;
 import android.net.Uri;
 
 import com.fenda.common.BaseApplication;
@@ -112,11 +113,15 @@ public interface Constant {
         String RONGYUNCLOUDTOKEN = "rongyunCloud_Token";
         String DEVICE_STATUS = "device_status";
         String BT_CONNECTED_NAME = "bt_connected_name";
-        String BT_CONNECTED_ADDRESS= "bt_connected_address";
+        String BT_CONNECTED_ADDRESS = "bt_connected_address";
     }
 
-    interface common {
+    interface Common {
         Uri URI = Uri.parse(ContentProviderManager.BASE_URI + "/user");
+        String SCREEN_OFF = "screen_off";
+        String SCREEN_ON = "screen_on";
+        String OPEN_BLUE_TOOTH = "mOpenBluetooth";
+        String VOICE_CONTROL="mVoiceControl";
 
         int INIT_VOICE_SUCCESS = Integer.MAX_VALUE;
 

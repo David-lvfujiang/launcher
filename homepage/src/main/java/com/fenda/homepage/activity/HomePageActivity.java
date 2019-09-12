@@ -1,7 +1,13 @@
 package com.fenda.homepage.activity;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Handler;
 import android.net.ConnectivityManager;
 import android.net.LinkProperties;
@@ -9,6 +15,7 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.os.Build;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
@@ -40,6 +47,7 @@ import com.fenda.common.util.AppUtils;
 import com.fenda.common.util.GsonUtil;
 import com.fenda.common.util.ImageUtil;
 import com.fenda.common.util.LogUtil;
+import com.fenda.common.util.SPUtils;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.homepage.Adapter.MainAdapter;
 import com.fenda.homepage.R;
@@ -48,10 +56,15 @@ import com.fenda.homepage.bean.RepairPersonHeadBean;
 import com.fenda.homepage.contract.MainContract;
 import com.fenda.homepage.model.MainModel;
 import com.fenda.homepage.presenter.MainPresenter;
+import com.fenda.homepage.receiver.ScreenOffAdminReceiver;
 import com.fenda.protocol.tcp.TCPConfig;
 import com.fenda.protocol.tcp.bean.BaseTcpMessage;
 import com.fenda.protocol.tcp.bean.EventMessage;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.lang.reflect.Method;
 import java.util.List;
 
 @Route(path = RouterPath.HomePage.HOMEPAGE_MAIN)
@@ -69,13 +82,17 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
     private int showPageIndex;
     private Handler mCyclicRollHandler = new Handler();
+    private String mBtName;
 
     @Autowired
     IVoiceInitProvider initProvider;
     @Autowired
     ICallProvider mICallProvider;
     IVoiceRequestProvider initVoiceProvider;
-
+    private PowerManager mPowerManager;
+    private DevicePolicyManager mPolicyManager;
+    private PowerManager.WakeLock mWakeLock;
+    private ComponentName mAdminReceiver;
     Runnable cycleRollRunabler = new Runnable() {
         @Override
         public void run() {
@@ -95,7 +112,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             }
         }
     };
-
 
     @Override
     public int onBindLayout() {
@@ -125,6 +141,11 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mHeaderWeatherTv.setOnClickListener(this);
         mHeaderWeatherIv.setOnClickListener(this);
 
+
+        IntentFilter btIntentFilter = new IntentFilter();
+        btIntentFilter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
+        btIntentFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        registerReceiver(mBtReceiver, btIntentFilter);
 
         showPageIndex = 0;
 
@@ -194,6 +215,12 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void initData() {
+        mAdminReceiver = new ComponentName(mContext, ScreenOffAdminReceiver.class);
+        mPowerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        mPolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+        if (!mPolicyManager.isAdminActive(mAdminReceiver)) {
+            openDeviceManager();
+        }
         if (initProvider != null) {
             initProvider.init(this);
             initProvider.initVoice();
@@ -219,9 +246,20 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 //        if (settingService != null) {
 //            settingService.deviceStatus(this);
 //        }
-        // 清除本地联系人数据时重新请求网络数据并保存到本地数据库
-        if (ContentProviderManager.getInstance(this, Constant.common.URI).isEmpty()) {
-            mPresenter.getFamilyContacts();
+
+    }
+
+    /**
+     * 打开设备管理员权限
+     */
+    private void openDeviceManager() {
+        ComponentName componentName = new ComponentName(getPackageName(), "com.fenda.homepage.receiver.ScreenOffAdminReceiver");
+        try {
+            Method setActiveAdmin = mPolicyManager.getClass().getDeclaredMethod("setActiveAdmin", ComponentName.class, boolean.class);
+            setActiveAdmin.setAccessible(true);
+            setActiveAdmin.invoke(mPolicyManager, componentName, true);
+        } catch (Exception e) {
+
         }
     }
 
@@ -235,14 +273,14 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         //家庭解散通知
         if (message.getCode() == TCPConfig.MessageType.FAMILY_DISSOLVE) {
             LogUtil.d("家庭解散通知1 " + message);
-            ContentProviderManager.getInstance(mContext, Constant.common.URI).clear();
+            ContentProviderManager.getInstance(mContext, Constant.Common.URI).clear();
             AppUtils.saveBindedDevice(getApplicationContext(), false);
             ARouter.getInstance().build(RouterPath.SETTINGS.SettingsBindDeviceActivity).navigation();
         }
         //普通成员退出家庭通知
         else if (message.getCode() == TCPConfig.MessageType.USER_EXIT_FAMILY) {
             LogUtil.d("bind onReceiveEvent = " + message);
-            ContentProviderManager.getInstance(mContext, Constant.common.URI).clear();
+            ContentProviderManager.getInstance(mContext, Constant.Common.URI).clear();
             mPresenter.getFamilyContacts();
         } else if (message.getCode() == TCPConfig.MessageType.USER_REPAIR_HEAD) {
             if (message != null && message.getData() != null) {
@@ -250,11 +288,11 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 String msg = baseTcpMessage.getMsg();
                 RepairPersonHeadBean bean = GsonUtil.GsonToBean(msg, RepairPersonHeadBean.class);
                 if (bean != null) {
-                    ContentProviderManager.getInstance(mContext, Constant.common.URI).updateUserHeadByUserID(bean.getIcon(), bean.getUserId());
+                    ContentProviderManager.getInstance(mContext, Constant.Common.URI).updateUserHeadByUserID(bean.getIcon(), bean.getUserId());
                 }
 
             }
-        }else if (message.getCode() == Constant.common.INIT_VOICE_SUCCESS){
+        }else if (message.getCode() == Constant.Common.INIT_VOICE_SUCCESS){
             // @todo  勿删 语音初始化成功后会回调这里,在语音成功之前调用会导致应用崩溃
             if (initVoiceProvider != null){
                 initVoiceProvider.requestWeather();
@@ -285,6 +323,10 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     if (settingService != null) {
                         LogUtil.d(TAG, "init device status");
                         settingService.deviceStatus(getApplicationContext());
+                    }
+                    // 清除本地联系人数据时重新请求网络数据并保存到本地数据库
+                    if (ContentProviderManager.getInstance(mContext, Constant.Common.URI).isEmpty()) {
+                        mPresenter.getFamilyContacts();
                     }
                 }
 
@@ -322,6 +364,48 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         }
     }
 
+    private BroadcastReceiver mBtReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED)) {
+                BluetoothDevice mConnectionBluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                int state = intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE, 0);
+                LogUtil.d(TAG, "BT CONNECT staute " + mConnectionBluetoothDevice.getName() + state);
+                if (BluetoothAdapter.STATE_DISCONNECTED == state) {
+                    LogUtil.d(TAG, "蓝牙断开了");
+                    SPUtils.remove(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME);
+                    LogUtil.d(TAG, "STATE_DISCONNECTED getName = " + mConnectionBluetoothDevice.getName() + ", STATE_DISCONNECTED getAddress = " + mConnectionBluetoothDevice.getAddress());
+                } else if (BluetoothAdapter.STATE_CONNECTED == state) {
+                    LogUtil.d(TAG, "蓝牙连上了");
+                    mBtName = mConnectionBluetoothDevice.getName();
+                    SPUtils.put(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME, mBtName);
+                    LogUtil.d(TAG, "STATE_CONNECTED getName = " + mConnectionBluetoothDevice.getName() + ", STATE_CONNECTED getAddress = " + mConnectionBluetoothDevice.getAddress());
+                }
+            } else if (action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                switch (device.getBondState()) {
+                    case BluetoothDevice.BOND_BONDING:
+                        LogUtil.d(TAG, "正在配对......");
+                        break;
+                    case BluetoothDevice.BOND_BONDED:
+                        LogUtil.d(TAG, "完成配对");
+                        SPUtils.put(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME, device.getName());
+                        SPUtils.put(getApplicationContext(), String.valueOf(Constant.Settings.BT_CONNECTED_ADDRESS), device.getAddress());
+                        break;
+                    case BluetoothDevice.BOND_NONE:
+                        LogUtil.d(TAG, "取消配对");
+                        ToastUtils.show("成功取消配对");
+                        SPUtils.remove(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME);
+                        SPUtils.remove(getApplicationContext(), String.valueOf(Constant.Settings.BT_CONNECTED_ADDRESS));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    };
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -332,6 +416,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     protected void onStop() {
         super.onStop();
         mCyclicRollHandler.removeCallbacks(cycleRollRunabler);
+        unregisterReceiver(mBtReceiver);
     }
 
 
@@ -359,7 +444,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
     @Override
     public void getFamilyContactsSuccess(BaseResponse<List<UserInfoBean>> response) {
-        ContentProviderManager.getInstance(mContext, Constant.common.URI).insertUsers(response.getData());
+        ContentProviderManager.getInstance(mContext, Constant.Common.URI).insertUsers(response.getData());
     }
 
     @Override
@@ -411,4 +496,38 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     public void homePageFromVoiceControl(String todayWeatherTemp, String todayWeatherName) {
         mHeaderWeatherTv.setText(todayWeatherTemp);
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(String type) {
+        if (type.equals(Constant.Common.SCREEN_OFF)) {
+            screenOff();
+        } else if (type.equals(Constant.Common.SCREEN_ON)) {
+            screenOn();
+        }
+    }
+
+    /**
+     * 亮屏
+     */
+    public void screenOn() {
+        boolean screenOn = mPowerManager.isInteractive();
+        if (!screenOn) {
+            mWakeLock = mPowerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "tag");
+            mWakeLock.acquire();
+            mWakeLock.release();
+        }
+    }
+
+    /**
+     * 熄屏
+     */
+    public void screenOff() {
+        boolean admin = mPolicyManager.isAdminActive(mAdminReceiver);
+        if (admin) {
+            mPolicyManager.lockNow();
+        } else {
+            ToastUtils.show("没有设备管理员权限");
+        }
+    }
+
 }
