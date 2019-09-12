@@ -463,7 +463,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
     private DDSConfig createConfig() {
         DDSConfig config = new DDSConfig();
         // 产品ID -- 必填
-        config.addConfig(DDSConfig.K_PRODUCT_ID, "278582296");
+        config.addConfig(DDSConfig.K_PRODUCT_ID, "278584846");
         // 用户ID -- 必填
         config.addConfig(DDSConfig.K_USER_ID, "lavon.liyuanfang@fenda.com");
         // 产品的发布分支 -- 必填
@@ -471,9 +471,9 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
         //授权方式, 支持思必驰账号授权和profile文件授权 -- 必填
 //        config.addConfig(DDSConfig.K_AUTH_TYPE, AuthType.PROFILE);
         // Product Key -- 必填
-        config.addConfig(DDSConfig.K_PRODUCT_KEY, "8c1e2e8a558d894e08a871a3da4d8842");
+        config.addConfig(DDSConfig.K_PRODUCT_KEY, "4da9491ecef256aa1d586b9a293eef5c");
         // Product Secre -- 必填
-        config.addConfig(DDSConfig.K_PRODUCT_SECRET, "96198328f4cf4fb639347736c5d24235");
+        config.addConfig(DDSConfig.K_PRODUCT_SECRET, "4446809239e306bbbef7a7051f125156");
 
 
         // 产品授权秘钥，服务端生成，用于产品授权 -- 必填
