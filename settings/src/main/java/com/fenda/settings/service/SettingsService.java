@@ -45,7 +45,7 @@ public class SettingsService implements ISettingsProvider {
 
     @Override
     public void deviceStatus(Context context) {
-        LogUtil.d(TAG, "sn = " + SettingsContant.SETTINGS_SERIAL_NUM);
+        LogUtil.d(TAG, "sn = " + DeviceIdUtil.getDeviceId());
         if (AppUtils.isRegisterDevice(context) ){
             LogUtil.d(TAG, "device have registered~");
             if (AppUtils.isBindedDevice(context)) {
@@ -79,7 +79,7 @@ public class SettingsService implements ISettingsProvider {
         registeVersion= AppUtils.getVerName(context);
 
         SettingsRegisterDeviceRequest deviceRegisterRequest = new SettingsRegisterDeviceRequest();
-        deviceRegisterRequest.setDeviceId(DeviceIdUtil.getLocalMac());
+        deviceRegisterRequest.setDeviceId(DeviceIdUtil.getDeviceId());
         deviceRegisterRequest.setName(registeName);
         deviceRegisterRequest.setClientVersion(registeVersion);
         deviceRegisterRequest.setMacAddr(registeMac);

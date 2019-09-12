@@ -145,7 +145,7 @@ public class SettingsDeviceAddContractsQRActivity extends BaseMvpActivity<Settin
                     String userId = String.valueOf(headMsg.getUserId());
 
                     SettingsAgreeUserAddRequest agreeUserAddRequest = new SettingsAgreeUserAddRequest();
-                    agreeUserAddRequest.setDeviceId(SettingsContant.SETTINGS_SERIAL_NUM);
+                    agreeUserAddRequest.setDeviceId(DeviceIdUtil.getDeviceId());
                     agreeUserAddRequest.setId(ID);
                     agreeUserAddRequest.setMessageContent(msgContent);
                     agreeUserAddRequest.setMessageType(msgType);

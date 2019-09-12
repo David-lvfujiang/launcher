@@ -17,6 +17,7 @@ import com.fenda.common.constant.Constant;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.SPUtils;
 import com.fenda.common.util.ToastUtils;
+import com.fenda.protocol.util.DeviceIdUtil;
 import com.fenda.settings.R;
 import com.fenda.settings.constant.SettingsContant;
 import com.fenda.settings.contract.SettingsContract;
@@ -101,7 +102,7 @@ public class SettingsChangeDeviceNameActivity extends BaseMvpActivity<SettingsPr
             public void onClick(View view) {
                 mChangedName = etName.getText().toString();
                 SettingsUpdateDeviceNameRequest request= new SettingsUpdateDeviceNameRequest();
-                request.setDeviceId(SettingsContant.SETTINGS_SERIAL_NUM);
+                request.setDeviceId(DeviceIdUtil.getDeviceId());
                 request.setName(mChangedName);
                 mPresenter.updateDeviceName(request);
             }
