@@ -34,6 +34,7 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
 import com.fenda.common.bean.UserInfoBean;
+import com.fenda.common.bean.WeatherWithHomeBean;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.db.ContentProviderManager;
 import com.fenda.common.provider.ICallProvider;
@@ -41,6 +42,7 @@ import com.fenda.common.provider.IHomePageProvider;
 import com.fenda.common.provider.ISettingsProvider;
 import com.fenda.common.provider.IVoiceInitProvider;
 import com.fenda.common.provider.IVoiceRequestProvider;
+import com.fenda.common.provider.IWeatherProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.AppUtils;
 import com.fenda.common.util.GsonUtil;
@@ -67,7 +69,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 @Route(path = RouterPath.HomePage.HOMEPAGE_MAIN)
-public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener, View.OnTouchListener, IHomePageProvider {
+public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener, View.OnTouchListener {
     private final static String TAG = "HomePageActivity";
 
     TextClock mHeaderTimeTv;
@@ -88,6 +90,8 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     @Autowired
     ICallProvider mICallProvider;
     IVoiceRequestProvider initVoiceProvider;
+    IWeatherProvider mIWeatherProvider;
+
     private PowerManager mPowerManager;
     private DevicePolicyManager mPolicyManager;
     private PowerManager.WakeLock mWakeLock;
@@ -122,7 +126,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mHeaderTimeTv = findViewById(R.id.tv_header_time);
         mTipInfoRv = findViewById(R.id.rv_Tipinfo);
         mHeaderWeatherIv = findViewById(R.id.iv_header_weather);
-        mHeaderWeatherTv = findViewById(R.id.tv_header_temp_unit);
+        mHeaderWeatherTv = findViewById(R.id.tv_header_temp);
 
         mAiTipIv = findViewById(R.id.iv_main_tip_icon);
         mAiTipTitleTv = findViewById(R.id.tv_main_item_content);
@@ -230,6 +234,10 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
         }
 
+        if (mIWeatherProvider == null){
+            mIWeatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
+        }
+
 
         if (mICallProvider != null) {
             mICallProvider.initSdk();
@@ -299,6 +307,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             }
         }
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void isNetWodrkConnect() {
@@ -415,6 +424,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     protected void onStop() {
         super.onStop();
         mCyclicRollHandler.removeCallbacks(cycleRollRunabler);
+
     }
 
     @Override
@@ -434,8 +444,16 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 //            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
         } else if (resId == R.id.iv_header_weather || resId == R.id.tv_header_temp) {
 
-            ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN).navigation();
+
+            String saveWeahterValue = (String) SPUtils.get(getApplicationContext(), Constant.Weather.SP_NOW_WEATHER, "");
+            if (saveWeahterValue != null && saveWeahterValue.length() > 1){
+                mIWeatherProvider.weatherFromVoiceControl(saveWeahterValue);
+            }
+            else {
+                ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN).navigation();
+            }
             initVoiceProvider.nowWeather();
+
         } else if (resId == R.id.iv_main_qqmusic) {
             MusicPlugin.init(mContext,MusicPlugin.TYPE_QQCAR);
             MusicPlugin.get().getMusicApi().openMusicApp();
@@ -490,14 +508,11 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     }
 
 
-    @Override
-    public void init(Context context) {
-
-    }
-
-    @Override
-    public void homePageFromVoiceControl(String todayWeatherTemp, String todayWeatherName) {
-        mHeaderWeatherTv.setText(todayWeatherTemp);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventHomePageFromVoiceControl(WeatherWithHomeBean weatherWithHomeBean) {
+        Log.e(TAG, "homePageFromVoiceControl " + weatherWithHomeBean.getWeatherTempNum() + " " + weatherWithHomeBean.getWeatherIconId());
+        mHeaderWeatherTv.setText(weatherWithHomeBean.getWeatherTempNum());
+        mHeaderWeatherIv.setImageDrawable(getResources().getDrawable(weatherWithHomeBean.getWeatherIconId()));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

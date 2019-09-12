@@ -127,4 +127,8 @@ public interface Constant {
 
     }
 
+    interface Weather{
+        String SP_NOW_WEATHER = "key_sp_nowWeahter";
+    }
+
 }
