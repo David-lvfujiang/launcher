@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.constant.Constant;
@@ -81,6 +82,11 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
      */
     private BluetoothDevice mBluetoothDevice;
     private BluetoothGattCallback mBluetoothGattCallback;
+    @Autowired
+    boolean mOpenBluetooth;
+    @Autowired
+    boolean mVoiceControl;
+    private boolean isBtOpen;
 
     public SettingsBluetoothActivity() {
     }
@@ -163,6 +169,11 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
                 }
             }
         };
+        if (mOpenBluetooth && mVoiceControl && !isBtOpen) {
+            btSwitch.setChecked(true);
+        } else if (!mOpenBluetooth && mVoiceControl && isBtOpen){
+            btSwitch.setChecked(false);
+        }
     }
 
     @Override
@@ -660,6 +671,12 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
                 progressDialog.dismiss();
             }
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        finish();
     }
 
     @Override

@@ -116,8 +116,12 @@ public interface Constant {
         String BT_CONNECTED_ADDRESS = "bt_connected_address";
     }
 
-    interface common {
+    interface Common {
         Uri URI = Uri.parse(ContentProviderManager.BASE_URI + "/user");
+        String SCREEN_OFF = "screen_off";
+        String SCREEN_ON = "screen_on";
+        String OPEN_BLUE_TOOTH = "mOpenBluetooth";
+        String VOICE_CONTROL="mVoiceControl";
 
         int INIT_VOICE_SUCCESS = Integer.MAX_VALUE;
 

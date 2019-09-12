@@ -60,8 +60,8 @@ public abstract class BaseActivity extends RxAppCompatActivity{
         initCommonView();
         ARouter.getInstance().inject(this);
         initView();
-        initData();
         initListener();
+        initData();
         EventBus.getDefault().register(this);
         AppManager.getAppManager().addActivity(this);
     }

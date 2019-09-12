@@ -298,7 +298,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
 
     private void sendInitSuccessEventBus() {
         EventMessage message = new EventMessage();
-        message.setCode(Constant.common.INIT_VOICE_SUCCESS);
+        message.setCode(Constant.Common.INIT_VOICE_SUCCESS);
         message.setData(new BaseTcpMessage());
         EventBusUtils.post(message);
     }
@@ -548,6 +548,8 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
         switch(message)
         {
             case VoiceConstant.SIBICHI.SYS_DIALOG_START:
+                //唤醒时点亮屏幕
+                EventBusUtils.post(Constant.Common.SCREEN_ON);
                 if (BaseApplication.getInstance().isRemindRing()){
                     IRemindProvider provider = (IRemindProvider) ARouter.getInstance().build(RouterPath.REMIND.ALARM_SERVICE).navigation();
                     provider.closeAlarm(null);
