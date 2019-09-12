@@ -142,8 +142,6 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
             LogUtil.d(TAG, "bind onReceiveEvent = " + message);
             AppUtils.saveBindedDevice(getApplicationContext(), true);
             ARouter.getInstance().build(RouterPath.HomePage.HOMEPAGE_MAIN).navigation();
-
-//            startActivity(new Intent(SettingsBindDeviceActivity.this, SettingsActivity.class));
             finish();
         }
     }

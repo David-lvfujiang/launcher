@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name="com.fenda.encyclopedia.view.EncyclopediaNotAnswerActivity"></activity>
-        <activity android:name="com.fenda.encyclopedia.view.EncyclopediaQuestiionActivity" />
+        <activity android:name="com.fenda.encyclopedia.view.EncyclopediaQuestiionActivity" android:launchMode="singleTask"/>
         <activity android:name="com.fenda.encyclopedia.view.TextActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
