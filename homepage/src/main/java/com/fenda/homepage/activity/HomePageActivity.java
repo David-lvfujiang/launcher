@@ -416,9 +416,13 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     protected void onStop() {
         super.onStop();
         mCyclicRollHandler.removeCallbacks(cycleRollRunabler);
-        unregisterReceiver(mBtReceiver);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mBtReceiver);
+    }
 
     @Override
     public void onClick(View v) {
