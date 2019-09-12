@@ -16,30 +16,15 @@ import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.common.base.BaseMvpActivity;
-import com.fenda.common.base.BaseResponse;
 import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.db.ContentProviderManager;
 import com.fenda.common.router.RouterPath;
-import com.fenda.common.util.ImageUtils;
+import com.fenda.common.util.ImageUtil;
 import com.fenda.common.util.LogUtil;
-import com.fenda.common.util.ToastUtils;
-import com.fenda.protocol.http.RetrofitHelper;
-import com.fenda.protocol.http.RxSchedulers;
 import com.fenda.settings.R;
-import com.fenda.settings.bean.SettingsContractsInfoBean;
-import com.fenda.settings.constant.SettingsContant;
-import com.fenda.settings.contract.SettingsContract;
-import com.fenda.settings.http.SettingsApiService;
-import com.fenda.settings.model.SettingsModel;
-import com.fenda.settings.model.response.SettingsGetContractListResponse;
-import com.fenda.settings.model.response.SettingsQueryDeviceInfoResponse;
-import com.fenda.settings.model.response.SettingsRegisterDeviceResponse;
-import com.fenda.settings.presenter.SettingsPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.functions.Consumer;
 
 /**
  * Created by  Android Studio.
@@ -139,7 +124,7 @@ public class SettingsDeviceContractsActivity extends BaseMvpActivity {
             if(constactsListBean != null){
 
                 String iconPath = constactsListBean.getIcon();
-                ImageUtils.loadImg(getApplicationContext(), holder1.contractIcon, iconPath);
+                ImageUtil.loadImg(getApplicationContext(), holder1.contractIcon, iconPath);
 
                 if(position == 0){
                     holder1.contractName.setText(constactsListBean.getUserName() + "(管理员)");

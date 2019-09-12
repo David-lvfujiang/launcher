@@ -4,7 +4,7 @@
     android:id="@+id/main_rlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/background"
+    android:background="@mipmap/encyclopedia_background"
     tools:context="com.fenda.encyclopedia.view.EncyclopediaQuestiionActivity">
 
     <RelativeLayout

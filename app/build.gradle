@@ -75,21 +75,12 @@ repositories {
     flatDir {
         dirs 'libs'
     }
-
-//    maven {
-//        url 'http://192.168.100.127:8084/nexus/repository/maven-public/'
-//        name 'maven-public'
-//    }
 }
-
-
-
-
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':common')
-//    implementation (name: 'player-release', ext: 'aar')
+    implementation (name: 'player-release', ext: 'aar')
     api (name: 'lib-dds-1.1.8.1-release', ext: 'aar')
     api (name: 'skill_music-release', ext: 'aar')
     api (name: 'skill_iqiyi-release', ext: 'aar')
@@ -104,16 +95,17 @@ dependencies {
     api (name: 'skill_remind-release_new', ext: 'aar')
 
 //    api (name: 'voice_sibichi_2mic-release', ext: 'aar')
-//    api (name: 'remind-release', ext: 'aar')
-    api (name: 'call-_test-debug', ext: 'aar')
-//    api (name: 'gallery-_dev-release', ext: 'aar')
-    api (name: 'homepage-_test-debug', ext: 'aar')
-//    api (name: 'news-release', ext: 'aar')
-//    api (name: 'weather-release', ext: 'aar')
-//    api (name: 'calendar-_dev-release', ext: 'aar')
-    api (name: 'settings-_test-debug', ext: 'aar')
-//    api (name: 'encyclopedia-_dev-release', ext: 'aar')
-//    api (name: 'player-release', ext: 'aar')
+    api (name: 'voice_sibichi_2mic-release', ext: 'aar')
+    api (name: 'remind-release', ext: 'aar')
+    api (name: 'call-_dev-release', ext: 'aar')
+    api (name: 'gallery-_dev-release', ext: 'aar')
+    api (name: 'homepage-_dev-release', ext: 'aar')
+    api (name: 'news-release', ext: 'aar')
+    api (name: 'weather-release', ext: 'aar')
+    api (name: 'calendar-_dev-release', ext: 'aar')
+    api (name: 'settings-_dev-release', ext: 'aar')
+    api (name: 'encyclopedia-_dev-release', ext: 'aar')
+    api (name: 'player-release', ext: 'aar')
 
     annotationProcessor deps.arouter_compiler
     implementation project(path: ':CallLib')
@@ -122,4 +114,6 @@ dependencies {
     implementation project(path: ':IMLib')
     androidTestImplementation 'junit:junit:4.12'
 
+//    annotationProcessor deps.androidannotations
+//    annotationProcessor deps.arouter_compiler
 }

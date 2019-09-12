@@ -82,8 +82,6 @@ public class LyricFragment extends BaseFragment {
                         tv.setGravity(Gravity.CENTER);
                         linContent.addView(tv);
                     }
-
-
                 }else {
                     TextView tv = new TextView(getActivity());
                     tv.setTextSize(30);

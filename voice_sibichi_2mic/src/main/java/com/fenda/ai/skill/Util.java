@@ -1,5 +1,6 @@
 package com.fenda.ai.skill;
 
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -7,12 +8,16 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.util.Log;
 
 import com.fenda.ai.VoiceConstant;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.service.AccessibilityMonitorService;
 import com.fenda.common.R;
 import com.fenda.common.util.AppTaskUtil;
+
+import java.util.List;
+
 
 
 public class Util {
@@ -82,11 +87,11 @@ public class Util {
      * @return
      */
     public static boolean isQQMusicPlay(){
-            if (VoiceConstant.MUSIC_PKG.equals(AppTaskUtil.getAppTopPackage()) && !BaseApplication.QQMUSIC.isEmpty()){
+            if (isTopTaskPackage(BaseApplication.getInstance()).equals(VoiceConstant.MUSIC_PKG)){
                 return true;
             }else {
                 boolean isLauncher = AppTaskUtil.getAppTopPackage().equals(VoiceConstant.LAUNCHER) && (BaseApplication.getInstance().isNewsPlay() || BaseApplication.getInstance().isMusicPlay());
-                if (!AppTaskUtil.getAppTopPackage().equals(VoiceConstant.QIYIMOBILE_PKG) && !isLauncher && !BaseApplication.QQMUSIC.isEmpty()){
+                if (!AppTaskUtil.getAppTopPackage().equals(VoiceConstant.QIYIMOBILE_PKG) && !isLauncher && isTaskQQmusic(BaseApplication.getInstance())){
                     return true;
                 }
             }
@@ -111,11 +116,63 @@ public class Util {
      * @return
      */
     public static boolean isLauncherMusic(){
-        if (AppTaskUtil.getAppTopPackage().equals(VoiceConstant.LAUNCHER) && (BaseApplication.getInstance().isMusicPlay() || BaseApplication.getInstance().isNewsPlay())){
+        if (isTopTaskPackage(BaseApplication.getInstance()).equals(VoiceConstant.LAUNCHER) && (BaseApplication.getInstance().isMusicPlay() || BaseApplication.getInstance().isNewsPlay())){
             return true;
         }
         return false;
     }
+
+    /**
+     * 查看后台进程是否有QQ音乐
+     * @param mContext
+     * @return
+     */
+    public static boolean isTaskQQmusic(Context mContext){
+        ActivityManager mAm = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+        //获得当前运行的task
+        List<ActivityManager.RunningTaskInfo> taskList = mAm.getRunningTasks(100);
+        Log.e("TAG","taskList = "+taskList.size());
+        for (ActivityManager.RunningTaskInfo taskInfo : taskList) {
+            Log.i("TAG","taskList = INFO "+taskInfo.topActivity.getPackageName());
+            if (VoiceConstant.MUSIC_PKG.equals(taskInfo.topActivity.getPackageName())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static String isTopTaskPackage(Context mContext){
+
+        ActivityManager mAm = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+        //获得当前运行的task
+        List<ActivityManager.RunningTaskInfo> taskList = mAm.getRunningTasks(100);
+        Log.e("TAG","taskList = "+taskList.size());
+        if (taskList != null){
+            return taskList.get(0).topActivity.getPackageName();
+        }
+        return "";
+
+    }
+
+
+    public static void moveQQmusicTask(Context mContext){
+        ActivityManager mAm = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+        //获得当前运行的task
+        List<ActivityManager.RunningTaskInfo> taskList = mAm.getRunningTasks(100);
+        for (ActivityManager.RunningTaskInfo taskInfo : taskList) {
+            if (VoiceConstant.MUSIC_PKG.equals(taskInfo.topActivity.getPackageName())){
+                mAm.moveTaskToFront(taskInfo.id,0);
+                return;
+            }
+        }
+    }
+
+
+
+
+
+
+
 }
 
 

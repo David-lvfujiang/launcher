@@ -27,7 +27,7 @@ import android.widget.TextView;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
 import com.fenda.common.util.DensityUtil;
-import com.fenda.common.util.ImageUtils;
+import com.fenda.common.util.ImageUtil;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.gallery.R;
 import com.fenda.gallery.adapter.CatalogAdapter;
@@ -169,7 +169,7 @@ public class PhotosActivity extends BaseMvpActivity<GalleryPresenter, GalleryMod
                     if (size > 200) {
                         //大于200KB压缩图片
                         try {
-                            File comFile = ImageUtils.compressImage(mFile, 640, 480, Bitmap.CompressFormat.JPEG, 100, mFile.getName());
+                            File comFile = ImageUtil.compressImage(mFile, 640, 480, Bitmap.CompressFormat.JPEG, 100, mFile.getName());
                             RequestBody requestBody = RequestBody.create(MediaType.parse("image/jpg"), comFile);
                             MultipartBody.Part part = MultipartBody.Part.createFormData("photos", comFile.getName(), requestBody);
                             partList.add(part);

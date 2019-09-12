@@ -3,6 +3,8 @@ package com.fenda.common.util;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.fenda.common.BuildConfig;
+
 import java.util.List;
 
 /**
@@ -13,7 +15,7 @@ public class LogUtils {
 
     //	 public static final boolean IsNeedLog = true;
 
-    public static final boolean IsNeedLog = true;
+    public static final boolean IsNeedLog = BuildConfig.LOG_DEBUG;
 
 
     /**
@@ -82,7 +84,7 @@ public class LogUtils {
 
     public static void v(String msg) {
 
-        if (!IsNeedLog) {
+        if (IsNeedLog) {
 
             return;
 
@@ -98,7 +100,7 @@ public class LogUtils {
 
     public static void v(String tag, String msg) {
 
-        if (!IsNeedLog) {
+        if (IsNeedLog) {
 
             return;
 
@@ -119,7 +121,7 @@ public class LogUtils {
 
     public static void d(String msg) {
 
-        if (!IsNeedLog) {
+        if (IsNeedLog) {
 
             return;
 
@@ -140,7 +142,7 @@ public class LogUtils {
 
     public static void i(String msg) {
 
-        if (!IsNeedLog) {
+        if (IsNeedLog) {
 
             return;
 
@@ -161,7 +163,7 @@ public class LogUtils {
 
     public static void w(String msg) {
 
-        if (!IsNeedLog) {
+        if (IsNeedLog) {
 
             return;
 
@@ -182,7 +184,7 @@ public class LogUtils {
 
     public static void w(Throwable tr) {
 
-        if (!IsNeedLog) {
+        if (IsNeedLog) {
 
             return;
 
@@ -203,7 +205,7 @@ public class LogUtils {
 
     public static void w(String msg, Throwable tr) {
 
-        if (!IsNeedLog) {
+        if (IsNeedLog) {
 
             return;
 
@@ -224,7 +226,7 @@ public class LogUtils {
 
     public static void e(String msg) {
 
-        if (!IsNeedLog) {
+        if (IsNeedLog) {
 
             return;
 
@@ -245,7 +247,7 @@ public class LogUtils {
 
     public static void e(Throwable tr) {
 
-        if (!IsNeedLog) {
+        if (IsNeedLog) {
 
             return;
 
@@ -266,7 +268,7 @@ public class LogUtils {
 
     public static void e(String msg, Throwable tr) {
 
-        if (!IsNeedLog) {
+        if (IsNeedLog) {
 
             return;
 

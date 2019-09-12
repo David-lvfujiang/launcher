@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.fenda.common.util.ImageUtils;
+import com.fenda.common.util.ImageUtil;
 import com.fenda.gallery.R;
 import com.fenda.gallery.activity.PhotoDetailActivity;
 import com.fenda.gallery.bean.DayPhoteInfoBean;
@@ -203,7 +203,7 @@ public class FamilyPhotoAdapter extends SectionedRecyclerViewAdapter<FamilyPhoto
                 }
             }
         });
-        ImageUtils.loadImg(mContext,holder.iv_photo,  phoneCameraBean.getThumbnail());
+        ImageUtil.loadImg(mContext,holder.iv_photo,  phoneCameraBean.getThumbnail());
     }
 
     /**

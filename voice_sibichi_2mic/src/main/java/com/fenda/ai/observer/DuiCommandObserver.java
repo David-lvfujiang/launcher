@@ -6,7 +6,9 @@ import android.text.TextUtils;
 
 import com.aispeech.dui.dds.DDS;
 import com.aispeech.dui.dsk.duiwidget.CommandObserver;
+import com.aispeech.dui.plugin.music.MusicPlugin;
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.fenda.ai.skill.Util;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.baserx.RxSchedulers;
 import com.fenda.common.bean.UserInfoBean;
@@ -116,6 +118,9 @@ public class DuiCommandObserver implements CommandObserver {
     }
 
     private void call(String data, final int type) throws JSONException {
+        if (Util.isTaskQQmusic(BaseApplication.getInstance())){
+            MusicPlugin.get().getMusicApi().exit();
+        }
         JSONObject object = new JSONObject(data);
         String nickName = object.optString("contact");
         final String phone = searchContacts(nickName);

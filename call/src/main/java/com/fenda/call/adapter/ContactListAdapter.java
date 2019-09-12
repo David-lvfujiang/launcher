@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.fenda.call.R;
 import com.fenda.call.utils.ImConnectUtil;
 import com.fenda.common.bean.UserInfoBean;
-import com.fenda.common.util.ImageUtils;
+import com.fenda.common.util.ImageUtil;
 
 import java.util.List;
 
@@ -48,7 +48,7 @@ public class ContactListAdapter extends RecyclerView.Adapter {
         final String userId = bean.getMobile();
         int userType = bean.getUserType();
         holder.tvName.setText(bean.getUserName());
-        ImageUtils.loadImg(mContext,holder.ivHead, bean.getIcon());
+        ImageUtil.loadImg(mContext,holder.ivHead, bean.getIcon());
         if (userType == 1) {
             holder.tvRole.setVisibility(View.VISIBLE);
             holder.tvPermissions.setVisibility(View.VISIBLE);

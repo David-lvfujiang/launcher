@@ -7,6 +7,7 @@ import com.aispeech.dui.dds.DDS;
 import com.aispeech.dui.dds.agent.SkillIntent;
 import com.aispeech.dui.dds.agent.VocabIntent;
 import com.aispeech.dui.dds.exceptions.DDSNotInitCompleteException;
+import com.aispeech.dui.plugin.iqiyi.IQiyiPlugin;
 import com.aispeech.dui.plugin.music.MusicPlugin;
 import com.aispeech.dui.plugin.remind.Event;
 import com.aispeech.dui.plugin.remind.RemindPlugin;
@@ -24,6 +25,7 @@ import com.google.gson.Gson;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author mirrer.wangzhonglin
@@ -73,7 +75,6 @@ public class RequestService implements IVoiceRequestProvider {
 
         if (Util.isQQMusicPlay()){
             MusicPlugin.get().getMusicApi().exit();
-            BaseApplication.QQMUSIC.clear();
         }
         try {
             if (DDS.getInstance().getInitStatus() == DDS.INIT_COMPLETE_FULL){
@@ -157,11 +158,31 @@ public class RequestService implements IVoiceRequestProvider {
 
     @Override
     public void cancelQQMusic() {
-        LogUtil.e("===============================>退出QQ音乐中.... "+ BaseApplication.QQMUSIC.isEmpty());
-        Intent intent = new Intent(VoiceConstant.ACTION_CLOSE_QQMUSIC);
-        mContext.sendBroadcast(intent);
+        if (Util.isTaskQQmusic(BaseApplication.getInstance())){
+            Intent intent = new Intent(VoiceConstant.ACTION_CLOSE_QQMUSIC);
+            mContext.sendBroadcast(intent);
+        }
 
 
+
+
+    }
+
+    @Override
+    public void openQQMusic() {
+        if (!Util.isTopTaskPackage(BaseApplication.getInstance()).equals(VoiceConstant.MUSIC_PKG)){
+            if (Util.isTaskQQmusic(BaseApplication.getInstance())){
+                Util.moveQQmusicTask(BaseApplication.getInstance());
+            }else {
+                MusicPlugin.get().getMusicApi().openMyMusic();
+            }
+        }
+
+    }
+
+    @Override
+    public void openAqiyi() {
+        IQiyiPlugin.get().getVideoApi().open();
 
     }
 

@@ -99,8 +99,9 @@ public class SettingsLoadWebviewActivity extends BaseMvpActivity {
     }
 
     @Override
-    public void initStatusBar() {
+    public boolean initStatusBar() {
         hookWebView();
+        return false;
     }
 
     @Override

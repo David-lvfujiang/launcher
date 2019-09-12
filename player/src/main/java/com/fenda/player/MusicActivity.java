@@ -418,7 +418,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
 
         mIntent = intent;
 //        initData();
-
+        current_item = 0;
         MusicPlayBean bean = mIntent.getParcelableExtra(Constant.Player.keyDataMusicKey);
         stop();
         List<FDMusic> tMusicList = bean.getFdMusics();
@@ -432,14 +432,10 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         FDMusic tMusic = mMusicList.get(current_item);
         notifyFragment(tMusic);
         Log.e("qob", "MyBroadcastReceiver List " + mMusicList);
-        current_item = 0;
         getRandomIndex();
         isPause = false;
         play(tMusic);
 
-        PlayerMessage message = new PlayerMessage();
-        message.setMsgType(2);
-        EventBusUtils.post(message);
 
 
     }

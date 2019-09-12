@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.widget.ImageView;
 
 import com.fenda.common.base.BaseFragment;
-import com.fenda.common.util.ImageUtils;
+import com.fenda.common.util.ImageUtil;
 import com.fenda.gallery.R;
 import com.fenda.gallery.bean.PhoneCameraBean;
 
@@ -40,9 +40,9 @@ public class PhotoDetailFragment extends BaseFragment {
             PhoneCameraBean cameraBean = mBundle.getParcelable("bean");
             int style = mBundle.getInt("style");
             if (style == 1) {
-                ImageUtils.loadImg(mContext, mIvDetail, cameraBean.getPhotos());
+                ImageUtil.loadImg(mContext, mIvDetail, cameraBean.getPhotos());
             } else {
-                ImageUtils.loadImg(mContext, mIvDetail, cameraBean.getPhotos());
+                ImageUtil.loadImg(mContext, mIvDetail, cameraBean.getPhotos());
             }
 
         }

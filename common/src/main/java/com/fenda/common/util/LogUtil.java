@@ -4,6 +4,7 @@ package com.fenda.common.util;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.orhanobut.logger.BuildConfig;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
   */
 public class LogUtil {
 
-    public static final boolean IsNeedLog = true;
+    public static final boolean IsNeedLog = BuildConfig.DEBUG;
 
     /**
      * 日志输出时的TAG
@@ -68,7 +69,7 @@ public class LogUtil {
      * 以级别为 v 的形式输出LOG，输出颜色为黑色的，输出大于或等于VERBOSE日志级别的信息
      */
     public static void v(String msg) {
-        if (!IsNeedLog) {
+        if (IsNeedLog) {
             return;
         }
 
@@ -78,7 +79,7 @@ public class LogUtil {
     }
 
     public static void v(String tag, String msg) {
-        if (!IsNeedLog) {
+        if (IsNeedLog) {
             return;
         }
         if (mDebuggable >= LEVEL_VERBOSE) {
@@ -90,7 +91,7 @@ public class LogUtil {
      * 以级别为 d 的形式输出LOG，输出颜色是蓝色的，输出大于或等于DEBUG日志级别的信息
      */
     public static void d(String msg) {
-        if (!IsNeedLog) {
+        if (IsNeedLog) {
             return;
         }
         if (mDebuggable >= LEVEL_DEBUG) {
@@ -99,7 +100,7 @@ public class LogUtil {
     }
 
     public static void d(String tag, String msg) {
-        if (!IsNeedLog) {
+        if (IsNeedLog) {
             return;
         }
         if (mDebuggable >= LEVEL_VERBOSE) {
@@ -111,7 +112,7 @@ public class LogUtil {
      * 以级别为 i 的形式输出LOG，输出为绿色，输出大于或等于INFO日志级别的信息
      */
     public static void i(String msg) {
-        if (!IsNeedLog) {
+        if (IsNeedLog) {
             return;
         }
         if (mDebuggable >= LEVEL_INFO) {
@@ -123,7 +124,7 @@ public class LogUtil {
      * 以级别为 w 的形式输出LOG，输出为橙色, 输出大于或等于WARN日志级别的信息
      */
     public static void w(String msg) {
-        if (!IsNeedLog) {
+        if (IsNeedLog) {
             return;
         }
         if (mDebuggable >= LEVEL_WARN) {
@@ -135,7 +136,7 @@ public class LogUtil {
      * 以级别为 w 的形式输出Throwable，输出为红色，仅输出ERROR日志级别的信息.
      */
     public static void w(Throwable tr) {
-        if (!IsNeedLog) {
+        if (IsNeedLog) {
             return;
         }
         if (mDebuggable >= LEVEL_WARN) {
@@ -147,7 +148,7 @@ public class LogUtil {
      * 以级别为 w 的形式输出LOG信息和Throwable
      */
     public static void w(String msg, Throwable tr) {
-        if (!IsNeedLog) {
+        if (IsNeedLog) {
             return;
         }
         if (mDebuggable >= LEVEL_WARN && null != msg) {
@@ -159,7 +160,7 @@ public class LogUtil {
      * 以级别为 e 的形式输出LOG
      */
     public static void e(String msg) {
-        if (!IsNeedLog) {
+        if (IsNeedLog) {
             return;
         }
         if (mDebuggable >= LEVEL_ERROR) {
@@ -171,7 +172,7 @@ public class LogUtil {
      * 以级别为 e 的形式输出Throwable
      */
     public static void e(Throwable tr) {
-        if (!IsNeedLog) {
+        if (IsNeedLog) {
             return;
         }
 
@@ -184,7 +185,7 @@ public class LogUtil {
      * 以级别为 e 的形式输出LOG信息和Throwable
      */
     public static void e(String msg, Throwable tr) {
-        if (!IsNeedLog) {
+        if (IsNeedLog) {
             return;
         }
         if (mDebuggable >= LEVEL_ERROR && null != msg) {

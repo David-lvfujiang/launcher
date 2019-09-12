@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.fenda.call.R;
 import com.fenda.call.utils.ImConnectUtil;
 import com.fenda.common.util.DateUtils;
-import com.fenda.common.util.ImageUtils;
+import com.fenda.common.util.ImageUtil;
 import com.fenda.common.view.CircleImageView;
 
 import java.util.List;
@@ -57,7 +57,7 @@ public class RecorderAdapter extends RecyclerView.Adapter {
         if (TextUtils.isEmpty(icon)) {
             holder.civHead.setImageResource(R.mipmap.call_portrait_01);
         } else {
-            ImageUtils.loadImg(mContext, holder.civHead, icon);
+            ImageUtil.loadImg(mContext, holder.civHead, icon);
         }
         if (getItemCount() == 1) {
             holder.vTopLine.setVisibility(View.INVISIBLE);

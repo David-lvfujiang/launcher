@@ -47,7 +47,6 @@ public class AccessibilityMonitorService extends AccessibilityService {
     @Override
     public void onCreate() {
         super.onCreate();
-        LogUtil.e("===========================AccessibilityMonitorService=============================");
         broadcast = new MyBroadcast();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("back_activity");
@@ -63,66 +62,13 @@ public class AccessibilityMonitorService extends AccessibilityService {
                 mWindowClassName = event.getClassName();
                 String mPackage = event.getPackageName() == null ? "" : event.getPackageName().toString();
                 String className = event.getClassName().toString();
-//                if (MUSIC_PKG.equals(mPackage) ){
-////                    if (FDApplication.packageNameMap.get(qqMusic) == null){
-////                        FDApplication.packageNameMap.put(qqMusic,MUSIC_PKG);
-////                    }
-////                    Log.i(TAG," mediaControlMap ==> Put = "+PLAY);
-////                    MediaControl.mediaControlMap.put(MUSIC_PKG,PLAY);
-//                }else if (QIYIMOBILE_PKG.equals(mPackage) ){
-//                    if (FDApplication.packageNameMap.get(aqyVideo) == null){
-//                        FDApplication.packageNameMap.put(aqyVideo,QIYIMOBILE_PKG);
-//                    }
-//                    if (FDApplication.packageNameMap.get(qqMusic) != null ){
-//                        LogUtil.i(TAG," mediaControlMap ==> Put = MUSIC_PKG  : "+PAUSE);
-//                        MediaControl.mediaControlMap.put(MUSIC_PKG,PAUSE);
-//                        MusicPlugin.get().getMusicApi().pause();
-//                    }
-//
-//                    MediaControl.mediaControlMap.put(QIYIMOBILE_PKG,PLAY);
-//                }else if (LAUNCHER.equals(mPackage)){
-//                    if (FDApplication.packageNameMap.get(launcher) == null){
-//                        FDApplication.packageNameMap.put(launcher,LAUNCHER);
-//                    }
-//                    MediaControl.mediaControlMap.put(LAUNCHER,PLAY);
-//                    MediaControl.mediaControlMap.put(QIYIMOBILE_PKG,STOP);
-//                }else if (className.equals(Constant.SMART_CALL_CLASSNAME)){
-//                    if (FDApplication.packageNameMap.get(qqMusic) != null && MediaControl.mediaControlMap.get(MUSIC_PKG) == PLAY){
-//                        MediaControl.mediaControlMap.put(MUSIC_PKG,PAUSE);
-//                        MusicPlugin.get().getMusicApi().pause();
-//                    }
-//                }
-
-//                if (!"com.fenda.ai".equals(mPackage)){
-//                    packageMap.put("key",mPackage);
-//                    packageMap.put("class",className);
-//                }
-                LogUtil.e("===============================>开始退出QQ音乐 "+BaseApplication.QQMUSIC.isEmpty());
-                if (QIYIMOBILE_PKG.equals(mPackage) && !BaseApplication.QQMUSIC.isEmpty()){
-                    LogUtil.e("====================================");
-                    Observable.create(new ObservableOnSubscribe<String>() {
-                        @Override
-                        public void subscribe(ObservableEmitter<String> emitter) throws Exception {
-                            emitter.onNext("");
-                        }
-                    }).compose(RxSchedulers.<String>io_main())
-                            .subscribe(new Consumer<String>() {
-                                @Override
-                                public void accept(String s) throws Exception {
-                                    if (provider == null){
-                                        provider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
-                                    }
-                                    provider.cancelQQMusic();
-                                }
-                            });
-
-
-
+                if (QIYIMOBILE_PKG.equals(mPackage)){
+                     if (provider == null){
+                         provider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
+                     }
+                     provider.cancelQQMusic();
                 }
-
-                String mPack = AppTaskUtil.getAppTopPackage();
-
-                packageMap.put("key",mPack);
+                packageMap.put("key",mPackage);
                 packageMap.put("class",className);
 
                 break;

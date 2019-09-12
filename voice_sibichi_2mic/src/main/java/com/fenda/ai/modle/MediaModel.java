@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.aispeech.dui.plugin.music.MusicPlugin;
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.fenda.ai.skill.Util;
 import com.fenda.common.BaseApplication;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.basebean.player.MusicPlayBean;
@@ -62,7 +63,7 @@ public class MediaModel {
             playlist.addAll(getCrossTallk(contentArray));
             contentType = Constant.Player.CROSS_TALLK;
         }else if ("新闻".equals(type)){
-            if (!BaseApplication.QQMUSIC.isEmpty()){
+            if (Util.isTaskQQmusic(BaseApplication.getInstance())){
                 MusicPlugin.get().getMusicApi().pause();
             }
             Observable.create(new ObservableOnSubscribe<String>() {
@@ -98,7 +99,7 @@ public class MediaModel {
         bean.setMsgType(contentType);
         bean.setAidlMsgType(Constant.Player.keyBroadcastMusicList);
 
-        if (!BaseApplication.QQMUSIC.isEmpty()){
+        if (Util.isTaskQQmusic(BaseApplication.getInstance())){
             MusicPlugin.get().getMusicApi().pause();
         }
         Observable.create(new ObservableOnSubscribe<String>() {

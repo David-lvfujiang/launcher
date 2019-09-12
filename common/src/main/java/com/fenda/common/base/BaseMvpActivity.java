@@ -48,6 +48,8 @@ public abstract class BaseMvpActivity<T extends BasePresenter,M extends BaseMode
         if (mRxManager != null){
             mRxManager.clear();
         }
+
+
     }
 
     @Override

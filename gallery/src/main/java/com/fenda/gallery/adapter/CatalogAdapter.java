@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import com.fenda.common.util.ImageUtils;
+import com.fenda.common.util.ImageUtil;
 import com.fenda.gallery.R;
 import com.fenda.gallery.bean.PhoneCameraBean;
 
@@ -57,7 +57,7 @@ public class CatalogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ArrayList<PhoneCameraBean> beanArrayList = mMapBean.get(catalogName);
         String name = mContext.getResources().getString(R.string.gallery_picture_size, catalogName, String.valueOf(beanArrayList.size()));
         String path = beanArrayList.get(0).getPhotos();
-        ImageUtils.loadImg(mContext, holder.imgPic, path);
+        ImageUtil.loadImg(mContext, holder.imgPic, path);
         holder.tvName.setText(name);
         if (mSelectIndex == i) {
             holder.rbButton.setChecked(true);

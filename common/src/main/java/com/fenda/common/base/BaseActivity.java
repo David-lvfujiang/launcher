@@ -3,11 +3,15 @@ package com.fenda.common.base;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewStub;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.R;
@@ -54,7 +58,12 @@ public abstract class BaseActivity extends RxAppCompatActivity{
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initStatusBar();
+        boolean isFull = initStatusBar();
+        if (!isFull){
+            setStatusBarFullTransparent();
+        }else {
+            NoTitleFullScreen();
+        }
         setContentView(R.layout.common_activity_root);
         mContext = this;
         initCommonView();
@@ -66,9 +75,42 @@ public abstract class BaseActivity extends RxAppCompatActivity{
         AppManager.getAppManager().addActivity(this);
     }
 
-    public void initStatusBar() {
+    public boolean initStatusBar() {
+        return false;
 
     }
+
+
+    /**
+     * 全透状态栏
+     */
+    private void setStatusBarFullTransparent() {
+        //21表示5.0
+        if (Build.VERSION.SDK_INT >= 21) {
+            Window window = getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.TRANSPARENT);
+            //19表示4.4
+        } else if (Build.VERSION.SDK_INT >= 19) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            //虚拟键盘也透明
+            //getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }
+    }
+
+    /**
+     * 全屏显示 设置这个状态可能无法下拉状态栏
+     */
+    private void NoTitleFullScreen(){
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    }
+
 
 
     protected void initCommonView() {
@@ -163,11 +205,11 @@ public abstract class BaseActivity extends RxAppCompatActivity{
     }
 
     public void hideNetWorkErrView() {
-        showNetWorkErrView(false);
+//        showNetWorkErrView(false);
     }
 
     public void showNetWorkErrView() {
-        showNetWorkErrView(true);
+//        showNetWorkErrView(true);
     }
 
 

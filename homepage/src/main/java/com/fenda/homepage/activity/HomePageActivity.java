@@ -1,5 +1,7 @@
 package com.fenda.homepage.activity;
 
+import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -26,8 +28,6 @@ import android.widget.ImageView;
 import android.widget.TextClock;
 import android.widget.TextView;
 
-import com.aispeech.dui.plugin.iqiyi.IQiyiPlugin;
-import com.aispeech.dui.plugin.music.MusicPlugin;
 import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
@@ -254,6 +254,8 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 //            settingService.deviceStatus(this);
 //        }
 
+
+
     }
 
     /**
@@ -427,11 +429,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(mBtReceiver);
-    }
 
     @Override
     public void onClick(View v) {
@@ -455,12 +452,22 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             initVoiceProvider.nowWeather();
 
         } else if (resId == R.id.iv_main_qqmusic) {
-            MusicPlugin.init(mContext,MusicPlugin.TYPE_QQCAR);
-            MusicPlugin.get().getMusicApi().openMusicApp();
+            if (initVoiceProvider != null){
+                initVoiceProvider.openQQMusic();
+            }
         } else if (resId == R.id.iv_main_iqiyi) {
-            IQiyiPlugin.init(mContext);
-            IQiyiPlugin.get().getVideoApi().open();
+            if (initVoiceProvider != null){
+                initVoiceProvider.openAqiyi();
+            }
         }
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(mBtReceiver);
+        super.onDestroy();
+
     }
 
     @Override
@@ -527,6 +534,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     /**
      * 亮屏
      */
+    @SuppressLint("InvalidWakeLockTag")
     public void screenOn() {
         boolean screenOn = mPowerManager.isInteractive();
         if (!screenOn) {

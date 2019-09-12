@@ -83,7 +83,7 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
     }
 
     @Override
-    public void initStatusBar() {
+    public boolean initStatusBar() {
         final View decorView = getWindow().getDecorView();
         final int uiOption = View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -102,6 +102,8 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
             }
         });
         setStatusBarDisable(DISABLE_EXPAND);
+        return true;
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)

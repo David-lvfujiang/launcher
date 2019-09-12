@@ -46,6 +46,7 @@ import com.fenda.common.provider.IRemindProvider;
 import com.fenda.common.provider.IWeatherProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.service.AccessibilityMonitorService;
+import com.fenda.common.util.AppUtils;
 import com.fenda.protocol.util.DeviceIdUtil;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.view.SpeechView;
@@ -75,7 +76,6 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
     private int mAuthCount;
 
     private boolean isInit = false;
-    private Handler mHandler = new Handler();
     /**
      * 初始化监听广播
      */
@@ -297,6 +297,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
     };
 
     private void sendInitSuccessEventBus() {
+
         EventMessage message = new EventMessage();
         message.setCode(Constant.Common.INIT_VOICE_SUCCESS);
         message.setData(new BaseTcpMessage());
@@ -339,7 +340,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
         }
         try {
 //            LogUtil.i("TAG",  "FD------play welcome TTS");
-            DDS.getInstance().getAgent().getTTSEngine().speak("你好", 1);
+            DDS.getInstance().getAgent().getTTSEngine().speak(hiStr, 1);
         } catch (DDSNotInitCompleteException e) {
             e.printStackTrace();
         }
@@ -380,9 +381,8 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                if (!BaseApplication.QQMUSIC.isEmpty()){
+                if (Util.isTaskQQmusic(BaseApplication.getInstance())){
                     MusicPlugin.get().getMusicApi().exit();
-                    BaseApplication.QQMUSIC.clear();
                 }
             }
         }
@@ -418,7 +418,11 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 mCommandObserver.regist();
                 isInit = true;
             }
-            DDS.getInstance().getAgent().getWakeupEngine().enableWakeup();
+            if (AppUtils.isBindedDevice(getApplicationContext())){
+                DDS.getInstance().getAgent().getWakeupEngine().enableWakeup();
+            }else {
+                DDS.getInstance().getAgent().getWakeupEngine().disableWakeup();
+            }
 
         } catch (DDSNotInitCompleteException e) {
             e.printStackTrace();

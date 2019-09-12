@@ -11,8 +11,6 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.aispeech.dui.plugin.iqiyi.IQiyiPlugin;
-import com.aispeech.dui.plugin.music.MusicPlugin;
 import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.base.BaseActivity;
@@ -131,12 +129,14 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
                     startActivity(intent);
                 } else if (applyId.equals(Constant.QQ_MUSIC)) {
                     //                    ToastUtils.show("QQ音乐");
-                    MusicPlugin.init(mContext,MusicPlugin.TYPE_QQCAR);
-                    MusicPlugin.get().getMusicApi().openMusicApp();
+                    if (initVoiceProvider != null){
+                        initVoiceProvider.openQQMusic();
+                    }
                 } else if (applyId.equals(Constant.IQIYI)) {
                     //                    ToastUtils.show("爱奇艺");
-                    IQiyiPlugin.init(mContext);
-                    IQiyiPlugin.get().getVideoApi().open();
+                    if (initVoiceProvider != null){
+                        initVoiceProvider.openAqiyi();
+                    }
                 } else if (applyId.equals(Constant.NEWS)) {
 //                    ToastUtils.show("新闻");
                     intent.putExtra("applyId", applyId);

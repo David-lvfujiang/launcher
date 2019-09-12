@@ -14,7 +14,7 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
 import com.fenda.common.router.RouterPath;
-import com.fenda.common.util.ImageUtils;
+import com.fenda.common.util.ImageUtil;
 import com.fenda.common.util.LogUtils;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.common.view.CustomRoundAngleImageView;
@@ -107,7 +107,7 @@ public class GalleryCategoryActivity extends BaseMvpActivity<GalleryPresenter, G
                     data.moveToFirst();
                     if (count > 0) {
                         String path = data.getString(data.getColumnIndexOrThrow(IMAGE_PROJECT[0]));
-                        ImageUtils.loadImg(mContext, mIvLocalCategory, path);
+                        ImageUtil.loadImg(mContext, mIvLocalCategory, path);
                     } else {
                         mIvLocalCategory.setImageResource(0);
                     }
@@ -129,7 +129,7 @@ public class GalleryCategoryActivity extends BaseMvpActivity<GalleryPresenter, G
             PhoneCameraBean phoneCameraBean = list.get(0);
             if (phoneCameraBean != null) {
                 String url = phoneCameraBean.getThumbnail();
-                ImageUtils.loadImg(mContext, mIvServerCategory, url);
+                ImageUtil.loadImg(mContext, mIvServerCategory, url);
             }
         } else {
             mIvServerCategory.setImageResource(0);

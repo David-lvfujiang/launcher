@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.fenda.common.util.ImageUtils;
+import com.fenda.common.util.ImageUtil;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.gallery.R;
 import com.fenda.gallery.activity.PhotoDetailActivity;
@@ -76,7 +76,7 @@ public class PhoneCameraAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         final PhoneCameraBean cameraBean = mBeanList.get(i);
         if (cameraBean != null) {
             String path = cameraBean.getPhotos();
-            ImageUtils.loadImg(mContext, holder.imgPhoto, path);
+            ImageUtil.loadImg(mContext, holder.imgPhoto, path);
             if (cameraBean.getSelectStatus() == 2) {
                 holder.imgSelect.setImageResource(R.mipmap.gallery_photo_selected);
             } else if (cameraBean.getSelectStatus() == 1) {

@@ -77,8 +77,7 @@ public class SystemControl extends SystemCtrl {
         // 锁屏
         EventBusUtils.post(Constant.Common.SCREEN_OFF);
         // 退出播放
-        if (!BaseApplication.QQMUSIC.isEmpty()) {
-            BaseApplication.QQMUSIC.clear();
+        if (Util.isTaskQQmusic(BaseApplication.getInstance())) {
             MusicPlugin.get().getMusicApi().exit();
         }
         IQiyiPlugin.get().getVideoApi().exit();

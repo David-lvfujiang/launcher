@@ -66,7 +66,6 @@ public class MediaControl extends MediaCtrl {
     @Override
     public int stop() {
         if (Util.isQQMusicPlay()){
-            BaseApplication.QQMUSIC.clear();
             return MusicPlugin.get().getMusicApi().exit();
         }else if (Util.isQIYIPlay()){
             return IQiyiPlugin.get().getVideoApi().exit();

@@ -56,9 +56,7 @@ public class MusicListActivity extends BaseActivity implements View.OnClickListe
        
     }
 
-
-    @Override
-    public void initListener() {
+    private void addListener(){
         tvBlak.setOnClickListener(this);
 
         mMusicAdapter.setOnItemClickListener(new FDMusicAdpater.OnItemClickListener() {
@@ -86,6 +84,7 @@ public class MusicListActivity extends BaseActivity implements View.OnClickListe
                 moveToPosition(manager,mRecycleListView,tCurrentIndex);
             }
         }
+        addListener();
         
     }
 

@@ -23,7 +23,6 @@ public class AppTaskUtil {
      * @return
      */
     public static String getAppTopPackage(){
-        LogUtil.e("stats name ================================> ");
         UsageStatsManager mAm = (UsageStatsManager) BaseApplication.getInstance().getSystemService(Context.USAGE_STATS_SERVICE);
         Calendar calendar = Calendar.getInstance();
         //结束时间
@@ -39,12 +38,10 @@ public class AppTaskUtil {
             if (taskList.get(i).getLastTimeUsed() > taskList.get(j).getLastTimeUsed()) {
                 j = i;
                 UsageStats stats = taskList.get(j);
-                LogUtil.e("stats name========================================>>>> = "+stats.getPackageName() +" LastTimeUsed = "+stats.getLastTimeUsed());
             }
         }
         if (taskList.size() > 0){
             String pkg = taskList.get(j).getPackageName();
-            LogUtil.e("stats name========================================>>>> = pkg  = "+pkg);
             return pkg;
         }
 

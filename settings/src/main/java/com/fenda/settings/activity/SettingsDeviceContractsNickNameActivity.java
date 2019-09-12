@@ -14,7 +14,7 @@ import com.fenda.common.base.BaseResponse;
 import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.db.ContentProviderManager;
 import com.fenda.common.router.RouterPath;
-import com.fenda.common.util.ImageUtils;
+import com.fenda.common.util.ImageUtil;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.common.view.CircleImageView;
@@ -22,7 +22,6 @@ import com.fenda.protocol.tcp.TCPConfig;
 import com.fenda.protocol.tcp.bean.BaseTcpMessage;
 import com.fenda.protocol.tcp.bean.EventMessage;
 import com.fenda.settings.R;
-import com.fenda.settings.constant.SettingsContant;
 import com.fenda.settings.contract.SettingsContract;
 import com.fenda.settings.model.SettingsModel;
 import com.fenda.settings.model.request.SettingDeleteLinkmanRequest;
@@ -35,8 +34,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
-
-import io.reactivex.functions.Consumer;
 
 /**
  * Created by  Android Studio.
@@ -140,7 +137,7 @@ public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<Set
             }
         }
         tvDisUserName.setText(getString(R.string.settings_contract_info_username) + mIntentUserName);
-        ImageUtils.loadImg(getApplicationContext(), civUserIcon, mIntentIconTmp);
+        ImageUtil.loadImg(getApplicationContext(), civUserIcon, mIntentIconTmp);
 
     }
 
