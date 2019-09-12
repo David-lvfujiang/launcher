@@ -479,7 +479,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             if ((endY-startY)<-80) {
                 Intent intent = new Intent(this,SubmenuActivity.class);
                 startActivity(intent);
-                overridePendingTransition(R.anim.submenu_push_up_in,R.anim.submenu_push_up_out);
+                overridePendingTransition(R.anim.homepage_push_up_in,R.anim.homepage_push_up_out);
             }
         }
         //一定要返回false，让RecyclerView监听左右滑动
