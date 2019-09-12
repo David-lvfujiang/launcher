@@ -6,7 +6,7 @@
 
     <ImageView
         android:id="@+id/iv_item_bg"
-        android:background="@mipmap/cm_bg_01"
+        android:background="@mipmap/homepage_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

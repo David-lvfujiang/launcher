@@ -5,8 +5,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fenda.common.base.BaseActivity;
+import com.fenda.common.util.ToastUtils;
 import com.fenda.homepage.R;
 import com.fenda.homepage.bean.PromptBean;
+import com.fenda.homepage.data.Constant;
 import com.fenda.homepage.data.PromptData;
 
 import java.util.HashMap;
@@ -25,6 +27,7 @@ public class PromptActivity extends BaseActivity implements View.OnClickListener
     private TextView mPrompt3Tv;
     private TextView mPrompt4Tv;
     private TextView mPrompt5Tv;
+    private String applyId;
     @Override
     public int onBindLayout() {
         return R.layout.activity_prompt;
@@ -39,17 +42,19 @@ public class PromptActivity extends BaseActivity implements View.OnClickListener
         mPrompt3Tv = findViewById(R.id.tv_prompt3);
         mPrompt4Tv = findViewById(R.id.tv_prompt4);
         mPrompt5Tv = findViewById(R.id.tv_prompt5);
-        String applyId = getIntent().getStringExtra("applyId");
+        applyId = getIntent().getStringExtra("applyId");
         PromptBean promptBean = new PromptBean();
         Map<String , PromptBean> promptDataList = new HashMap<String , PromptBean>();
         promptDataList = PromptData.promptDataList(promptDataList);
         promptBean = promptDataList.get(applyId);
-        mPromptTitleTv.setText(promptBean.getPromptTitle());
-        mPrompt1Tv.setText(promptBean.getPrompt1());
-        mPrompt2Tv.setText(promptBean.getPrompt2());
-        mPrompt3Tv.setText(promptBean.getPrompt3());
-        mPrompt4Tv.setText(promptBean.getPrompt4());
-        mPrompt5Tv.setText(promptBean.getPrompt5());
+        if (promptBean!=null){
+            mPromptTitleTv.setText(promptBean.getPromptTitle());
+            mPrompt1Tv.setText(promptBean.getPrompt1());
+            mPrompt2Tv.setText(promptBean.getPrompt2());
+            mPrompt3Tv.setText(promptBean.getPrompt3());
+            mPrompt4Tv.setText(promptBean.getPrompt4());
+            mPrompt5Tv.setText(promptBean.getPrompt5());
+        }
     }
 
     @Override
@@ -71,16 +76,23 @@ public class PromptActivity extends BaseActivity implements View.OnClickListener
         int resId = v.getId();
         if (resId == R.id.iv_prompt_back || resId == R.id.tv_prompt_title) {
             finish();
-        } else if (resId == R.id.tv_prompt1) {
-
-        } else if (resId == R.id.tv_prompt2) {
-
-        } else if (resId == R.id.tv_prompt3) {
-
-        } else if (resId == R.id.tv_prompt4) {
-
-        } else if (resId == R.id.tv_prompt5) {
-
+        } else
+        {
+            if ((Constant.CALENDAR).equals(applyId)){
+                if (resId == R.id.tv_prompt1) {
+                } else if (resId == R.id.tv_prompt2) {
+                } else if (resId == R.id.tv_prompt3) {
+                } else if (resId == R.id.tv_prompt4) {
+                } else if (resId == R.id.tv_prompt5) {
+                }
+            } else if ((Constant.CALENDAR).equals(applyId)){
+                if (resId == R.id.tv_prompt1) {
+                } else if (resId == R.id.tv_prompt2) {
+                } else if (resId == R.id.tv_prompt3) {
+                } else if (resId == R.id.tv_prompt4) {
+                } else if (resId == R.id.tv_prompt5) {
+                }
+            }
         }
     }
 }

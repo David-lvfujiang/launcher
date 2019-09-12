@@ -1,5 +1,6 @@
 package com.fenda.homepage.activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -73,7 +74,6 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
         mSubmenuBackLl.setOnTouchListener(this);
         submenuDropLeft.setOnClickListener(this);
         submenuDropRight.setOnClickListener(this);
-        //        mSubmenuListRv2.getBackground().setAlpha(100);//0~255透明度值
         mScrollView = findViewById(R.id.sv_submenu);
         mScrollView.setScrollViewListener(this);
     }
@@ -129,11 +129,14 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
                     intent.putExtra("applyId", applyId);
                     startActivity(intent);
                 } else if (applyId.equals(Constant.CAMERA)) {
-                    ToastUtils.show("相机");
+//                    ToastUtils.show("相机");
+                    PackageManager packageManager = getPackageManager();
+                    Intent packageIntent = packageManager.getLaunchIntentForPackage("com.android.camera2");
+                    startActivity(packageIntent);
                 } else if (applyId.equals(Constant.PLAY)) {
-                    ToastUtils.show("播放器");
-//                    intent.putExtra("applyId", applyId);
-//                    startActivity(intent);
+//                    ToastUtils.show("播放器");
+                    intent.putExtra("applyId", applyId);
+                    startActivity(intent);
                 } else if (applyId.equals(Constant.QQ_MUSIC)) {
                     //                    ToastUtils.show("QQ音乐");
                     MusicPlugin.init(mContext,MusicPlugin.TYPE_QQCAR);
@@ -143,7 +146,9 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
                     IQiyiPlugin.init(mContext);
                     IQiyiPlugin.get().getVideoApi().open();
                 } else if (applyId.equals(Constant.NEWS)) {
-                    ToastUtils.show("新闻");
+//                    ToastUtils.show("新闻");
+                    intent.putExtra("applyId", applyId);
+                    startActivity(intent);
                 } else if (applyId.equals(Constant.CROSS_TALK)) {
                     //                    ToastUtils.show("相声");
                     intent.putExtra("applyId", applyId);
@@ -177,7 +182,9 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
                     intent.putExtra("applyId", applyId);
                     startActivity(intent);
                 } else if (applyId.equals(Constant.REMIND)) {
-                    ToastUtils.show("提醒");
+//                    ToastUtils.show("提醒");
+                    intent.putExtra("applyId", applyId);
+                    startActivity(intent);
                 } else if (applyId.equals(Constant.STORY)) {
                     //                    ToastUtils.show("故事");
                     intent.putExtra("applyId", applyId);
@@ -232,7 +239,7 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
         mGridAdapter2.setOnItemClickListener(new GridAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, String applyId) {
-                ToastUtils.show("建设中，敬请期待。。。");
+                ToastUtils.show("努力开发中，敬请期待。。。");
             }
         });
 
@@ -248,7 +255,7 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
     }
     @Override
     public void onEvent(final EventMessage<BaseTcpMessage> message) {
-        if (message.getCode() == com.fenda.common.constant.Constant.common.INIT_VOICE_SUCCESS){
+        if (message.getCode() == com.fenda.common.constant.Constant.Common.INIT_VOICE_SUCCESS){
             // @todo  勿删 语音初始化成功后会回调这里,在语音成功之前调用会导致应用崩溃
             if (initVoiceProvider != null){
                 initVoiceProvider.requestWeather();

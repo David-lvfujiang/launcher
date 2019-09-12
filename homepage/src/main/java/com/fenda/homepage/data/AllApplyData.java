@@ -28,7 +28,7 @@ public class AllApplyData {
         mList.add(new ApplyBean(Constant.NEWS ,"新闻", R.mipmap.submenu_ico_news));
         mList.add(new ApplyBean(Constant.CROSS_TALK ,"相声", R.mipmap.submenu_ico_cross_talk));
         mList.add(new ApplyBean(Constant.CHILDREN ,"儿歌", R.mipmap.submenu_ico_children));
-        mList.add(new ApplyBean(Constant.TIME,"闹钟", R.mipmap.submenu_ico_time));
+//        mList.add(new ApplyBean(Constant.TIME,"闹钟", R.mipmap.submenu_ico_time));
         mList.add(new ApplyBean(Constant.POETRY ,"诗词", R.mipmap.submenu_ico_poetry));
         mList.add(new ApplyBean(Constant.JOKE,"笑话", R.mipmap.submenu_ico_joke));
         mList.add(new ApplyBean(Constant.IDIOM ,"成语", R.mipmap.submenu_ico_idiom));
