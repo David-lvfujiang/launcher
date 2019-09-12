@@ -1,6 +1,10 @@
 package com.fenda.encyclopedia.view;
 
 import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.text.Html;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,7 +22,7 @@ import com.fenda.encyclopedia.R;
  * @describe: 百科问答Activity
  */
 @Route(path = RouterPath.Encyclopedia.ENCYCLOPEDIA_QUESTIION_ACTIVITY)
-public class EncyclopediaQuestiionActivity extends BaseActivity implements View.OnClickListener {
+public class EncyclopediaQuestiionActivity extends BaseActivity implements View.OnClickListener, View.OnTouchListener {
     private TextView mTvContent, mTvTitle;
     private ImageView mImgReturnBack;
     private EncyclopediaAutoScrollView mAutoScrollView;
@@ -39,16 +43,23 @@ public class EncyclopediaQuestiionActivity extends BaseActivity implements View.
         mAutoScrollView = findViewById(R.id.scrollView);
         mImgReturnBack = findViewById(R.id.title_return_img);
         mImgReturnBack.setOnClickListener(this);
+        mAutoScrollView.setOnTouchListener(this);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void initData() {
-        mTvContent.setText(content);
+        //支持Html格式
+        mTvContent.setText(Html.fromHtml(content, 0));
         mTvTitle.setText(title);
-        mAutoScrollView.setAutoToScroll(true);//设置可以自动滑动
-        mAutoScrollView.setFistTimeScroll(5000);//设置第一次自动滑动的时间
-        mAutoScrollView.setScrollRate(50);//设置滑动的速率
-        mAutoScrollView.setScrollLoop(false);//设置是否循环滑动
+        //滚动条自动滚动
+        mAutoScrollView.setAutoToScroll(true);
+        //开始滚动时间
+        mAutoScrollView.setFistTimeScroll(5000);
+        //滚动的速率
+        mAutoScrollView.setScrollRate(50);
+        //是否循环滑动
+        mAutoScrollView.setScrollLoop(false);
     }
 
     @Override
@@ -58,11 +69,37 @@ public class EncyclopediaQuestiionActivity extends BaseActivity implements View.
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onNewIntent(Intent intent) {
-        content = intent.getStringExtra("content");
-        title = intent.getStringExtra("title");
-        initData();
         super.onNewIntent(intent);
+        initData();
     }
+
+    /**
+     * 点击、滑动监听
+     *
+     * @param view
+     * @param motionEvent
+     * @return
+     */
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        switch (motionEvent.getAction()) {
+            //点击
+            case MotionEvent.ACTION_DOWN:
+                //关闭自动滑动
+                mAutoScrollView.setAutoToScroll(false);
+                break;
+            //滑动
+            case MotionEvent.ACTION_MOVE:
+                mAutoScrollView.setAutoToScroll(false);
+                break;
+            default:
+                break;
+
+        }
+        return false;
+    }
+
 }

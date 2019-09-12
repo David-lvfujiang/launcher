@@ -60,7 +60,8 @@ public class CalendarMainActivity extends BaseActivity {
                 Class decorViewClazz = Class.forName("com.android.internal.policy.DecorView");
                 Field field = decorViewClazz.getDeclaredField("mSemiTransparentStatusBarColor");
                 field.setAccessible(true);
-                field.setInt(getWindow().getDecorView(), Color.TRANSPARENT);  //改为透明
+                //改为透明
+                field.setInt(getWindow().getDecorView(), Color.TRANSPARENT);
             } catch (Exception e) {
             }
         }
@@ -95,23 +96,25 @@ public class CalendarMainActivity extends BaseActivity {
     public void changeData(String weekDay, String year, String month, String day, String nlmonth, String nlday) {
         int monthNumber = 0;
         int dayNumber = 0;
-
-        if (day.length() > 1) {
-            monthNumber = Integer.parseInt(String.valueOf(day.charAt(0)));
-            dayNumber = Integer.parseInt(String.valueOf(day.charAt(1)));
-            mImgMonth.setImageResource(datas[monthNumber]);
-            mImgDay.setImageResource(datas[dayNumber]);
-        } else {
-            dayNumber = Integer.parseInt(String.valueOf(day.charAt(0)));
-            mImgMonth.setImageResource(datas[0]);
-            mImgDay.setImageResource(datas[dayNumber]);
+        if (day != null) {
+            if (day.length() > 1) {
+                monthNumber = Integer.parseInt(String.valueOf(day.charAt(0)));
+                dayNumber = Integer.parseInt(String.valueOf(day.charAt(1)));
+                mImgMonth.setImageResource(datas[monthNumber]);
+                mImgDay.setImageResource(datas[dayNumber]);
+            } else {
+                dayNumber = Integer.parseInt(String.valueOf(day.charAt(0)));
+                mImgMonth.setImageResource(datas[0]);
+                mImgDay.setImageResource(datas[dayNumber]);
+            }
+            mTvWeekDay.setText(weekDay);
+            mTvYear.setText(year + "年");
+            mTvMonth.setText(month);
+            mTvNlDay.setText("农历" + nlmonth + nlday);
         }
-        mTvWeekDay.setText(weekDay);
-        mTvYear.setText(year + "年");
-        mTvMonth.setText(month);
-        mTvNlDay.setText("农历" + nlmonth + nlday);
+
         // 5秒后关闭界面
-          handler.sendEmptyMessageDelayed(AUDIO_CONVERSE_CLOSE, 6000);
+        handler.sendEmptyMessageDelayed(AUDIO_CONVERSE_CLOSE, 6000);
     }
 
     @Override

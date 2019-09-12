@@ -44,7 +44,7 @@ public interface RouterPath {
     public interface Calendar {
         String CALENDAR_ACTIVITY = "/calendar/CalendarActivity";
         String CALENDAR_PROVIDER = "/calendar/CalendarPresenTer";
-
+        String HOLIDAY_ACTIVITY = "/calendar/HolidayActivity";
     }
     public interface Encyclopedia {
         String ENCYCLOPEDIA_PROVIDER = "/encyclopedia/EncyclopediaFragmentPensenter";
