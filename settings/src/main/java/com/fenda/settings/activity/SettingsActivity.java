@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -51,6 +52,7 @@ public class SettingsActivity extends BaseMvpActivity {
     private static final String TAG = "SettingsActivity";
 
     private ImageView ivBack;
+    private ImageView ivEnterBind;
     private TextView tvDisDeviceName;
     private MyListView lvDisSetListItem;
     private LinearLayout llDeviceCenter;
@@ -63,6 +65,8 @@ public class SettingsActivity extends BaseMvpActivity {
     private Set<SettingsBluetoothDeviceBean> mSettingsBluetoothDeviceBean = new HashSet<>();
 
     private String mBtName;
+    private long [] mHits = null;
+    private boolean mShow;
 
     @Override
     protected void initPresenter() {
@@ -76,6 +80,7 @@ public class SettingsActivity extends BaseMvpActivity {
 
     @Override
     public void initView() {
+        ivEnterBind = findViewById(R.id.enter_bind_imageview);
         ivBack = findViewById(R.id.set_back_iv);
         tvDisDeviceName = findViewById(R.id.set_first_info_name);
         lvDisSetListItem = findViewById(R.id.set_items_iv);
@@ -122,6 +127,13 @@ public class SettingsActivity extends BaseMvpActivity {
                 finish();
             }
         });
+        ivEnterBind.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                enterBind();
+            }
+        });
+
         llDeviceCenter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -153,7 +165,7 @@ public class SettingsActivity extends BaseMvpActivity {
                 } else if (("设备信息").equals(setClickedListName)) {
                     Intent deviceInfoIntent = new Intent(SettingsActivity.this, SettingsDeviceInfoActivity.class);
                     startActivity(deviceInfoIntent);
-                } else if (("屏幕与亮度").equals(setClickedListName)) {
+                } else if (("亮度").equals(setClickedListName)) {
                     Intent lightIntent = new Intent(SettingsActivity.this, SetttingsBrightnessActivity.class);
                     startActivity(lightIntent);
                 } else if (("音量").equals(setClickedListName)) {
@@ -254,6 +266,40 @@ public class SettingsActivity extends BaseMvpActivity {
 
     @Override
     public void showErrorTip(String msg) {
+    }
+
+    public void enterBind() {
+        LogUtil.d(TAG, "onDisplaySettingButton----");
+        if (mHits == null) {
+            mHits = new long[10];
+        }
+        //把从第二位至最后一位之间的数字复制到第一位至倒数第一位
+        System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
+        //记录一个时间
+        mHits[mHits.length - 1] = SystemClock.uptimeMillis();
+        //一秒内连续点击。
+        if (SystemClock.uptimeMillis() - mHits[0] <= 3500) {
+            LogUtil.d(TAG, "onDisplaySettingButton ++++++");
+            //这里说明一下，我们在进来以后需要还原状态，否则如果点击过快，第六次，第七次 都会不断进来触发该效果。重新开始计数即可
+            mHits = null;
+            if (mShow) {
+                //这里是你具体的操作
+                if(AppUtils.isBindedDevice(getApplicationContext())){
+                    ToastUtils.show("设备已经绑定，不需要再进入绑定界面了！");
+                } else {
+                    ToastUtils.show("设备未绑定，进入绑定界面！");
+                    Intent mIntent = new Intent(SettingsActivity.this, SettingsBindDeviceActivity.class);
+                    startActivity(mIntent);
+                    finish();
+                    mShow = false;
+                }
+            } else {
+                //这里也是你具体的操作
+                ToastUtils.show("点击次数不对哦，请3秒后重试！");
+                mShow = true;
+            }
+            //这里一般会把mShow存储到sp中。
+        }
     }
 
     @Override

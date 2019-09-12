@@ -36,40 +36,52 @@
         android:layout_marginTop="100dp">
 
         <RadioButton
+            android:id="@+id/rb_30"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="默认(30min)"
+            android:text="@string/settings_standby_3_1"
             android:textColor="@color/white"
-            android:textSize="30dp"
+            android:textSize="40dp"
             android:layout_marginLeft="80dp"
-            android:layout_marginTop="30dp"/>
+            android:layout_marginTop="40dp"
+            android:paddingLeft="100dp"
+            android:checked="true"/>
 
         <RadioButton
+            android:id="@+id/rb_20"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="5min"
+            android:text="@string/settings_standby_2"
             android:textColor="@color/white"
-            android:textSize="30dp"
+            android:textSize="40dp"
             android:layout_marginLeft="80dp"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="40dp"
+            android:paddingLeft="100dp"
+            android:tag="20min"/>
 
         <RadioButton
+            android:id="@+id/rb_10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="10min"
+            android:text="@string/settings_standby_1"
             android:textColor="@color/white"
-            android:textSize="30dp"
+            android:textSize="40dp"
             android:layout_marginLeft="80dp"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="40dp"
+            android:paddingLeft="100dp"
+            android:tag="10min"/>
 
         <RadioButton
+            android:id="@+id/rb_never"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1H"
+            android:text="@string/settings_standby_never"
             android:textColor="@color/white"
-            android:textSize="30dp"
+            android:textSize="40dp"
             android:layout_marginLeft="80dp"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="40dp"
+            android:paddingLeft="100dp"
+            android:tag="never"/>
     </RadioGroup>
 
 </android.support.constraint.ConstraintLayout>

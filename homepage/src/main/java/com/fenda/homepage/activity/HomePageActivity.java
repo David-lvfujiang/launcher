@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.net.ConnectivityManager;
 import android.net.LinkProperties;
@@ -416,9 +417,13 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     protected void onStop() {
         super.onStop();
         mCyclicRollHandler.removeCallbacks(cycleRollRunabler);
-        unregisterReceiver(mBtReceiver);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mBtReceiver);
+    }
 
     @Override
     public void onClick(View v) {

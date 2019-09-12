@@ -114,6 +114,10 @@ public interface Constant {
         String DEVICE_STATUS = "device_status";
         String BT_CONNECTED_NAME = "bt_connected_name";
         String BT_CONNECTED_ADDRESS = "bt_connected_address";
+
+        String APP_VERSION = "app_version";
+        String SCREEN_TIME = "screen_time";
+        String SCREEN_STYLE= "screen_style";
     }
 
     interface Common {

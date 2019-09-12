@@ -1,6 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".activity.SettingsScreenActivity"
+    android:background="@mipmap/settings_bind_netset_background">
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/screen_style_back_iv"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:src="@mipmap/settings_set_back"
+        app:layout_constraintBottom_toBottomOf="@+id/screen_style_info_tv"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/screen_style_info_tv" />
+
+    <TextView
+        android:id="@+id/screen_style_info_tv"
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:background="@mipmap/settings_main"
+        android:gravity="center"
+        android:text="@string/settings_screen_style"
+        android:textColor="#ff00f0ff"
+        android:textSize="35dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/style_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="100dp">
+
+        <RadioButton
+            android:id="@+id/rb_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_screen_style_time_num"
+            android:textColor="@color/white"
+            android:textSize="40dp"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="40dp"
+            android:paddingLeft="100dp"
+            android:tag="20min"/>
+
+        <RadioButton
+            android:id="@+id/rb_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_screen_style_photo"
+            android:textColor="@color/white"
+            android:textSize="40dp"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="40dp"
+            android:paddingLeft="100dp"
+            android:checked="true"/>
+
+        <RadioButton
+            android:id="@+id/rb_simulate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_screen_style_time_simulate"
+            android:textColor="@color/white"
+            android:textSize="40dp"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="40dp"
+            android:paddingLeft="100dp"
+            android:tag="10min"/>
+    </RadioGroup>
+</android.support.constraint.ConstraintLayout>

@@ -236,7 +236,7 @@ public class RetrofitHelper {
         public Response intercept(Chain chain) throws IOException {
             Request.Builder builder = chain.request().newBuilder();
 
-            builder.addHeader("south-device-access-token", DeviceIdUtil.getDeviceId());
+            builder.addHeader("south-device-access-token", DeviceIdUtil.getLocalMac());
 
             Log.d(TAG, "south-device-access-token = " + DeviceIdUtil.getDeviceId());
 

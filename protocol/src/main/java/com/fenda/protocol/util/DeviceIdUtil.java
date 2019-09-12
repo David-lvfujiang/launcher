@@ -2,6 +2,8 @@ package com.fenda.protocol.util;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.telephony.TelephonyManager;
 
 import java.net.NetworkInterface;
@@ -14,8 +16,6 @@ import java.util.UUID;
  * @Date $date$ $time$
  */
 public class DeviceIdUtil {
-
-
 
     public static String getDeviceId(Context mContext){
 
@@ -98,7 +98,7 @@ public class DeviceIdUtil {
      * 所以采用以下方法获取Mac地址
      * @return
      */
-    private static String getLocalMac() {
+    public static String getLocalMac() {
         String macAddress = null;
         StringBuffer buf = new StringBuffer();
         NetworkInterface networkInterface = null;
@@ -125,8 +125,6 @@ public class DeviceIdUtil {
             return "";
         }
         return macAddress;
-
-
     }
 
     /**

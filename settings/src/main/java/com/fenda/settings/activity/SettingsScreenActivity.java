@@ -1,13 +1,20 @@
 package com.fenda.settings.activity;
 
 import android.content.Intent;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fenda.common.base.BaseMvpActivity;
+import com.fenda.common.constant.Constant;
+import com.fenda.common.util.LogUtil;
+import com.fenda.common.util.SPUtils;
+import com.fenda.common.util.ToastUtils;
 import com.fenda.settings.R;
 
 import java.util.ArrayList;
@@ -23,8 +30,12 @@ import java.util.Map;
 public class SettingsScreenActivity extends BaseMvpActivity {
     private static final String TAG = "SettingsScreenActivity";
 
+    private TextView tvScreen;
     private ImageView ivBack;
     private ListView lvScreenList;
+
+    private String mSeclectedTimeRadioBtn;
+    private String mSeclectedStyleRadioBtn;
 
     @Override
     protected void initPresenter() {
@@ -38,14 +49,27 @@ public class SettingsScreenActivity extends BaseMvpActivity {
 
     @Override
     public void initView() {
+        tvScreen = findViewById(R.id.screen_info_tv);
         ivBack = findViewById(R.id.screen_back_iv);
         lvScreenList = findViewById(R.id.screen_listview);
     }
 
     @Override
     public void initData() {
+
+        mSeclectedTimeRadioBtn = (String) SPUtils.get(getApplicationContext(), Constant.Settings.SCREEN_TIME, "");
+        mSeclectedStyleRadioBtn = (String) SPUtils.get(getApplicationContext(), Constant.Settings.SCREEN_STYLE, "");
+
+        if(mSeclectedTimeRadioBtn == ""){
+            mSeclectedTimeRadioBtn = getString(R.string.settings_standby_3_1);
+        }
+        if (mSeclectedStyleRadioBtn == ""){
+            mSeclectedStyleRadioBtn = getString(R.string.settings_screen_style_time_num);
+        }
+        LogUtil.d(TAG,  "mSeclectedTimeRadioBtn = " + mSeclectedTimeRadioBtn);
+        LogUtil.d(TAG,  "mSeclectedStyleRadioBtn = " + mSeclectedStyleRadioBtn);
         String[] screenNamesDis = new String[] {getString(R.string.settings_screen_name_autointo), getString(R.string.settings_screen_name_style)};
-        String[] screenStatusDis = new String[]{" ", " "};
+        String[] screenStatusDis = new String[]{mSeclectedTimeRadioBtn, mSeclectedStyleRadioBtn};
 
         List<Map<String, Object>> listitem = new ArrayList<>();
 
@@ -56,7 +80,6 @@ public class SettingsScreenActivity extends BaseMvpActivity {
             listitem.add(map);
         }
         SimpleAdapter adapter = new SimpleAdapter(this, listitem, R.layout.settings_screen_items_layout, new String[]{"name", "state"}, new int[]{R.id.screen_items, R.id.screen_items_info});
-
         lvScreenList.setAdapter(adapter);
     }
 
@@ -77,13 +100,18 @@ public class SettingsScreenActivity extends BaseMvpActivity {
 
                 if(setClickedListName.equals(getString(R.string.settings_screen_name_autointo))) {
                     Intent mIntent = new Intent(SettingsScreenActivity.this, SettingsScreenIntoStandbyActivity.class);
+                    mIntent.putExtra("SECLECT_TIME_RADIOBTN", mSeclectedTimeRadioBtn);
                     startActivity(mIntent);
+                    finish();
                 } else if(setClickedListName.equals(getString(R.string.settings_screen_name_style))){
                     Intent mIntent = new Intent(SettingsScreenActivity.this, SettingsScreenStyleActivity.class);
+                    mIntent.putExtra("SECLECT_STYLE_RADIOBTN", mSeclectedStyleRadioBtn);
                     startActivity(mIntent);
+                    finish();
                 }
             }
         });
+
     }
 
     @Override

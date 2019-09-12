@@ -1,10 +1,16 @@
 package com.fenda.settings.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.LinkProperties;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.Uri;
 import android.os.Build;
+import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
 import android.view.View;
 import android.widget.ImageView;
@@ -26,10 +32,12 @@ import com.fenda.common.util.AppUtils;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.QRcodeUtil;
 import com.fenda.common.util.SPUtils;
+import com.fenda.common.util.ToastUtils;
 import com.fenda.protocol.tcp.ClientBootstrap;
 import com.fenda.protocol.tcp.TCPConfig;
 import com.fenda.protocol.tcp.bean.BaseTcpMessage;
 import com.fenda.protocol.tcp.bean.EventMessage;
+import com.fenda.protocol.util.DeviceIdUtil;
 import com.fenda.settings.R;
 import com.fenda.settings.constant.SettingsContant;
 import com.fenda.settings.contract.SettingsContract;
@@ -57,10 +65,13 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
     private TextView tvDisVcodeNum;
     private TextView tvDisVcodeText;
 
-    private final String mContentET = "http://www.fenda.com/?sn=" + SettingsContant.SETTINGS_SERIAL_NUM;
+    private final String mContentET = "http://www.fenda.com/?sn=" + DeviceIdUtil.getDeviceId();
     private String baseEvn = SettingsContant.TEST_BASE_URL;
     public static final int DISABLE_EXPAND = 0x00010000;
     public static final int DISABLE_NONE = 0x00000000;
+
+    private long [] mHits = null;
+    private boolean mShow;
 
     @Override
     protected void initPresenter() {
@@ -116,7 +127,6 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
         if (mIVoiceRequestProvider != null) {
             mIVoiceRequestProvider.closeVoice();
         }
-
 //        sendMicDisableBroad();
     }
 
@@ -128,6 +138,16 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
         LogUtil.d(TAG, "userId = " + userId);
         ClientBootstrap bootstrap = ClientBootstrap.getInstance();
         bootstrap.init(mContext, userId, SettingsContant.TCP_IP, SettingsContant.TCP_PORT, 0);
+    }
+
+    @Override
+    public void initListener() {
+        ivDisQRcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onEnterMainNoBind();
+            }
+        });
     }
 
     @Override
@@ -193,6 +213,37 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
 
 //        sendMicAbleBroad();
         super.onDestroy();
+    }
+
+    private void onEnterMainNoBind() {
+        LogUtil.d(TAG, "onDisplaySettingButton----");
+        if (mHits == null) {
+            mHits = new long[10];
+        }
+        //把从第二位至最后一位之间的数字复制到第一位至倒数第一位
+        System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
+        //记录一个时间
+        mHits[mHits.length - 1] = SystemClock.uptimeMillis();
+        //一秒内连续点击。
+        if (SystemClock.uptimeMillis() - mHits[0] <= 3500) {
+            LogUtil.d(TAG, "onDisplaySettingButton ++++++");
+            //这里说明一下，我们在进来以后需要还原状态，否则如果点击过快，第六次，第七次 都会不断进来触发该效果。重新开始计数即可
+            mHits = null;
+            if (mShow) {
+                //这里是你具体的操作
+                ToastUtils.show("设备未绑定，进入主界面！");
+                ARouter.getInstance().build(RouterPath.HomePage.HOMEPAGE_MAIN).navigation();
+//                Intent mIntent = new Intent(SettingsBindDeviceActivity.this, SettingsActivity.class);
+//                startActivity(mIntent);
+//                finish();
+                mShow = false;
+            } else {
+                //这里也是你具体的操作
+                ToastUtils.show("点击次数不对哦，请3秒后重试！");
+                mShow = true;
+            }
+            //这里一般会把mShow存储到sp中。
+        }
     }
 
     @Override

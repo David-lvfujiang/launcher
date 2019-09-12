@@ -25,6 +25,7 @@ import com.fenda.protocol.tcp.TCPConfig;
 import com.fenda.protocol.tcp.bean.BaseTcpMessage;
 import com.fenda.protocol.tcp.bean.EventMessage;
 import com.fenda.protocol.tcp.bean.Head;
+import com.fenda.protocol.util.DeviceIdUtil;
 import com.fenda.settings.R;
 import com.fenda.settings.constant.SettingsContant;
 import com.fenda.settings.contract.SettingsContract;
@@ -88,7 +89,7 @@ public class SettingsDeviceAddContractsQRActivity extends BaseMvpActivity<Settin
 
         tvDisVcode.setText(vcode1);
 
-        final String contentET= "http://www.fenda.com/?sn=" + SettingsContant.SETTINGS_SERIAL_NUM;
+        final String contentET= "http://www.fenda.com/?sn=" + DeviceIdUtil.getDeviceId();
 
         final String filePath = getFileRoot(SettingsDeviceAddContractsQRActivity.this) + File.separator
                 + "qr_" + System.currentTimeMillis() + ".jpg";

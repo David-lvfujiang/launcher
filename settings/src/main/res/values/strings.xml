@@ -124,5 +124,16 @@
 
     <!--SettingsScreenIntoStandbyActivity start -->
     <string name="settings_standby">屏保时间</string>
+    <string name="settings_standby_3_1">30分钟 ( 默认)</string>
+    <string name="settings_standby_3">30分钟</string>
+    <string name="settings_standby_2">20分钟</string>
+    <string name="settings_standby_1">10分钟</string>
+    <string name="settings_standby_never">永不</string>
+
+    <!--SettingsScreenStyleActivity start -->
+    <string name="settings_screen_style">屏保样式</string>
+    <string name="settings_screen_style_photo">家庭相册</string>
+    <string name="settings_screen_style_time_num">数字时钟 ( 默认)</string>
+    <string name="settings_screen_style_time_simulate">模拟时钟</string>
 
 </resources>

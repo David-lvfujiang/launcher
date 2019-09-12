@@ -19,6 +19,7 @@ import com.fenda.common.util.ToastUtils;
 import com.fenda.protocol.http.RetrofitHelper;
 import com.fenda.protocol.http.RxSchedulers;
 import com.fenda.protocol.tcp.ClientBootstrap;
+import com.fenda.protocol.util.DeviceIdUtil;
 import com.fenda.settings.R;
 import com.fenda.settings.activity.SettingsBindDeviceActivity;
 import com.fenda.settings.constant.SettingsContant;
@@ -78,7 +79,7 @@ public class SettingsService implements ISettingsProvider {
         registeVersion= AppUtils.getVerName(context);
 
         SettingsRegisterDeviceRequest deviceRegisterRequest = new SettingsRegisterDeviceRequest();
-        deviceRegisterRequest.setDeviceId(SettingsContant.SETTINGS_SERIAL_NUM);
+        deviceRegisterRequest.setDeviceId(DeviceIdUtil.getLocalMac());
         deviceRegisterRequest.setName(registeName);
         deviceRegisterRequest.setClientVersion(registeVersion);
         deviceRegisterRequest.setMacAddr(registeMac);
