@@ -6,9 +6,14 @@ import android.util.Log;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.fenda.common.BaseApplication;
+import com.fenda.common.bean.WeatherWithHomeBean;
+import com.fenda.common.constant.Constant;
 import com.fenda.common.provider.IHomePageProvider;
 import com.fenda.common.provider.IWeatherProvider;
 import com.fenda.common.router.RouterPath;
+import com.fenda.common.util.SPUtils;
+import com.fenda.protocol.tcp.bus.EventBusUtils;
 import com.fenda.weather.model.WeatherBean;
 import com.google.gson.Gson;
 
@@ -43,21 +48,6 @@ public class WeatherHelper implements IWeatherProvider {
 
     public static final int kWeatherCode_Cloudy = 160;        //多云
     public static final int kWeatherCode_Yin = 180;           //阴
-
-    public static void openWeather(Context context, HashMap<String, Object> weatherMap){
-
-        if (weatherMap != null){
-            Intent tIntent = new Intent(context, WeatherActivity.class);
-            tIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            tIntent.putExtra(keyWeatherCity, (String)weatherMap.get(keyWeatherCity));
-            tIntent.putExtra(keyWeatherTemperature, (String)weatherMap.get(keyWeatherTemperature));
-
-            tIntent.putExtra(keyWeatherName, (String[])weatherMap.get(keyWeatherName));
-            tIntent.putExtra(keyWeatherForecastDateArray, (String[])weatherMap.get(keyWeatherForecastDateArray));
-            tIntent.putExtra(keyWeatherForecastTempArray, (String[])weatherMap.get(keyWeatherForecastTempArray));
-            context.startActivity(tIntent);
-        }
-    }
 
 
     public static int codeFromWeahterName(String weatherName){
@@ -262,6 +252,7 @@ public class WeatherHelper implements IWeatherProvider {
         return weekDays[w];
     }
 
+
     @Override
     public void weatherFromVoiceControl(String weatherContent) {
 
@@ -320,13 +311,18 @@ public class WeatherHelper implements IWeatherProvider {
 
         Log.e("Weather", "todayWeatherContent " + todayWeatherContent);
 
+  //      String userId = (String) SPUtils.get(BaseApplication.getInstance(), Constant.Settings.USER_ID,"");
+        SPUtils.put(BaseApplication.getInstance(), Constant.Weather.SP_NOW_WEATHER, todayWeatherContent);
+
         try{
             WeatherBean bean = new Gson().fromJson(todayWeatherContent, WeatherBean.class);
 
             WeatherBean.DataBena weatherData = bean.getForecast().get(0);
 
-            IHomePageProvider iHomePageProvider = ARouter.getInstance().navigation(IHomePageProvider.class);
-            iHomePageProvider.homePageFromVoiceControl(weatherData.getTempDay(), weatherData.getConditionDayNight());
+
+            int tWeatherCode = WeatherHelper.codeFromWeahterName(weatherData.getConditionDayNight());
+
+            EventBusUtils.post(new WeatherWithHomeBean(weatherData.getTempDay(), WeatherHelper.iconIdWithCode(tWeatherCode, true)));
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -4,14 +4,13 @@
     android:id="@+id/main_rlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
+    android:background="@mipmap/background"
     tools:context="com.fenda.encyclopedia.view.EncyclopediaQuestiionActivity">
 
     <RelativeLayout
         android:id="@+id/title_layout"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="#5544"
         tools:ignore="MissingConstraints">
 
         <ImageView
@@ -37,9 +36,9 @@
         android:id="@+id/content_rlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="50dp"
         android:layout_marginTop="80dp"
-        android:layout_marginRight="20dp">
+        android:layout_marginRight="50dp">
 
         <com.fenda.encyclopedia.view.EncyclopediaAutoScrollView
             android:id="@+id/scrollView"
@@ -48,8 +47,10 @@
 
             <TextView
                 android:id="@+id/content_text"
+                android:textColor="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/demension_dp50"
                 android:gravity="left"
                 android:letterSpacing="0.05"
                 android:lineSpacingExtra="2dp"
@@ -71,6 +72,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
+            android:textColor="@color/white"
             android:text="@string/encyclopedia_other_problem"
             android:textSize="25sp" />
     </RelativeLayout>

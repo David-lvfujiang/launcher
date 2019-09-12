@@ -13,16 +13,21 @@ import android.widget.ScrollView;
  */
 public class EncyclopediaAutoScrollView extends ScrollView {
 
-    private boolean scrolledToTop = true; // 初始化的时候设置一下值
+    private boolean scrolledToTop = true;
     private boolean scrolledToBottom = false;
     private int paddingTop = 0;
     private final int MSG_SCROLL = 10;
     private final int MSG_SCROLL_Loop = 11;
-    private boolean scrollAble = true;//是否能滑动
-    private boolean autoToScroll = true; //是否自动滚动
-    private boolean scrollLoop = false; //是否循环滚动
-    private int fistTimeScroll = 5000;//多少秒后开始滚动，默认5秒
-    private int scrollRate = 500;//多少毫秒滚动一个像素点
+    //是否能滑动
+    private boolean scrollAble = true;
+    //是否自动滚动
+    private boolean autoToScroll = true;
+    //是否循环滚动
+    private boolean scrollLoop = false;
+    //多少秒后开始滚动，默认5秒
+    private int fistTimeScroll = 5000;
+    //多少毫秒滚动一个像素点
+    private int scrollRate = 500;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -73,9 +78,10 @@ public class EncyclopediaAutoScrollView extends ScrollView {
      * 定义监听接口
      */
     public interface ISmartScrollChangedListener {
-        void onScrolledToBottom(); //滑动到底部
-
-        void onScrolledToTop();//滑动到顶部
+        //滑动到底部
+        void onScrolledToBottom();
+        //滑动到顶部
+        void onScrolledToTop();
 
     }
 

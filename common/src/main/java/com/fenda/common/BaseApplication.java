@@ -1,9 +1,9 @@
 package com.fenda.common;
 
-import android.app.Application;
 import android.support.annotation.Nullable;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.fenda.protocol.AppApplicaiton;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
@@ -15,7 +15,7 @@ import java.util.HashMap;
  * @Time 2019/8/26  15:29
  * @Description This is BaseApplication
  */
-public class BaseApplication extends Application {
+public class BaseApplication extends AppApplicaiton {
 
 
     private static BaseApplication instance;

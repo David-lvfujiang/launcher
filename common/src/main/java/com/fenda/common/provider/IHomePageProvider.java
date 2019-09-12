@@ -8,5 +8,5 @@ public interface IHomePageProvider extends IProvider {
      * 语音返回首页天气内容
      * @param
      */
-    void homePageFromVoiceControl(String todayWeatherTemp, String todayWeatherName);
+    void homePageFromVoiceControl(String todayWeatherTemp, int todayWeatherIconId);
 }
