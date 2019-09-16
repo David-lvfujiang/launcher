@@ -235,6 +235,10 @@ public class WeatherHelper implements IWeatherProvider {
 
     public static String dateToWeek(String datetime) {
 
+        if (datetime == null || datetime.length() < 1){
+            return "";
+        }
+
         SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
         String[] weekDays = {"周日", "周一", "周二", "周三", "周四", "周五", "周六"};
         Calendar cal = Calendar.getInstance(); // 获得一个日历
@@ -263,24 +267,32 @@ public class WeatherHelper implements IWeatherProvider {
 
             WeatherBean.DataBena weatherData = bean.getForecast().get(0);
 
+
             String[] weatherNameArr = new String[7];
             String[] weatherDateArr = new String[7];
             String[] weatherTempRangeArr = new String[7];
 
+            //初始化
+            for (int i = 0; i < 7; i++) {
+                weatherNameArr[i] = "30";
+                weatherDateArr[i] = "";
+                weatherTempRangeArr[i] = "";
+            }
+
             try {
-                for (int i = 0; i < 7; i++) {
+                for (int i = 0; i < bean.getForecast().size(); i++) {
                     WeatherBean.DataBena tWeatherData = bean.getForecast().get(i);
                     weatherNameArr[i] = tWeatherData.getConditionDayNight();
                     weatherDateArr[i] = tWeatherData.getPredictDate();
                     weatherTempRangeArr[i] = tWeatherData.getTempNight() + "℃ ~ " + tWeatherData.getTempDay() + "℃";
+
+                    Log.e("qob", "weatherData weatherNameArr " + tWeatherData.getPredictDate());
                 }
+
             }
             catch (Exception ex){
-                for (int i = 0; i < 7; i++) {
-                    weatherNameArr[i] = "30";
-                    weatherDateArr[i] = "";
-                    weatherTempRangeArr[i] = "";
-                }
+                Log.e("qob", "Exception " + ex);
+
             }
 
 

@@ -228,6 +228,7 @@ public class RetrofitHelper {
                     .addHeader("X-APP-TYPE", "android")
                     .build();
             Response response = chain.proceed(request);
+
             return response;
         }
     }
