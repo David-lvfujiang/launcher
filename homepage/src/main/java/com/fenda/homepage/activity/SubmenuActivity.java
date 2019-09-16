@@ -15,7 +15,9 @@ import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.base.BaseActivity;
 import com.fenda.common.provider.IVoiceRequestProvider;
+import com.fenda.common.provider.IWeatherProvider;
 import com.fenda.common.router.RouterPath;
+import com.fenda.common.util.SPUtils;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.homepage.Adapter.GridAdapter;
 import com.fenda.homepage.R;
@@ -48,6 +50,8 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
     private ImageView submenuDropLeft;
     private ImageView submenuDropRight;
     IVoiceRequestProvider initVoiceProvider;
+    IWeatherProvider mIWeatherProvider;
+
     @Override
     public int onBindLayout() {
         return R.layout.activity_submenu;
@@ -103,7 +107,13 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
                 }
                 else if (applyId.equals(Constant.WEATHER)) {
 //                    ToastUtils.show("天气");
-                    ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN).navigation();
+                    String saveWeahterValue = (String) SPUtils.get(getApplicationContext(), com.fenda.common.constant.Constant.Weather.SP_NOW_WEATHER, "");
+                    if (saveWeahterValue != null && saveWeahterValue.length() > 1){
+                        mIWeatherProvider.weatherFromVoiceControl(saveWeahterValue);
+                    }
+                    else {
+                        ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN).navigation();
+                    }
                     initVoiceProvider.nowWeather();
                 } else if (applyId.equals(Constant.CALENDAR)) {
                     //                    ToastUtils.show("日历");
@@ -243,6 +253,9 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
         if (initVoiceProvider == null) {
             initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
         }
+        if (mIWeatherProvider == null){
+            mIWeatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
+        }
 
     }
     @Override
@@ -287,14 +300,14 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
     public void onScrollChanged(ObservableScrollView scrollView, int x, int y, int oldx, int oldy) {
         //        Log.v("ashgdfaskdfh","y="+y);
         //        Log.v("ashgdfaskdfh","oldx="+oldy);
-        Animation rotateAnimation = new RotateAnimation(y/125,oldy/125,0,18);
+        Animation rotateAnimation = new RotateAnimation(y/125,oldy/125,0,21);
         rotateAnimation.setFillAfter(true);
         rotateAnimation.setDuration(0);
         rotateAnimation.setRepeatCount(0);
         rotateAnimation.setInterpolator(new LinearInterpolator());
         rotateAnimation.setDetachWallpaper(true);
         submenuDropLeft.startAnimation(rotateAnimation);
-        Animation rotateAnimation2 = new RotateAnimation(-(y/125),-(oldy/125),30,18);
+        Animation rotateAnimation2 = new RotateAnimation(-(y/125),-(oldy/125),40,21);
         rotateAnimation2.setFillAfter(true);
         rotateAnimation2.setDuration(0);
         rotateAnimation2.setRepeatCount(0);
