@@ -8,6 +8,7 @@ import com.fenda.common.R;
 import com.fenda.common.base.BaseActivity;
 import com.fenda.common.mvp.BaseView;
 import com.fenda.common.util.NetUtil;
+import com.fenda.common.util.ToastUtils;
 
 import io.reactivex.observers.ResourceObserver;
 
@@ -85,6 +86,7 @@ public abstract class RxResourceObserver<T> extends ResourceObserver<T> {
                 mView.showNetError();
             }
             _onError(BaseApplication.getInstance().getString(R.string.no_net));
+            ToastUtils.show(BaseApplication.getInstance().getString(R.string.no_net));
         }
         //服务器
         else if (e instanceof ServerException) {

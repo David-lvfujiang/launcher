@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.fenda.common.util.FastClickUtils;
 import com.fenda.common.util.ImageUtil;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.gallery.R;
@@ -18,6 +19,7 @@ import com.fenda.gallery.bean.PhoneCameraBean;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * @author kevin.wangzhiqiang
  * @Date 2019/9/3 10:51
@@ -59,10 +61,12 @@ public class PhoneCameraAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         this.notifyAll();
     }
 
-    public List<String> getmSelectList() {
+    public List<String> getSelectList() {
         return mSelectList;
     }
-
+    public List<PhoneCameraBean> getData() {
+        return mBeanList;
+    }
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -111,6 +115,9 @@ public class PhoneCameraAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             holder.imgPhoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (FastClickUtils.isFastClick()){
+                        return;
+                    }
                     Bundle bundle = new Bundle();
                     bundle.putParcelableArrayList("list", mBeanList);
                     bundle.putInt("index", i);

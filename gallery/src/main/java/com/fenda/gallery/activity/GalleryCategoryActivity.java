@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -14,13 +15,17 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
 import com.fenda.common.router.RouterPath;
+import com.fenda.common.util.GsonUtil;
 import com.fenda.common.util.ImageUtil;
 import com.fenda.common.util.LogUtils;
+import com.fenda.common.util.NetUtil;
+import com.fenda.common.util.SPUtils;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.common.view.CustomRoundAngleImageView;
 import com.fenda.gallery.R;
 import com.fenda.gallery.bean.PhoneCameraBean;
 import com.fenda.gallery.contract.GalleryContract;
+import com.fenda.gallery.http.Constant;
 import com.fenda.gallery.http.FamilyPhotoRequest;
 import com.fenda.gallery.http.FamilyPhotoResponse;
 import com.fenda.gallery.model.GalleryModel;
@@ -32,6 +37,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
+
 /**
  * @author kevin.wangzhiqiang
  * @Date 2019/9/3 10:49
@@ -51,7 +57,9 @@ public class GalleryCategoryActivity extends BaseMvpActivity<GalleryPresenter, G
     public static final int FAMILY_UPLOAD_REQUEST = 100;
     public static final int FAMILY_DELETE_REQUEST = 200;
     public static final int FAMILY_UPLOAD_RESULT = 300;
-    public static final int FAMILY_DELETE_RESULT = 400;
+    public static final int FAMILY_DELETE_NET_RESULT = 400;
+    public static final int FAMILY_DELETE_LOCAL_RESULT = 500;
+
     private final String[] IMAGE_PROJECT = {
             MediaStore.Images.Media.DATA,
             MediaStore.Images.Media._ID,
@@ -76,8 +84,13 @@ public class GalleryCategoryActivity extends BaseMvpActivity<GalleryPresenter, G
     @Override
     public void initData() {
         initLocalPhoto();
-        getFamilyGallery();
+        if (NetUtil.checkNet()) {
+            getNetGalleryInfo();
+        } else {
+            getLocalGalleryInfo();
+        }
     }
+
 
     @Override
     public void initListener() {
@@ -88,7 +101,18 @@ public class GalleryCategoryActivity extends BaseMvpActivity<GalleryPresenter, G
 
     }
 
-    private void getFamilyGallery() {
+    private void getLocalGalleryInfo() {
+        String galleryCatogoryInfo = (String) SPUtils.get(mContext, Constant.PHOTO.GALLERY_CATEGORY_INFO, "");
+        if (!TextUtils.isEmpty(galleryCatogoryInfo)) {
+            FamilyPhotoResponse familyPhotoResponse = GsonUtil.GsonToBean(galleryCatogoryInfo, FamilyPhotoResponse.class);
+            handleGalleryCategoryData(familyPhotoResponse);
+        } else {
+            mIvServerCategory.setImageResource(0);
+            mTvServerCount.setText(mContext.getString(R.string.gallery_photo_count_indicator, 0));
+        }
+    }
+
+    private void getNetGalleryInfo() {
         FamilyPhotoRequest request = new FamilyPhotoRequest();
         request.setCurrentPage(mIndexPage);
         request.setPageSize(mPageCount);
@@ -120,6 +144,13 @@ public class GalleryCategoryActivity extends BaseMvpActivity<GalleryPresenter, G
     @Override
     public void getFamilyPhotoSuccess(BaseResponse<FamilyPhotoResponse> response) {
         FamilyPhotoResponse data = response.getData();
+        handleGalleryCategoryData(data);
+        // 缓存数据到本地
+        String galleryCategoryInfo = GsonUtil.GsonString(data);
+        SPUtils.put(mContext, Constant.PHOTO.GALLERY_CATEGORY_INFO, galleryCategoryInfo);
+    }
+
+    private void handleGalleryCategoryData(FamilyPhotoResponse data) {
         if (data == null) {
             return;
         }
@@ -131,6 +162,7 @@ public class GalleryCategoryActivity extends BaseMvpActivity<GalleryPresenter, G
                 String url = phoneCameraBean.getThumbnail();
                 ImageUtil.loadImg(mContext, mIvServerCategory, url);
             }
+
         } else {
             mIvServerCategory.setImageResource(0);
         }
@@ -166,17 +198,19 @@ public class GalleryCategoryActivity extends BaseMvpActivity<GalleryPresenter, G
         //相册变化通知
         if (message.getCode() == TCPConfig.MessageType.ALBUM_CHANGE) {
             LogUtils.i("收到相册变化通知");
-            getFamilyGallery();
+            getNetGalleryInfo();
+        } else if (message.getCode() == FAMILY_DELETE_LOCAL_RESULT) {
+            LogUtils.i("删除本地相册通知");
+            initLocalPhoto();
         }
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if ((requestCode == FAMILY_DELETE_REQUEST && resultCode == FAMILY_DELETE_RESULT)
+        if ((requestCode == FAMILY_DELETE_REQUEST && resultCode == FAMILY_DELETE_NET_RESULT)
                 || (requestCode == FAMILY_UPLOAD_REQUEST && resultCode == FAMILY_UPLOAD_RESULT)) {
-            getFamilyGallery();
+            getNetGalleryInfo();
         }
     }
 

@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,13 +13,18 @@ import android.widget.Toast;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
 import com.fenda.common.util.DateUtils;
+import com.fenda.common.util.FastClickUtils;
+import com.fenda.common.util.GsonUtil;
 import com.fenda.common.util.LogUtils;
+import com.fenda.common.util.NetUtil;
+import com.fenda.common.util.SPUtils;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.gallery.R;
 import com.fenda.gallery.adapter.FamilyPhotoAdapter;
 import com.fenda.gallery.bean.DayPhoteInfoBean;
 import com.fenda.gallery.bean.PhoneCameraBean;
 import com.fenda.gallery.contract.GalleryContract;
+import com.fenda.gallery.http.Constant;
 import com.fenda.gallery.http.FamilyPhotoRequest;
 import com.fenda.gallery.http.FamilyPhotoResponse;
 import com.fenda.gallery.model.GalleryModel;
@@ -34,6 +40,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 /**
  * @author kevin.wangzhiqiang
  * @Date 2019/9/3 10:49
@@ -66,14 +73,14 @@ public class FamilyGalleryActivity extends BaseMvpActivity<GalleryPresenter, Gal
         mTvDelete = findViewById(R.id.tv_delete);
         mIvAdd = findViewById(R.id.img_add);
         mRcPhotos = findViewById(R.id.rcPhotos);
+        mDatas = new ArrayList<>();
+        mPhotoAdapter = new FamilyPhotoAdapter(mContext, mDatas);
     }
 
     @Override
     public void initData() {
         imgIds = new ArrayList<>();
-        mDatas = new ArrayList<>();
         mMap = new LinkedHashMap<>();
-        mPhotoAdapter = new FamilyPhotoAdapter(mContext, mDatas);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 4);
         SectionedSpanSizeLookup lookup = new SectionedSpanSizeLookup(mPhotoAdapter, layoutManager);
         layoutManager.setSpanSizeLookup(lookup);
@@ -81,8 +88,14 @@ public class FamilyGalleryActivity extends BaseMvpActivity<GalleryPresenter, Gal
         mRcPhotos.setItemAnimator(new DefaultItemAnimator());
         mRcPhotos.setHasFixedSize(true);
         mRcPhotos.setAdapter(mPhotoAdapter);
-        getFamilyGallery();
+        if (NetUtil.checkNet()) {
+            getNetFamilyGallery();
+        } else {
+            getLocalFamilyGallery();
+        }
+
     }
+
 
     @Override
     protected void initPresenter() {
@@ -95,7 +108,7 @@ public class FamilyGalleryActivity extends BaseMvpActivity<GalleryPresenter, Gal
         mIvAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isDelete) {
+                if (isDelete && !FastClickUtils.isFastClick()) {
                     sendDelete();
                 }
             }
@@ -120,7 +133,6 @@ public class FamilyGalleryActivity extends BaseMvpActivity<GalleryPresenter, Gal
         mTvCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (isDelete) {
                     List<DayPhoteInfoBean> beans = mPhotoAdapter.getData();
                     for (DayPhoteInfoBean bean : beans) {
@@ -246,7 +258,16 @@ public class FamilyGalleryActivity extends BaseMvpActivity<GalleryPresenter, Gal
         isDelete = false;
     }
 
-    private void getFamilyGallery() {
+    private void getLocalFamilyGallery() {
+        String familyGalleryData = (String) SPUtils.get(mContext, Constant.PHOTO.FAMILY_GALLERY_INFO, "");
+        if (!TextUtils.isEmpty(familyGalleryData)) {
+            FamilyPhotoResponse familyPhotoRespons = GsonUtil.GsonToBean(familyGalleryData, FamilyPhotoResponse.class);
+            handleFamilyGalleryData(familyPhotoRespons);
+
+        }
+    }
+
+    private void getNetFamilyGallery() {
         FamilyPhotoRequest request = new FamilyPhotoRequest();
         request.setCurrentPage(mIndexPage);
         request.setPageSize(mPageCount);
@@ -260,7 +281,7 @@ public class FamilyGalleryActivity extends BaseMvpActivity<GalleryPresenter, Gal
         if (message.getCode() == TCPConfig.MessageType.ALBUM_CHANGE) {
             LogUtils.i("收到相册变化通知");
             cancelDeleteStatus();
-            getFamilyGallery();
+            getNetFamilyGallery();
         }
     }
 
@@ -292,6 +313,14 @@ public class FamilyGalleryActivity extends BaseMvpActivity<GalleryPresenter, Gal
             mMap.clear();
         }
         FamilyPhotoResponse photoResponse = response.getData();
+        // 处理家庭相册数据
+        handleFamilyGalleryData(photoResponse);
+        // 缓存数据到本地
+        String familyPhotoInfo = GsonUtil.GsonString(photoResponse);
+        SPUtils.put(mContext, Constant.PHOTO.FAMILY_GALLERY_INFO, familyPhotoInfo);
+    }
+
+    private void handleFamilyGalleryData(FamilyPhotoResponse photoResponse) {
         if (photoResponse != null) {
             List<PhoneCameraBean> beanList = photoResponse.getItems();
             for (PhoneCameraBean bean : beanList) {
@@ -319,11 +348,11 @@ public class FamilyGalleryActivity extends BaseMvpActivity<GalleryPresenter, Gal
 
     @Override
     public void deleteFamilyPhotoSuccess(BaseResponse response) {
-        setResult(GalleryCategoryActivity.FAMILY_DELETE_RESULT);
+        setResult(GalleryCategoryActivity.FAMILY_DELETE_NET_RESULT);
         mIndexPage = 1;
         ToastUtils.show("删除成功");
         cancelDeleteStatus();
-        getFamilyGallery();
+        getNetFamilyGallery();
     }
 
     @Override

@@ -11,12 +11,15 @@
         android:layout_height="@dimen/demension_dp80">
 
         <ImageView
-            android:id="@+id/img_back"
+            android:id="@+id/iv_cancel"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_centerVertical="true"
             android:paddingLeft="@dimen/demension_dp28"
             android:paddingRight="@dimen/demension_dp18"
             android:src="@mipmap/life_back" />
+
 
         <TextView
             android:id="@+id/tv_title"
@@ -28,9 +31,17 @@
             android:paddingRight="@dimen/demension_dp8"
             android:text="全部图片"
             android:textColor="@color/white"
-            android:textSize="@dimen/textsize_sp32"
+            android:textSize="@dimen/textsize_sp32" />
 
-            />
+        <ImageView
+            android:id="@+id/iv_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/demension_dp28"
+            android:layout_toLeftOf="@id/iv_send"
+            android:gravity="center"
+            android:src="@mipmap/gallery_photo_delete" />
 
         <ImageView
             android:id="@+id/iv_send"

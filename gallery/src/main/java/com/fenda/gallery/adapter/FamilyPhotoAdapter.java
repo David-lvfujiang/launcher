@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.fenda.common.util.FastClickUtils;
 import com.fenda.common.util.ImageUtil;
 import com.fenda.gallery.R;
 import com.fenda.gallery.activity.PhotoDetailActivity;
@@ -192,6 +193,9 @@ public class FamilyPhotoAdapter extends SectionedRecyclerViewAdapter<FamilyPhoto
         holder.iv_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (FastClickUtils.isFastClick()){
+                    return;
+                }
                 if (phoneCameraBean.getSelectStatus() == 0) {
                     Bundle mBundle = new Bundle();
                     mBundle.putParcelableArrayList("list", (ArrayList<? extends Parcelable>) photoList);
