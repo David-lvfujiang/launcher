@@ -1,4 +1,5 @@
 package com.fenda.homepage.activity;
+
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v7.widget.GridLayoutManager;
@@ -11,7 +12,6 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.base.BaseActivity;
 import com.fenda.common.provider.IVoiceRequestProvider;
@@ -37,10 +37,10 @@ import java.util.List;
  * @author matt.liaojianpeng
  */
 public class SubmenuActivity extends BaseActivity implements View.OnTouchListener, ScrollViewListener , View.OnClickListener {
-    @Autowired
-    List<ApplyBean> mApplyList;
-    List<ApplyBean> mUndevelopedApplyList;
 
+    public static boolean isSubmenuActivityOpen = false;
+    private List<ApplyBean> mApplyList;
+    private List<ApplyBean> mUndevelopedApplyList;
     private RecyclerView mSubmenuListRv;
     private RecyclerView mSubmenuListRv2;
     private LinearLayout mSubmenuBackLl;
@@ -249,7 +249,7 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
 
     @Override
     public void initData() {
-
+        isSubmenuActivityOpen = true;
         if (initVoiceProvider == null) {
             initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
         }
@@ -300,14 +300,14 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
     public void onScrollChanged(ObservableScrollView scrollView, int x, int y, int oldx, int oldy) {
         //        Log.v("ashgdfaskdfh","y="+y);
         //        Log.v("ashgdfaskdfh","oldx="+oldy);
-        Animation rotateAnimation = new RotateAnimation(y/125,oldy/125,0,21);
+        Animation rotateAnimation = new RotateAnimation(y/125,oldy/125,Animation.RELATIVE_TO_SELF, 0.5f,Animation.RELATIVE_TO_SELF,0.5f);
         rotateAnimation.setFillAfter(true);
         rotateAnimation.setDuration(0);
         rotateAnimation.setRepeatCount(0);
         rotateAnimation.setInterpolator(new LinearInterpolator());
         rotateAnimation.setDetachWallpaper(true);
         submenuDropLeft.startAnimation(rotateAnimation);
-        Animation rotateAnimation2 = new RotateAnimation(-(y/125),-(oldy/125),40,21);
+        Animation rotateAnimation2 = new RotateAnimation(-y/125,-oldy/125,Animation.RELATIVE_TO_SELF, 0.5f,Animation.RELATIVE_TO_SELF,0.5f);
         rotateAnimation2.setFillAfter(true);
         rotateAnimation2.setDuration(0);
         rotateAnimation2.setRepeatCount(0);
@@ -321,5 +321,11 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
     public void onClick(View v) {
         finish();
         overridePendingTransition(R.anim.submenu_push_up_in,R.anim.submenu_push_up_out);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        isSubmenuActivityOpen = false;
     }
 }

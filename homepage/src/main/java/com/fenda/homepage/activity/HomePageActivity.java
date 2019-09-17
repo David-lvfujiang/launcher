@@ -497,17 +497,19 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     float endY = 0;
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        int eventAction = event.getAction();
+        //添加SubmenuActivity是否已经打开判断，防止多次上滑，打开多个activity
+        if(!SubmenuActivity.isSubmenuActivityOpen) {
+            int eventAction = event.getAction();
+            if (eventAction == MotionEvent.ACTION_DOWN) {
+                startY = event.getY();
 
-        if(eventAction==MotionEvent.ACTION_DOWN){
-            startY = event.getY();
-
-        } else if (eventAction==MotionEvent.ACTION_UP){
-            endY = event.getY();
-            if ((endY-startY)<-80) {
-                Intent intent = new Intent(this,SubmenuActivity.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.homepage_push_up_in,R.anim.homepage_push_up_out);
+            } else if (eventAction == MotionEvent.ACTION_UP) {
+                endY = event.getY();
+                if ((endY - startY) < -80) {
+                    Intent intent = new Intent(this, SubmenuActivity.class);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.homepage_push_up_in, R.anim.homepage_push_up_out);
+                }
             }
         }
         //一定要返回false，让RecyclerView监听左右滑动
