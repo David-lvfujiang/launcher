@@ -15,6 +15,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -22,8 +23,10 @@ import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.FormBody;
+import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -135,7 +138,23 @@ public class RetrofitHelper {
 //                    Log.e(TAG, "encodedValue " + formBody.encodedValue(i) + " value " + formBody.value(i));
                 }
                 //               bodyBuilder.addEncoded(formBody.encodedName(i), formBody.encodedValue(i));
-            } else {
+            } else if (request.body() instanceof MultipartBody) {
+                MultipartBody multipartBody = (MultipartBody) request.body();
+                List<MultipartBody.Part> parts = multipartBody.parts();
+                for (MultipartBody.Part part : parts) {
+                    if (part.body().contentType().type().equals("text")) {
+                        Headers headers = part.headers();
+                        for (int i = 0; i < headers.names().size(); i++) {
+                            String value = headers.value(i);//valueform-data; name="article_type"
+                            String replaceValue = "form-data; name=";//这段在MultipartBody.Part源码中看到
+                            if (value.contains(replaceValue)) {
+                                String key = value.replace(replaceValue, "").replaceAll("\"", "");
+                                allArgsTreeMap.put(key, requestBodyToString(part.body()));
+                            }
+                        }
+                    }
+                }
+            }else {
                 String tBodyStr = requestBodyToString(request.body());
                 if (tBodyStr.length() > 0) {
                     Gson gson = new Gson();
@@ -240,10 +259,10 @@ public class RetrofitHelper {
             Request.Builder builder = chain.request().newBuilder();
 
             builder.addHeader("south-device-access-token", DeviceIdUtil.getDeviceId());
-            builder.addHeader("version", getVerName(AppApplicaiton.getContext()) + "");
+            builder.addHeader("version", getVerName(AppApplicaiton.getContext()));
 
             Log.d(TAG, "south-device-access-token = " + DeviceIdUtil.getDeviceId());
-            Log.d(TAG, "version = " + getVerName(AppApplicaiton.getContext()) + "");
+            Log.d(TAG, "version = " + getVerName(AppApplicaiton.getContext()));
 
             return chain.proceed(builder.build());
         }

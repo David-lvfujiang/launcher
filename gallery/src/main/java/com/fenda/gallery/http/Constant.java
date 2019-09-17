@@ -19,6 +19,8 @@ public class Constant {
     public static final String SERIAL_NUM = android.os.Build.SERIAL;
     public interface PHOTO{
         String DirectoryPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + File.separator + "imgs"+File.separator;
+        String GALLERY_CATEGORY_INFO ="gallery_category_info";
+        String FAMILY_GALLERY_INFO ="family_gallery_info";
 
     }
 }

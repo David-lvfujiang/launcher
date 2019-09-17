@@ -1,11 +1,13 @@
 package com.fenda.gallery.activity;
 
 import android.Manifest;
+import android.content.ContentResolver;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Process;
@@ -27,6 +29,7 @@ import android.widget.TextView;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
 import com.fenda.common.util.DensityUtil;
+import com.fenda.common.util.FastClickUtils;
 import com.fenda.common.util.ImageUtil;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.gallery.R;
@@ -39,6 +42,9 @@ import com.fenda.gallery.http.FamilyPhotoResponse;
 import com.fenda.gallery.http.UploadPhotoRequest;
 import com.fenda.gallery.model.GalleryModel;
 import com.fenda.gallery.presenter.GalleryPresenter;
+import com.fenda.protocol.tcp.bean.BaseTcpMessage;
+import com.fenda.protocol.tcp.bean.EventMessage;
+import com.fenda.protocol.tcp.bus.EventBusUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,6 +55,7 @@ import java.util.List;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+
 /**
  * @author kevin.wangzhiqiang
  * @Date 2019/9/3 10:50
@@ -56,12 +63,12 @@ import okhttp3.RequestBody;
  */
 public class PhotosActivity extends BaseMvpActivity<GalleryPresenter, GalleryModel> implements GalleryContract.View, View.OnClickListener {
 
-    private ImageView mIvBack;
-    private TextView mTitle;
+    private ImageView mIvCancle;
+    private TextView mTvTitle;
+    private ImageView mIvDelete;
     private ImageView mIvSend;
     private RecyclerView mRcPhonePic;
     private RelativeLayout mRlTitle;
-
     public static final int PERMISSION_REQ = 0x123456;
     private final String[] IMAGE_PROJECT = {
             MediaStore.Images.Media.DATA,
@@ -85,9 +92,10 @@ public class PhotosActivity extends BaseMvpActivity<GalleryPresenter, GalleryMod
     private HashMap<String, ArrayList<PhoneCameraBean>> cameraBeanMap;
     private ArrayList<String> catalogList;
     private PhoneCameraAdapter adapter;
-    private List<String> selectPath;
     private int position;
     private PopupWindow window;
+    private ContentResolver mContentResolver;
+    Uri mUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
     @Override
     protected void initPresenter() {
@@ -101,33 +109,35 @@ public class PhotosActivity extends BaseMvpActivity<GalleryPresenter, GalleryMod
 
     @Override
     public void initView() {
-        mIvBack = findViewById(R.id.img_back);
-        mTitle = findViewById(R.id.tv_title);
+        mIvCancle = findViewById(R.id.iv_cancel);
+        mTvTitle = findViewById(R.id.tv_title);
+        mIvDelete = findViewById(R.id.iv_delete);
         mIvSend = findViewById(R.id.iv_send);
         mRcPhonePic = findViewById(R.id.rc_phone_pic);
         mRlTitle = findViewById(R.id.rela);
-    }
-
-    @Override
-    public void initListener() {
-        super.initListener();
-        mIvBack.setOnClickListener(this);
-        mTitle.setOnClickListener(this);
-        mIvSend.setOnClickListener(this);
-    }
-
-    @Override
-    public void initData() {
-        photoAllInfoList = new ArrayList<>();
-        cameraBeanMap = new HashMap<>();
-        selectPath = new ArrayList<>();
-        catalogList = new ArrayList<>();
         adapter = new PhoneCameraAdapter(new ArrayList<PhoneCameraBean>(), this);
         mRcPhonePic.setHasFixedSize(true);
         mRcPhonePic.setItemAnimator(new DefaultItemAnimator());
         mRcPhonePic.setLayoutManager(new GridLayoutManager(this, 4));
         mRcPhonePic.setItemAnimator(new DefaultItemAnimator());
         mRcPhonePic.setAdapter(adapter);
+    }
+
+    @Override
+    public void initListener() {
+        super.initListener();
+        mIvCancle.setOnClickListener(this);
+        mTvTitle.setOnClickListener(this);
+        mIvSend.setOnClickListener(this);
+        mIvDelete.setOnClickListener(this);
+    }
+
+    @Override
+    public void initData() {
+        photoAllInfoList = new ArrayList<>();
+        cameraBeanMap = new HashMap<>();
+        catalogList = new ArrayList<>();
+        mContentResolver = mContext.getContentResolver();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             for (String one : mPermission) {
@@ -147,10 +157,13 @@ public class PhotosActivity extends BaseMvpActivity<GalleryPresenter, GalleryMod
     }
 
     public void onClick(View v) {
+        if (FastClickUtils.isFastClick()) {
+            return;
+        }
         int resId = v.getId();
         if (resId == R.id.iv_send) {
             //上传图片
-            List<String> mList = adapter.getmSelectList();
+            List<String> mList = adapter.getSelectList();
             if (mList != null && mList.isEmpty()) {
                 ToastUtils.show(R.string.gallery_select_photo);
                 return;
@@ -186,8 +199,9 @@ public class PhotosActivity extends BaseMvpActivity<GalleryPresenter, GalleryMod
             UploadPhotoRequest request = new UploadPhotoRequest();
             request.setRequestBody(partList);
             mPresenter.uploadPhoto(request);
-
-        } else if (resId == R.id.img_back) {
+        } else if (resId == R.id.iv_delete) {
+            deleteLocalPhoto();
+        } else if (resId == R.id.iv_cancel) {
             finish();
 
         } else if (resId == R.id.tv_title) {
@@ -197,6 +211,30 @@ public class PhotosActivity extends BaseMvpActivity<GalleryPresenter, GalleryMod
                 window.dismiss();
                 window = null;
             }
+        }
+
+    }
+
+    /**
+     * 删除本地图片
+     */
+    private void deleteLocalPhoto() {
+        List<String> selectPath = adapter.getSelectList();
+        if (selectPath != null && !selectPath.isEmpty()) {
+            for (int i = 0; i < selectPath.size(); i++) {
+                String filePath = selectPath.get(i);
+                String where = MediaStore.Images.Media.DATA + "='" + filePath + "'";
+                //删除图片
+                mContentResolver.delete(mUri, where, null);
+            }
+            photoAllInfoList.clear();
+            cameraBeanMap.clear();
+            adapter.getSelectList().clear();
+            catalogList.clear();
+            initPhoto();
+            EventBusUtils.post(new EventMessage(GalleryCategoryActivity.FAMILY_DELETE_LOCAL_RESULT,new BaseTcpMessage()));
+        } else {
+            ToastUtils.show(R.string.gallery_select_photo);
         }
 
     }
@@ -298,7 +336,7 @@ public class PhotosActivity extends BaseMvpActivity<GalleryPresenter, GalleryMod
                 PhotosActivity.this.position = position;
                 ArrayList<PhoneCameraBean> cameraBeans = cameraBeanMap.get(catalog);
                 adapter.setNewData(cameraBeans);
-                mTitle.setText(catalog);
+                mTvTitle.setText(catalog);
                 if (window != null) {
                     window.dismiss();
                     window = null;
@@ -353,37 +391,4 @@ public class PhotosActivity extends BaseMvpActivity<GalleryPresenter, GalleryMod
     }
 
 
-//    @Override
-//    public void getFamilyPhotoSuccess(BaseResponse<FamilyPhotoResponse> response) {
-//
-//    }
-//
-//    @Override
-//    public void deleteFamilyPhotoSuccess(BaseResponse response) {
-//
-//    }
-//
-//    @Override
-//    public void uploadPhotoSuccess(BaseResponse request) {
-//        ToastUtils.show(R.string.upload_success);
-//        setResult(Constant.FAMILY_UPLOAD_RESULT);
-//        this.finish();
-//    }
-//
-//    @Override
-//    public void getFamilyPhotoFailure(BaseResponse<FamilyPhotoResponse> response) {
-//
-//    }
-//
-//    @Override
-//    public void deleteFamilyPhotoFailure(BaseResponse response) {
-//
-//    }
-//
-//    @Override
-//    public void uploadPhotoFailure(BaseResponse response) {
-//        if (response.getCode() == 613) {
-//            ToastUtils.show("上传照片超过设置数量");
-//        }
-//    }
 }
