@@ -277,8 +277,7 @@ public class RetrofitHelper {
     public static String getVerName(Context context) {
         String verName = "";
         try {
-            verName = context.getPackageManager()
-                    .getPackageInfo(context.getPackageName(), 0).versionName;
+            verName = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }

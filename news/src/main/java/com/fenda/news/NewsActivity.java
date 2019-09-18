@@ -315,14 +315,14 @@ public class NewsActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
         Log.e("qob", "NewsActivity onStart");
-        BaseApplication.getInstance().setNewsPlay(true);
+        BaseApplication.getBaseInstance().setNewsPlay(true);
     }
 
 
     @Override
     protected void onStop() {
         super.onStop();
-        BaseApplication.getInstance().setNewsPlay(false);
+        BaseApplication.getBaseInstance().setNewsPlay(false);
         stop();
         finish();
     }

@@ -110,7 +110,7 @@ public class AlarmActivity extends BaseActivity {
             imgBack.setVisibility(View.GONE);
             tvDate.setVisibility(View.GONE);
             tvStop.setVisibility(View.VISIBLE);
-            BaseApplication.getInstance().setRemindRing(true);
+            BaseApplication.getBaseInstance().setRemindRing(true);
             startAlarm();
         }
 
@@ -195,7 +195,7 @@ public class AlarmActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         EventBusUtils.unregister(this);
-        BaseApplication.getInstance().setRemindRing(false);
+        BaseApplication.getBaseInstance().setRemindRing(false);
         super.onDestroy();
     }
 }

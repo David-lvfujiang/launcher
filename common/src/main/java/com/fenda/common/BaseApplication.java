@@ -18,7 +18,7 @@ import java.util.HashMap;
 public class BaseApplication extends AppApplicaiton {
 
 
-    private static BaseApplication instance;
+ //   private static BaseApplication instance;
     public static HashMap<String,Integer> QQMUSIC = new HashMap<>();
     /**
      * 媒体播放状态
@@ -53,11 +53,12 @@ public class BaseApplication extends AppApplicaiton {
     @Override
     public void onCreate() {
         super.onCreate();
-        instance = this;
+  //      instance = this;
 
         ARouter.openLog();
         ARouter.openDebug();
-        ARouter.init(getInstance());
+
+        ARouter.init(this);
 
         //日志框架初始化
         Logger.addLogAdapter(new AndroidLogAdapter(){
@@ -68,12 +69,12 @@ public class BaseApplication extends AppApplicaiton {
         });
 
 
-
     }
 
 
-    public static BaseApplication getInstance() {
-        return instance;
+
+    public static BaseApplication getBaseInstance() {
+        return (BaseApplication) getInstance();
     }
 
 

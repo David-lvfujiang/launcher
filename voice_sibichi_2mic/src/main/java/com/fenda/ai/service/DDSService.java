@@ -559,7 +559,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
             case VoiceConstant.SIBICHI.SYS_DIALOG_START:
                 //唤醒时点亮屏幕
                 EventBusUtils.post(Constant.Common.SCREEN_ON);
-                if (BaseApplication.getInstance().isRemindRing()){
+                if (BaseApplication.getBaseInstance().isRemindRing()){
                     IRemindProvider provider = (IRemindProvider) ARouter.getInstance().build(RouterPath.REMIND.ALARM_SERVICE).navigation();
                     provider.closeAlarm(null);
                 }

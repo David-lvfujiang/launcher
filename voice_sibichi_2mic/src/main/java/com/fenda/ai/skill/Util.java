@@ -90,7 +90,7 @@ public class Util {
             if (isTopTaskPackage(BaseApplication.getInstance()).equals(VoiceConstant.MUSIC_PKG)){
                 return true;
             }else {
-                boolean isLauncher = AppTaskUtil.getAppTopPackage().equals(VoiceConstant.LAUNCHER) && (BaseApplication.getInstance().isNewsPlay() || BaseApplication.getInstance().isMusicPlay());
+                boolean isLauncher = AppTaskUtil.getAppTopPackage().equals(VoiceConstant.LAUNCHER) && (BaseApplication.getBaseInstance().isNewsPlay() || BaseApplication.getBaseInstance().isMusicPlay());
                 if (!AppTaskUtil.getAppTopPackage().equals(VoiceConstant.QIYIMOBILE_PKG) && !isLauncher && isTaskQQmusic(BaseApplication.getInstance())){
                     return true;
                 }
@@ -116,7 +116,7 @@ public class Util {
      * @return
      */
     public static boolean isLauncherMusic(){
-        if (isTopTaskPackage(BaseApplication.getInstance()).equals(VoiceConstant.LAUNCHER) && (BaseApplication.getInstance().isMusicPlay() || BaseApplication.getInstance().isNewsPlay())){
+        if (isTopTaskPackage(BaseApplication.getInstance()).equals(VoiceConstant.LAUNCHER) && (BaseApplication.getBaseInstance().isMusicPlay() || BaseApplication.getBaseInstance().isNewsPlay())){
             return true;
         }
         return false;

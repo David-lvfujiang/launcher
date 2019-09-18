@@ -397,7 +397,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
     protected void onStart() {
         super.onStart();
         Log.e("qob", "MusicActivity onStart");
-        BaseApplication.getInstance().setMusicPlay(true);
+        BaseApplication.getBaseInstance().setMusicPlay(true);
     }
 
     @Override
@@ -405,7 +405,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         super.onStop();
         Log.e("qob", "MusicActivity onStop");
         if (isPlay) {
-            BaseApplication.getInstance().setMusicPlay(false);
+            BaseApplication.getBaseInstance().setMusicPlay(false);
             stop();
             finish();
         }
