@@ -94,6 +94,8 @@ public class PlayerFragment extends Fragment {
             ImageUtil.loadDefaultcImg(imgMusicPlay,playerMessage.getMusicUrl(),R.mipmap.player_poetry_pic_default);
         }else if (playerMessage.getContentType() == Constant.Player.FM){
             ImageUtil.loadDefaultcImg(imgMusicPlay,playerMessage.getMusicUrl(),R.mipmap.player_fm_pic_default);
+        }else {
+            ImageUtil.loadDefaultcImg(imgMusicPlay,playerMessage.getMusicUrl(),R.mipmap.player_cover_pic_default);
         }
         String title = playerMessage.getMusicTitle();
         if (title.contains("《")){

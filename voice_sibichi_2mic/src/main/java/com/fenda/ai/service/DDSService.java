@@ -423,6 +423,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
             }else {
                 DDS.getInstance().getAgent().getWakeupEngine().disableWakeup();
             }
+            DDS.getInstance().getAgent().getWakeupEngine().enableWakeup();
 
         } catch (DDSNotInitCompleteException e) {
             e.printStackTrace();
@@ -703,10 +704,10 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 try {
                     JSONObject jo = new JSONObject(data);
                     String intentName = jo.optString("intentName");
-                     if ("关闭提醒".equals(intentName)){
+                     if ("关闭提醒".equals(intentName) || "删除提醒".equals(intentName)){
 
                          if (listener != null){
-                             listener.queryRemind();
+                             listener.queryRemind(data);
                          }
 
                      }
@@ -749,7 +750,9 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                                         if (weatherProvider == null){
                                             weatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
                                         }
-                                        weatherProvider.weatherFromVoiceControl(data);
+                                        if (weatherProvider != null){
+                                            weatherProvider.weatherFromVoiceControl(data);
+                                        }
                                     }
                                 });
                     }else if ("stock".equals(widgetName)){

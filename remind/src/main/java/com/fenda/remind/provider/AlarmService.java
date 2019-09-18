@@ -9,9 +9,11 @@ import android.os.RemoteException;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.facade.template.IProvider;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.provider.IRemindProvider;
 import com.fenda.common.router.RouterPath;
+import com.fenda.common.util.LogUtil;
 import com.fenda.protocol.tcp.bus.EventBusUtils;
 import com.fenda.remind.AlarmActivity;
 import com.fenda.remind.AlarmListActivity;
@@ -22,6 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
 
 /**
  * @author mirrer.wangzhonglin
@@ -88,12 +91,14 @@ public class AlarmService implements IRemindProvider {
 
     @Override
     public void deleteAlarmStart(String data) {
+        LogUtil.e("deleteAlarmStart = "+data);
         final ArrayList<AlarmBean> mList = new ArrayList<>();
         try {
-            JSONArray array = new JSONArray(data);
+            JSONObject dataObject = new JSONObject(data);
+            JSONArray array = dataObject.optJSONArray("content");
             for (int i = 0; i < array.length(); i++){
                 JSONObject object = array.optJSONObject(i);
-                AlarmBean bean = getAlarmBean(object);
+                AlarmBean bean = getCancelAlarm(object);
                 bean.setType(1);
                 mList.add(bean);
             }
@@ -101,18 +106,42 @@ public class AlarmService implements IRemindProvider {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+//        Observable.create(new ObservableOnSubscribe<String>() {
+//            @Override
+//            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+//                emitter.onNext("");
+//            }
+//        }).subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Consumer<String>() {
+//                    @Override
+//                    public void accept(String s) throws Exception {
+                        Bundle mBundle = new Bundle();
+                        mBundle.putParcelableArrayList(Constant.Remind.ALARM_LIST,mList);
+                        mBundle.putString(Constant.Remind.ALARM_TYPE,Constant.Remind.DELETE_REMIND);
+                        Intent mIntent = new Intent(mContext, AlarmListActivity.class);
+                        mIntent.putExtras(mBundle);
+                        mContext.startActivity(mIntent);
+//                    }
+//                });
 
-        ((Activity)mContext).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Bundle mBundle = new Bundle();
-                mBundle.putParcelableArrayList(Constant.Remind.ALARM_LIST,mList);
-                mBundle.putString(Constant.Remind.ALARM_TYPE,Constant.Remind.DELETE_REMIND);
-                Intent mIntent = new Intent(mContext, AlarmListActivity.class);
-                mIntent.putExtras(mBundle);
-                mContext.startActivity(mIntent);
-            }
-        });
+
+
+
+    }
+
+
+    private AlarmBean getCancelAlarm(JSONObject object){
+        AlarmBean bean = new AlarmBean();
+        bean.setRepeat(object.optString("subTitle"));
+
+        bean.setRecent_tsp(object.optLong("recent_tsp"));
+        JSONObject extraJson = object.optJSONObject("extra");
+        bean.setDate(extraJson.optString("date"));
+        bean.setVid(extraJson.optString("vid"));
+        bean.setObject(extraJson.optString("object"));
+        bean.setTime(extraJson.optString("time"));
+        return bean;
     }
 
 
@@ -186,6 +215,10 @@ public class AlarmService implements IRemindProvider {
         bean.setTime_interval(object.optString("time_interval"));
         return bean;
     }
+
+
+
+
 
     @Override
     public void init(Context context) {

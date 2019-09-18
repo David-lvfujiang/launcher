@@ -5,6 +5,8 @@ if (isModule.toBoolean()) {
     apply plugin: 'com.android.application'
 }
 
+apply plugin: 'maven'
+
 android {
     compileSdkVersion BUILD_VERSIONS.COMPILE_SDK
     buildToolsVersion BUILD_VERSIONS.BUILD_TOOLS
@@ -14,7 +16,7 @@ android {
         if (!isModule.toBoolean()) {
             applicationId "com.fenda.encyclopedia"
         }
-        flavorDimensions "default"
+//        flavorDimensions "default"
         minSdkVersion BUILD_VERSIONS.MIN_SDK
         targetSdkVersion BUILD_VERSIONS.TARGET_SDK
         versionCode BUILD_VERSIONS.VERSION_CODE
@@ -46,26 +48,26 @@ android {
         }
     }
 
-    productFlavors {
-        _dev {//开发环境
-            //设置baseUrl 使用方法Application.getContext().getResources().getString(R.string.API_SERVER)
-            resValue "string", "BASE_SERVER_URL", "http://192.168.43.37:8998/smartsound/"
-            resValue "string", "TCP_IP", "192.168.43.37"
-            resValue "string", "DEVICE_SN", " "
-        }
-
-        _test {//测试环境
-            resValue "string", "BASE_SERVER_URL", "http://192.168.100.127:8998/smartsound/"
-            resValue "string", "TCP_IP", "192.168.100.127"
-            resValue "string", "DEVICE_SN", " "
-        }
-
-        _prod {//正式环境
-            resValue "string", "BASE_SERVER_URL", "https://ai.fenda.com/smartsound/"
-            resValue "string", "TCP_IP", "47.106.223.29"
-            resValue "string", "DEVICE_SN", "-pro"
-        }
-    }
+//    productFlavors {
+//        _dev {//开发环境
+//            //设置baseUrl 使用方法Application.getContext().getResources().getString(R.string.API_SERVER)
+//            resValue "string", "BASE_SERVER_URL", "http://192.168.43.37:8998/smartsound/"
+//            resValue "string", "TCP_IP", "192.168.43.37"
+//            resValue "string", "DEVICE_SN", " "
+//        }
+//
+//        _test {//测试环境
+//            resValue "string", "BASE_SERVER_URL", "http://192.168.100.127:8998/smartsound/"
+//            resValue "string", "TCP_IP", "192.168.100.127"
+//            resValue "string", "DEVICE_SN", " "
+//        }
+//
+//        _prod {//正式环境
+//            resValue "string", "BASE_SERVER_URL", "https://ai.fenda.com/smartsound/"
+//            resValue "string", "TCP_IP", "47.106.223.29"
+//            resValue "string", "DEVICE_SN", "-pro"
+//        }
+//    }
 
 
     buildTypes {
@@ -74,6 +76,35 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+
+    //打包main目录下代码和资源的 task
+    task androidSourcesJar(type: Jar) {
+        classifier = 'sources'
+        from android.sourceSets.main.java.srcDirs
+    }
+    //配置需要上传到maven仓库的文件
+    artifacts {
+        archives androidSourcesJar
+    }
+    //上传到Maven仓库的task
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                //指定maven仓库url
+                repository(url: "http://192.168.100.127:8084/nexus/repository/maven-releases/") {
+                    //nexus登录默认用户名和密码
+                    authentication(userName: "admin", password: "fenda_nexus123")
+                }
+                pom.groupId = "com.fenda.calendar"// 唯一标识（通常为模块包名，也可以任意）
+                pom.artifactId = "calendar" // 项目名称（通常为类库模块名称，也可以任意）
+                pom.version = "1.0.1" // 版本号
+                pom.packaging = "aar"//打包类型
+
+            }
+        }
+    }
+
 
 }
 

@@ -85,6 +85,12 @@ public class MediaModel {
         }else if ("诗词".equals(type)){
             playlist.addAll(getPoetrys(contentArray));
             contentType = Constant.Player.POETRY;
+        }else if ("戏曲".equals(type)){
+            playlist.addAll(getNewConsult(contentArray));
+            contentType = Constant.Player.CROSS_TALLK;
+        }else if ("儿歌".equals(type)){
+            playlist.addAll(getNewConsult(contentArray));
+            contentType = Constant.Player.JOKE;
         }else {
             playlist.addAll(getNewConsult(contentArray));
         }

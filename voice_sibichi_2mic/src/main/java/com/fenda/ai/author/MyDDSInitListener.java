@@ -187,11 +187,11 @@ public class MyDDSInitListener implements DDSInitListener {
             @Override
             public void onRemoveRemind(List<Event> list) {
                 LogUtil.i("RemindPlugin onRemoveRemind = "+list.toString());
-                Gson gson = new Gson();
-                String json = gson.toJson(list);
-                if (provider != null){
-                    provider.deleteAlarmComplete(json);
-                }
+//                Gson gson = new Gson();
+//                String json = gson.toJson(list);
+//                if (provider != null){
+//                    provider.deleteAlarmComplete(json);
+//                }
             }
 
             @Override
@@ -285,28 +285,29 @@ public class MyDDSInitListener implements DDSInitListener {
     }
 
 
-    public void queryRemind(){
-
-        RemindPlugin.get().queryRemindEvent(new RemindPlugin.QueryCallback() {
+    public void queryRemind(final String data){
+        LogUtil.e("queryRemind111111 = "+data);
+        Observable.create(new ObservableOnSubscribe<String>() {
             @Override
-            public void onSuccess(List<Event> list) {
-                LogUtil.e("关闭提醒 onSuccess = "+list.toString());
+            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                emitter.onNext("");
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String s) throws Exception {
+                        if (provider == null){
+                            provider = (IRemindProvider) ARouter.getInstance().build(RouterPath.REMIND.ALARM_SERVICE).navigation();
+                        }
+                        if (provider != null){
+                            LogUtil.e("queryRemind = "+data);
+                            provider.deleteAlarmStart(data);
+                        }
 
-                if (list != null){
-                    Gson gson = new Gson();
-                    String json = gson.toJson(list);
-                    if (provider != null){
-                        provider.queryAlarm(json);
                     }
+                });
 
-                    LogUtil.e(json);
-                }
-            }
-            @Override
-            public void onError(int i, String s) {
-                LogUtil.e("onError ==> "+s);
-            }
-        });
     }
 
 

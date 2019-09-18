@@ -490,6 +490,8 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         }else if (contentType == Constant.Player.FM){
             ImageUtil.loadGIFImage(R.mipmap.player_fm_bg,imgMusicBg,R.mipmap.player_fm_bg);
             visFmView();
+        }else {
+            imgMusicBg.setImageResource(R.mipmap.player_xiangsheng_bg_02);
         }
     }
 

@@ -6,7 +6,7 @@ buildscript {
 //        addRepos(this)
         google()
         jcenter()
-        
+
     }
     dependencies {
         classpath deps.android_gradle_plugin
@@ -18,8 +18,14 @@ buildscript {
 
 allprojects {
     repositories {
+        //私有服务器仓库地址
+        maven {
+            url 'http://192.168.100.127:8084/nexus/repository/maven-releases/'
+        }
         google()
         jcenter()
+
+
         
     }
 }

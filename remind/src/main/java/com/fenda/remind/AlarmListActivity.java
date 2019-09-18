@@ -1,6 +1,7 @@
 package com.fenda.remind;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
@@ -119,9 +120,39 @@ public class AlarmListActivity extends BaseActivity {
         });
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        ArrayList<AlarmBean> mAlarmBean = intent.getParcelableArrayListExtra(Constant.Remind.ALARM_LIST);
+        alarmType   = getIntent().getStringExtra(Constant.Remind.ALARM_TYPE);
+        if (Constant.Remind.DELETE_REMIND.equals(alarmType)){
+            if (mAlarmBean.size() == 1){
+                AlarmBean bean = mAlarmBean.get(0);
+                if (alarmBeans != null){
+                    for (int i = 0; i < alarmBeans.size(); i++) {
+                        AlarmBean alarmBean = alarmBeans.get(i);
+                        String vid = alarmBean.getVid();
+                        if (vid.equals(bean.getVid())){
+                            alarmBeans.remove(i);
+                        }
+                    }
+                }
+            }else {
+                if (alarmBeans == null){
+                    alarmBeans = mAlarmBean;
+                }else {
+                    alarmBeans.clear();
+                    alarmBeans.addAll(mAlarmBean);
+                }
+            }
+        }
+        if (mAdapter != null){
+            mAdapter.notifyDataSetChanged();
+        }
+    }
 
     private void countDownTime() {
-        timer = new CountDownTimer(10000, 1000) {
+        timer = new CountDownTimer(800000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {}
 

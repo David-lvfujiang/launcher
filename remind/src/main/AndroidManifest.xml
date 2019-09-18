@@ -5,6 +5,7 @@
     <application>
         <activity android:name=".AlarmListActivity"
             android:theme="@style/NoTitleFullscreen"
+            android:launchMode="singleTask"
             />
         <activity android:name=".AlarmActivity"
             android:theme="@style/NoTitleFullscreen"
