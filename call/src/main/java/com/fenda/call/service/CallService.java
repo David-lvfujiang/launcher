@@ -17,6 +17,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import io.rong.callkit.RongCallKit;
+import io.rong.calllib.RongCallClient;
+import io.rong.calllib.RongCallSession;
 import io.rong.imkit.RongIM;
 
 /**
@@ -51,6 +53,14 @@ public class CallService implements ICallProvider {
             } else if (callType == 0) {
                 RongCallKit.startSingleCall(BaseApplication.getInstance(), callNumber, RongCallKit.CallMediaType.CALL_MEDIA_TYPE_AUDIO);
             }
+        }
+    }
+
+    @Override
+    public void endCall() {
+        RongCallSession session = RongCallClient.getInstance().getCallSession();
+        if (session != null) {
+            RongCallClient.getInstance().hangUpCall(session.getCallId());
         }
     }
 }

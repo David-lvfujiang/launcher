@@ -176,9 +176,9 @@ public class RetrofitHelper {
             allArgsTreeMap.put("timestamp", timestamp);
 
             StringBuffer stringBuffer = new StringBuffer();
-            Iterator<Map.Entry<String, String>> it = allArgsTreeMap.entrySet().iterator();
+            Iterator<Map.Entry<String, Object>> it = allArgsTreeMap.entrySet().iterator();
             while (it.hasNext()) {
-                Map.Entry<String, String> entry = it.next();
+                Map.Entry<String, Object> entry = it.next();
                 stringBuffer.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
             }
             String tWillMd5 = stringBuffer.substring(0, stringBuffer.length() - 1);

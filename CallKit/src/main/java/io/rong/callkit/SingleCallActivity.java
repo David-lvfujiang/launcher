@@ -16,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -97,8 +99,12 @@ public class SingleCallActivity extends BaseCallActivity implements Handler.Call
     @TargetApi(23)
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.rc_voip_activity_single_call);
         setStatusBarDisable(DISABLE_EXPAND);
+        //设置全屏
+        requestWindowFeature( Window.FEATURE_NO_TITLE );
+        getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN );
+        setContentView(R.layout.rc_voip_activity_single_call);
         mSqliteManager = new SqliteManager(this);
         Log.i("AudioPlugin", "savedInstanceState != null=" + (savedInstanceState != null) + ",,,RongCallClient.getInstance() == null" + (RongCallClient.getInstance() == null));
         if (savedInstanceState != null && RongCallClient.getInstance() == null) {
