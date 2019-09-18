@@ -120,12 +120,11 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-    api project(path: ':common')
 //    api project(path: ':CallLib')
 //    api project(path: ':CallKit')
 //    api project(path: ':IMLib')
 //    api project(path: ':IMKit')
-
+    api project(path: ':common')
     api 'io.rong.imkit:imkit:1.0.0'
     api 'io.rong.imlib:imLib:1.0.0'
     api 'io.rong.calllib:callLib:1.0.0'
