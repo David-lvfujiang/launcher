@@ -59,22 +59,23 @@ public class DuiNativeApiObserver implements NativeApiObserver {
     @Override
     public void onQuery(String nativeApi, String data) {
 //        LogUtil.e(TAG, "nativeApi: " + nativeApi + "  data: " + data);
-        if (NATIVE_API_CONTACT.equals(nativeApi)) {
-            String searchName = null;
-            ListWidget searchNums = null;
-            try {
-                JSONObject obj = null;
-                obj = new JSONObject(data);
-                searchName = obj.optString("联系人");
-                searchNums = searchContacts("李丽");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        if (!BaseApplication.getInstance().isCall()){
+            if (NATIVE_API_CONTACT.equals(nativeApi)) {
+                String searchName = null;
+                ListWidget searchNums = null;
+                try {
+                    JSONObject obj = null;
+                    obj = new JSONObject(data);
+                    searchName = obj.optString("联系人");
+                    searchNums = searchContacts("李丽");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 //            LogUtil.e(TAG, "query back:" + searchName + "-" + (searchNums != null ? searchNums.toString() : "null"));
 
-            DDS.getInstance().getAgent().feedbackNativeApiResult(nativeApi, searchNums);
+                DDS.getInstance().getAgent().feedbackNativeApiResult(nativeApi, searchNums);
 
-        }else if (NATIVE_API_CALL_NAME.equals(nativeApi)){
+            }else if (NATIVE_API_CALL_NAME.equals(nativeApi)){
 //            JSONObject object = null;
 //            try {
 //                object = new JSONObject(data);
@@ -85,7 +86,9 @@ public class DuiNativeApiObserver implements NativeApiObserver {
 //                e.printStackTrace();
 //            }
 
+            }
         }
+
     }
 
     private ListWidget searchContacts(String searchName) {

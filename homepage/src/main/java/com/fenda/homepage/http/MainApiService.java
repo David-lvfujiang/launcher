@@ -14,7 +14,10 @@ import retrofit2.http.GET;
  * @Description
  */
 public interface MainApiService {
-    //获取联系人列表
+    /**
+     * 获取联系人列表
+     * @return
+     */
     @GET("south-device/manage/getLinkUserInfoList")
     Observable<BaseResponse<List<UserInfoBean>>> getFamilyContacts();
 }

@@ -32,6 +32,8 @@ public interface IVoiceRequestProvider extends IProvider {
     void openQQMusic();
     /**打开爱奇艺**/
     void openAqiyi();
+    /**请求新闻**/
+    void requestNews(int number);
 
 
 }

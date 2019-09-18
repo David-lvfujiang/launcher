@@ -37,6 +37,18 @@ public class BaseApplication extends AppApplicaiton {
      * 语音是否初始化成功
      */
     private boolean isVoiceInit;
+    /**
+     * 是否主动请求天气(不播报语音)
+     */
+    private boolean isRequestWeather;
+    /**
+     * 是否主动请求新闻(不播报语音)
+     */
+    private boolean isRequestNews;
+    /**
+     * 是否在拨打电话
+     */
+    private boolean isCall;
 
     @Override
     public void onCreate() {
@@ -96,5 +108,30 @@ public class BaseApplication extends AppApplicaiton {
 
     public void setVoiceInit(boolean voiceInit) {
         isVoiceInit = voiceInit;
+    }
+
+
+    public boolean isRequestWeather() {
+        return isRequestWeather;
+    }
+
+    public void setRequestWeather(boolean requestWeather) {
+        isRequestWeather = requestWeather;
+    }
+
+    public boolean isRequestNews() {
+        return isRequestNews;
+    }
+
+    public void setRequestNews(boolean requestNews) {
+        isRequestNews = requestNews;
+    }
+
+    public boolean isCall() {
+        return isCall;
+    }
+
+    public void setCall(boolean call) {
+        isCall = call;
     }
 }

@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.aispeech.ailog.AILog;
 import com.aispeech.dui.dds.DDS;
 import com.aispeech.dui.dds.DDSConfig;
+import com.aispeech.dui.dds.agent.DMCallback;
 import com.aispeech.dui.dds.exceptions.DDSNotInitCompleteException;
 import com.aispeech.dui.plugin.music.MusicPlugin;
 import com.alibaba.android.arouter.launcher.ARouter;
@@ -302,6 +303,9 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
         message.setCode(Constant.Common.INIT_VOICE_SUCCESS);
         message.setData(new BaseTcpMessage());
         EventBusUtils.post(message);
+
+
+
     }
 
     private void doauth_when_net_ok()
@@ -747,12 +751,22 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                                 .subscribe(new Consumer<String>() {
                                     @Override
                                     public void accept(String s) throws Exception {
+
+
                                         if (weatherProvider == null){
                                             weatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
                                         }
-                                        if (weatherProvider != null){
-                                            weatherProvider.weatherFromVoiceControl(data);
+                                        if (BaseApplication.getInstance().isRequestWeather()){
+                                            if (weatherProvider != null){
+                                                weatherProvider.weatherFromVoiceControlToMainPage(data);
+                                            }
+                                            BaseApplication.getInstance().setRequestWeather(false);
+                                        }else {
+                                            if (weatherProvider != null){
+                                                weatherProvider.weatherFromVoiceControl(data);
+                                            }
                                         }
+
                                     }
                                 });
                     }else if ("stock".equals(widgetName)){

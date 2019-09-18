@@ -2,6 +2,7 @@ package com.fenda.ai.observer;
 
 import com.aispeech.dui.dds.DDS;
 import com.aispeech.dui.dds.agent.MessageObserver;
+import com.fenda.common.BaseApplication;
 
 /**
  * 客户端MessageObserver, 用于处理客户端动作的消息响应.
@@ -39,7 +40,7 @@ public class DuiMessageObserver implements MessageObserver {
     @Override
     public void onMessage(String message, String data) {
 //        LogUtil.d(Tag, "message : " + message + " data : " + data);
-                if (mMessageCallback != null) {
+                if (mMessageCallback != null && !BaseApplication.getInstance().isCall()) {
                     mMessageCallback.onState(message,data);
                 }
         }

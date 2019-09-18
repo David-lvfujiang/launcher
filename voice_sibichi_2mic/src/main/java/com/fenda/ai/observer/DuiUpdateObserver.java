@@ -5,6 +5,7 @@ import com.aispeech.dui.dds.agent.MessageObserver;
 import com.aispeech.dui.dds.exceptions.DDSNotInitCompleteException;
 import com.aispeech.dui.dds.update.DDSUpdateListener;
 import com.fenda.ai.BuildConfig;
+import com.fenda.common.BaseApplication;
 
 /**
  * 更新Observer,用于更新当前dds组件
@@ -67,7 +68,9 @@ public class DuiUpdateObserver implements MessageObserver {
 
     @Override
     public void onMessage(String s, String s1) {
-        initUpdate();
+        if (!BaseApplication.getInstance().isCall()){
+            initUpdate();
+        }
     }
 
     private DDSUpdateListener ddsUpdateListener = new DDSUpdateListener() {

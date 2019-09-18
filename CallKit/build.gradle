@@ -44,7 +44,6 @@ android {
                 pom.artifactId = "callkit" // 项目名称（通常为类库模块名称，也可以任意）
                 pom.version = "1.0.0" // 版本号
                 pom.packaging = "aar"//打包类型
-
             }
         }
     }

@@ -40,6 +40,7 @@ public class DuiCommandObserver implements CommandObserver {
     private static final String TAG = "DuiCommandObserver";
     private static final String SYS_VOICE_CALL = "call_voice";
     private static final String SYS_VIDEO_CALL = "call_video";
+    private static final String SYS_END_CALL = "end_call";
     private static final String COMMAND_WEATHER = "command_weather";
 
     private ICallProvider callProvider;
@@ -55,7 +56,7 @@ public class DuiCommandObserver implements CommandObserver {
       */
     public void regist() {
         DDS.getInstance().getAgent().subscribe(new String[]{
-                       SYS_VIDEO_CALL,SYS_VOICE_CALL,COMMAND_WEATHER
+                       SYS_VIDEO_CALL,SYS_VOICE_CALL,COMMAND_WEATHER,SYS_END_CALL
                 },
                 this);
     }
@@ -71,49 +72,47 @@ public class DuiCommandObserver implements CommandObserver {
     @Override
     public void onCall(String command, String data) {
 //        LogUtil.e(TAG, "command: " + command + "  data: " + data);
-         if (command.equals(SYS_VOICE_CALL)){
-            try {
-                call(data,0);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }else if (command.equals(SYS_VIDEO_CALL)){
-            try {
-                call(data,1);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }else if (command.equals(COMMAND_WEATHER)){
-            //自定义获取天气
-             try {
-                 data = data.replaceAll("\\\\","");
-                 data = data.replaceAll("\"\\[","[");
-                 data = data.replaceAll("]\"","]");
-                 data = data.replace("\"{","{");
-                 data = data.replace("}\"","}");
-                 final JSONObject object = new JSONObject(data);
-                 JSONObject nlu = object.optJSONObject("nlu");
-                 String type = nlu.optString("skill");
-//                 DispatchManager.startService(command,type,object.toString(),Constant.AIDL.LAUNCHER);
 
-                 Observable.create(new ObservableOnSubscribe<String>() {
-                     @Override
-                     public void subscribe(ObservableEmitter<String> emitter) throws Exception {
-                         emitter.onNext("");
-                     }
-                 }).compose(RxSchedulers.<String>io_main())
-                         .subscribe(new Consumer<String>() {
-                             @Override
-                             public void accept(String s) throws Exception {
-                                 if (weatherProvider == null){
-                                     weatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
-                                 }
-                                 weatherProvider.weatherFromVoiceControlToMainPage(object.toString());
-                             }
-                         });
-             } catch (JSONException e) {
-                 e.printStackTrace();
-             }
+
+        ResultOnCall(command, data);
+    }
+
+    private void ResultOnCall(String command, String data) {
+        if (command.equals(SYS_VOICE_CALL)){
+           try {
+               if (!BaseApplication.getInstance().isCall()){
+                   call(data,0);
+               }
+           } catch (JSONException e) {
+               e.printStackTrace();
+           }
+       }else if (command.equals(SYS_VIDEO_CALL)){
+           try {
+               if (!BaseApplication.getInstance().isCall()){
+                   call(data,1);
+               }
+           } catch (JSONException e) {
+               e.printStackTrace();
+           }
+       }else if (command.equals(SYS_END_CALL)){
+            Observable.create(new ObservableOnSubscribe<String>() {
+                @Override
+                public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                    emitter.onNext("");
+                }
+            }).compose(RxSchedulers.<String>io_main())
+                    .subscribe(new Consumer<String>() {
+                        @Override
+                        public void accept(String s) throws Exception {
+                            if (callProvider == null){
+                                callProvider = ARouter.getInstance().navigation(ICallProvider.class);
+                            }
+                            if (callProvider != null){
+                                callProvider.endCall();
+                            }
+                        }
+                    });
+
         }
     }
 
@@ -151,7 +150,7 @@ public class DuiCommandObserver implements CommandObserver {
             LogUtil.i("phone = "+phone);
             return phone;
         }
-        return "15989349055";
+        return "";
     }
 
 

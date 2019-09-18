@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.aispeech.dui.dds.DDS;
+import com.aispeech.dui.dds.agent.DMCallback;
 import com.aispeech.dui.dds.agent.SkillIntent;
 import com.aispeech.dui.dds.agent.VocabIntent;
 import com.aispeech.dui.dds.exceptions.DDSNotInitCompleteException;
@@ -22,6 +23,7 @@ import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.LogUtil;
 import com.google.gson.Gson;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -49,10 +51,32 @@ public class RequestService implements IVoiceRequestProvider {
     @Override
     public void requestWeather(){
         try {
-            SkillIntent skillIntent = new SkillIntent(VoiceConstant.SIBICHI.ID,
-                    VoiceConstant.SIBICHI.TASK, VoiceConstant.SIBICHI.INTENTION,
-                    new JSONObject().put(VoiceConstant.SIBICHI.TALK_KEY, VoiceConstant.SIBICHI.TALK_VALUE).toString());
+            BaseApplication.getInstance().setRequestWeather(true);
+            SkillIntent skillIntent = new SkillIntent("2019042500000544",
+                    VoiceConstant.SIBICHI.TASK, "查询天气",
+                    new JSONObject().put("text", "现在的天气").toString());
             DDS.getInstance().getAgent().triggerIntent(skillIntent);
+            DDS.getInstance().getAgent().setDMCallback(new DMCallback() {
+                @Override
+                public JSONObject onDMResult(JSONObject jsonObject) {
+                    try {
+                        LogUtil.e("onDMResult =====  "+jsonObject.toString());
+                        JSONObject dmJson = jsonObject.optJSONObject("dm");
+                        if (BaseApplication.getInstance().isCall()){
+                            dmJson.put("nlg","");
+                            dmJson.put("shouldEndSession",false);
+                        }else if (BaseApplication.getInstance().isRequestWeather() || BaseApplication.getInstance().isRequestNews()){
+                            dmJson.put("nlg","");
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    LogUtil.e("onDMResult ===== end ======  "+jsonObject.toString());
+                    return jsonObject;
+                }
+            });
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -184,6 +208,19 @@ public class RequestService implements IVoiceRequestProvider {
     public void openAqiyi() {
         IQiyiPlugin.get().getVideoApi().open();
 
+    }
+
+    @Override
+    public void requestNews(int number) {
+        try {
+            BaseApplication.getInstance().setRequestNews(true);
+            SkillIntent skillIntent = new SkillIntent("2019031900001180",
+                    "新闻", "播报新闻",
+                    new JSONObject().put(VoiceConstant.SIBICHI.TALK_KEY, "最新新闻").toString());
+            DDS.getInstance().getAgent().triggerIntent(skillIntent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

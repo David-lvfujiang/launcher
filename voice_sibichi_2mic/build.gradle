@@ -108,7 +108,6 @@ android {
         from android.sourceSets.main.java.srcDirs
     }
 
-    def  coreAarFile = file("libs/lib-dds-1.1.8.1-release.aar")
 //配置需要上传到maven仓库的文件
     artifacts {
         archives androidSourcesJar
@@ -124,7 +123,7 @@ android {
                 }
                 pom.groupId = "com.fenda.ai"// 唯一标识（通常为模块包名，也可以任意）
                 pom.artifactId = "VoiceSibiche2mic" // 项目名称（通常为类库模块名称，也可以任意）
-                pom.version = "1.0.7" // 版本号
+                pom.version = "1.0.10" // 版本号
                 pom.packaging = "aar"//打包类型
 
             }
@@ -143,10 +142,7 @@ repositories {
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     //AI语音
-//    implementation 'com.sibichi.dds:dds:1.1.8.1@aar'
-
-//    implementation 'com.fenda.player:player:1.0.0@aar'
-    implementation 'com.sibichi.lib_release_dds:dds:1.8.1@aar'
+    implementation 'com.sibichi.lib_dds:dds:1.10.1@aar'
     implementation 'com.sibichi.skill:iqiyi:1.0.1@aar'
     implementation 'com.sibichi.skill_mediactrl:mediacatrl:1.0.1@aar'
     implementation 'com.sibichi.skill_music:music:1.0.1@aar'
@@ -154,13 +150,6 @@ dependencies {
     implementation 'com.sibichi.skill_setting:setting:1.0.1@aar'
     implementation 'com.sibichi.skill_tvctrl:tvctrl:1.0.1@aar'
 
-//    api (name: 'lib-dds-1.1.8.1-release', ext: 'aar')
-//    api (name: 'skill_music-release', ext: 'aar')
-//    api (name: 'skill_iqiyi-release', ext: 'aar')
-//    api (name: 'skill_mediactrl-release1', ext: 'aar')
-//    api (name: 'skill_setting-release', ext: 'aar')
-//    api (name: 'skill_tvctrl-release', ext: 'aar')
-//    api (name: 'skill_remind-release_new', ext: 'aar')
     implementation project(path: ':common')
     annotationProcessor deps.arouter_compiler
 
