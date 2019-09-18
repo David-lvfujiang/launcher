@@ -97,6 +97,8 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     private int showPageIndex;
     private Handler mCyclicRollHandler = new Handler();
     private String mBtName;
+    private String mGetBindMultiIntent;
+    private String mGetBindEventIntent;
 
     @Autowired
     IVoiceInitProvider initProvider;
@@ -245,6 +247,14 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mAdminReceiver = new ComponentName(mContext, ScreenOffAdminReceiver.class);
         mPowerManager = (PowerManager) getSystemService(POWER_SERVICE);
         mPolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+
+        Intent mIntent = getIntent();
+
+        mGetBindMultiIntent = mIntent.getStringExtra("BIND_INTENT");
+        mGetBindEventIntent = mIntent.getStringExtra("BIND_EVENT_INTENT");
+        LogUtil.d(TAG, "mGetBindMultiIntent = " + mGetBindMultiIntent);
+        LogUtil.d(TAG, "mGetBindEventIntent = " + mGetBindEventIntent);
+
         if (!mPolicyManager.isAdminActive(mAdminReceiver)) {
             openDeviceManager();
         }
@@ -266,20 +276,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         if (mICallProvider != null) {
             mICallProvider.initSdk();
         }
-
-        ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
-        if (settingService != null) {
-            settingService.deviceStatus(this);
-        }
         isNetWodrkConnect();
-
-//        ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
-//        if (settingService != null) {
-//            settingService.deviceStatus(this);
-//        }
-
-
-
     }
 
     /**
@@ -339,11 +336,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     public void isNetWodrkConnect() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         Network activeInfo = connectivityManager.getActiveNetwork();
-        LogUtil.d(TAG, "activeInfo = " + activeInfo);
 
-        if (activeInfo == null) {//|| !activeInfo. || !activeInfo.isAvailable) {
+        if (activeInfo == null) {    //|| !activeInfo. || !activeInfo.isAvailable) {
             //  tv.text = "网络不可用—NetworkCallback"
-            //noNetWorkSnackBar();
             ToastUtils.show("网络未连接，请先连接网络！");
         }
 
@@ -353,14 +348,32 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 public void onAvailable(Network network) {
                     super.onAvailable(network);
                     LogUtil.d(TAG, "wifi onAvailable: " + network);
-                    ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
-                    if (settingService != null) {
-                        LogUtil.d(TAG, "init device status");
-                        settingService.deviceStatus(getApplicationContext());
-                    }
-                    // 清除本地联系人数据时重新请求网络数据并保存到本地数据库
-                    if (ContentProviderManager.getInstance(mContext, Constant.Common.URI).isEmpty()) {
-                        mPresenter.getFamilyContacts();
+                    if(mGetBindEventIntent == null){
+                        if(mGetBindMultiIntent == null){
+                            LogUtil.d(TAG,  "null 正常进入主界面");
+                            ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
+                            if (settingService != null) {
+                                LogUtil.d(TAG, "init device status");
+                                settingService.deviceStatus(getApplicationContext());
+                            }
+                            // 清除本地联系人数据时重新请求网络数据并保存到本地数据库
+                            if (ContentProviderManager.getInstance(mContext, Constant.Common.URI).isEmpty()) {
+                                mPresenter.getFamilyContacts();
+                            }
+                        } else{
+                            LogUtil.d(TAG,  "特殊方式进入主界面");
+                        }
+                    } else{
+                        LogUtil.d(TAG,  "绑定成功进入主界面");
+                        ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
+                        if (settingService != null) {
+                            LogUtil.d(TAG, "init device status");
+                            settingService.deviceStatus(getApplicationContext());
+                        }
+                        // 清除本地联系人数据时重新请求网络数据并保存到本地数据库
+                        if (ContentProviderManager.getInstance(mContext, Constant.Common.URI).isEmpty()) {
+                            mPresenter.getFamilyContacts();
+                        }
                     }
                 }
 

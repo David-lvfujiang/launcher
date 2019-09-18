@@ -71,6 +71,7 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
 
     private long [] mHits = null;
     private boolean mShow;
+//    private String mBindIntent;
 
     @Override
     protected void initPresenter() {
@@ -159,10 +160,13 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReceiveEvent(EventMessage<BaseTcpMessage> message) {
         if (message.getCode() == TCPConfig.MessageType.MANGER_SUCCESS) {
+            String mBindIntent1 = "onReceive";
             mPresenter.getContactsList();
             LogUtil.d(TAG, "bind onReceiveEvent = " + message);
             AppUtils.saveBindedDevice(getApplicationContext(), true);
-            ARouter.getInstance().build(RouterPath.HomePage.HOMEPAGE_MAIN).navigation();
+            ARouter.getInstance().build(RouterPath.HomePage.HOMEPAGE_MAIN)
+                    .withString("BIND_EVENT_INTENT", mBindIntent1)
+                    .navigation();
             finish();
         }
     }
@@ -217,7 +221,7 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
     }
 
     private void onEnterMainNoBind() {
-        LogUtil.d(TAG, "onDisplaySettingButton----");
+        String mBindIntent2 = "multiClicks";
         if (mHits == null) {
             mHits = new long[10];
         }
@@ -227,16 +231,14 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
         mHits[mHits.length - 1] = SystemClock.uptimeMillis();
         //一秒内连续点击。
         if (SystemClock.uptimeMillis() - mHits[0] <= 3500) {
-            LogUtil.d(TAG, "onDisplaySettingButton ++++++");
             //这里说明一下，我们在进来以后需要还原状态，否则如果点击过快，第六次，第七次 都会不断进来触发该效果。重新开始计数即可
             mHits = null;
             if (mShow) {
                 //这里是你具体的操作
                 ToastUtils.show("设备未绑定，进入主界面！");
-                ARouter.getInstance().build(RouterPath.HomePage.HOMEPAGE_MAIN).navigation();
-//                Intent mIntent = new Intent(SettingsBindDeviceActivity.this, SettingsActivity.class);
-//                startActivity(mIntent);
-//                finish();
+                ARouter.getInstance().build(RouterPath.HomePage.HOMEPAGE_MAIN)
+                        .withString("BIND_INTENT", mBindIntent2)
+                        .navigation();
                 mShow = false;
             } else {
                 //这里也是你具体的操作

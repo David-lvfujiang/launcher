@@ -50,6 +50,10 @@ public class SettingsWifiUtil {
         mWifiInfo = mWifiManager.getConnectionInfo();
     }
 
+    public enum WifiCipherType {
+        WIFICIPHER_WEP, WIFICIPHER_WPA, WIFICIPHER_NOPASS, WIFICIPHER_INVALID
+    }
+
     // 打开WIFI
     @SuppressLint("WrongConstant")
     public void openWifi(Context context) {

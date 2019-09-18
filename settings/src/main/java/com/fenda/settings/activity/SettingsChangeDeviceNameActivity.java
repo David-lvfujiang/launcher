@@ -59,28 +59,28 @@ public class SettingsChangeDeviceNameActivity extends BaseMvpActivity<SettingsPr
 
         String originalName = (String) SPUtils.get(getApplicationContext(), Constant.Settings.DEVICE_NAME ,"");
         etName.setText(originalName);
-        final int maxTextCount = 10;
-        etName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                etName.removeTextChangedListener(this);//**** 注意的地方
-                if (s.length() >= maxTextCount) {
-                    etName.setText(s.toString().substring(0, maxTextCount));
-                    etName.setSelection(maxTextCount);
-
-                    Toast toast = Toast.makeText(getApplicationContext(),getString(R.string.settings_edittext_num_limit_name),Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER,0,0);
-                    toast.show();
-                }
-                etName.addTextChangedListener(this);//****  注意的地方
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
+//        final int maxTextCount = 10;
+//        etName.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//            }
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                etName.removeTextChangedListener(this);//**** 注意的地方
+//                if (s.length() >= maxTextCount) {
+//                    etName.setText(s.toString().substring(0, maxTextCount));
+//                    etName.setSelection(maxTextCount);
+//
+//                    Toast toast = Toast.makeText(getApplicationContext(),getString(R.string.settings_edittext_num_limit_name),Toast.LENGTH_SHORT);
+//                    toast.setGravity(Gravity.CENTER,0,0);
+//                    toast.show();
+//                }
+//                etName.addTextChangedListener(this);//****  注意的地方
+//            }
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//            }
+//        });
     }
 
     @Override

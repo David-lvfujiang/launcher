@@ -65,6 +65,7 @@
     <string name="settings_device_name">设备名称</string>
     <string name="settings_edittext_num_limit_name">输入字符已达到10个字符，无法再输入了</string>
     <string name="settings_change_device_name_fail">设备名称修改失败</string>
+    <string name="settings_change_device_name_limit">输入字符请在10个以内</string>
 
     <!--SettingsBindDeviceActivity start -->
     <string name="settings_bind_device_vcode">验证码：</string>
@@ -76,7 +77,6 @@
     <!--SettingsWifiConnectedInfoActivity start -->
     <string name="settings_wifi_connected_cancel_save">取消保存网络</string>
     <string name="settings_wifi_connected_other">网络配置</string>
-
 
     <!--SettingsInitDeviceStatusManager start -->
     <string name="settings_init_device_status_query_fail">查询设备信息失败，请稍后重试</string>

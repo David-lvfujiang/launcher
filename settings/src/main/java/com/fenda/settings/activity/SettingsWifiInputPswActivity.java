@@ -33,7 +33,7 @@ public class SettingsWifiInputPswActivity extends BaseMvpActivity {
     protected SettingsWifiUtil mSettingsWifiUtil;
 
     private String mInputWifiPsw;
-    private String ssid1;
+    private String mConnectSsid;
 
     @Override
     protected void initPresenter() {
@@ -55,11 +55,9 @@ public class SettingsWifiInputPswActivity extends BaseMvpActivity {
         mSettingsWifiUtil = new SettingsWifiUtil(SettingsWifiInputPswActivity.this);
         etPsw.addTextChangedListener(textWatcher);
 
-        //4). 得到intent对象
-        Intent intent = getIntent();
-        //5). 通过intent读取额外数据
-        ssid1 = intent.getStringExtra("MESSAGE");
-        tvConnectName.setText("请连接" + ssid1);
+        Intent mIntent = getIntent();
+        mConnectSsid = mIntent.getStringExtra("MESSAGE");
+        tvConnectName.setText("请连接" + mConnectSsid);
     }
 
     @Override
@@ -104,11 +102,13 @@ public class SettingsWifiInputPswActivity extends BaseMvpActivity {
                         mInputWifiPsw = etPsw.getText().toString();
                         final SharedPreferences preferences=getSharedPreferences("wifi_password", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = preferences.edit();
-                        editor.putString(ssid1, mInputWifiPsw);
+                        editor.putString(mConnectSsid, mInputWifiPsw);
                         editor.commit();
-                        mSettingsWifiUtil.addNetwork(mSettingsWifiUtil.createWifiInfo(ssid1, mInputWifiPsw, 3));
+                        mSettingsWifiUtil.addNetwork(mSettingsWifiUtil.createWifiInfo(mConnectSsid, mInputWifiPsw, 3));
 
-                        startActivity(new Intent(SettingsWifiInputPswActivity.this, SettingsWifiActivity.class));
+                        Intent mIntent = new Intent(SettingsWifiInputPswActivity.this, SettingsWifiActivity.class);
+                        mIntent.putExtra("SURE_CONNECT_SSID", mConnectSsid);
+                        startActivity(mIntent);
                         finish();
                     }
                 });
