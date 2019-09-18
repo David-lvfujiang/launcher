@@ -256,14 +256,103 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <ImageView
-        android:id="@+id/iv_homepage_pull"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
-        android:layout_marginBottom="38dp"
-        app:layout_constraintBottom_toBottomOf="@+id/rv_Tipinfo"
+    <SlidingDrawer
+        android:id="@+id/slidingdrawer"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="-71dp"
+        android:content="@+id/content"
+        android:handle="@+id/iv_homepage_pull"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@mipmap/a123456" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_homepage_pull"
+            android:layout_width="52dp"
+            android:layout_height="70dp"
+            app:srcCompat="@mipmap/a123456" />
+
+        <LinearLayout
+            android:id="@+id/content"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:background="@mipmap/submenu_bg">
+            <LinearLayout
+                android:id="@+id/ll_submenu_back"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/iv_submenu_drop_left"
+                    android:layout_width="35dp"
+                    android:layout_height="20dp"
+                    android:src="@mipmap/submenu_drop_left" />
+
+                <ImageView
+                    android:id="@+id/iv_submenu_drop_right"
+                    android:layout_width="35dp"
+                    android:layout_height="20dp"
+                    android:src="@mipmap/submenu_drop_right" />
+
+            </LinearLayout>
+
+            <com.fenda.homepage.scrollview.ObservableScrollView
+                android:id="@+id/sv_submenu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_submenu_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginEnd="@dimen/demension_dp10"
+                        android:layout_marginStart="@dimen/demension_dp10" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:id="@+id/ll_tip"
+                        android:layout_height="@dimen/demension_dp55"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/rv_submenu_list">
+                        <TextView
+                            android:id="@+id/textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="主人，下面这些功能我们正在快马加鞭地开发，敬请期待～"
+                            android:textColor="#FFF"
+                            android:textSize="28px" />
+                    </LinearLayout>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_submenu_list2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/ll_tip"
+                        android:layout_marginEnd="@dimen/demension_dp10"
+                        android:layout_marginStart="@dimen/demension_dp10" />
+                </RelativeLayout>
+
+            </com.fenda.homepage.scrollview.ObservableScrollView>
+        </LinearLayout>
+    </SlidingDrawer>
 
 </android.support.constraint.ConstraintLayout>
