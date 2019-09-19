@@ -335,7 +335,6 @@ public class WeatherHelper implements IWeatherProvider {
 
   //      String userId = (String) SPUtils.get(BaseApplication.getInstance(), Constant.Settings.USER_ID,"");
         SPUtils.put(BaseApplication.getInstance(), Constant.Weather.SP_NOW_WEATHER, todayWeatherContent);
-
         try{
 
             JsonObject jsonObject = new JsonParser().parse(todayWeatherContent).getAsJsonObject();
