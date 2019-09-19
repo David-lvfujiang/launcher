@@ -25,7 +25,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.BaseApplication;
+import com.fenda.common.provider.IVoiceRequestProvider;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -109,6 +111,11 @@ public class SingleCallActivity extends BaseCallActivity implements Handler.Call
         setContentView(R.layout.rc_voip_activity_single_call);
         // 音视频通话时设置标志禁止其他语言操作
         BaseApplication.getBaseInstance().setCall(true);
+        // 音视频通话时关闭音乐
+        IVoiceRequestProvider initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
+        if (initVoiceProvider != null) {
+            initVoiceProvider.cancelMusic();
+        }
         mSqliteManager = new SqliteManager(this);
         Log.i("AudioPlugin", "savedInstanceState != null=" + (savedInstanceState != null) + ",,,RongCallClient.getInstance() == null" + (RongCallClient.getInstance() == null));
         if (savedInstanceState != null && RongCallClient.getInstance() == null) {

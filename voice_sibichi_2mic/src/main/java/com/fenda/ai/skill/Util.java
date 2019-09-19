@@ -140,7 +140,16 @@ public class Util {
         }
         return false;
     }
-
+    /**
+     * 查看前台进程是否是QIYI
+     * @return
+     */
+    public static boolean isTopTaskQIYI(){
+        if (isTopTaskPackage(BaseApplication.getInstance()).equals(VoiceConstant.QIYIMOBILE_PKG)){
+            return true;
+        }
+        return false;
+    }
     public static String isTopTaskPackage(Context mContext){
 
         ActivityManager mAm = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);

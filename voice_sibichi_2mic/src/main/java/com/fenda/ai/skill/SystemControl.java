@@ -74,17 +74,19 @@ public class SystemControl extends SystemCtrl {
     @Override
     public int shutdown(String s, String s1, String s2, String s3) {
 //        DispatchManager.startService(Constant.AIDL.SCREEN_OFF, Constant.AIDL.SCREEN_OFF,"",Constant.AIDL.LAUNCHER);
-        // 锁屏
-        EventBusUtils.post(Constant.Common.SCREEN_OFF);
         // 退出播放
         if (Util.isTaskQQmusic(BaseApplication.getInstance())) {
-            MusicPlugin.get().getMusicApi().exit();
+            MusicPlugin.get().getMusicApi().pause();
         }
-        IQiyiPlugin.get().getVideoApi().exit();
+        if (Util.isTopTaskQIYI()) {
+            IQiyiPlugin.get().getVideoApi().pause();
+        }
         IPlayerProvider provider = ARouter.getInstance().navigation(IPlayerProvider.class);
         if (provider != null) {
             provider.stop();
         }
+        // 锁屏
+        EventBusUtils.post(Constant.Common.SCREEN_OFF);
         return SettingPlugin.ERR_OK;
     }
 
@@ -107,6 +109,10 @@ public class SystemControl extends SystemCtrl {
     @Override
     public int screenOff() {
 //        DispatchManager.startService(Constant.AIDL.SCREEN_OFF, Constant.AIDL.SCREEN_OFF,"",Constant.AIDL.LAUNCHER);
+        // QQ音乐暂停播放才能息屏
+        if (Util.isTaskQQmusic(BaseApplication.getInstance())) {
+            MusicPlugin.get().getMusicApi().pause();
+        }
         EventBusUtils.post(Constant.Common.SCREEN_OFF);
         return SettingPlugin.ERR_OK;
     }

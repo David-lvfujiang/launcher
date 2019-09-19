@@ -595,10 +595,12 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent(String type) {
+    public void onScreenEvent(String type) {
         if (type.equals(Constant.Common.SCREEN_OFF)) {
+            LogUtil.i("homepage:screenOff");
             screenOff();
         } else if (type.equals(Constant.Common.SCREEN_ON)) {
+            LogUtil.i("homepage:screenOn");
             screenOn();
         }
     }
