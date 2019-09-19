@@ -101,7 +101,7 @@ dependencies {
 //    api (name: 'remind-release', ext: 'aar')
 
     //api (name: 'leavemessage-release', ext: 'aar')
-    api (name: 'call-release', ext: 'aar')
+    //api (name: 'call-release', ext: 'aar')
     api (name: 'gallery-_dev-release', ext: 'aar')
     api (name: 'homepage-_dev-release', ext: 'aar')
 //    api (name: 'news-release', ext: 'aar')
@@ -112,7 +112,7 @@ dependencies {
 //    api (name: 'player-release', ext: 'aar')
 
     implementation 'com.fenda.ai:VoiceSibiche2mic:1.0.7'
-   // implementation 'com.fenda.call:call:1.0.1'
+    implementation 'com.fenda.call:call:1.0.1'
     implementation 'com.fenda.calendar:calendar:1.0.1'
     implementation 'com.fenda.encyclopedia:encyclopedia:1.0.0'
     implementation 'com.fenda.news:news:1.0.0'
