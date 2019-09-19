@@ -41,6 +41,8 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
+import com.fenda.common.basebean.player.FDMusic;
+import com.fenda.common.basebean.player.MusicPlayBean;
 import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.bean.WeatherWithHomeBean;
 import com.fenda.common.constant.Constant;
@@ -87,7 +89,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Route(path = RouterPath.HomePage.HOMEPAGE_MAIN)
-public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener, View.OnTouchListener , ScrollViewListener, IRecommendProvider {
+public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener, View.OnTouchListener , ScrollViewListener {
     private final static String TAG = "HomePageActivity";
 
     TextClock mHeaderTimeTv;
@@ -127,7 +129,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     private ImageView submenuDropLeft;
     private ImageView submenuDropRight;
     private ContentProviderManager manager;
-
+    private List<FDMusic> newsRecommend;
+    private int current = 0;
+    private int number = 0;
 
     Runnable cycleRollRunabler = new Runnable() {
         @Override
@@ -137,7 +141,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             if (showPageIndex + 1 >= HomeUtil.PAGE_NUM_MAX) {
                 mTipInfoRv.scrollToPosition(0);
                 showPageIndex = 0;
-
+                current++;
                 mAiTipIv.setVisibility(View.VISIBLE);
                 mAiTipMicTv.setText(R.string.cm_main_page_title_0);
                 mAiTipTitleTv.setText(R.string.cm_main_page_describe_0);
@@ -221,8 +225,16 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     } else if (showPageIndex == 1) {
                         mAiTipIv.setVisibility(View.GONE);
                         mAiTipMicTv.setText(R.string.cm_main_page_title_1);
-                        mAiTipTitleTv.setText(R.string.cm_main_page_describe_1);
-
+                        if(newsRecommend!=null){
+                            number = newsRecommend.size();
+                            if (current<number){
+                                mAiTipTitleTv.setText(newsRecommend.get(current).getMusicTitle());
+                            }else {
+                                current=0;
+                            }
+                        } else {
+                            mAiTipTitleTv.setText(R.string.cm_main_page_describe_1);
+                        }
                     } else if (showPageIndex == 2) {
                         mAiTipIv.setVisibility(View.GONE);
                         mAiTipMicTv.setText(R.string.cm_main_page_title_2);
@@ -358,6 +370,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 //避免重复调用
                 if (initVoiceProvider != null){
                     initVoiceProvider.requestWeather();
+                    initVoiceProvider.requestNews(20);
                 }
 
             }
@@ -592,6 +605,11 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         Log.e(TAG, "homePageFromVoiceControl " + weatherWithHomeBean.getWeatherTempNum() + " " + weatherWithHomeBean.getWeatherIconId());
         mHeaderWeatherTv.setText(weatherWithHomeBean.getWeatherTempNum());
         mHeaderWeatherIv.setImageDrawable(getResources().getDrawable(weatherWithHomeBean.getWeatherIconId()));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRecommendEvent(MusicPlayBean bean) {
+        newsRecommend = bean.getFdMusics();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -868,15 +886,5 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         rotateAnimation2.setInterpolator(new LinearInterpolator());
         rotateAnimation2.setDetachWallpaper(true);
         submenuDropRight.startAnimation(rotateAnimation2);
-    }
-
-    @Override
-    public void requestRecommend(JSONObject dataRecommend) {
-        //首页推荐内容数据处理
-    }
-
-    @Override
-    public void init(Context context) {
-
     }
 }

@@ -162,13 +162,15 @@
 
     <TextView
         android:id="@+id/tv_main_item_content"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/demension_dp55"
         android:layout_marginBottom="6dp"
         android:text="移动王卡 | 激活立即赠送20元话费！"
         android:textColor="@color/color_ffffff"
         android:textSize="48sp"
         app:layout_constraintBottom_toTopOf="@+id/rl_AI_tip"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/rl_AI_tip" />
 
 
@@ -262,19 +264,24 @@
         android:layout_height="fill_parent"
         android:layout_marginTop="-71dp"
         android:content="@+id/content"
-        android:handle="@+id/iv_homepage_pull"
+        android:handle="@+id/ll_homepage_pull"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/iv_homepage_pull"
-            android:layout_width="52dp"
-            android:layout_height="70dp"
-            app:srcCompat="@mipmap/a123456" />
-
+        <LinearLayout
+            android:id="@+id/ll_homepage_pull"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/demension_dp70"
+            android:gravity="center">
+            <ImageView
+                android:id="@+id/iv_homepage_pull"
+                android:layout_width="@dimen/demension_dp50"
+                android:layout_height="@dimen/demension_dp50"
+                app:srcCompat="@mipmap/a123456" />
+        </LinearLayout>
         <LinearLayout
             android:id="@+id/content"
             android:orientation="vertical"
