@@ -115,7 +115,7 @@ dependencies {
     implementation 'com.fenda.call:call:1.0.1'
     implementation 'com.fenda.calendar:calendar:1.0.1'
     implementation 'com.fenda.encyclopedia:encyclopedia:1.0.1'
-    implementation 'com.fenda.news:news:1.0.1'
+    implementation 'com.fenda.news:news:1.0.2'
     implementation 'com.fenda.player:player:1.0.1'
     implementation 'com.fenda.remind:remind:1.0.1'
     implementation 'com.fenda.weather:weather:1.0.1'
