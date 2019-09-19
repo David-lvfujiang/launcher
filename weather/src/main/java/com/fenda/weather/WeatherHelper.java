@@ -16,12 +16,17 @@ import com.fenda.common.util.SPUtils;
 import com.fenda.protocol.tcp.bus.EventBusUtils;
 import com.fenda.weather.model.WeatherBean;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 
 @Route(path = RouterPath.Weather.WEATHER_SERVICE)
@@ -29,6 +34,7 @@ public class WeatherHelper implements IWeatherProvider {
 
     protected static String keyWeatherCity        = "keyWeatherCity";
     public static String keyWeatherName        = "keyWeatherName";
+
     public static String keyWeatherTemperature = "keyWeatherTemperature";
     public static String keyWeatherForecastDateArray   = "keyWeatherForecastDateArray";   //7天天气日期
     public static String keyWeatherForecastTempArray = "keyWeatherForecastTempArray";     //7天天气气温
@@ -261,11 +267,14 @@ public class WeatherHelper implements IWeatherProvider {
     public void weatherFromVoiceControl(String weatherContent) {
 
         Log.e("Weather", weatherContent);
+        Log.e("TAG", "SSS");
 
         try{
-            WeatherBean bean = new Gson().fromJson(weatherContent, WeatherBean.class);
-
-            WeatherBean.DataBena weatherData = bean.getForecast().get(0);
+            JsonObject jsonObject = new JsonParser().parse(weatherContent).getAsJsonObject();
+            JsonElement weatherMessage = jsonObject.get("webhookResp");
+            WeatherBean bean = new Gson().fromJson(weatherMessage, WeatherBean.class);
+            Log.e("Weather", bean.toString());
+            WeatherBean.DataBena weatherData = bean.getExtra().getFuture().get(0);
 
 
             String[] weatherNameArr = new String[7];
@@ -280,13 +289,13 @@ public class WeatherHelper implements IWeatherProvider {
             }
 
             try {
-                for (int i = 0; i < bean.getForecast().size(); i++) {
-                    WeatherBean.DataBena tWeatherData = bean.getForecast().get(i);
-                    weatherNameArr[i] = tWeatherData.getConditionDayNight();
-                    weatherDateArr[i] = tWeatherData.getPredictDate();
-                    weatherTempRangeArr[i] = tWeatherData.getTempNight() + "℃ ~ " + tWeatherData.getTempDay() + "℃";
+                for (int i = 0; i < bean.getExtra().getFuture().size(); i++) {
+                    WeatherBean.DataBena tWeatherData = bean.getExtra().getFuture().get(i);
+                    weatherNameArr[i] = tWeatherData.getWeather();
+                    weatherDateArr[i] = tWeatherData.getDate();
+                    weatherTempRangeArr[i] = tWeatherData.getTemperature();
 
-                    Log.e("qob", "weatherData weatherNameArr " + tWeatherData.getPredictDate());
+                    Log.e("qob", "weatherData weatherNameArr " + tWeatherData.getDate());
                 }
 
             }
@@ -306,7 +315,8 @@ public class WeatherHelper implements IWeatherProvider {
 
             ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN)
                     .withString(keyWeatherCity, bean.getCityName())
-                    .withString(keyWeatherTemperature, weatherData.getTempDay())
+                    .withString(keyWeatherTemperature, weatherData.getDate())
+
                     .withObject(keyWeatherName, weatherNameArr)
                     .withObject(keyWeatherForecastDateArray, weatherDateArr)
                     .withObject(keyWeatherForecastTempArray, weatherTempRangeArr)
@@ -329,12 +339,12 @@ public class WeatherHelper implements IWeatherProvider {
         try{
             WeatherBean bean = new Gson().fromJson(todayWeatherContent, WeatherBean.class);
 
-            WeatherBean.DataBena weatherData = bean.getForecast().get(0);
+            WeatherBean.DataBena weatherData =  bean.getExtra().getFuture().get(0);
 
 
-            int tWeatherCode = WeatherHelper.codeFromWeahterName(weatherData.getConditionDayNight());
+            int tWeatherCode = WeatherHelper.codeFromWeahterName(weatherData.getWeather());
 
-            EventBusUtils.post(new WeatherWithHomeBean(weatherData.getTempDay(), WeatherHelper.iconIdWithCode(tWeatherCode, true)));
+            EventBusUtils.post(new WeatherWithHomeBean(weatherData.getDate(), WeatherHelper.iconIdWithCode(tWeatherCode, true)));
 
         } catch (Exception e) {
             e.printStackTrace();

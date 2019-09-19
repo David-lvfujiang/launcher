@@ -298,34 +298,7 @@
             android:layout_marginTop="24px"
             android:layout_marginBottom="24px"/>
 
-        <LinearLayout
-            android:id="@+id/ll_weather_week6"
-            android:orientation="vertical"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/iv_week6_icon"
-                android:layout_width="60px"
-                android:layout_height="50px"
-                android:layout_marginTop="29px"
-                android:src="@mipmap/weather_icon_100"/>
-            <TextView
-                android:id="@+id/tv_week6_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5px"
-                android:textColor="@color/weather_color_999999"
-                android:textSize="20px"
-                android:text="@string/weather_week6"/>
-            <TextView
-                android:id="@+id/tv_week6_temp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/weather_color_999999"
-                android:textSize="20px"/>
-        </LinearLayout>
+
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

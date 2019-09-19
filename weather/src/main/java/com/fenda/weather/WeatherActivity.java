@@ -57,7 +57,7 @@ public class WeatherActivity extends BaseActivity implements View.OnClickListene
     }
 
     @Override
-    public void initView(){
+    public void initView() {
         findViewById(R.id.tv_navbar_back).setOnClickListener(this);
 
         mWeahterBgIv = findViewById(R.id.gif_weather_bg);
@@ -71,7 +71,6 @@ public class WeatherActivity extends BaseActivity implements View.OnClickListene
         mWeekIconIv3 = findViewById(R.id.iv_week3_icon);
         mWeekIconIv4 = findViewById(R.id.iv_week4_icon);
         mWeekIconIv5 = findViewById(R.id.iv_week5_icon);
-        mWeekIconIv6 = findViewById(R.id.iv_week6_icon);
         mWeekIconIvArr.add(mWeekIconIv0);
         mWeekIconIvArr.add(mWeekIconIv1);
         mWeekIconIvArr.add(mWeekIconIv2);
@@ -85,7 +84,6 @@ public class WeatherActivity extends BaseActivity implements View.OnClickListene
         mWeekDateTv3 = findViewById(R.id.tv_week3_date);
         mWeekDateTv4 = findViewById(R.id.tv_week4_date);
         mWeekDateTv5 = findViewById(R.id.tv_week5_date);
-        mWeekDateTv6 = findViewById(R.id.tv_week6_date);
 
         mWeekDateTvArr.add(mWeekDateTv1);
         mWeekDateTvArr.add(mWeekDateTv2);
@@ -100,7 +98,6 @@ public class WeatherActivity extends BaseActivity implements View.OnClickListene
         mWeekTempTv3 = findViewById(R.id.tv_week3_temp);
         mWeekTempTv4 = findViewById(R.id.tv_week4_temp);
         mWeekTempTv5 = findViewById(R.id.tv_week5_temp);
-        mWeekTempTv6 = findViewById(R.id.tv_week6_temp);
         mWeekTempTvArr.add(mWeekTempTv0);
         mWeekTempTvArr.add(mWeekTempTv1);
         mWeekTempTvArr.add(mWeekTempTv2);
@@ -118,7 +115,7 @@ public class WeatherActivity extends BaseActivity implements View.OnClickListene
     @Override
     public void onClick(View v) {
 
-        if (v.getId() == R.id.tv_navbar_back){
+        if (v.getId() == R.id.tv_navbar_back) {
             finish();
         }
     }
@@ -132,10 +129,10 @@ public class WeatherActivity extends BaseActivity implements View.OnClickListene
         updateView(intent);
     }
 
-    private void updateView(Intent weatherIntent){
+    private void updateView(Intent weatherIntent) {
 
 
-        try{
+        try {
             String tkeyCity = weatherIntent.getStringExtra(WeatherHelper.keyWeatherCity);
             String tkeyTmep = weatherIntent.getStringExtra(WeatherHelper.keyWeatherTemperature);
 
@@ -151,21 +148,20 @@ public class WeatherActivity extends BaseActivity implements View.OnClickListene
             Log.e("Weather", tWeatherNameStr + " " + tWeatherDateStr + " " + tWeatherTempStr + " " + tkeyCity + " " + tkeyTmep);
 
             mCityNameTv.setText(tkeyCity);
-            mTempTv.setText(tkeyTmep);
+            mTempTv.setText(tWeatherTempArr[0].substring(tWeatherTempArr[0].indexOf("~") + 1, tWeatherTempArr[0].indexOf("℃")).trim());
 
-            for (int i = 0; i < tWeatherNameArr.length; i++){
+            for (int i = 0; i < tWeatherNameArr.length; i++) {
                 String tWeatherName = tWeatherNameArr[i];
                 String tWeatherDate = tWeatherDateArr[i];
                 String tWeatherTemp = tWeatherTempArr[i];
                 int tWeatherCode = WeatherHelper.codeFromWeahterName(tWeatherName);
 
 
-                if (i == 0){
+                if (i == 0) {
                     mWeatherNameTv.setText(tWeatherName);
                     mWeahterBgIv.setBackgroundResource(WeatherHelper.resourcesIdWithCode(tWeatherCode));
                     mWeekIconIvArr.get(i).setImageResource(WeatherHelper.iconIdWithCode(tWeatherCode, true));
-                }
-                else {
+                } else {
                     mWeekDateTvArr.get(i - 1).setText(WeatherHelper.dateToWeek(tWeatherDate));  //显示日期
                     mWeekIconIvArr.get(i).setImageResource(WeatherHelper.iconIdWithCode(tWeatherCode, false));
                 }
@@ -174,7 +170,7 @@ public class WeatherActivity extends BaseActivity implements View.OnClickListene
             }
 
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
             Log.e("fd", "updateView " + ex);
         }
     }
