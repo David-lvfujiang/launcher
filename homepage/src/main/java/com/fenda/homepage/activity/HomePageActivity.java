@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SlidingDrawer;
 import android.widget.TextClock;
@@ -161,6 +162,8 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mTipInfoRv = findViewById(R.id.rv_Tipinfo);
         mHeaderWeatherIv = findViewById(R.id.iv_header_weather);
         mHeaderWeatherTv = findViewById(R.id.tv_header_temp);
+
+
 
         mAiTipIv = findViewById(R.id.iv_main_tip_icon);
         mAiTipTitleTv = findViewById(R.id.tv_main_item_content);
@@ -507,19 +510,28 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     public void onClick(View v) {
         int resId = v.getId();
         if (resId == R.id.iv_main_phone) {
+
             //通讯录
             ARouter.getInstance().build(RouterPath.Call.MAIN_ACTIVITY).navigation();
         } else if (resId == R.id.iv_main_cmcc) {
             //通讯录
 //            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
+            String saveWeahterValue = (String) SPUtils.get(getApplicationContext(), Constant.Weather.SP_NOW_WEATHER, "");
+            Log.e("消息", saveWeahterValue);
+            mIWeatherProvider.weatherFromVoiceControlToMainPage(saveWeahterValue);
         } else if (resId == R.id.iv_header_weather || resId == R.id.tv_header_temp) {
 
 
             String saveWeahterValue = (String) SPUtils.get(getApplicationContext(), Constant.Weather.SP_NOW_WEATHER, "");
+
             if (saveWeahterValue != null && saveWeahterValue.length() > 1){
+                Log.e("消息1", saveWeahterValue);
                 mIWeatherProvider.weatherFromVoiceControl(saveWeahterValue);
+                //mIWeatherProvider.weatherFromVoiceControlToMainPage(saveWeahterValue);
             }
             else {
+                Log.e("消息2", saveWeahterValue);
+
                 ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN).navigation();
             }
             initVoiceProvider.nowWeather();

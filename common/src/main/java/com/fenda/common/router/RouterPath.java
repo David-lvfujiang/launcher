@@ -51,6 +51,10 @@ public interface RouterPath {
         String ENCYCLOPEDIA_SHARES_ACTIVITY = "/encyclopedia/EncyclopediaSharesActivity";
         String ENCYCLOPEDIA_QUESTIION_ACTIVITY = "/encyclopedia/EncyclopediaQuestiionActivity";
     }
+    public interface Leavemessage {
+        String LEAVEMESSAGE_PROVIDER = "/leavemessage/LeaveMessageService";
+
+    }
     interface SETTINGS {
         String SettingsService = "/settings/SettingsService";
 

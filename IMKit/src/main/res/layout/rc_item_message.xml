@@ -18,8 +18,8 @@
         android:layout_height="20dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="12dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="30dp"
         android:gravity="center_vertical" />
 
     <LinearLayout
@@ -42,8 +42,8 @@
 
     <io.rong.imkit.widget.AsyncImageView
         android:id="@id/rc_left"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_below="@id/rc_time"
         android:layout_marginRight="4dp"
         android:layout_toRightOf="@id/ll_message_check"
@@ -53,8 +53,8 @@
 
     <io.rong.imkit.widget.AsyncImageView
         android:id="@id/rc_right"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_alignParentRight="true"
         android:layout_below="@id/rc_time"
         android:layout_marginLeft="4dp"
@@ -99,7 +99,7 @@
                 android:layout_marginRight="10dp"
                 android:text="已发"
                 android:textColor="@color/rc_notification_bg"
-                android:textSize="12sp"
+                android:textSize="30sp"
                 android:visibility="gone" />
 
             <ProgressBar
@@ -129,7 +129,7 @@
                 android:drawableLeft="@drawable/rc_read_receipt"
                 android:drawableStart="@drawable/rc_read_receipt"
                 android:textColor="@color/rc_read_receipt_status"
-                android:textSize="12sp"
+                android:textSize="30sp"
                 android:visibility="gone" />
 
             <TextView
@@ -140,7 +140,7 @@
                 android:layout_marginRight="4dp"
                 android:layout_gravity="bottom"
                 android:textColor="#A4A4A4"
-                android:textSize="12sp"/>
+                android:textSize="30sp"/>
 
             <TextView
                 android:id="@id/rc_read_receipt_request"
@@ -152,7 +152,7 @@
                 android:drawableLeft="@drawable/rc_read_receipt_request_button"
                 android:drawableStart="@drawable/rc_read_receipt_request_button"
                 android:textColor="@color/rc_read_receipt_status"
-                android:textSize="12sp"
+                android:textSize="30sp"
                 android:visibility="gone" />
 
             <TextView
@@ -164,7 +164,7 @@
                 android:layout_marginRight="4dp"
                 android:text="@string/rc_read_receipt_status"
                 android:textColor="@color/rc_read_receipt_status"
-                android:textSize="12sp"
+                android:textSize="30sp"
                 android:visibility="gone" />
 
             <io.rong.imkit.widget.ProviderContainerView
@@ -182,7 +182,7 @@
                 android:layout_marginRight="4dp"
                 android:layout_gravity="bottom"
                 android:textColor="#A4A4A4"
-                android:textSize="12sp"/>
+                android:textSize="30sp"/>
 
         </LinearLayout>
 

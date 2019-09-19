@@ -352,6 +352,7 @@
                 </RelativeLayout>
 
             </com.fenda.homepage.scrollview.ObservableScrollView>
+
         </LinearLayout>
     </SlidingDrawer>
 

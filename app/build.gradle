@@ -100,25 +100,25 @@ dependencies {
 //    api (name: 'voice_sibichi_2mic-release', ext: 'aar')
 //    api (name: 'remind-release', ext: 'aar')
 
-    //api (name: 'leavemessage-release', ext: 'aar')
-    //api (name: 'call-release', ext: 'aar')
+    api (name: 'leavemessage-release', ext: 'aar')
+    api (name: 'call-release', ext: 'aar')
     api (name: 'gallery-_dev-release', ext: 'aar')
     api (name: 'homepage-_dev-release', ext: 'aar')
 //    api (name: 'news-release', ext: 'aar')
-// api (name: 'weather-release', ext: 'aar')
+ api (name: 'weather-release', ext: 'aar')
 //    api (name: 'calendar-_dev-release', ext: 'aar')
     api (name: 'settings-_dev-release', ext: 'aar')
 //    api (name: 'encyclopedia-_dev-release', ext: 'aar')
 //    api (name: 'player-release', ext: 'aar')
 
-    implementation 'com.fenda.ai:VoiceSibiche2mic:1.0.1'
-    implementation 'com.fenda.call:call:1.0.1'
+    implementation 'com.fenda.ai:VoiceSibiche2mic:1.0.7'
+    // implementation 'com.fenda.call:call:1.0.1'
     implementation 'com.fenda.calendar:calendar:1.0.1'
-    implementation 'com.fenda.encyclopedia:encyclopedia:1.0.1'
-    implementation 'com.fenda.news:news:1.0.1'
+    implementation 'com.fenda.encyclopedia:encyclopedia:1.0.0'
+    implementation 'com.fenda.news:news:1.0.0'
     implementation 'com.fenda.player:player:1.0.1'
-    implementation 'com.fenda.remind:remind:1.0.1'
-    implementation 'com.fenda.weather:weather:1.0.1'
+    implementation 'com.fenda.remind:remind:1.0.3'
+    //implementation 'com.fenda.weather:weather:1.0.1'
 
     annotationProcessor deps.arouter_compiler
 //    implementation project(path: ':CallLib')
@@ -126,6 +126,7 @@ dependencies {
 //    implementation project(path: ':IMKit')
 //    implementation project(path: ':IMLib')
     androidTestImplementation 'junit:junit:4.12'
+    implementation project(path: ':IMKit')
 
 //    annotationProcessor deps.androidannotations
 //    annotationProcessor deps.arouter_compiler
