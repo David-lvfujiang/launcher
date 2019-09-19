@@ -25,6 +25,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+
 
 /**
  * @author mirrer.wangzhonglin
@@ -42,8 +49,8 @@ public class AlarmService implements IRemindProvider {
     public void createAlarm(String data) {
         ArrayList<AlarmBean> mList = getAlarmBeanList(data);
         Bundle mBundle = new Bundle();
-        mBundle.putParcelableArrayList("alarmList",mList);
-        mBundle.putString("alarmType",Constant.Remind.CREATE_REMIND);
+        mBundle.putParcelableArrayList("alarmList", mList);
+        mBundle.putString("alarmType", Constant.Remind.CREATE_REMIND);
         Intent mIntent = new Intent(mContext, AlarmActivity.class);
         mIntent.putExtras(mBundle);
         mContext.startActivity(mIntent);
@@ -56,7 +63,7 @@ public class AlarmService implements IRemindProvider {
         JSONArray array = null;
         try {
             array = new JSONArray(data);
-            for (int i = 0; i < array.length(); i++){
+            for (int i = 0; i < array.length(); i++) {
                 JSONObject object = array.optJSONObject(i);
                 AlarmBean bean = getAlarmBean(object);
                 mList.add(bean);
@@ -71,8 +78,8 @@ public class AlarmService implements IRemindProvider {
     public void queryAlarm(String data) {
         ArrayList<AlarmBean> mList = getAlarmBeanList(data);
         Bundle mBundle = new Bundle();
-        mBundle.putParcelableArrayList(Constant.Remind.ALARM_LIST,mList);
-        mBundle.putString(Constant.Remind.ALARM_TYPE,Constant.Remind.QUERY_REMIND);
+        mBundle.putParcelableArrayList(Constant.Remind.ALARM_LIST, mList);
+        mBundle.putString(Constant.Remind.ALARM_TYPE, Constant.Remind.QUERY_REMIND);
         Intent mIntent = new Intent(mContext, AlarmListActivity.class);
         mIntent.putExtras(mBundle);
         mContext.startActivity(mIntent);
@@ -81,22 +88,38 @@ public class AlarmService implements IRemindProvider {
 
     @Override
     public void deleteAlarmComplete(String data) {
-        ArrayList<AlarmBean> mList = getAlarmBeanList(data);
-        if (mList.size() > 0){
-            AlarmBean bean = mList.get(0);
-            bean.setType(2);
-            EventBusUtils.post(bean);
+        final ArrayList<AlarmBean> mList = getAlarmBeanList(data);
+        if (mList.size() > 0) {
+            Observable.create(new ObservableOnSubscribe<String>() {
+                @Override
+                public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                    emitter.onNext("");
+                }
+            }).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<String>() {
+                        @Override
+                        public void accept(String s) throws Exception {
+                            Bundle mBundle = new Bundle();
+                            mBundle.putParcelableArrayList(Constant.Remind.ALARM_LIST, mList);
+                            mBundle.putString(Constant.Remind.ALARM_TYPE, Constant.Remind.DELETE_REMIND_SUCCESS);
+                            Intent mIntent = new Intent(mContext, AlarmListActivity.class);
+                            mIntent.putExtras(mBundle);
+                            mContext.startActivity(mIntent);
+                        }
+                    });
+
         }
     }
 
     @Override
     public void deleteAlarmStart(String data) {
-        LogUtil.e("deleteAlarmStart = "+data);
+        LogUtil.e("deleteAlarmStart = " + data);
         final ArrayList<AlarmBean> mList = new ArrayList<>();
         try {
             JSONObject dataObject = new JSONObject(data);
             JSONArray array = dataObject.optJSONArray("content");
-            for (int i = 0; i < array.length(); i++){
+            for (int i = 0; i < array.length(); i++) {
                 JSONObject object = array.optJSONObject(i);
                 AlarmBean bean = getCancelAlarm(object);
                 bean.setType(1);
@@ -106,32 +129,18 @@ public class AlarmService implements IRemindProvider {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-//        Observable.create(new ObservableOnSubscribe<String>() {
-//            @Override
-//            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
-//                emitter.onNext("");
-//            }
-//        }).subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Consumer<String>() {
-//                    @Override
-//                    public void accept(String s) throws Exception {
-                        Bundle mBundle = new Bundle();
-                        mBundle.putParcelableArrayList(Constant.Remind.ALARM_LIST,mList);
-                        mBundle.putString(Constant.Remind.ALARM_TYPE,Constant.Remind.DELETE_REMIND);
-                        Intent mIntent = new Intent(mContext, AlarmListActivity.class);
-                        mIntent.putExtras(mBundle);
-                        mContext.startActivity(mIntent);
-//                    }
-//                });
-
-
+        Bundle mBundle = new Bundle();
+        mBundle.putParcelableArrayList(Constant.Remind.ALARM_LIST, mList);
+        mBundle.putString(Constant.Remind.ALARM_TYPE, Constant.Remind.DELETE_REMIND);
+        Intent mIntent = new Intent(mContext, AlarmListActivity.class);
+        mIntent.putExtras(mBundle);
+        mContext.startActivity(mIntent);
 
 
     }
 
 
-    private AlarmBean getCancelAlarm(JSONObject object){
+    private AlarmBean getCancelAlarm(JSONObject object) {
         AlarmBean bean = new AlarmBean();
         bean.setRepeat(object.optString("subTitle"));
 
@@ -145,9 +154,8 @@ public class AlarmService implements IRemindProvider {
     }
 
 
-
     @Override
-    public void closeAlarm(String type)  {
+    public void closeAlarm(String type) {
         AlarmBean bean = new AlarmBean();
         bean.setType(Constant.Remind.CLOSE_ALARM);
         EventBusUtils.post(bean);
@@ -179,7 +187,7 @@ public class AlarmService implements IRemindProvider {
         AlarmBean bean = getAlarmBean(object);
         mList.add(bean);
         Bundle mBundle = new Bundle();
-        mBundle.putParcelableArrayList("alarmList",mList);
+        mBundle.putParcelableArrayList("alarmList", mList);
         mBundle.putString("alarmType", Constant.Remind.ALARM_REMIND);
         Intent mIntent = new Intent(mContext, AlarmActivity.class);
         mIntent.putExtras(mBundle);
@@ -195,7 +203,6 @@ public class AlarmService implements IRemindProvider {
         }
 
     }
-
 
 
     private AlarmBean getAlarmBean(JSONObject object) {
@@ -215,9 +222,6 @@ public class AlarmService implements IRemindProvider {
         bean.setTime_interval(object.optString("time_interval"));
         return bean;
     }
-
-
-
 
 
     @Override

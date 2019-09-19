@@ -16,18 +16,20 @@ public class MusicPlayBean implements Parcelable {
     private int msgType;
     private String aidlMsgType;
     private int relativeTime;
+    private int absoluteTime;
     private int currentItem;
 
 
 
 
 
-    public MusicPlayBean(List<FDMusic> fdMusics, String msgName, int msgType, String aidlMsgType, int relativeTime, int currentItem) {
+    public MusicPlayBean(List<FDMusic> fdMusics, String msgName, int msgType, String aidlMsgType, int relativeTime,int absoluteTime, int currentItem) {
         this.fdMusics = fdMusics;
         this.msgName = msgName;
         this.msgType = msgType;
         this.aidlMsgType = aidlMsgType;
         this.relativeTime = relativeTime;
+        this.absoluteTime = absoluteTime;
         this.currentItem = currentItem;
     }
 
@@ -43,6 +45,7 @@ public class MusicPlayBean implements Parcelable {
         msgType = source.readInt();
         aidlMsgType = source.readString();
         relativeTime = source.readInt();
+        absoluteTime = source.readInt();
         currentItem = source.readInt();
     }
 
@@ -96,6 +99,15 @@ public class MusicPlayBean implements Parcelable {
         this.currentItem = currentItem;
     }
 
+
+    public int getAbsoluteTime() {
+        return absoluteTime;
+    }
+
+    public void setAbsoluteTime(int absoluteTime) {
+        this.absoluteTime = absoluteTime;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -108,6 +120,7 @@ public class MusicPlayBean implements Parcelable {
         dest.writeInt(msgType);
         dest.writeString(aidlMsgType);
         dest.writeInt(relativeTime);
+        dest.writeInt(absoluteTime);
         dest.writeInt(currentItem);
 
 

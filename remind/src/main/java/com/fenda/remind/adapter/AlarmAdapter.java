@@ -28,10 +28,15 @@ public class AlarmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private Context mContext;
     private List<AlarmBean> alarmBeans;
+    private OnClickItemListener listener;
 
     public AlarmAdapter(Context mContext, List<AlarmBean> alarmBeans) {
         this.mContext = mContext;
         this.alarmBeans = alarmBeans;
+    }
+
+    public void setOnClickItemListener(OnClickItemListener listener){
+        this.listener = listener;
     }
 
     @Override
@@ -41,7 +46,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         ViewHolder mHolder = (ViewHolder) holder;
         final AlarmBean bean = alarmBeans.get(position);
         if (bean != null){
@@ -54,6 +59,9 @@ public class AlarmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             String mTime;
             if (!TextUtils.isEmpty(repeat)){
                 mTime = AlarmUtil.getRepeat(repeat);
+                if (TextUtils.isEmpty(mTime)){
+                    mTime = repeat;
+                }
             }else {
                 mTime = AlarmUtil.getAlarmDate(bean);
             }
@@ -65,15 +73,20 @@ public class AlarmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             }
             mHolder.tvAlarmTime.setText(date);
             mHolder.tvWeek.setText(mTime);
-            mHolder.tvAlarmDate.setText(bean.getPeriod());
+            String period = bean.getPeriod();
+            if (TextUtils.isEmpty(period)){
+                period = AlarmUtil.getPreiod(date);
+            }
+            mHolder.tvAlarmDate.setText(period);
         }
 
         mHolder.imgDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                IVoiceRequestProvider requestProvider = (IVoiceRequestProvider) ARouter.getInstance().build(RouterPath.VOICE.REQUEST_PROVIDER).navigation();
                 String json = new Gson().toJson(bean);
-                requestProvider.deleteAlarm(json);
+                if (listener != null){
+                    listener.onItemListener(holder.getAdapterPosition(),json);
+                }
 
 
             }
@@ -100,5 +113,10 @@ public class AlarmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             imgDelete   = itemView.findViewById(R.id.img_delete);
             tvWeek      = itemView.findViewById(R.id.tv_week);
         }
+    }
+
+
+    public interface OnClickItemListener{
+        void onItemListener(int position,String json);
     }
 }

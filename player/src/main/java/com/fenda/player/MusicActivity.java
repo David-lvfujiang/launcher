@@ -951,39 +951,65 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         }else if (action.equals(Constant.Player.VOICE_FORWARD)){
             //快进
             int relativeTime = bean.getRelativeTime();
+            int absoluteTime = bean.getAbsoluteTime();
             if (mediaPlayer != null){
-                if (relativeTime == 0){
-                    relativeTime = 10000;
-                }else {
-                    relativeTime = relativeTime * 1000;
-                }
-                int position = mediaPlayer.getCurrentPosition() + relativeTime;
+                int position = getSeekToForwardPosition(relativeTime, absoluteTime);
                 mediaPlayer.seekTo(position);
             }
         }else if (action.equals(Constant.Player.VOICE_BACKWARD)){
             //快退
             int relativeTime = bean.getRelativeTime();
+            int absoluteTime = bean.getAbsoluteTime();
             if (mediaPlayer != null){
-                if (relativeTime == 0){
-                    relativeTime = 10000;
-                }else {
-                    relativeTime = relativeTime * 1000;
-                }
-                int position = mediaPlayer.getCurrentPosition() - relativeTime;
+                int position = getSeekToBackwardPosition(relativeTime,absoluteTime);
                 mediaPlayer.seekTo(position);
             }
         }else if (action.equals(Constant.Player.CLOSE_MUSIC_ACTIVITY)){
             this.finish();
         }
 
+    }
 
+    /**
+     * 快退
+     * @param relativeTime
+     * @return
+     */
+    private int getSeekToBackwardPosition(int relativeTime,int absoluteTime) {
+        if (relativeTime == 0 && absoluteTime == 0){
+                return mediaPlayer.getCurrentPosition() - 10000;
+        }else {
+            if (relativeTime > 0){
+                return mediaPlayer.getCurrentPosition() - (relativeTime * 1000);
+            }else if (absoluteTime > 0){
+                return absoluteTime * 1000;
 
+            }
+        }
+        return mediaPlayer.getCurrentPosition();
+    }
+
+    /**
+     * 快进
+     * @param relativeTime
+     * @param absoluteTime
+     * @return
+     */
+    private int getSeekToForwardPosition(int relativeTime, int absoluteTime) {
+        if (relativeTime == 0 && absoluteTime == 0){
+            return mediaPlayer.getCurrentPosition() + 10000;
+        }else {
+            if (relativeTime > 0){
+                return mediaPlayer.getCurrentPosition() + (relativeTime * 1000);
+            }else if (absoluteTime > 0){
+                return absoluteTime * 1000;
+            }
+        }
+        return mediaPlayer.getCurrentPosition();
     }
 
 
-
-
-        AudioManager.OnAudioFocusChangeListener changeListener = new AudioManager.OnAudioFocusChangeListener() {
+    AudioManager.OnAudioFocusChangeListener changeListener = new AudioManager.OnAudioFocusChangeListener() {
             @Override
             public void onAudioFocusChange(int focusChange) {
                 audioManagerSatatus = focusChange;

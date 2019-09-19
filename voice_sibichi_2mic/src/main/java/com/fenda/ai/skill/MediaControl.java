@@ -223,7 +223,8 @@ public class MediaControl extends MediaCtrl {
                 //爱奇艺
                     return IQiyiPlugin.get().getVideoApi().forward(relativeTime, absoluteTime);
             }else if (Util.isLauncherMusic()){
-                return controlModel.controlPlayer(MEDIA_FORWARD,absoluteTime);
+
+                return controlModel.forward(relativeTime,absoluteTime);
             }
 
         return MediaCtrlPlugin.ERR_NOT_SUPPORT;
@@ -239,7 +240,7 @@ public class MediaControl extends MediaCtrl {
                 //爱奇艺
                     return IQiyiPlugin.get().getVideoApi().backward(relativeTime, absoluteTime);
             }else if (Util.isLauncherMusic()){
-                return controlModel.controlPlayer(MEDIA_BACKWARD,absoluteTime);
+                return controlModel.backward(relativeTime,absoluteTime);
 
         }
 

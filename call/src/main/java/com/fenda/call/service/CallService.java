@@ -35,7 +35,7 @@ public class CallService implements ICallProvider {
 
     @Override
     public void initSdk() {
-        RongIM.init(BaseApplication.getInstance());
+        RongIM.init(BaseApplication.getContext());
     }
 
     @Override

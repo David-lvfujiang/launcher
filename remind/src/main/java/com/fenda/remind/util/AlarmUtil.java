@@ -126,4 +126,22 @@ public class AlarmUtil {
         return str;
 
     }
+
+
+    public static String getPreiod(String time){
+        String[] times = time.split(":");
+        int iTime = Integer.parseInt(times[0]);
+        if (iTime >= 0 && iTime <= 7 ){
+            return "早上";
+        }else if (iTime >= 8 && iTime <= 11){
+            return "上午";
+        }else if (iTime >= 12 && iTime <= 13){
+            return "中午";
+        }else if (iTime >= 14 && iTime <= 18){
+            return "下午";
+        }else {
+            return "晚上";
+        }
+
+    }
 }

@@ -91,23 +91,26 @@ public class PlayerProviderImpl implements IPlayerProvider {
     }
 
     @Override
-    public void forward(int relativeTime) {
-    //快进
+    public void forward(int relativeTime, int absoluteTime) {
+        //快进
         MusicPlayBean bean = new MusicPlayBean();
         bean.setRelativeTime(relativeTime);
+        bean.setAbsoluteTime(absoluteTime);
         bean.setAidlMsgType(Constant.Player.VOICE_FORWARD);
         EventBusUtils.post(bean);
     }
 
     @Override
-    public void backward(int relativeTime) {
+    public void backward(int relativeTime, int absoluteTime) {
         //快退
-
         MusicPlayBean bean = new MusicPlayBean();
         bean.setRelativeTime(relativeTime);
+        bean.setAbsoluteTime(absoluteTime);
         bean.setAidlMsgType(Constant.Player.VOICE_BACKWARD);
         EventBusUtils.post(bean);
     }
+
+
 
     @Override
     public void init(Context context) {

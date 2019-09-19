@@ -68,7 +68,7 @@ import io.reactivex.functions.Consumer;
 /**
  * 参见Android SDK集成文档: https://www.dui.ai/docs/operation/#/ct_common_Andriod_SDK
  */
-public class DDSService extends Service implements DuiUpdateObserver.UpdateCallback, DuiMessageObserver.MessageCallback{
+public class DDSService extends Service implements DuiUpdateObserver.UpdateCallback, DuiMessageObserver.MessageCallback {
     public static final String TAG = "DDSService";
 
 
@@ -86,16 +86,16 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
     /**
      * 消息监听器
      */
-    private DuiMessageObserver mMessageObserver ;
+    private DuiMessageObserver mMessageObserver;
     /**
      * dds更新监听器
      */
-    private DuiUpdateObserver mUpdateObserver ;
+    private DuiUpdateObserver mUpdateObserver;
     /**
      * 命令监听器
      */
-    private DuiCommandObserver mCommandObserver ;
-    private DuiNativeApiObserver mNativeObserver ;
+    private DuiCommandObserver mCommandObserver;
+    private DuiNativeApiObserver mNativeObserver;
     private boolean isFirstVar = true;
     private boolean hasvar = false;
 
@@ -112,12 +112,12 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
     @Override
     public void onCreate() {
         LogUtil.e("onCreate========1");
-        if(!AccessibilityMonitorService.isSettingOpen(AccessibilityMonitorService.class,getApplicationContext())){
+        if (!AccessibilityMonitorService.isSettingOpen(AccessibilityMonitorService.class, getApplicationContext())) {
             AccessibilityMonitorService.jumpToSetting(this);
         }
         //初始化广播和语音弹窗
         initReceiverAndSpeechView();
-        setForeground();
+//        setForeground();
         super.onCreate();
     }
 
@@ -173,30 +173,28 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        flags = Service.START_STICKY;
         init();
-        return super.onStartCommand(intent, flags, startId);
+        return Service.START_STICKY;
     }
 
     /**
-     *初始化dds组件
-      */
-    private void init()  {
+     * 初始化dds组件
+     */
+    private void init() {
         //在调试时可以打开sdk调试日志，在发布版本时，请关闭 setDebugMode(5)
         DDS.getInstance().setDebugMode(5);
         listener = new MyDDSInitListener(getApplicationContext());
-        DDS.getInstance().init(getApplicationContext(), createConfig(),listener , new MyDDSAuthListener(getApplicationContext()));
+        DDS.getInstance().init(getApplicationContext(), createConfig(), listener, new MyDDSAuthListener(getApplicationContext()));
         //初始化授权
         init_auth();
 
     }
 
-    private void showToast(final String text)
-    {
+    private void showToast(final String text) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(getApplicationContext(), text , Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -215,7 +213,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
     /**
      * 执行自动授权
      */
-    private void doAutoAuth(){
+    private void doAutoAuth() {
         // 自动执行授权5次,如果5次授权失败之后,给用户弹提示框
         if (mAuthCount < 5) {
             try {
@@ -231,7 +229,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
 
 
     /**
-     *   检查dds是否初始成功
+     * 检查dds是否初始成功
      */
     public void checkDDSReady() {
         while (true) {
@@ -240,7 +238,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 try {
                     if (DDS.getInstance().isAuthSuccess()) {
                         //PlayWelcomeTTS();
-                        LogUtil.i( "FD------auth ok 1");
+                        LogUtil.i("FD------auth ok 1");
                         sendInitSuccessEventBus();
                         showToast("授权成功!");
                         break;
@@ -266,18 +264,16 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
 
     /**
      * 认证广播
-     *
      */
     private BroadcastReceiver authReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction()))
-            {
+            if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
                 NetworkInfo info = intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
                 if (info != null) {
                     //如果当前的网络连接成功并且网络连接可用
                     if (NetworkInfo.State.CONNECTED == info.getState() && info.isAvailable()) {
-                        if (info.getType() == ConnectivityManager.TYPE_WIFI ) {
+                        if (info.getType() == ConnectivityManager.TYPE_WIFI) {
                             doauth_when_net_ok();
 //                            LogUtil.i("TAG",  "FD------连上");
                         }
@@ -285,9 +281,8 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
 //                        LogUtil.i("TAG",  "FD-------断开");
                     }
                 }
-            }
-            else if (TextUtils.equals(intent.getAction(), VoiceConstant.ACTION_AUTH_SUCCESS)) {
-//                LogUtil.i("TAG",  "FD------auth ok 2");
+            } else if (TextUtils.equals(intent.getAction(), VoiceConstant.ACTION_AUTH_SUCCESS)) {
+                LogUtil.i("FD------auth ok 2");
                 sendInitSuccessEventBus();
                 PlayWelcomeTTS();
                 showToast("授权成功!");
@@ -298,19 +293,19 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
         }
     };
 
+
     private void sendInitSuccessEventBus() {
 
+        LogUtil.e("sendInitSuccessEventBus  == SUCCESS");
         EventMessage message = new EventMessage();
         message.setCode(Constant.Common.INIT_VOICE_SUCCESS);
         message.setData(new BaseTcpMessage());
         EventBusUtils.post(message);
 
 
-
     }
 
-    private void doauth_when_net_ok()
-    {
+    private void doauth_when_net_ok() {
         if (DDS.getInstance().getInitStatus() == DDS.INIT_COMPLETE_FULL ||
                 DDS.getInstance().getInitStatus() == DDS.INIT_COMPLETE_NOT_FULL) {
             try {
@@ -324,8 +319,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
         }
     }
 
-    private void PlayWelcomeTTS()
-    {
+    private void PlayWelcomeTTS() {
 //        LogUtil.i("TAG",  "FD------play welcome TTS---");
         String[] wakeupWords = new String[0];
         String minorWakeupWord = null;
@@ -372,21 +366,21 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 } catch (DDSNotInitCompleteException e) {
                     e.printStackTrace();
                 }
-            }else if (VoiceConstant.ACTION_CLOSE_ALARM.equals(intent.getAction())){
-                if (listener != null){
+            } else if (VoiceConstant.ACTION_CLOSE_ALARM.equals(intent.getAction())) {
+                if (listener != null) {
                     listener.closeAlarm();
                 }
-            }else if (VoiceConstant.ACTION_CLOSE_REMIND.equals(intent.getAction())){
-                if (listener != null){
+            } else if (VoiceConstant.ACTION_CLOSE_REMIND.equals(intent.getAction())) {
+                if (listener != null) {
                     listener.closeRemind();
                 }
-            }else if (VoiceConstant.ACTION_CLOSE_QQMUSIC.equals(intent.getAction())){
+            } else if (VoiceConstant.ACTION_CLOSE_QQMUSIC.equals(intent.getAction())) {
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                if (Util.isTaskQQmusic(BaseApplication.getInstance())){
+                if (Util.isTaskQQmusic(BaseApplication.getInstance())) {
                     MusicPlugin.get().getMusicApi().exit();
                 }
             }
@@ -423,9 +417,9 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 mCommandObserver.regist();
                 isInit = true;
             }
-            if (AppUtils.isBindedDevice(getApplicationContext())){
+            if (AppUtils.isBindedDevice(getApplicationContext())) {
                 DDS.getInstance().getAgent().getWakeupEngine().enableWakeup();
-            }else {
+            } else {
                 DDS.getInstance().getAgent().getWakeupEngine().disableWakeup();
             }
             DDS.getInstance().getAgent().getWakeupEngine().enableWakeup();
@@ -436,23 +430,18 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
     }
 
 
-
-
-
-
-
     @Override
     public void onDestroy() {
         super.onDestroy();
 
         unregisterReceiver(mInitReceiver);
-        if (mMessageObserver != null){
+        if (mMessageObserver != null) {
             mMessageObserver.unregist();
         }
-        if (mUpdateObserver != null){
+        if (mUpdateObserver != null) {
             mUpdateObserver.unregist();
         }
-        if (mCommandObserver != null){
+        if (mCommandObserver != null) {
             mCommandObserver.unregist();
         }
         unregisterReceiver(authReceiver);
@@ -468,6 +457,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
 
     /**
      * 创建dds配置信息
+     *
      * @return
      */
     private DDSConfig createConfig() {
@@ -494,9 +484,9 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
 //            //包名com.fenda.launcher
 //            config.addConfig(DDSConfig.K_API_KEY, "ccfaebdea7f5ccfaebdea7f55d6e0baf");
 //        }
-        if (BuildConfig.LAUNCHER){
+        if (BuildConfig.LAUNCHER) {
             config.addConfig(DDSConfig.K_API_KEY, "ccfaebdea7f5ccfaebdea7f55d6e0baf");
-        }else {
+        } else {
             config.addConfig(DDSConfig.K_API_KEY, "9e7baf5eae8f9e7baf5eae8f5d5284f0");
         }
 //        config.addConfig(DDSConfig.K_API_KEY, "9e7baf5eae8f9e7baf5eae8f5d5284f0");
@@ -519,9 +509,9 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
 //        config.addConfig(DDSConfig.K_TTS_DEBUG, "true");
 
         String androidId = DeviceIdUtil.getDeviceId(this);
-        LogUtil.i("ANDROID_ID = "+androidId);
+        LogUtil.i("ANDROID_ID = " + androidId);
         //填入唯一的deviceId -- 选填
-        config.addConfig(DDSConfig.K_DEVICE_ID,  androidId);
+        config.addConfig(DDSConfig.K_DEVICE_ID, androidId);
 
         // 麦克风阵列配置项
         //config.addConfig(DDSConfig.K_MIC_TYPE, "2"); // 设置硬件采集模组的类型 0：无。默认值。 1：单麦回消 2：线性四麦 3：环形六麦 4：车载双麦 5：家具双麦
@@ -554,13 +544,12 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
      */
     @Override
     public void onState(String message, final String state) {
-        LogUtil.v(TAG,"FD-----"+message+"||||||"+state);
-        switch(message)
-        {
+        LogUtil.v(TAG, "FD-----" + message + "||||||" + state);
+        switch (message) {
             case VoiceConstant.SIBICHI.SYS_DIALOG_START:
                 //唤醒时点亮屏幕
                 EventBusUtils.post(Constant.Common.SCREEN_ON);
-                if (BaseApplication.getBaseInstance().isRemindRing()){
+                if (BaseApplication.getBaseInstance().isRemindRing()) {
                     IRemindProvider provider = (IRemindProvider) ARouter.getInstance().build(RouterPath.REMIND.ALARM_SERVICE).navigation();
                     provider.closeAlarm(null);
                 }
@@ -579,7 +568,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
             case VoiceConstant.SIBICHI.CONTEXT_WIDGET_LIST:
             case VoiceConstant.SIBICHI.CONTEXT_WIDGET_CONTENT:
             case VoiceConstant.SIBICHI.CONTEXT_WIDGET_CUSTOM:
-                HandleMessage(message,state);
+                HandleMessage(message, state);
                 break;
             case VoiceConstant.SIBICHI.CONTEXT_OUTPUT_TEXT:
 //                String txt = "";
@@ -603,9 +592,9 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                JSONObject dm = jo.optJSONObject("dm" );
+                JSONObject dm = jo.optJSONObject("dm");
                 String task = dm.optString("task");
-                if ( "日历".equals(task)){
+                if ("日历".equals(task)) {
 
                     Observable.create(new ObservableOnSubscribe<String>() {
                         @Override
@@ -616,13 +605,13 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                             .subscribe(new Consumer<String>() {
                                 @Override
                                 public void accept(String s) throws Exception {
-                                    if (calendarProvider == null){
+                                    if (calendarProvider == null) {
                                         calendarProvider = ARouter.getInstance().navigation(ICalendarProvider.class);
                                     }
                                     calendarProvider.getCalendarMsg(state);
                                 }
                             });
-                } else  if (task.equals("股票")){
+                } else if (task.equals("股票")) {
                     Observable.create(new ObservableOnSubscribe<String>() {
                         @Override
                         public void subscribe(ObservableEmitter<String> emitter) throws Exception {
@@ -632,13 +621,13 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                             .subscribe(new Consumer<String>() {
                                 @Override
                                 public void accept(String s) throws Exception {
-                                    if (provider == null){
+                                    if (provider == null) {
                                         provider = ARouter.getInstance().navigation(IEncyclopediaProvider.class);
                                     }
                                     provider.processSharesMsg(state);
                                 }
                             });
-                }else if (task.equals("闲聊") || task.equals("百科")){
+                } else if (task.equals("闲聊") || task.equals("百科")) {
                     Observable.create(new ObservableOnSubscribe<String>() {
                         @Override
                         public void subscribe(ObservableEmitter<String> emitter) throws Exception {
@@ -648,7 +637,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                             .subscribe(new Consumer<String>() {
                                 @Override
                                 public void accept(String s) throws Exception {
-                                    if (provider == null){
+                                    if (provider == null) {
                                         provider = ARouter.getInstance().navigation(IEncyclopediaProvider.class);
                                     }
                                     provider.processQuestionTextMsg(state);
@@ -709,13 +698,13 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 try {
                     JSONObject jo = new JSONObject(data);
                     String intentName = jo.optString("intentName");
-                     if ("关闭提醒".equals(intentName) || "删除提醒".equals(intentName)){
-                         String topClass = Util.isTopTaskClass(BaseApplication.getInstance());
-                         LogUtil.e("topClass = "+topClass);
-                         if (listener != null && !topClass.equals("com.fenda.remind.AlarmListActivity")){
-                             listener.queryRemind(data);
-                         }
-                     }
+                    if ("关闭提醒".equals(intentName) || "删除提醒".equals(intentName)) {
+                        String topClass = Util.isTopTaskClass(BaseApplication.getInstance());
+                        LogUtil.e("topClass = " + topClass);
+                        if (listener != null && !topClass.equals("com.fenda.remind.AlarmListActivity")) {
+                            listener.queryRemind(data);
+                        }
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -736,12 +725,12 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
             //custom widget 1 收到自定义控件消息
             case VoiceConstant.SIBICHI.CONTEXT_WIDGET_CUSTOM:
 //                if (AccessibilityMonitorService.getTopPackageName().equals(QIYIMOBILE_PKG))
-                LogUtil.e("CONTEXT_WIDGET_CUSTOM  == > "+data);
+                LogUtil.e("CONTEXT_WIDGET_CUSTOM  == > " + data);
 
                 try {
                     JSONObject object = new JSONObject(data);
                     String widgetName = object.getString("widgetName");
-                    if ("weather".equals(widgetName)){
+                    if ("weather".equals(widgetName)) {
                         //天气
                         Observable.create(new ObservableOnSubscribe<String>() {
                             @Override
@@ -754,26 +743,24 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                                     public void accept(String s) throws Exception {
 
 
-                                        if (weatherProvider == null){
+                                        if (weatherProvider == null) {
                                             weatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
                                         }
-                                        if (BaseApplication.getBaseInstance().isRequestWeather()){
-                                            if (weatherProvider != null){
+                                        if (BaseApplication.getBaseInstance().isRequestWeather()) {
+                                            if (weatherProvider != null) {
                                                 weatherProvider.weatherFromVoiceControlToMainPage(data);
                                             }
                                             BaseApplication.getBaseInstance().setRequestWeather(false);
-                                        }else {
-                                            if (weatherProvider != null){
+                                        } else {
+                                            if (weatherProvider != null) {
                                                 weatherProvider.weatherFromVoiceControl(data);
                                             }
                                         }
 
                                     }
                                 });
-                    }else if ("stock".equals(widgetName)){
+                    } else if ("stock".equals(widgetName)) {
                         //股票
-
-
 
 
                     }
@@ -788,6 +775,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
     }
 
     private MediaModel mediaModel;
+
     public void mediaHandler(String data) {
         JSONObject object = new JSONObject();
         try {
@@ -803,14 +791,14 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
             throw new RuntimeException("widget name must not be empty");
         }
         String intentName = object.optString("intentName");
-        if (!"播放影视".equals(intentName)){
-            if (intentName.length() > 2){
+        if (!"播放影视".equals(intentName)) {
+            if (intentName.length() > 2) {
                 intentName = intentName.substring(2);
             }
-            if (mediaModel == null){
+            if (mediaModel == null) {
                 mediaModel = new MediaModel();
             }
-            mediaModel.handleMusicMediaWidget(object,intentName);
+            mediaModel.handleMusicMediaWidget(object, intentName);
         }
 
 

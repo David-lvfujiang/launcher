@@ -38,6 +38,7 @@ import android.widget.TextView;
 import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.fenda.common.BaseApplication;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
 import com.fenda.common.bean.UserInfoBean;
@@ -125,6 +126,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     private GridAdapter mGridAdapter2;
     private ImageView submenuDropLeft;
     private ImageView submenuDropRight;
+    private ContentProviderManager manager;
 
 
     Runnable cycleRollRunabler = new Runnable() {
@@ -146,6 +148,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             }
         }
     };
+
 
     @Override
     public int onBindLayout() {
@@ -346,13 +349,18 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             if (initVoiceProvider == null){
                 initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
             }
-
             if (initVoiceProvider != null){
                 initVoiceProvider.openVoice();
-                initVoiceProvider.requestWeather();
             }
-            ContentProviderManager manager = ContentProviderManager.getInstance(this, Uri.parse(ContentProviderManager.BASE_URI + "/user"));
-            getContentResolver().registerContentObserver(Uri.parse(ContentProviderManager.BASE_URI),true,new MyContentObserver(new Handler(),manager));
+            if (manager == null){
+                manager = ContentProviderManager.getInstance(this, Uri.parse(ContentProviderManager.BASE_URI + "/user"));
+                getContentResolver().registerContentObserver(Uri.parse(ContentProviderManager.BASE_URI),true,new MyContentObserver(new Handler(),manager));
+                //避免重复调用
+                if (initVoiceProvider != null){
+                    initVoiceProvider.requestWeather();
+                }
+
+            }
 
         }
     }

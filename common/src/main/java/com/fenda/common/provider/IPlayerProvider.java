@@ -57,14 +57,16 @@ public interface IPlayerProvider extends IProvider {
     /**
      * 快进
      * @param relativeTime
+     * @param absoluteTime
      */
-    void forward(int relativeTime);
+    void forward(int relativeTime,int absoluteTime);
 
     /**
      * 快退
      * @param relativeTime
+     * @param absoluteTime
      */
-    void backward(int relativeTime);
+    void backward(int relativeTime,int absoluteTime);
 
 
 }

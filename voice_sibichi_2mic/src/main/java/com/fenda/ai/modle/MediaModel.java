@@ -13,6 +13,7 @@ import com.fenda.common.basebean.player.FDMusic;
 import com.fenda.common.baserx.RxSchedulers;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.provider.INewsProvider;
+import com.fenda.common.provider.IRecommendProvider;
 import com.fenda.common.router.RouterPath;
 
 import org.json.JSONArray;
@@ -75,12 +76,20 @@ public class MediaModel {
                     .subscribe(new Consumer<String>() {
                         @Override
                         public void accept(String s) throws Exception {
-                            if (provider == null){
-                                provider = ARouter.getInstance().navigation(INewsProvider.class);
+                            if (BaseApplication.getBaseInstance().isRequestNews()){
+                                IRecommendProvider recommendProvider = ARouter.getInstance().navigation(IRecommendProvider.class);
+                                if (recommendProvider != null){
+                                    recommendProvider.requestRecommend(dataJsonObject);
+                                }
+                            }else {
+                                if (provider == null){
+                                    provider = ARouter.getInstance().navigation(INewsProvider.class);
+                                }
+                                provider.news(dataJsonObject);
                             }
-                            provider.news(dataJsonObject);
                         }
                     });
+
             return;
         }else if ("诗词".equals(type)){
             playlist.addAll(getPoetrys(contentArray));

@@ -54,6 +54,24 @@ public class ControlModel {
 
     }
 
+    public int forward(int relativeTime,int absoluteTime){
+        if (provider == null){
+            provider = ARouter.getInstance().navigation(IPlayerProvider.class);
+        }
+        provider.forward(relativeTime,absoluteTime);
+        return IQiyiPlugin.ERR_OK;
+    }
+
+    public int backward(int relativeTime,int absoluteTime){
+        if (provider == null){
+            provider = ARouter.getInstance().navigation(IPlayerProvider.class);
+        }
+        provider.backward(relativeTime,absoluteTime);
+        return IQiyiPlugin.ERR_OK;
+    }
+
+
+
     private void judgeType(int type,int relativeTime) {
         switch (type){
             case VoiceConstant.MEDIA_PLAY:
@@ -93,12 +111,7 @@ public class ControlModel {
             case VoiceConstant.MEDIA_DEFINITION:
 
                 break;
-            case VoiceConstant.MEDIA_FORWARD:
-                provider.forward(relativeTime);
-                break;
-            case VoiceConstant.MEDIA_BACKWARD:
-                provider.backward(relativeTime);
-                break;
+
             case VoiceConstant.MEDIA_SET_SPEED:
 
                 break;

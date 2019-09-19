@@ -84,6 +84,7 @@ public interface Constant {
         String CLASS_NAME = "AlarmActivity";
         String CREATE_REMIND = "createRemind";
         String DELETE_REMIND = "deleteRemind";
+        String DELETE_REMIND_SUCCESS = "deleteRemindSuccess";
         String QUERY_REMIND = "queryRemind";
         String ALARM_REMIND = "alarmRemind";
 

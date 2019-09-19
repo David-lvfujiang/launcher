@@ -50,7 +50,7 @@ public class SettingsService implements ISettingsProvider {
             LogUtil.d(TAG, "device have registered~");
             if (AppUtils.isBindedDevice(context)) {
                 LogUtil.d(TAG, "device have bind~");
-                String userId = (String) SPUtils.get(BaseApplication.getInstance(), Constant.Settings.USER_ID, "");
+                String userId = (String) SPUtils.get(BaseApplication.getContext(), Constant.Settings.USER_ID, "");
                 String rongCloudToken= (String) SPUtils.get(context, Constant.Settings.RONGYUNCLOUDTOKEN, "");
                 // 调用音视频服务接口登录IM
                 ICallProvider loginService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();

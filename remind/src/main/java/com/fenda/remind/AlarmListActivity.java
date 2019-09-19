@@ -14,12 +14,15 @@ import android.widget.TextView;
 
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.base.BaseActivity;
 import com.fenda.common.constant.Constant;
+import com.fenda.common.provider.IVoiceRequestProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.protocol.tcp.bus.EventBusUtils;
 import com.fenda.remind.adapter.AlarmAdapter;
 import com.fenda.remind.bean.AlarmBean;
+import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -43,6 +46,7 @@ public class AlarmListActivity extends BaseActivity {
 
     private AlarmAdapter mAdapter;
     private CountDownTimer timer;
+    private int deletePosition = -1;
 
 
 
@@ -74,6 +78,22 @@ public class AlarmListActivity extends BaseActivity {
         mAdapter = new AlarmAdapter(this, alarmBeans);
         alarmList.setAdapter(mAdapter);
         countDownTime();
+        addListener();
+
+
+    }
+
+    public void addListener(){
+        mAdapter.setOnClickItemListener(new AlarmAdapter.OnClickItemListener() {
+            @Override
+            public void onItemListener(int position, String json) {
+                deletePosition = position;
+                IVoiceRequestProvider requestProvider = (IVoiceRequestProvider) ARouter.getInstance().build(RouterPath.VOICE.REQUEST_PROVIDER).navigation();
+                requestProvider.deleteAlarm(json);
+
+
+            }
+        });
     }
 
     @Override
@@ -124,11 +144,21 @@ public class AlarmListActivity extends BaseActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         ArrayList<AlarmBean> mAlarmBean = intent.getParcelableArrayListExtra(Constant.Remind.ALARM_LIST);
-        alarmType   = getIntent().getStringExtra(Constant.Remind.ALARM_TYPE);
+        alarmType   = intent.getStringExtra(Constant.Remind.ALARM_TYPE);
         if (Constant.Remind.DELETE_REMIND.equals(alarmType)){
-            if (mAlarmBean.size() == 1){
-                AlarmBean bean = mAlarmBean.get(0);
-                if (alarmBeans != null){
+            if (alarmBeans == null){
+                alarmBeans = mAlarmBean;
+            }else {
+                alarmBeans.clear();
+                alarmBeans.addAll(mAlarmBean);
+            }
+        }else if (Constant.Remind.DELETE_REMIND_SUCCESS.equals(alarmType)){
+            if (alarmBeans != null && alarmBeans.size() > 0 ){
+                if (deletePosition != -1){
+                    alarmBeans.remove(deletePosition);
+                    deletePosition = -1;
+                }else {
+                    AlarmBean bean = mAlarmBean.get(0);
                     for (int i = 0; i < alarmBeans.size(); i++) {
                         AlarmBean alarmBean = alarmBeans.get(i);
                         String vid = alarmBean.getVid();
@@ -137,14 +167,12 @@ public class AlarmListActivity extends BaseActivity {
                         }
                     }
                 }
-            }else {
-                if (alarmBeans == null){
-                    alarmBeans = mAlarmBean;
-                }else {
-                    alarmBeans.clear();
-                    alarmBeans.addAll(mAlarmBean);
-                }
             }
+
+        }
+        if (alarmBeans != null && alarmBeans.size() == 0){
+            timer.onFinish();
+            timer = null;
         }
         if (mAdapter != null){
             mAdapter.notifyDataSetChanged();
@@ -152,7 +180,7 @@ public class AlarmListActivity extends BaseActivity {
     }
 
     private void countDownTime() {
-        timer = new CountDownTimer(800000, 1000) {
+        timer = new CountDownTimer(50000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {}
 
@@ -165,7 +193,7 @@ public class AlarmListActivity extends BaseActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEevent(AlarmBean bean){
+    public void onResultEevent(AlarmBean bean){
         if (bean.getType() == Constant.Remind.DELETE_ALARM){
             if (alarmBeans != null){
                 for (AlarmBean alarmBean : alarmBeans) {
@@ -183,7 +211,6 @@ public class AlarmListActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        EventBusUtils.unregister(this);
         super.onDestroy();
 
     }
