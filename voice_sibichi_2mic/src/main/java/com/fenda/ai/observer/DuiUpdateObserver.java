@@ -68,7 +68,7 @@ public class DuiUpdateObserver implements MessageObserver {
 
     @Override
     public void onMessage(String s, String s1) {
-        if (!BaseApplication.getInstance().isCall()){
+        if (!BaseApplication.getBaseInstance().isCall()){
             initUpdate();
         }
     }

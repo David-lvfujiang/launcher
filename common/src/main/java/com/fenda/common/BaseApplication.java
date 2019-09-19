@@ -1,13 +1,24 @@
 package com.fenda.common;
 
+import android.database.ContentObserver;
+import android.net.Uri;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.fenda.common.bean.UserInfoBean;
+import com.fenda.common.constant.Constant;
+import com.fenda.common.db.ContentProviderManager;
+import com.fenda.common.provider.IVoiceRequestProvider;
+import com.fenda.common.router.RouterPath;
+import com.fenda.common.util.LogUtil;
 import com.fenda.protocol.AppApplicaiton;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -18,7 +29,7 @@ import java.util.HashMap;
 public class BaseApplication extends AppApplicaiton {
 
 
- //   private static BaseApplication instance;
+    private static BaseApplication instance;
     public static HashMap<String,Integer> QQMUSIC = new HashMap<>();
     /**
      * 媒体播放状态
@@ -50,10 +61,12 @@ public class BaseApplication extends AppApplicaiton {
      */
     private boolean isCall;
 
+
+
     @Override
     public void onCreate() {
         super.onCreate();
-  //      instance = this;
+        instance = this;
 
         ARouter.openLog();
         ARouter.openDebug();
@@ -61,12 +74,13 @@ public class BaseApplication extends AppApplicaiton {
         ARouter.init(this);
 
         //日志框架初始化
-        Logger.addLogAdapter(new AndroidLogAdapter(){
-            @Override
-            public boolean isLoggable(int priority, @Nullable String tag) {
-                return BuildConfig.LOG_DEBUG;
-            }
-        });
+//        Logger.addLogAdapter(new AndroidLogAdapter(){
+//            @Override
+//            public boolean isLoggable(int priority, @Nullable String tag) {
+//                return BuildConfig.LOG_DEBUG;
+//            }
+//        });
+
 
 
     }
@@ -74,7 +88,7 @@ public class BaseApplication extends AppApplicaiton {
 
 
     public static BaseApplication getBaseInstance() {
-        return (BaseApplication) getInstance();
+        return instance;
     }
 
 
@@ -135,4 +149,6 @@ public class BaseApplication extends AppApplicaiton {
     public void setCall(boolean call) {
         isCall = call;
     }
+
+
 }

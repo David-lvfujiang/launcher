@@ -1,21 +1,23 @@
 package com.fenda.homepage.activity;
 
 import android.annotation.SuppressLint;
-import android.app.admin.DevicePolicyManager;
+import android.app.ActivityManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
+import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Handler;
 import android.net.ConnectivityManager;
 import android.net.LinkProperties;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.os.Build;
-import android.os.Handler;
 import android.os.PowerManager;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.GridLayoutManager;
@@ -43,6 +45,7 @@ import com.fenda.common.bean.WeatherWithHomeBean;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.db.ContentProviderManager;
 import com.fenda.common.provider.ICallProvider;
+import com.fenda.common.provider.IHomePageProvider;
 import com.fenda.common.provider.IRecommendProvider;
 import com.fenda.common.provider.ISettingsProvider;
 import com.fenda.common.provider.IVoiceInitProvider;
@@ -65,6 +68,7 @@ import com.fenda.homepage.contract.MainContract;
 import com.fenda.homepage.data.AllApplyData;
 import com.fenda.homepage.data.UndevelopedApplyData;
 import com.fenda.homepage.model.MainModel;
+import com.fenda.homepage.observer.MyContentObserver;
 import com.fenda.homepage.presenter.MainPresenter;
 import com.fenda.homepage.receiver.ScreenOffAdminReceiver;
 import com.fenda.homepage.scrollview.ObservableScrollView;
@@ -82,7 +86,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Route(path = RouterPath.HomePage.HOMEPAGE_MAIN)
-public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener, View.OnTouchListener , ScrollViewListener , IRecommendProvider {
+public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener, View.OnTouchListener , ScrollViewListener, IRecommendProvider {
     private final static String TAG = "HomePageActivity";
 
     TextClock mHeaderTimeTv;
@@ -158,6 +162,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mAiTipIv = findViewById(R.id.iv_main_tip_icon);
         mAiTipTitleTv = findViewById(R.id.tv_main_item_content);
         mAiTipMicTv = findViewById(R.id.tv_ai_tiptext);
+
         mPull = findViewById(R.id.iv_homepage_pull);
         ImageUtil.loadGIFImage(R.mipmap.cm_pull,mPull,R.mipmap.a123456);
         mTipInfoRv.setOnTouchListener(this);
@@ -276,7 +281,20 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         if (mICallProvider != null) {
             mICallProvider.initSdk();
         }
+
+        ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
+        if (settingService != null) {
+            settingService.deviceStatus(this);
+        }
         isNetWodrkConnect();
+
+//        ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
+//        if (settingService != null) {
+//            settingService.deviceStatus(this);
+//        }
+
+
+
     }
 
     /**
@@ -324,10 +342,18 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             }
         }else if (message.getCode() == Constant.Common.INIT_VOICE_SUCCESS){
             // @todo  勿删 语音初始化成功后会回调这里,在语音成功之前调用会导致应用崩溃
-            if (initVoiceProvider != null){
-                initVoiceProvider.requestWeather();
-                initVoiceProvider.openVoice();
+            LogUtil.e("===== INIT_VOICE_SUCCESS =====");
+            if (initVoiceProvider == null){
+                initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
             }
+
+            if (initVoiceProvider != null){
+                initVoiceProvider.openVoice();
+                initVoiceProvider.requestWeather();
+            }
+            ContentProviderManager manager = ContentProviderManager.getInstance(this, Uri.parse(ContentProviderManager.BASE_URI + "/user"));
+            getContentResolver().registerContentObserver(Uri.parse(ContentProviderManager.BASE_URI),true,new MyContentObserver(new Handler(),manager));
+
         }
     }
 
@@ -336,9 +362,11 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     public void isNetWodrkConnect() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         Network activeInfo = connectivityManager.getActiveNetwork();
+        LogUtil.d(TAG, "activeInfo = " + activeInfo);
 
-        if (activeInfo == null) {    //|| !activeInfo. || !activeInfo.isAvailable) {
+        if (activeInfo == null) {//|| !activeInfo. || !activeInfo.isAvailable) {
             //  tv.text = "网络不可用—NetworkCallback"
+            //noNetWorkSnackBar();
             ToastUtils.show("网络未连接，请先连接网络！");
         }
 

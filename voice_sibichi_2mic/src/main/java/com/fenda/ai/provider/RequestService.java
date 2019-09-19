@@ -51,7 +51,9 @@ public class RequestService implements IVoiceRequestProvider {
     @Override
     public void requestWeather(){
         try {
-            BaseApplication.getInstance().setRequestWeather(true);
+            Thread.sleep(600);
+            LogUtil.e("requestWeather ==== 请求天气 ====");
+            BaseApplication.getBaseInstance().setRequestWeather(true);
             SkillIntent skillIntent = new SkillIntent("2019042500000544",
                     VoiceConstant.SIBICHI.TASK, "查询天气",
                     new JSONObject().put("text", "现在的天气").toString());
@@ -62,10 +64,14 @@ public class RequestService implements IVoiceRequestProvider {
                     try {
                         LogUtil.e("onDMResult =====  "+jsonObject.toString());
                         JSONObject dmJson = jsonObject.optJSONObject("dm");
-                        if (BaseApplication.getInstance().isCall()){
-                            dmJson.put("nlg","");
-                            dmJson.put("shouldEndSession",false);
-                        }else if (BaseApplication.getInstance().isRequestWeather() || BaseApplication.getInstance().isRequestNews()){
+                        if (BaseApplication.getBaseInstance().isCall()){
+                            String initentName = dmJson.optString("intentName");
+                            if (!"挂断电话".equals(initentName)){
+                                dmJson.put("nlg","");
+                                dmJson.put("shouldEndSession",false);
+                                jsonObject.put("ignore", true);
+                            }
+                        }else if (BaseApplication.getBaseInstance().isRequestWeather() || BaseApplication.getBaseInstance().isRequestNews()){
                             dmJson.put("nlg","");
                         }
                     } catch (JSONException e) {
@@ -78,6 +84,7 @@ public class RequestService implements IVoiceRequestProvider {
 
 
         } catch (Exception e) {
+            LogUtil.e("Exception === "+e.getMessage());
             e.printStackTrace();
         }
     }
@@ -129,6 +136,7 @@ public class RequestService implements IVoiceRequestProvider {
                 LogUtil.e("删除失败 = "+s);
             }
         });
+
     }
 
     @Override
@@ -194,9 +202,9 @@ public class RequestService implements IVoiceRequestProvider {
 
     @Override
     public void openQQMusic() {
-        if (!Util.isTopTaskPackage(BaseApplication.getInstance()).equals(VoiceConstant.MUSIC_PKG)){
-            if (Util.isTaskQQmusic(BaseApplication.getInstance())){
-                Util.moveQQmusicTask(BaseApplication.getInstance());
+        if (!Util.isTopTaskPackage(BaseApplication.getBaseInstance()).equals(VoiceConstant.MUSIC_PKG)){
+            if (Util.isTaskQQmusic(BaseApplication.getBaseInstance())){
+                Util.moveQQmusicTask(BaseApplication.getBaseInstance());
             }else {
                 MusicPlugin.get().getMusicApi().openMyMusic();
             }
@@ -213,7 +221,7 @@ public class RequestService implements IVoiceRequestProvider {
     @Override
     public void requestNews(int number) {
         try {
-            BaseApplication.getInstance().setRequestNews(true);
+            BaseApplication.getBaseInstance().setRequestNews(true);
             SkillIntent skillIntent = new SkillIntent("2019031900001180",
                     "新闻", "播报新闻",
                     new JSONObject().put(VoiceConstant.SIBICHI.TALK_KEY, "最新新闻").toString());

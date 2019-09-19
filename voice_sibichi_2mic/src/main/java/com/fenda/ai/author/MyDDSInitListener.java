@@ -187,11 +187,11 @@ public class MyDDSInitListener implements DDSInitListener {
             @Override
             public void onRemoveRemind(List<Event> list) {
                 LogUtil.i("RemindPlugin onRemoveRemind = "+list.toString());
-//                Gson gson = new Gson();
-//                String json = gson.toJson(list);
-//                if (provider != null){
-//                    provider.deleteAlarmComplete(json);
-//                }
+                Gson gson = new Gson();
+                String json = gson.toJson(list);
+                if (provider != null){
+                    provider.deleteAlarmComplete(json);
+                }
             }
 
             @Override

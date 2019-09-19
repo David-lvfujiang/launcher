@@ -108,7 +108,7 @@ public class SingleCallActivity extends BaseCallActivity implements Handler.Call
                 WindowManager.LayoutParams.FLAG_FULLSCREEN );
         setContentView(R.layout.rc_voip_activity_single_call);
         // 音视频通话时设置标志禁止其他语言操作
-        BaseApplication.getInstance().setCall(true);
+        BaseApplication.getBaseInstance().setCall(true);
         mSqliteManager = new SqliteManager(this);
         Log.i("AudioPlugin", "savedInstanceState != null=" + (savedInstanceState != null) + ",,,RongCallClient.getInstance() == null" + (RongCallClient.getInstance() == null));
         if (savedInstanceState != null && RongCallClient.getInstance() == null) {
@@ -762,7 +762,7 @@ public class SingleCallActivity extends BaseCallActivity implements Handler.Call
         super.onCallDisconnected(callSession, reason);
 //        sendMicAbleBroad();
         // 音视频通话结束时设置标志打开其他语言操作
-        BaseApplication.getInstance().setCall(false);
+        BaseApplication.getBaseInstance().setCall(false);
         String senderId;
         String extra = "";
 

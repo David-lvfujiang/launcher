@@ -109,7 +109,7 @@ android {
                 }
                 pom.groupId = "com.fenda.call"// 唯一标识（通常为模块包名，也可以任意）
                 pom.artifactId = "call" // 项目名称（通常为类库模块名称，也可以任意）
-                pom.version = "1.0.1" // 版本号
+                pom.version = "1.0.2" // 版本号
                 pom.packaging = "aar"//打包类型
 
             }
@@ -128,6 +128,6 @@ dependencies {
     api 'io.rong.imkit:imkit:1.0.0'
     api 'io.rong.imlib:imLib:1.0.0'
     api 'io.rong.calllib:callLib:1.0.0'
-    api 'io.rong.callkit:callkit:1.0.0'
+    api 'io.rong.callkit:callkit:1.0.1'
     annotationProcessor deps.arouter_compiler
 }

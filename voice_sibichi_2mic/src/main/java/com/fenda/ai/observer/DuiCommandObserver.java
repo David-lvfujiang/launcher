@@ -80,7 +80,7 @@ public class DuiCommandObserver implements CommandObserver {
     private void ResultOnCall(String command, String data) {
         if (command.equals(SYS_VOICE_CALL)){
            try {
-               if (!BaseApplication.getInstance().isCall()){
+               if (!BaseApplication.getBaseInstance().isCall()){
                    call(data,0);
                }
            } catch (JSONException e) {
@@ -88,7 +88,7 @@ public class DuiCommandObserver implements CommandObserver {
            }
        }else if (command.equals(SYS_VIDEO_CALL)){
            try {
-               if (!BaseApplication.getInstance().isCall()){
+               if (!BaseApplication.getBaseInstance().isCall()){
                    call(data,1);
                }
            } catch (JSONException e) {
@@ -117,7 +117,7 @@ public class DuiCommandObserver implements CommandObserver {
     }
 
     private void call(String data, final int type) throws JSONException {
-        if (Util.isTaskQQmusic(BaseApplication.getInstance())){
+        if (Util.isTaskQQmusic(BaseApplication.getBaseInstance())){
             MusicPlugin.get().getMusicApi().exit();
         }
         JSONObject object = new JSONObject(data);
@@ -143,7 +143,7 @@ public class DuiCommandObserver implements CommandObserver {
     }
 
     private String searchContacts(String searchName) {
-        ContentProviderManager manager = ContentProviderManager.getInstance(BaseApplication.getInstance(), Uri.parse(ContentProviderManager.BASE_URI+"/user"));
+        ContentProviderManager manager = ContentProviderManager.getInstance(BaseApplication.getBaseInstance(), Uri.parse(ContentProviderManager.BASE_URI+"/user"));
         List<UserInfoBean> beanList = manager.queryUser("name = ? ",new String[]{searchName});
         if (beanList != null && beanList.size() > 0){
             String phone = beanList.get(0).getMobile();

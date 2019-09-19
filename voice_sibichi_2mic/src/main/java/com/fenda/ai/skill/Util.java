@@ -153,6 +153,18 @@ public class Util {
         return "";
 
     }
+    public static String isTopTaskClass(Context mContext){
+
+        ActivityManager mAm = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+        //获得当前运行的task
+        List<ActivityManager.RunningTaskInfo> taskList = mAm.getRunningTasks(100);
+        Log.e("TAG","taskList = "+taskList.size());
+        if (taskList != null){
+            return taskList.get(0).topActivity.getClassName();
+        }
+        return "";
+
+    }
 
 
     public static void moveQQmusicTask(Context mContext){

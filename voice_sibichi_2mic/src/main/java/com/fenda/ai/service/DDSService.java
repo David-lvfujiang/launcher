@@ -58,6 +58,7 @@ import com.fenda.protocol.tcp.bus.EventBusUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import io.netty.util.internal.StringUtil;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -709,11 +710,11 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                     JSONObject jo = new JSONObject(data);
                     String intentName = jo.optString("intentName");
                      if ("关闭提醒".equals(intentName) || "删除提醒".equals(intentName)){
-
-                         if (listener != null){
+                         String topClass = Util.isTopTaskClass(BaseApplication.getInstance());
+                         LogUtil.e("topClass = "+topClass);
+                         if (listener != null && !topClass.equals("com.fenda.remind.AlarmListActivity")){
                              listener.queryRemind(data);
                          }
-
                      }
 
                 } catch (JSONException e) {
@@ -756,11 +757,11 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                                         if (weatherProvider == null){
                                             weatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
                                         }
-                                        if (BaseApplication.getInstance().isRequestWeather()){
+                                        if (BaseApplication.getBaseInstance().isRequestWeather()){
                                             if (weatherProvider != null){
                                                 weatherProvider.weatherFromVoiceControlToMainPage(data);
                                             }
-                                            BaseApplication.getInstance().setRequestWeather(false);
+                                            BaseApplication.getBaseInstance().setRequestWeather(false);
                                         }else {
                                             if (weatherProvider != null){
                                                 weatherProvider.weatherFromVoiceControl(data);

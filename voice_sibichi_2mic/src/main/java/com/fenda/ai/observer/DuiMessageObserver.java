@@ -40,7 +40,7 @@ public class DuiMessageObserver implements MessageObserver {
     @Override
     public void onMessage(String message, String data) {
 //        LogUtil.d(Tag, "message : " + message + " data : " + data);
-                if (mMessageCallback != null && !BaseApplication.getInstance().isCall()) {
+                if (mMessageCallback != null && !BaseApplication.getBaseInstance().isCall()) {
                     mMessageCallback.onState(message,data);
                 }
         }

@@ -59,7 +59,7 @@ public class DuiNativeApiObserver implements NativeApiObserver {
     @Override
     public void onQuery(String nativeApi, String data) {
 //        LogUtil.e(TAG, "nativeApi: " + nativeApi + "  data: " + data);
-        if (!BaseApplication.getInstance().isCall()){
+        if (!BaseApplication.getBaseInstance().isCall()){
             if (NATIVE_API_CONTACT.equals(nativeApi)) {
                 String searchName = null;
                 ListWidget searchNums = null;
