@@ -90,7 +90,9 @@ public class BaseApplication extends AppApplicaiton {
     public static BaseApplication getBaseInstance() {
         return instance;
     }
-
+    public static BaseApplication getInstance() {
+        return instance;
+    }
 
     public boolean isNewsPlay() {
         return isNewsPlay;
