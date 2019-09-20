@@ -216,17 +216,17 @@ public class SettingsWifiUtil {
     }
 
     // 得到接入点的BSSID
-    public String getBSSID() {
+    public String getBssid() {
         return (mWifiInfo == null) ? "NULL" : mWifiInfo.getBSSID();
     }
 
     // 得到连接的IP
-    public int getIPAddress() {
+    public int getIpAddress() {
         return (mWifiInfo == null) ? 0 : mWifiInfo.getIpAddress();
     }
 
     // 得到连接的ID
-    public int getNetworkId(String sSID) {
+    public int getNetworkId(String mSsid) {
         int connectId = 0;
         List<WifiConfiguration> wifiConfigurationList = mWifiManager.getConfiguredNetworks();
         LogUtil.d(TAG, "wifiConfigurationList = " + wifiConfigurationList);
@@ -234,10 +234,10 @@ public class SettingsWifiUtil {
         if (wifiConfigurationList != null && wifiConfigurationList.size() != 0) {
             for (int i = 0; i < wifiConfigurationList.size(); i++) {
                 WifiConfiguration wifiConfiguration = wifiConfigurationList.get(i);
-                String SSID  = wifiConfiguration.SSID.replace("\"", "");
-                LogUtil.d(TAG, "ssid = " + SSID + "+" + sSID);
+                String mSSID  = wifiConfiguration.SSID.replace("\"", "");
+                LogUtil.d(TAG, "ssid = " + mSSID + "+" + mSsid);
                 // wifiSSID就是SSID
-                if (SSID != null && SSID.equals(sSID)) {
+                if (mSSID != null && mSSID.equals(mSsid)) {
                     connectId = wifiConfiguration.networkId;
                 }
             }
@@ -252,9 +252,9 @@ public class SettingsWifiUtil {
 
     // 添加一个网络并连接
     public void addNetwork(WifiConfiguration wcg) {
-        int wcgID = mWifiManager.addNetwork(wcg);
-        boolean b =  mWifiManager.enableNetwork(wcgID, true);
-        System.out.println("a--" + wcgID);
+        int wcgId = mWifiManager.addNetwork(wcg);
+        boolean b =  mWifiManager.enableNetwork(wcgId, true);
+        System.out.println("a--" + wcgId);
         System.out.println("b--" + b);
     }
 
@@ -271,13 +271,13 @@ public class SettingsWifiUtil {
     /**
      * 判断指定的wifi是否保存
      *
-     * @param SSID
+     * @param mSSID
      * @return
      */
-    public boolean isWifiSave(String SSID) {
+    public boolean isWifiSave(String mSSID) {
         if (mWifiConfiguration != null) {
             for (WifiConfiguration existingConfig : mWifiConfiguration) {
-                if (existingConfig.SSID.equals("\"" + SSID + "\"")) {
+                if (existingConfig.SSID.equals("\"" + mSSID + "\"")) {
                     return true;
                 }
             }
@@ -286,27 +286,27 @@ public class SettingsWifiUtil {
     }
 
     //创建wifi热点的。
-    public WifiConfiguration createWifiInfo(String SSID, String password, int Type) {
+    public WifiConfiguration createWifiInfo(String mSSID, String password, int mType) {
         WifiConfiguration config = new WifiConfiguration();
         config.allowedAuthAlgorithms.clear();
         config.allowedGroupCiphers.clear();
         config.allowedKeyManagement.clear();
         config.allowedPairwiseCiphers.clear();
         config.allowedProtocols.clear();
-        config.SSID = "\"" + SSID + "\"";
+        config.SSID = "\"" + mSSID + "\"";
 
-        WifiConfiguration tempConfig = this.isExsits(SSID);
+        WifiConfiguration tempConfig = this.isExsits(mSSID);
         if(tempConfig != null) {
             mWifiManager.removeNetwork(tempConfig.networkId);
         }
 
-        if(Type == 1) //WIFICIPHER_NOPASS
+        if(mType == 1) //WIFICIPHER_NOPASS
         {
             config.wepKeys[0] = "";
             config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
             config.wepTxKeyIndex = 0;
         }
-        if(Type == 2) //WIFICIPHER_WEP
+        if(mType == 2) //WIFICIPHER_WEP
         {
             config.hiddenSSID = true;
             config.wepKeys[0]= "\""+password+"\"";
@@ -318,7 +318,7 @@ public class SettingsWifiUtil {
             config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
             config.wepTxKeyIndex = 0;
         }
-        if(Type == 3) //WIFICIPHER_WPA
+        if(mType == 3) //WIFICIPHER_WPA
         {
             config.preSharedKey = "\""+password+"\"";
             config.hiddenSSID = true;
@@ -334,12 +334,12 @@ public class SettingsWifiUtil {
         return config;
     }
 
-    private WifiConfiguration isExsits(String SSID)
+    private WifiConfiguration isExsits(String mSSID)
     {
         List<WifiConfiguration> existingConfigs = mWifiManager.getConfiguredNetworks();
         for (WifiConfiguration existingConfig : existingConfigs)
         {
-            if (existingConfig.SSID.equals("\""+SSID+"\""))
+            if (existingConfig.SSID.equals("\""+mSSID+"\""))
             {
                 return existingConfig;
             }

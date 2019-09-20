@@ -24,47 +24,101 @@
 
     <ImageView
         android:id="@+id/andlink_enlarge_QR"
-        android:layout_width="305dp"
-        android:layout_height="280dp"
-        android:layout_marginLeft="324dp"
-        android:layout_marginTop="160dp"
+        android:layout_width="311dp"
+        android:layout_height="290dp"
+        android:layout_marginLeft="72dp"
+        android:layout_marginTop="172dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/enlarge_vcode"
+        android:id="@+id/andlink_env_dis"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="404dp"
-        android:layout_marginTop="400dp"
-        android:textColor="@color/white"
-        android:textSize="25dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="284dp"
-        android:layout_marginTop="452dp"
-        android:text="@string/settings_add_qr_step1"
-        android:textColor="@color/white"
-        android:textSize="25dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="284dp"
+        android:layout_marginLeft="108dp"
         android:layout_marginTop="484dp"
-        android:text="@string/settings_add_qr_step2"
-        android:textColor="@color/white"
-        android:textSize="25dp"
+        android:gravity="center_vertical"
+        android:textSize="30dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"/>
+     />
+
+    <TextView
+        android:layout_width="66dp"
+        android:layout_height="62dp"
+        android:layout_marginLeft="428dp"
+        android:layout_marginTop="184dp"
+        android:background="@drawable/settings_cirtl_textview_forbind_device"
+        android:gravity="center"
+        android:text="1"
+        android:textColor="@color/white"
+        android:textSize="40dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="512dp"
+        android:layout_marginTop="192dp"
+        android:gravity="center_vertical"
+        android:text="@string/settings_andlink_download"
+        android:textColor="@color/white"
+        android:textSize="29dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="65dp"
+        android:layout_marginLeft="424dp"
+        android:layout_marginTop="284dp"
+        android:background="@drawable/settings_cirtl_textview_forbind_device"
+        android:gravity="center"
+        android:text="2"
+        android:textColor="@color/white"
+        android:textSize="40dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:layout_width="423dp"
+        android:layout_height="68dp"
+        android:layout_marginLeft="512dp"
+        android:layout_marginTop="280dp"
+        android:text="@string/settings_andlink_bind"
+        android:textColor="@color/white"
+        android:textSize="29dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="70dp"
+        android:layout_height="65dp"
+        android:layout_marginLeft="428dp"
+        android:layout_marginTop="388dp"
+        android:background="@drawable/settings_cirtl_textview_forbind_device"
+        android:gravity="center"
+        android:text="3"
+        android:textColor="@color/white"
+        android:textSize="40dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/andlink_unbind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="524dp"
+        android:layout_marginTop="404dp"
+        android:text="@string/settings_andlink_unbind"
+        android:textColor="@color/black"
+        android:textSize="29dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
 </android.support.constraint.ConstraintLayout>

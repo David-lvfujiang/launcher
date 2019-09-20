@@ -45,7 +45,6 @@ public class SettingsService implements ISettingsProvider {
 
     @Override
     public void deviceStatus(Context context) {
-        LogUtil.d(TAG, "sn = " + DeviceIdUtil.getDeviceId());
         if (AppUtils.isRegisterDevice(context) ){
             LogUtil.d(TAG, "device have registered~");
             if (AppUtils.isBindedDevice(context)) {

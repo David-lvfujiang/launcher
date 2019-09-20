@@ -7,16 +7,13 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewStub;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.R;
 import com.fenda.common.baseapp.AppManager;
-import com.fenda.common.mvp.BaseView;
 import com.fenda.common.util.NetUtil;
 import com.fenda.common.view.LoadingInitView;
 import com.fenda.common.view.LoadingTransView;
@@ -29,8 +26,6 @@ import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import io.reactivex.disposables.CompositeDisposable;
 
 
 /**
@@ -67,7 +62,7 @@ public abstract class BaseActivity extends RxAppCompatActivity{
         setContentView(R.layout.common_activity_root);
         mContext = this;
         initCommonView();
-        ARouter.getInstance().inject(this);
+//        ARouter.getInstance().inject(this);
         initView();
         initListener();
         initData();

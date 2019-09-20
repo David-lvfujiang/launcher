@@ -15,4 +15,6 @@ public class SettingsContant {
     public static final String TCP_IP = BaseApplication.getInstance().getResources().getString(R.string.TCP_IP);
     public static final int TCP_PORT = 11211;
     public static final String SETTINGS_SERIAL_NUM = DeviceIdUtil.getDeviceId();
+
+    public static String USER_ID = "userId";
 }

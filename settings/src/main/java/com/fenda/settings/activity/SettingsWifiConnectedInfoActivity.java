@@ -38,7 +38,7 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
 
     private SettingsWifiUtil  mSettingsWifiUtil;
     private WifiManager mWifiManager;
-    private String mConnectedSSID;
+    private String mConnectedSsid;
     private ArrayList<HashMap<String,String>> mListitem;
     private SimpleAdapter mSimpleAdapter;
 
@@ -65,8 +65,8 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
     @Override
     public void initData() {
         Intent intent = getIntent();
-        mConnectedSSID = intent.getStringExtra("CONNECTED_MESSAGE");
-        tvWifiName.setText(mConnectedSSID);
+        mConnectedSsid = intent.getStringExtra("CONNECTED_MESSAGE");
+        tvWifiName.setText(mConnectedSsid);
 
         String[] listName = new String[] {getString(R.string.settings_wifi_connected_cancel_save), getString(R.string.settings_wifi_connected_other)};
         String[] list1 = new String[]{"" ,"" , ""};
@@ -101,12 +101,12 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Map<String, Object> map = (Map<String, Object>) parent.getItemAtPosition(position);
                 String setClickedListName = map.get("name").toString();
-                LogUtil.d(TAG, "取消网络保存connectedSSID = " + mConnectedSSID);
+                LogUtil.d(TAG, "取消网络保存connectedSSID = " + mConnectedSsid);
                 List<WifiConfiguration> wifiConfigurationList = mWifiManager.getConfiguredNetworks();
                 LogUtil.d(TAG, "wifiConfigurationList = " + wifiConfigurationList);
                 int netId1 = 0;
 
-                netId1 = mSettingsWifiUtil.getNetworkId(mConnectedSSID);
+                netId1 = mSettingsWifiUtil.getNetworkId(mConnectedSsid);
                 LogUtil.d(TAG, "取消网络保存id = " + netId1);
 
                 if(("取消保存网络").equals(setClickedListName)) {

@@ -943,8 +943,9 @@ public class SingleCallActivity extends BaseCallActivity implements Handler.Call
     public void onRestoreFloatBox(Bundle bundle) {
         super.onRestoreFloatBox(bundle);
         FinLog.v("AudioPlugin", "---single activity onRestoreFloatBox---");
-        if (bundle == null)
+        if (bundle == null) {
             return;
+        }
         muted = bundle.getBoolean("muted");
         handFree = bundle.getBoolean("handFree");
 

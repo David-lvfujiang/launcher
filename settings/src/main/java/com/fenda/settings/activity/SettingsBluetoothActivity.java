@@ -68,8 +68,8 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
     private Set<SettingsBluetoothDeviceBean> mSettingsBluetoothDeviceBean = new HashSet<>();
     private Set<BluetoothDevice> mSetBluetoothDevice;
 
-    private String mConnectedBTName;
-    private String mConnectedBTAddress;
+    private String mConnectedBtName;
+    private String mConnectedBtAddress;
     private String mLocalBtName;
     private BluetoothDevice mDisConnectBlueDevice;
 
@@ -316,7 +316,7 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
         }
         mSettingsBluetoothAdapter.getListDevices().clear();
         mSetBluetoothDevice = mBluetoothAdapter.getBondedDevices();
-        BluetoothDevice mGetConnectedBTMac = null;
+        BluetoothDevice mGetConnectedBtMac = null;
         LogUtil.d(TAG, "FD---bonded device size = " + mSetBluetoothDevice.size());
 
         for (BluetoothDevice bluetoothDevice : mSetBluetoothDevice) {
@@ -337,13 +337,13 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
                 }
                 if (isConnected) {
                     LogUtil.d(TAG, "isConnectedMethod  = " + bluetoothDevice.getAddress());
-                    mGetConnectedBTMac = bluetoothDevice;
+                    mGetConnectedBtMac = bluetoothDevice;
                 }
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
             }
         }
-        return mGetConnectedBTMac;
+        return mGetConnectedBtMac;
     }
 
     /**
@@ -355,7 +355,7 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
         }
         mSettingsBluetoothAdapter.getListDevices().clear();
         mSetBluetoothDevice = mBluetoothAdapter.getBondedDevices();
-        String mGetConnectedBTName = (String) SPUtils.get(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME, "");
+        String mGetConnectedBtName = (String) SPUtils.get(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME, "");
         LogUtil.d(TAG, "FD---bonded device size = " + mSetBluetoothDevice.size());
 
         for (BluetoothDevice bluetoothDevice : mSetBluetoothDevice) {
@@ -384,9 +384,9 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
 
             LogUtil.d(TAG, "FD---bonded name = " + bluetoothDevice.getName());
             LogUtil.d(TAG, "FD---bonded address = " + bluetoothDevice.getAddress());
-            LogUtil.d(TAG, "FD--- mGetConnectedBTName = " + mGetConnectedBTName);
+            LogUtil.d(TAG, "FD--- mGetConnectedBTName = " + mGetConnectedBtName);
 
-            if(mGetConnectedBTName == ""){
+            if(mGetConnectedBtName == ""){
                 LogUtil.d(TAG, "mGetConnectedBTName is null");
                 if (bluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
                     blueDevice.setStatus("已配对");
@@ -400,7 +400,7 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
                 }
             } else {
                 LogUtil.d(TAG, "mGetConnectedBTName is not null");
-                if(mGetConnectedBTName.equals(bluetoothDevice.getName())){
+                if(mGetConnectedBtName.equals(bluetoothDevice.getName())){
                     blueDevice.setStatus("已连接");
                 }
             }
@@ -568,10 +568,10 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
                     LogUtil.d(TAG, "蓝牙连上了");
                     SettingsBluetoothUtil.closeDiscoverableTimeout();
                     changeBtItemStatus(mConnectionBluetoothDevice.getName(), mConnectionBluetoothDevice.getAddress(), "已连接");
-                    mConnectedBTName = mConnectionBluetoothDevice.getName();
-                    mConnectedBTAddress = mConnectionBluetoothDevice.getAddress();
-                    SPUtils.put(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME, mConnectedBTName);
-                    SPUtils.put(getApplicationContext(), String.valueOf(Constant.Settings.BT_CONNECTED_ADDRESS), mConnectedBTAddress);
+                    mConnectedBtName = mConnectionBluetoothDevice.getName();
+                    mConnectedBtAddress = mConnectionBluetoothDevice.getAddress();
+                    SPUtils.put(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME, mConnectedBtName);
+                    SPUtils.put(getApplicationContext(), String.valueOf(Constant.Settings.BT_CONNECTED_ADDRESS), mConnectedBtAddress);
                     LogUtil.d(TAG, "STATE_CONNECTED getName = " + mConnectionBluetoothDevice.getName() + ", STATE_CONNECTED getAddress = " + mConnectionBluetoothDevice.getAddress());
                 }
             }
@@ -586,7 +586,7 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
     private void startPariBlue(SettingsBluetoothDeviceBean blueDevice) {
         SettingsBluetoothUtil blueUtils = new SettingsBluetoothUtil(blueDevice);
         blueUtils.createBond(blueDevice.getDevice());
-        DismissDailog();
+        dismissDailog();
     }
 
     /**
@@ -595,7 +595,7 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
     private void contectDevices(SettingsBluetoothDeviceBean blueDevice) {
         SettingsBluetoothUtil blueUtils = new SettingsBluetoothUtil(blueDevice);
         blueUtils.doPair();
-        DismissDailog();
+        dismissDailog();
     }
     /**
      * 连接蓝牙设备（通过监听蓝牙协议的服务，在连接服务的时候使用BluetoothA2dp协议）
@@ -655,7 +655,7 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
         alertDialog.show();
     }
 
-    public void DismissDailog() {
+    public void dismissDailog() {
         final AlertDialog alertDialog = null;
         if (alertDialog != null) {
             if (alertDialog.isShowing()) {

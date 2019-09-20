@@ -157,7 +157,7 @@ public class SettingsWifiAdapter  {
             return (mWifiInfo == null) ? "NULL" : mWifiInfo.getMacAddress();
         }
 
-        public String getBSSID() {
+        public String getBssid() {
             return (mWifiInfo == null) ? "NULL" : mWifiInfo.getBSSID();
         }
 
@@ -193,28 +193,28 @@ public class SettingsWifiAdapter  {
             mWifiManager.enableNetwork(wcgId, true);
         }
 
-        public WifiConfiguration createWifiInfo(String SSID, String password,
-                                                int Type) {
+        public WifiConfiguration createWifiInfo(String Ssid, String password,
+                                                int mType) {
             WifiConfiguration config = new WifiConfiguration();
             config.allowedAuthAlgorithms.clear();
             config.allowedGroupCiphers.clear();
             config.allowedKeyManagement.clear();
             config.allowedPairwiseCiphers.clear();
             config.allowedProtocols.clear();
-            config.SSID = "\"" + SSID + "\"";
+            config.SSID = "\"" + Ssid + "\"";
 
-            WifiConfiguration tempConfig = this.isExsits(SSID);
+            WifiConfiguration tempConfig = this.isExsits(Ssid);
             if (tempConfig != null) {
                 mWifiManager.removeNetwork(tempConfig.networkId);
             }
 
-            if (Type == 1) // WIFICIPHER_NOPASS
+            if (mType == 1) // WIFICIPHER_NOPASS
             {
                 config.wepKeys[0] = "";
                 config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
                 config.wepTxKeyIndex = 0;
             }
-            if (Type == 2) // WIFICIPHER_WEP
+            if (mType == 2) // WIFICIPHER_WEP
             {
                 config.hiddenSSID = true;
                 config.wepKeys[0] = "\"" + password + "\"";
@@ -228,7 +228,7 @@ public class SettingsWifiAdapter  {
                 config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
                 config.wepTxKeyIndex = 0;
             }
-            if (Type == 3) // WIFICIPHER_WPA
+            if (mType == 3) // WIFICIPHER_WPA
             {
                 config.preSharedKey = "\"" + password + "\"";
                 config.hiddenSSID = true;
@@ -308,15 +308,15 @@ public class SettingsWifiAdapter  {
         /**
          * 判定指定WIFI是否已经配置好,依据WIFI的地址BSSID,返回NetId
          *
-         * @param SSID
+         * @param mSSID
          * @return
          */
-        public int isConfiguration(String SSID) {
+        public int isConfiguration(String mSSID) {
             Log.i("IsConfiguration", String.valueOf(wifiConfigList.size()));
             for (int i = 0; i < wifiConfigList.size(); i++) {
                 Log.i(wifiConfigList.get(i).SSID,
                         String.valueOf(wifiConfigList.get(i).networkId));
-                if (wifiConfigList.get(i).SSID.equals(SSID)) {// 地址相同
+                if (wifiConfigList.get(i).SSID.equals(mSSID)) {// 地址相同
                     return wifiConfigList.get(i).networkId;
                 }
             }

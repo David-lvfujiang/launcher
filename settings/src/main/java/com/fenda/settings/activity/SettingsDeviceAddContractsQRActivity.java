@@ -21,6 +21,7 @@ import com.fenda.common.util.SPUtils;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.protocol.http.RetrofitHelper;
 import com.fenda.protocol.http.RxSchedulers;
+import com.fenda.protocol.tcp.CThreadPoolExecutor;
 import com.fenda.protocol.tcp.TCPConfig;
 import com.fenda.protocol.tcp.bean.BaseTcpMessage;
 import com.fenda.protocol.tcp.bean.EventMessage;
@@ -56,7 +57,7 @@ import static com.fenda.common.util.QRcodeUtil.getFileRoot;
 public class SettingsDeviceAddContractsQRActivity extends BaseMvpActivity<SettingsPresenter, SettingsModel> implements SettingsContract.View {
     private static final String TAG = "SettingsDeviceAddContractsQRActivity";
 
-    private ImageView ivDisQRcode;
+    private ImageView ivDisQrcode;
     private TextView tvDisVcode;
     private TextView tvBack;
 
@@ -75,7 +76,7 @@ public class SettingsDeviceAddContractsQRActivity extends BaseMvpActivity<Settin
     @Override
     public void initView() {
         tvBack = findViewById(R.id.enlarge_back);
-        ivDisQRcode = findViewById(R.id.enlarge_QR);
+        ivDisQrcode = findViewById(R.id.enlarge_QR);
         tvDisVcode = findViewById(R.id.enlarge_vcode);
     }
 
@@ -89,17 +90,15 @@ public class SettingsDeviceAddContractsQRActivity extends BaseMvpActivity<Settin
 
         tvDisVcode.setText(vcode1);
 
-        final String contentET= "http://www.fenda.com/?sn=" + DeviceIdUtil.getDeviceId();
+        final String contentEt= "http://www.fenda.com/?sn=" + DeviceIdUtil.getDeviceId();
 
         final String filePath = getFileRoot(SettingsDeviceAddContractsQRActivity.this) + File.separator
                 + "qr_" + System.currentTimeMillis() + ".jpg";
         //二维码图片较大时，生成图片、保存文件的时间可能较长，因此放在新线程中
-        new Thread(new Runnable()
-        {
+        CThreadPoolExecutor.runInBackground(new Runnable() {
             @Override
-            public void run()
-            {
-                boolean success = QRcodeUtil.createQRImage(contentET,1000, 1000, null, filePath);
+            public void run() {
+                boolean success = QRcodeUtil.createQRImage(contentEt,1000, 1000, null, filePath);
 
                 if (success) {
                     runOnUiThread(new Runnable()
@@ -107,12 +106,12 @@ public class SettingsDeviceAddContractsQRActivity extends BaseMvpActivity<Settin
                         @Override
                         public void run()
                         {
-                            ivDisQRcode.setImageBitmap(BitmapFactory.decodeFile(filePath));
+                            ivDisQrcode.setImageBitmap(BitmapFactory.decodeFile(filePath));
                         }
                     });
                 }
             }
-        }).start();
+        });
     }
 
     @Override
@@ -140,13 +139,13 @@ public class SettingsDeviceAddContractsQRActivity extends BaseMvpActivity<Settin
                     BaseTcpMessage dataMsg = message.getData();
                     String msgContent = dataMsg.getMsg();
                     Head headMsg = dataMsg.getHead();
-                    String ID = String.valueOf(headMsg.getMsgId());
+                    String mId = String.valueOf(headMsg.getMsgId());
                     String msgType = String.valueOf(headMsg.getMsgType());
                     String userId = String.valueOf(headMsg.getUserId());
 
                     SettingsAgreeUserAddRequest agreeUserAddRequest = new SettingsAgreeUserAddRequest();
                     agreeUserAddRequest.setDeviceId(DeviceIdUtil.getDeviceId());
-                    agreeUserAddRequest.setId(ID);
+                    agreeUserAddRequest.setId(mId);
                     agreeUserAddRequest.setMessageContent(msgContent);
                     agreeUserAddRequest.setMessageType(msgType);
                     agreeUserAddRequest.setSendUserId(userId);

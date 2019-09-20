@@ -32,6 +32,7 @@ import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.QRcodeUtil;
 import com.fenda.common.util.SPUtils;
 import com.fenda.common.util.ToastUtils;
+import com.fenda.protocol.tcp.CThreadPoolExecutor;
 import com.fenda.protocol.tcp.ClientBootstrap;
 import com.fenda.protocol.tcp.TCPConfig;
 import com.fenda.protocol.tcp.bean.BaseTcpMessage;
@@ -60,7 +61,7 @@ import java.util.List;
 public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresenter, SettingsModel> implements SettingsContract.View {
     private static final String TAG = "SettingsBindDeviceActivity";
 
-    private ImageView ivDisQRcode;
+    private ImageView ivDisQrcode;
     private TextView tvDisVcodeNum;
     private TextView tvDisVcodeText;
 
@@ -111,7 +112,7 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
     @Override
     public void initView() {
         tvDisVcodeText = findViewById(R.id.bind_vcode);
-        ivDisQRcode = findViewById(R.id.create_qr_iv);
+        ivDisQrcode = findViewById(R.id.create_qr_iv);
         tvDisVcodeNum = findViewById(R.id.bind_QRsn);
 
         LogUtil.d(TAG, "env = " + baseEvn);
@@ -144,7 +145,7 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
 
     @Override
     public void initListener() {
-        ivDisQRcode.setOnClickListener(new View.OnClickListener() {
+        ivDisQrcode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onEnterMainNoBind();
@@ -274,7 +275,7 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
         }
         final String filePath2 = QRcodeUtil.getFileRoot(SettingsBindDeviceActivity.this) + File.separator + "qr_" + System.currentTimeMillis() + ".jpg";
 //        二维码图片较大时，生成图片、保存文件的时间可能较长，因此放在新线程中
-        new Thread(new Runnable() {
+        CThreadPoolExecutor.runInBackground(new Runnable() {
             @Override
             public void run() {
                 boolean success = QRcodeUtil.createQRImage(mContentET, 1000, 1000, null, filePath2);
@@ -283,12 +284,13 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            ivDisQRcode.setImageBitmap(BitmapFactory.decodeFile(filePath2));
+                            ivDisQrcode.setImageBitmap(BitmapFactory.decodeFile(filePath2));
                         }
                     });
                 }
             }
-        }).start();
+        });
+
         tvDisVcodeNum.setText(response.getData().getVcode());
     }
 

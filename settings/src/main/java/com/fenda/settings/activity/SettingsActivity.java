@@ -1,7 +1,5 @@
 package com.fenda.settings.activity;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,13 +8,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.SystemClock;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
@@ -33,12 +29,10 @@ import com.fenda.common.view.MyListView;
 import com.fenda.settings.R;
 import com.fenda.settings.adapter.SettingsBluetoothAdapter;
 import com.fenda.settings.bean.SettingsBluetoothDeviceBean;
-import com.fenda.settings.utils.SettingsWifiUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -57,7 +51,7 @@ public class SettingsActivity extends BaseMvpActivity {
     private MyListView lvDisSetListItem;
     private LinearLayout llDeviceCenter;
 
-    private String mConnectedWifiSSID;
+    private String mConnectedWifiSsid;
     private SimpleAdapter mSimpleAdapter;
     private ArrayList<HashMap<String, String>> mArrayListData;
     private WifiManager mWifiManager;
@@ -152,8 +146,8 @@ public class SettingsActivity extends BaseMvpActivity {
                     startActivityForResult(setWifiIntent, 200);
                     finish();
                 } else if (("蓝牙").equals(setClickedListName)) {
-                    Intent setBTIntent = new Intent(SettingsActivity.this, SettingsBluetoothActivity.class);
-                    startActivity(setBTIntent);
+                    Intent setBtIntent = new Intent(SettingsActivity.this, SettingsBluetoothActivity.class);
+                    startActivity(setBtIntent);
                 } else if (("屏幕保护").equals(setClickedListName)) {
                     Intent mIntent = new Intent(SettingsActivity.this, SettingsScreenActivity.class);
                     startActivity(mIntent);
@@ -244,11 +238,11 @@ public class SettingsActivity extends BaseMvpActivity {
                     Log.i(TAG, "wifi连接上了");
                     mArrayListData.remove(0);
                     mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-                    mConnectedWifiSSID = mWifiManager.getConnectionInfo().getSSID();
-                    mConnectedWifiSSID = mConnectedWifiSSID.substring(1, mConnectedWifiSSID.length() - 1);
-                    LogUtil.d(TAG, "back wifi name = " + mConnectedWifiSSID);
+                    mConnectedWifiSsid = mWifiManager.getConnectionInfo().getSSID();
+                    mConnectedWifiSsid = mConnectedWifiSsid.substring(1, mConnectedWifiSsid.length() - 1);
+                    LogUtil.d(TAG, "back wifi name = " + mConnectedWifiSsid);
                     params.put("name", "WIFI");
-                    params.put("state", "已连接(" + mConnectedWifiSSID + ")");
+                    params.put("state", "已连接(" + mConnectedWifiSsid + ")");
                     mArrayListData.add(0, params);
                     mSimpleAdapter.notifyDataSetChanged();
                 } else if (NetworkInfo.State.CONNECTING == info.getState()) {//正在连接

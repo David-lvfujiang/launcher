@@ -80,7 +80,7 @@ public class SettingsPresenter extends SettingsContract.Presenter {
             protected void _onNext(BaseResponse response) {
                 if (response.getCode() == 200 && ("操作成功").equals(response.getMessage())) {
                     mView.registerDeviceSuccess(response);
-                } else if(response.getCode() == 200 && ("设备已经注册").equals(response.getMessage())){
+                } else if(("设备已经注册").equals(response.getMessage())){
                     mView.haveRegisterDevice(response);
                 } else {
                     mView.registerDeviceFailure(response);
