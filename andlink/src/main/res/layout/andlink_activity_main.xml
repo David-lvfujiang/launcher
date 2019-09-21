@@ -13,7 +13,9 @@
         android:layout_height="wrap_content"
         android:text="返回"
         android:textSize="35dp"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="253dp"
+        tools:layout_editor_absoluteY="318dp" />
 
     <Button
         android:id="@+id/bt_init"

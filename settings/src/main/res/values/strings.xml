@@ -75,8 +75,10 @@
     <string name="settings_bind_device_second_step_tobind">登录app再次扫描右侧二维码绑定音箱</string>
 
     <!--SettingsWifiConnectedInfoActivity start -->
-    <string name="settings_wifi_connected_cancel_save">取消保存网络</string>
-    <string name="settings_wifi_connected_other">网络配置</string>
+    <string name="settings_wifi_connected_cancel_save">忽略此网络</string>
+    <string name="settings_wifi_connected_safe">安全性</string>
+    <string name="settings_wifi_connected_IP">IP地址</string>
+    <string name="settings_wifi_connected_signal">连接速度</string>
 
     <!--SettingsInitDeviceStatusManager start -->
     <string name="settings_init_device_status_query_fail">查询设备信息失败，请稍后重试</string>

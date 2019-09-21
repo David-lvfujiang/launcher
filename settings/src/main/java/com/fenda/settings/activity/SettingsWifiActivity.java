@@ -26,7 +26,6 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.net.wifi.WifiConfiguration.KeyMgmt;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.common.base.BaseMvpActivity;
@@ -54,9 +53,11 @@ public class SettingsWifiActivity extends BaseMvpActivity{
     private TextView tvBack;
     private ImageView ivScanWifiGif;
     private TextView tvScanWifiTv;
+    private ImageView ivImageView;
 
     private WifiManager mWifiManager;
     private AnimationDrawable mAnimationDrawable;
+    private AnimationDrawable mAnimationDrawable1;
     protected SettingsWifiUtil mSettingsWifiUtil;
     private List<SettingsWifiBean> mScanWifiListBean;
     private MyWifiAdapter mMyWifiAdapter;
@@ -86,6 +87,7 @@ public class SettingsWifiActivity extends BaseMvpActivity{
 
     @Override
     public void initView() {
+        ivImageView = findViewById(R.id.wifi_circle_progress);
         tvScanWifiTv = findViewById(R.id.scan_wifi_tv);
         ivScanWifiGif = findViewById(R.id.scan_wifi_iv);
         rvWifiList= findViewById(R.id.set_wifi_listview);
@@ -130,15 +132,24 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                 if(isChecked) {
                     LogUtil.d(TAG, "wifi switch is on ");
                     mSettingsWifiUtil.openWifi(getApplicationContext());
+                    wifiSwitch.setVisibility(View.GONE);
+                    ivImageView.setVisibility(View.VISIBLE);
+                    ivImageView.setImageResource(R.drawable.settings_wifi_connecting_gif);
+
                     tvScanWifiTv.setVisibility(View.VISIBLE);
                     ivScanWifiGif.setVisibility(View.VISIBLE);
                     ivScanWifiGif.setImageResource(R.drawable.settings_network_loading_gif);
                     mAnimationDrawable = (AnimationDrawable) ivScanWifiGif.getDrawable();
+                    mAnimationDrawable1 = (AnimationDrawable) ivImageView.getDrawable();
                     mAnimationDrawable.start();
+                    mAnimationDrawable1.start();
                     mHandler.post(runnable);
                 } else{
                     LogUtil.d(TAG, "wifi switch is off ");
                     mSettingsWifiUtil.closeWifi(SettingsWifiActivity.this);
+                    wifiSwitch.setVisibility(View.VISIBLE);
+                    ivImageView.setVisibility(View.GONE);
+
                     tvScanWifiTv.setVisibility(View.GONE);
                     ivScanWifiGif.setVisibility(View.GONE);
                     ivScanWifiGif.setImageResource(R.drawable.settings_network_loading_gif);
@@ -166,6 +177,9 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                 LogUtil.d(TAG, "mWifiList 2 = " + mScanWifiListBean.size());
 
                 if(mScanWifiListBean.size() > 0) {
+                    wifiSwitch.setVisibility(View.VISIBLE);
+                    ivImageView.setVisibility(View.GONE);
+
                     tvScanWifiTv.setVisibility(View.GONE);
                     ivScanWifiGif.setVisibility(View.GONE);
                     ivScanWifiGif.setImageResource(R.drawable.settings_network_loading_gif);
@@ -175,11 +189,17 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                     mMyWifiAdapter.notifyDataSetChanged();
                 } else {
                     rvWifiList.setAdapter(null);
+                    wifiSwitch.setVisibility(View.GONE);
+                    ivImageView.setVisibility(View.VISIBLE);
+                    ivImageView.setImageResource(R.drawable.settings_wifi_connecting_gif);
+
                     tvScanWifiTv.setVisibility(View.VISIBLE);
                     ivScanWifiGif.setVisibility(View.VISIBLE);
                     ivScanWifiGif.setImageResource(R.drawable.settings_network_loading_gif);
                     mAnimationDrawable = (AnimationDrawable) ivScanWifiGif.getDrawable();
+                    mAnimationDrawable1 = (AnimationDrawable) ivImageView.getDrawable();
                     mAnimationDrawable.start();
+                    mAnimationDrawable1.start();
                 }
             }
             mHandler.postDelayed(runnable,8000); // 执行后延迟8000毫秒再次执行
@@ -301,7 +321,7 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                     LogUtil.d(TAG, "clicked wifi ssid = " + mListItemClickedSsid);
 
 
-                    if(mConnectedSsid.equals(mListItemClickedSsid)) {
+                    if(mListItemClickedSsid.equals(mConnectedSsid)) {
                         Intent connectedIntent = new Intent(SettingsWifiActivity.this, SettingsWifiConnectedInfoActivity.class);
                         connectedIntent.putExtra("CONNECTED_MESSAGE", mListItemClickedSsid);
                         startActivity(connectedIntent);
@@ -315,8 +335,6 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                             LogUtil.d(TAG,  "save wifi id clicked = " + ssidId);
                             mWifiManager.enableNetwork(ssidId, true);
                         } else {
-//                            mSettingsWifiUtil.addNetwork(mSettingsWifiUtil.createWifiInfo(mListItemClickedSsid, "TEST##tech775511", 3));
-
                             if(scanResult.capabilities.contains("WEP") || scanResult.capabilities.contains("PSK") || scanResult.capabilities.contains("EAP")){
                                 //密码连接
                                 Intent connectIntent = new Intent(SettingsWifiActivity.this, SettingsWifiInputPswActivity.class);
@@ -326,15 +344,15 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                             } else{
                                 //无密码直接连接
                                 LogUtil.d(TAG, "no psw wifi connect");
-                                mSettingsWifiUtil.addNetwork(mSettingsWifiUtil.createWifiInfo(mListItemClickedSsid, "", 1));
-//                                mSettingsWifiBean.setStatus(1);
-                                int ssidId2 = mSettingsWifiUtil.getNetworkId(mListItemClickedSsid);
-                                LogUtil.d(TAG,  "save wifi id clicked222  = " + ssidId2);
-                                mWifiManager.enableNetwork(ssidId2, true);
-
-                                mHolder.tvStatus.setVisibility(View.VISIBLE);
-                                mHolder.tvStatus.setText(getString(R.string.settings_wifi_connected_status));
-                                mHolder.connectWifiIcon.setVisibility(View.VISIBLE);
+//                                mSettingsWifiUtil.addNetwork(mSettingsWifiUtil.createWifiInfo(mListItemClickedSsid, "", 1));
+////                                mSettingsWifiBean.setStatus(1);
+//                                int ssidId2 = mSettingsWifiUtil.getNetworkId(mListItemClickedSsid);
+//                                LogUtil.d(TAG,  "save wifi id clicked222  = " + ssidId2);
+//                                mWifiManager.enableNetwork(ssidId2, true);
+//
+//                                mHolder.tvStatus.setVisibility(View.VISIBLE);
+//                                mHolder.tvStatus.setText(getString(R.string.settings_wifi_connected_status));
+//                                mHolder.connectWifiIcon.setVisibility(View.VISIBLE);
 
 //                                config.hiddenSSID = true;
 //                                config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);

@@ -145,13 +145,16 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
         //判断本机蓝牙是否打开
         if (isBtOpen) {
             btSwitch.setChecked(true);
-            flashBtn.setEnabled(true);
-            flashBtn.setBackgroundResource(R.drawable.settings_shape_bind_btn_on);
+            flashBtn.setVisibility(View.VISIBLE);
+
+//            flashBtn.setEnabled(true);
+//            flashBtn.setBackgroundResource(R.drawable.settings_shape_bind_btn_on);
             getBondedDevices();
             mBluetoothAdapter.startDiscovery();
         } else {
-            flashBtn.setEnabled(false);
-            flashBtn.setBackgroundResource(R.drawable.settings_shape_bind_btn_off);
+            flashBtn.setVisibility(View.GONE);
+//            flashBtn.setEnabled(false);
+//            flashBtn.setBackgroundResource(R.drawable.settings_shape_bind_btn_off);
             btSwitch.setChecked(false);
         }
 
@@ -394,7 +397,7 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
                 else if (bluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
                     blueDevice.setStatus("正在配对...");
                 } else if (bluetoothDevice.getBondState() == BluetoothDevice.BOND_NONE) {
-    ///                blueDevice.setStatus("未配对");
+                    ///                blueDevice.setStatus("未配对");
                 } else {
                     blueDevice.setStatus("");
                 }
@@ -535,8 +538,8 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
                     case BluetoothAdapter.STATE_ON:
                         LogUtil.d(TAG, "STATE_ON");
                         btSwitch.setChecked(true);
-                        flashBtn.setEnabled(true);
-                        flashBtn.setBackgroundResource(R.drawable.settings_shape_bind_btn_on);
+                        flashBtn.setVisibility(View.VISIBLE);
+
                         btSwitch.setEnabled(true);
                         getBondedDevices();
                         mBluetoothAdapter.startDiscovery();
@@ -546,8 +549,7 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
                         break;
                     case BluetoothAdapter.STATE_OFF:
                         btSwitch.setChecked(false);
-                        flashBtn.setEnabled(false);
-                        flashBtn.setBackgroundResource(R.drawable.settings_shape_bind_btn_off);
+                        flashBtn.setVisibility(View.GONE);
                         btSwitch.setEnabled(true);
                         LogUtil.d(TAG, "STATE_OFF");
                         break;
