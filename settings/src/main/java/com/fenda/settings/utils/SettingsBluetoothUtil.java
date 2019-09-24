@@ -102,51 +102,14 @@ public class SettingsBluetoothUtil {
         BluetoothSocket temp = null;
         try {
             temp = blueDevice.getDevice().createInsecureRfcommSocketToServiceRecord(MY_UUID_SECURE);
-//			temp = mTouchObject.bluetoothDevice.createRfcommSocketToServiceRecord(UUID.fromString(CONNECT_UUID));
-//            以上取得socket方法不能正常使用， 用以下方法代替
-            //Method m = blueDevice.getDevice().getClass().getMethod("createRfcommSocket", new Class[] {int.class});
-            //temp = (BluetoothSocket) m.invoke(blueDevice.getDevice(), 1);
-            //怪异错误： 直接赋值给socket,对socket操作可能出现异常，  要通过中间变量temp赋值给socket
         }catch (SecurityException e) {
             e.printStackTrace();
-            // } catch (NoSuchMethodException e) {
-            //    e.printStackTrace();
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            //} catch (IllegalAccessException e) {
-            //    e.printStackTrace();
-            // } catch (InvocationTargetException e) {
-            //    e.printStackTrace();
-        }catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         blueSocket = temp;
-
-
-
-//
-//        BluetoothSocket temp = null;
-//        try {
-////            temp = blueDevice.getDevice().createRfcommSocketToServiceRecord(
-////                    MY_UUID_SECURE);
-////			temp = mTouchObject.bluetoothDevice.createRfcommSocketToServiceRecord(UUID.fromString(CONNECT_UUID));
-////            以上取得socket方法不能正常使用， 用以下方法代替
-//            Method m = blueDevice.getDevice().getClass().getMethod("createRfcommSocket", new Class[] {int.class});
-//            temp = (BluetoothSocket) m.invoke(blueDevice.getDevice(), 1);
-//            //怪异错误： 直接赋值给socket,对socket操作可能出现异常，  要通过中间变量temp赋值给socket
-//        }catch (SecurityException e) {
-//            e.printStackTrace();
-//        } catch (NoSuchMethodException e) {
-//            e.printStackTrace();
-//        } catch (IllegalArgumentException e) {
-//            e.printStackTrace();
-//        } catch (IllegalAccessException e) {
-//            e.printStackTrace();
-//        } catch (InvocationTargetException e) {
-//            e.printStackTrace();
-//        }
-//        blueSocket = temp;
     }
 
     public static void closeDiscoverableTimeout() {
@@ -165,7 +128,7 @@ public class SettingsBluetoothUtil {
         }
     }
 
-    public void setDiscoverableTimeout(int timeout) {
+    public static void setDiscoverableTimeout(int timeout) {
         BluetoothAdapter adapter=BluetoothAdapter.getDefaultAdapter();
         try {
             Method setDiscoverableTimeout = BluetoothAdapter.class.getMethod("setDiscoverableTimeout", int.class);

@@ -149,12 +149,30 @@ public class SettingsDeviceAddContractsQRActivity extends BaseMvpActivity<Settin
                     agreeUserAddRequest.setMessageContent(msgContent);
                     agreeUserAddRequest.setMessageType(msgType);
                     agreeUserAddRequest.setSendUserId(userId);
+//                    agreeUserAddRequest.setConfirmType(true);
                     mPresenter.agreeUserAddDevice(agreeUserAddRequest);
                 }
             });
             deviceDialog.setOnCancelListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+//                    deviceDialog.dismiss();
+//                    LogUtil.d(TAG, "disagree user bind device ");
+//                    BaseTcpMessage dataMsg = message.getData();
+//                    String msgContent = dataMsg.getMsg();
+//                    Head headMsg = dataMsg.getHead();
+//                    String mId = String.valueOf(headMsg.getMsgId());
+//                    String msgType = String.valueOf(headMsg.getMsgType());
+//                    String userId = String.valueOf(headMsg.getUserId());
+//
+//                    SettingsAgreeUserAddRequest agreeUserAddRequest = new SettingsAgreeUserAddRequest();
+//                    agreeUserAddRequest.setDeviceId(DeviceIdUtil.getDeviceId());
+//                    agreeUserAddRequest.setId(mId);
+//                    agreeUserAddRequest.setMessageContent(msgContent);
+//                    agreeUserAddRequest.setMessageType(msgType);
+//                    agreeUserAddRequest.setSendUserId(userId);
+//                    agreeUserAddRequest.setConfirmType(false);
+//                    mPresenter.agreeUserAddDevice(agreeUserAddRequest);
                     finish();
                 }
             });

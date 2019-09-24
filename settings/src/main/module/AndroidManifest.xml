@@ -70,12 +70,10 @@
         <activity android:name=".activity.SettingsScreenIntoStandbyActivity"/>
         <activity android:name=".activity.SettingsScreenStyleActivity"/>
 
-
         <service
             android:name="cn.richinfo.mt.service.MTService"
             android:exported="false" >
         </service>
-
 
         <receiver android:name="cn.richinfo.mt.receiver.MTBroadCastReceiver">
         <intent-filter>
@@ -84,8 +82,6 @@
             android:name="android.richinfo.net.conn.CONNECTIVITY_CHANGE" />
         </intent-filter>
         </receiver>
-
-
 
         <service android:name="org.eclipse.paho.android.service.MqttService" />
         <service android:name="com.chinamobile.smartgateway.andsdk.mqtt.MQTTService" />

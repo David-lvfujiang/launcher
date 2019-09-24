@@ -58,8 +58,8 @@ android {
     productFlavors {
         _dev {//开发环境
             //设置baseUrl 使用方法Application.getContext().getResources().getString(R.string.API_SERVER)
-            resValue "string", "BASE_SERVER_URL", "http://192.168.43.34:8998/smartsound/"
-            resValue "string", "TCP_IP", "192.168.43.34"
+            resValue "string", "BASE_SERVER_URL", "http://192.168.43.37:8998/smartsound/"
+            resValue "string", "TCP_IP", "192.168.43.37"
             resValue "string", "DEVICE_SN", " "
         }
 
@@ -120,5 +120,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':common')
+
     annotationProcessor deps.arouter_compiler
 }

@@ -21,14 +21,14 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
+        tools:ignore="ProtectedPermissions" />
 
 
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions"/>
-
-
 
     <application>
 
@@ -54,13 +54,10 @@
         <activity android:name=".activity.SettingsScreenIntoStandbyActivity"/>
         <activity android:name=".activity.SettingsScreenStyleActivity"/>
 
-
-
         <service
             android:name="cn.richinfo.mt.service.MTService"
             android:exported="false" >
         </service>
-
 
         <receiver android:name="cn.richinfo.mt.receiver.MTBroadCastReceiver">
             <intent-filter>
@@ -69,7 +66,6 @@
                     android:name="android.richinfo.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
-
 
         <service android:name="org.eclipse.paho.android.service.MqttService" />
         <service android:name="com.chinamobile.smartgateway.andsdk.mqtt.MQTTService" />

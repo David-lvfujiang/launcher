@@ -75,6 +75,7 @@ public class SettingsLauncherActivity extends BaseMvpActivity<SettingsPresenter,
         } else {
             LogUtil.d(TAG, "start register device");
             mDeviceMac = DeviceIdUtil.getLocalMac();
+            LogUtil.d(TAG, "mDeviceMac = " + mDeviceMac);
 
             SettingsRegisterDeviceRequest mRegisterDeviceRequest = new SettingsRegisterDeviceRequest();
             mRegisterDeviceRequest.setClientVersion("1.0.0");
@@ -172,7 +173,9 @@ public class SettingsLauncherActivity extends BaseMvpActivity<SettingsPresenter,
     public void registerDeviceSuccess(BaseResponse<SettingsRegisterDeviceResponse> response) {
         LogUtil.d(TAG, "设备注册成功");
         SettingsDebugSPUtils.saveRegisterDevice(getApplicationContext(), true);
-        SettingsDebugSPUtils.put(getApplicationContext(), SettingsContant.USER_ID, response.getData().getId());
+        String userId1 = response.getData().getId();
+        LogUtil.d(TAG, "userId1 = " + userId1);
+        SettingsDebugSPUtils.put(getApplicationContext(), SettingsContant.USER_ID, userId1);
 
         String userId = (String) SettingsDebugSPUtils.get(BaseApplication.getInstance(), response.getData().getId(), "");
         LogUtils.v(TAG, "userId = " + userId);

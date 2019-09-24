@@ -158,7 +158,7 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
                 netId1 = mSettingsWifiUtil.getNetworkId(mConnectedSsid);
                 LogUtil.d(TAG, "取消网络保存id = " + netId1);
 
-                if(("取消保存网络").equals(setClickedListName)) {
+                if(("忽略此网络").equals(setClickedListName)) {
                     mSettingsWifiUtil.removeWifi(netId1);
                     mWifiManager.saveConfiguration();
                     Intent connectIntent = new Intent(SettingsWifiConnectedInfoActivity.this, SettingsWifiActivity.class);
@@ -168,7 +168,6 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
             }
         });
     }
-
 
     static final int SECURITY_NONE = 0;
     static final int SECURITY_WEP = 1;

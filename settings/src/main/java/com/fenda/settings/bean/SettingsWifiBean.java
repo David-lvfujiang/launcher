@@ -10,14 +10,37 @@ import android.net.wifi.ScanResult;
 public class SettingsWifiBean {
     private ScanResult result;
     private int status;
+    private String name;
+    private String itemStatus;
+
 
     public SettingsWifiBean() {
     }
 
-    public SettingsWifiBean(ScanResult result, int status) {
+    public SettingsWifiBean(ScanResult result, int status, String name, String itemStatus) {
         this.result = result;
         this.status = status;
+        this.name = name;
+        this.itemStatus = itemStatus;
     }
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getItemStatus() {
+        return itemStatus;
+    }
+
+    public void setItemStatus(String itemStatus) {
+        this.itemStatus = itemStatus;
+    }
+
 
     public ScanResult getResult() {
         return result;
