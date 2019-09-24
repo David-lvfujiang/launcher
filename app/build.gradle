@@ -110,6 +110,7 @@ dependencies {
     api (name: 'settings-_dev-release', ext: 'aar')
 //    api (name: 'encyclopedia-_dev-release', ext: 'aar')
 //    api (name: 'player-release', ext: 'aar')
+//    api (name: 'calculator-release', ext: 'aar')
 
     implementation 'com.fenda.ai:VoiceSibiche2mic:1.0.1'
     implementation 'com.fenda.call:call:1.0.2'
@@ -119,6 +120,7 @@ dependencies {
     implementation 'com.fenda.player:player:1.0.1'
     implementation 'com.fenda.remind:remind:1.0.1'
     implementation 'com.fenda.weather:weather:1.0.2'
+    implementation 'com.fenda.calculator:calculator:1.0.0'
 
     annotationProcessor deps.arouter_compiler
 //    implementation project(path: ':CallLib')

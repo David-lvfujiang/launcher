@@ -105,7 +105,8 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
                 if(applyId.equals(Constant.SETTINGS)){
                     ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
                 } else if (applyId.equals(Constant.CALCULATOR)){
-                    ToastUtils.show("计算器");
+//                    ToastUtils.show("计算器");
+                    ARouter.getInstance().build(RouterPath.Calculator.CALCULATOR_ACTIVITY).navigation();
                 }
                 else if (applyId.equals(Constant.WEATHER)) {
 //                    ToastUtils.show("天气");

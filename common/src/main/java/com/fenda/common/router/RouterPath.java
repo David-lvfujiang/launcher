@@ -102,4 +102,7 @@ public interface RouterPath {
     interface Recommend {
         String RECOMMEND = "/recommend/recommend";
     }
+    interface Calculator {
+        String CALCULATOR_ACTIVITY = "/calculator/calculator";
+    }
 }
