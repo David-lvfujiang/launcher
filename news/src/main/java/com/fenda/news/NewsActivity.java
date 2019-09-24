@@ -2,6 +2,7 @@ package com.fenda.news;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.wifi.WifiManager;
@@ -10,9 +11,11 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextSwitcher;
 import android.widget.TextView;
-
+import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.base.BaseActivity;
 import com.fenda.common.basebean.player.FDMusic;
@@ -20,12 +23,11 @@ import com.fenda.common.basebean.player.MusicPlayBean;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.router.RouterPath;
 import com.fenda.news.adapter.ViewPagerCardAdapter;
+import com.fenda.news.view.TextSwitchView;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -36,8 +38,11 @@ import java.util.Random;
 @Route(path = RouterPath.NEWS.NEWS_ACTIVITY)
 public class NewsActivity extends BaseActivity {
 
+    @Autowired
+    List<FDMusic> newsListData;
+
     private MusicPlayBean mMusicPlayBean;
-    private ArrayList<FDMusic> newsListData;
+//    private List<FDMusic> newsListData;
     private int mCurrentItem;
     private MediaPlayer mMediaPlayer;
     private AudioManager mAudioManager;
@@ -47,9 +52,15 @@ public class NewsActivity extends BaseActivity {
     private TextView tvNewsBack;
     private ViewPager vpNewsList;
     private LinearLayout linNewsBg;
+    private TextSwitchView tsNewsTips;
 
     private int [] newsBg = {R.mipmap.news_bg_01, R.mipmap.news_bg_02, R.mipmap.news_bg_03};
-
+    private String []newsTips = {
+            "可以试试“你好小乐，返回”",
+            "可以试试“你好小乐，播放下一条”",
+            "可以试试“你好小乐，播放上一条”",
+            "可以试试“你好小乐，暂停播放”"
+    };
     @Override
     public int onBindLayout() {
         return R.layout.activity_news;
@@ -58,9 +69,12 @@ public class NewsActivity extends BaseActivity {
     @Override
     public void initView() {
         mMusicPlayBean = getIntent().getParcelableExtra(NewsPlay.keyNews);
-        newsListData = (ArrayList<FDMusic>) mMusicPlayBean.getFdMusics();
+        if (mMusicPlayBean!=null&&newsListData==null){
+        newsListData = mMusicPlayBean.getFdMusics();
+        }
         linNewsBg = findViewById(R.id.lin_news_bg);
         tvNewsBack = findViewById(R.id.tv_news_back);
+        tsNewsTips = findViewById(R.id.ts_news_tips);
         tvNewsBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,8 +100,11 @@ public class NewsActivity extends BaseActivity {
         //预加载3个
         vpNewsList.setOffscreenPageLimit(3);
         //设置viewpage之间的间距
-        vpNewsList.setPageMargin(10);
+        vpNewsList.setPageMargin(30);
         vpNewsList.setClipChildren(false);
+
+        tsNewsTips.setResources(newsTips);
+        tsNewsTips.setTextStillTime(5000);
     }
 
     @Override
@@ -96,6 +113,7 @@ public class NewsActivity extends BaseActivity {
         initMediaPlayer();
         randomBg();
         NewsPlay.isNewsAcitivytOpen = true;
+        ARouter.getInstance().inject(this);
     }
 
     @Override

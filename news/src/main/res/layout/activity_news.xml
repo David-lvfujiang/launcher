@@ -10,25 +10,48 @@
     <TextView
         android:id="@+id/tv_news_back"
         android:layout_width="wrap_content"
-        android:layout_height="70px"
-        android:paddingRight="60px"
-        android:text="今日资讯"
+        android:layout_height="wrap_content"
+        android:paddingEnd="50dp"
+        android:paddingTop="35dp"
+        android:text="@string/news_title"
         android:gravity="center_vertical"
-        android:textSize="24sp"
+        android:textSize="28sp"
         android:textColor="#FFF"
-        android:drawableLeft="@mipmap/news_set_back"
+        android:drawableStart="@mipmap/news_set_back"
         android:drawablePadding="15dp"
-        android:paddingLeft="30dp"
+        android:paddingStart="30dp"
         />
 
 
     <android.support.v4.view.ViewPager
+        android:layout_marginTop="80dp"
         android:id="@+id/view_page"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="118px"
-        android:layout_marginRight="118px"
-        ></android.support.v4.view.ViewPager>
+        android:layout_height="320dp"
+        android:layout_marginLeft="@dimen/demension_dp135"
+        android:layout_marginRight="@dimen/demension_dp135">
 
+    </android.support.v4.view.ViewPager>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="65dp"
+        android:layout_marginStart="120dp" >
+        <ImageView
+            android:id="@+id/tv_news_mic"
+            android:layout_width="@dimen/demension_dp10"
+            android:layout_height="@dimen/demension_dp20"
+            android:src="@mipmap/cm_ico_microphone" />
+
+        <com.fenda.news.view.TextSwitchView
+            android:id="@+id/ts_news_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp" />
+
+    </LinearLayout>
 
 </LinearLayout>

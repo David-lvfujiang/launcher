@@ -13,6 +13,7 @@ import com.fenda.common.constant.Constant;
 import com.fenda.common.provider.INewsProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.Md5Utils;
+import com.fenda.protocol.tcp.bus.EventBusUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -84,22 +85,22 @@ public class NewsPlay implements INewsProvider {
             e.printStackTrace();
             return;
         }
-            playlist.addAll(getNewsMusics(contentArray));
-            final MusicPlayBean bean = new MusicPlayBean();
-            bean.setFdMusics(playlist);
-            bean.setMsgName("新闻");
-            bean.setMsgType(Constant.Player.NEW_CONSULT);
-            bean.setAidlMsgType(Constant.Player.keyBroadcastMusicList);
-            Intent mIntent = new Intent(mContext, NewsActivity.class);
-             Bundle mBundle = new Bundle();
-             mBundle.putParcelable(NewsPlay.keyNews,bean);
-             mIntent.putExtras(mBundle);
-             mContext.startActivity(mIntent);
-//             EventBusUtils.post(bean);
+        playlist.addAll(getNewsMusics(contentArray));
+        final MusicPlayBean bean = new MusicPlayBean();
+        bean.setFdMusics(playlist);
+        bean.setMsgName("新闻");
+        bean.setMsgType(Constant.Player.NEW_CONSULT);
+        bean.setAidlMsgType(Constant.Player.keyBroadcastMusicList);
+        Intent mIntent = new Intent(mContext, NewsActivity.class);
+        Bundle mBundle = new Bundle();
+        mBundle.putParcelable(NewsPlay.keyNews,bean);
+        mIntent.putExtras(mBundle);
+        mContext.startActivity(mIntent);
+//        EventBusUtils.post(bean);
 
     }
     @Override
     public void init(Context context) {
-//        this.mContext = context;
+        //        this.mContext = context;
     }
 }

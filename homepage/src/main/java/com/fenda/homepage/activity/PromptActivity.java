@@ -20,7 +20,6 @@ import java.util.Map;
  * description :
  */
 public class PromptActivity extends BaseActivity implements View.OnClickListener {
-    private ImageView mPromptBackIv;
     private TextView mPromptTitleTv;
     private TextView mPrompt1Tv;
     private TextView mPrompt2Tv;
@@ -35,7 +34,6 @@ public class PromptActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void initView() {
-        mPromptBackIv = findViewById(R.id.iv_prompt_back);
         mPromptTitleTv = findViewById(R.id.tv_prompt_title);
         mPrompt1Tv = findViewById(R.id.tv_prompt1);
         mPrompt2Tv = findViewById(R.id.tv_prompt2);
@@ -63,7 +61,7 @@ public class PromptActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void initListener() {
-        mPromptBackIv.setOnClickListener(this);
+//        mPromptTitleTv.setOnClickListener(this);
         mPromptTitleTv.setOnClickListener(this);
         mPrompt1Tv.setOnClickListener(this);
         mPrompt2Tv.setOnClickListener(this);
@@ -74,7 +72,7 @@ public class PromptActivity extends BaseActivity implements View.OnClickListener
     @Override
     public void onClick(View v) {
         int resId = v.getId();
-        if (resId == R.id.iv_prompt_back || resId == R.id.tv_prompt_title) {
+        if (resId == R.id.tv_prompt_title) {
             finish();
         } else
         {
