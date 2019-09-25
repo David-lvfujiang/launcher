@@ -39,6 +39,7 @@ import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.bean.WeatherWithHomeBean;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.db.ContentProviderManager;
+import com.fenda.common.provider.IAppLeaveMessageProvider;
 import com.fenda.common.provider.ICallProvider;
 import com.fenda.common.provider.ISettingsProvider;
 import com.fenda.common.provider.IVoiceInitProvider;
@@ -264,6 +265,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
         if (mICallProvider != null) {
             mICallProvider.initSdk();
+            Log.e("TAG", "初始化");
+            IAppLeaveMessageProvider leaveMessageProvider = (IAppLeaveMessageProvider) ARouter.getInstance().build(RouterPath.Leavemessage.LEAVEMESSAGE_SERVICE).navigation();
+            leaveMessageProvider.initRongIMlistener();
         }
 
         isNetWodrkConnect();

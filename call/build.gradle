@@ -125,7 +125,7 @@ dependencies {
 //    api project(path: ':IMLib')
 //    api project(path: ':IMKit')
     api project(path: ':common')
-    api 'io.rong.imkit:imkit:1.0.0'
+    api 'io.rong.imkit:imkit:1.0.1'
     api 'io.rong.imlib:imLib:1.0.0'
     api 'io.rong.calllib:callLib:1.0.0'
     api 'io.rong.callkit:callkit:1.0.1'

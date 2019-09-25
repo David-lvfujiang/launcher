@@ -1,25 +1,25 @@
 package com.fenda.leavemessage;
 
 import android.app.ActivityManager;
-import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
-import android.view.Window;
-import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.BaseApplication;
-import com.fenda.common.provider.IleaveMessageProvider;
+import com.fenda.common.provider.IAppLeaveMessageProvider;
 import com.fenda.common.router.RouterPath;
+import com.fenda.common.util.LogUtil;
 
+import io.rong.imkit.MainActivity;
 import io.rong.imkit.RongIM;
+import io.rong.imkit.RongIMClientWrapper;
 import io.rong.imlib.RongIMClient;
-import io.rong.imlib.model.Conversation;
 import io.rong.imlib.model.Message;
+import io.rong.imlib.model.MessageContent;
+import io.rong.imlib.model.UserInfo;
 
 import static android.content.Context.ACTIVITY_SERVICE;
 
@@ -28,18 +28,21 @@ import static android.content.Context.ACTIVITY_SERVICE;
  * @Date: 2019/9/18
  * @Describe:
  */
-@Route(path = RouterPath.Leavemessage.LEAVEMESSAGE_PROVIDER)
-public class LeaveMessageService implements IleaveMessageProvider, RongIMClient.OnReceiveMessageListener {
+@Route(path = RouterPath.Leavemessage.LEAVEMESSAGE_SERVICE)
+public class LeaveMessageService implements IAppLeaveMessageProvider, RongIMClient.OnReceiveMessageListener {
     String userId;
 
     @Override
-    public void setRongIMMessageListener() {
+    public void initRongIMlistener() {
+        //设置消息接收监听器
+        Log.e("消息", "接收: ");
+        //RongIM.init(BaseApplication.getContext());
         RongIM.setOnReceiveMessageListener(this);
+
     }
 
     @Override
     public void init(Context context) {
-
     }
 
     /**
@@ -51,10 +54,14 @@ public class LeaveMessageService implements IleaveMessageProvider, RongIMClient.
      */
     @Override
     public boolean onReceived(Message message, int i) {
-        Log.e("消息", "onReceived: ");
-        Log.e("消息", message.toString());
+        Log.e("消息", "接收1: ");
+        LogUtil.e(message.toString());
         userId = message.getSenderUserId();
-        openConversationActivity(userId);
+        MessageContent content = message.getContent();
+        UserInfo userInfo = content.getUserInfo();
+        String userName = userInfo.getName();
+        Log.e("TAG", userInfo.getName());
+        openConversationActivity(userId, userName);
         return true;
     }
 
@@ -63,49 +70,19 @@ public class LeaveMessageService implements IleaveMessageProvider, RongIMClient.
      *
      * @param userId
      */
-    public void openConversationActivity(final String userId) {
-        Log.e("消息", "openConversationActivity: ");
-        Handler handler = new Handler(Looper.getMainLooper());
+    public void openConversationActivity(String userId, String userName) {
+        LogUtil.e("新消息");
         ActivityManager activityManager = (ActivityManager) BaseApplication.getInstance().getSystemService(ACTIVITY_SERVICE);
         //获取当前的activity
         ComponentName currentActivityName = activityManager.getRunningTasks(1).get(0).topActivity;
-        Log.e("name", currentActivityName.getShortClassName());
-        Log.e("name", LeaveMessageConversationActivity.class.getName());
+        LogUtil.e(currentActivityName.getShortClassName());
+        LogUtil.e(LeaveMessageConversationActivity.class.getName());
         //判断当前的activity是否是会话页面
         if (LeaveMessageConversationActivity.class.getName().equals(currentActivityName.getShortClassName()) == false) {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    AlertDialog.Builder build = new AlertDialog.Builder(BaseApplication.getInstance());
-                    build.setTitle("留言").setMessage(userId + "给你留言了");
-                    build.setPositiveButton("查看",
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    RongIM.getInstance().startConversation(BaseApplication.getInstance(), Conversation.ConversationType.PRIVATE, userId, userId);
-                                }
-                            });
-                    build.setNegativeButton("忽略",
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    //关闭dialog
-                                    dialog.dismiss();
-                                }
-                            });
-
-                    AlertDialog dialog = build.create();
-                    Window dialogWindow = dialog.getWindow();
-                    WindowManager.LayoutParams lp = dialogWindow.getAttributes();
-                    lp.width = 300;
-                    lp.height = 300;
-                    dialogWindow.setAttributes(lp);
-                    dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-                    dialog.show();
-                }
-            });
-        } else {
-            RongIM.getInstance().startConversation(BaseApplication.getInstance(), Conversation.ConversationType.PRIVATE, userId, userId);
+            //打开提示界面
+            ARouter.getInstance().build(RouterPath.Leavemessage.LEAVEMESSAGE_DIALOG_ACTIVITY).withString("userId", userId).withString("userName", userName).navigation();
         }
     }
+
+
 }

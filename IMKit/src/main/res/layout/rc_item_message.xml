@@ -9,17 +9,20 @@
     android:paddingBottom="6dp"
     android:paddingLeft="8dp"
     android:paddingRight="8dp"
-    android:paddingTop="6dp">
+    android:paddingTop="6dp"
+    >
 
     <TextView
         android:id="@id/rc_time"
-        style="@style/RCTheme.MessageTime"
         android:layout_width="wrap_content"
-        android:layout_height="20dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="30dp"
         android:layout_marginTop="30dp"
+        android:text="上午10:00"
+        android:textSize="30dp"
+        android:textColor="#2F20FF"
         android:gravity="center_vertical" />
 
     <LinearLayout
@@ -29,7 +32,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@id/rc_time"
         android:gravity="center_vertical"
-        android:visibility="gone">
+        >
 
         <CheckBox
             android:id="@+id/message_check"
@@ -42,14 +45,14 @@
 
     <io.rong.imkit.widget.AsyncImageView
         android:id="@id/rc_left"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_below="@id/rc_time"
         android:layout_marginRight="4dp"
         android:layout_toRightOf="@id/ll_message_check"
         android:background="@android:color/transparent"
         app:RCCornerRadius="3dp"
-        app:RCDefDrawable="@drawable/rc_ic_def_msg_portrait" />
+        app:RCDefDrawable="@drawable/rc_default_portrait" />
 
     <io.rong.imkit.widget.AsyncImageView
         android:id="@id/rc_right"
@@ -60,7 +63,7 @@
         android:layout_marginLeft="4dp"
         android:background="@android:color/transparent"
         app:RCCornerRadius="3dp"
-        app:RCDefDrawable="@drawable/rc_ic_def_msg_portrait" />
+        app:RCDefDrawable="@drawable/rc_default_portrait" />
 
 
     <TextView
@@ -82,7 +85,8 @@
         android:layout_height="match_parent"
         android:layout_below="@id/rc_title"
         android:layout_toLeftOf="@id/rc_right"
-        android:layout_toRightOf="@id/rc_left">
+        android:layout_toRightOf="@id/rc_left"
+        >
 
         <LinearLayout
             android:id="@id/rc_layout"
@@ -100,13 +104,14 @@
                 android:text="已发"
                 android:textColor="@color/rc_notification_bg"
                 android:textSize="30sp"
-                android:visibility="gone" />
+                android:visibility="gone"
+                />
 
             <ProgressBar
                 android:id="@id/rc_progress"
                 style="?android:attr/progressBarStyle"
                 android:layout_width="13dp"
-                android:layout_height="13dp"
+                android:layout_height="10dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginRight="11dp"
                 android:indeterminateDrawable="@drawable/rc_progress_sending_style" />

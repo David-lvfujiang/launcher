@@ -7,8 +7,8 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.call.utils.ImConnectUtil;
 import com.fenda.common.BaseApplication;
+import com.fenda.common.provider.IAppLeaveMessageProvider;
 import com.fenda.common.provider.ICallProvider;
-import com.fenda.common.provider.IleaveMessageProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.LogUtils;
 
@@ -34,16 +34,14 @@ public class CallService implements ICallProvider {
         RongIM.init(BaseApplication.getContext());
         //调用留言模块，注册消息接收监听
         Log.e("监听", "initSdk: ");
-        IleaveMessageProvider leaveMessageProvider = (IleaveMessageProvider) ARouter.getInstance().build(RouterPath.Leavemessage.LEAVEMESSAGE_PROVIDER).navigation();
-        leaveMessageProvider.setRongIMMessageListener();
     }
 
     @Override
     public void login(String rongCloudToken) {
         LogUtils.i("CallService login:" + rongCloudToken);
         ImConnectUtil.connectIm(rongCloudToken);
-    }
 
+    }
 
     public void call(int callType, String callNumber) {
         if (ImConnectUtil.isConectIm(BaseApplication.getInstance())) {

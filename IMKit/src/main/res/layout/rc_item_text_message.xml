@@ -5,9 +5,11 @@
     android:id="@android:id/text1"
     style="@style/RCTheme.Message.TextView"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="70dp"
     android:autoLink="web|email|phone"
     android:gravity="center_vertical|left"
     android:textColorLink="#2972ab"
-    app:RCMaxWidth="223dp"
+    app:RCMaxWidth="500dp"
+    android:minHeight="60dp"
+    android:background="@color/rc_picsel_toolbar_send_normal"
     android:paddingLeft="9dp" />

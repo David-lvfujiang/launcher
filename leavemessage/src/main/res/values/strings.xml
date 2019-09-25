@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">leaveMessage</string>
+    <string name="leave_message_cancel_button">忽略</string>
+    <string name="leave_message_look_button">查看</string>
+</resources>

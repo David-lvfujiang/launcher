@@ -5,7 +5,7 @@
     android:id="@id/rc_item_conversation"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/transparent"
+    android:background="@drawable/rc_leave_message_background"
     android:gravity="center_vertical">
 
     <FrameLayout
@@ -73,6 +73,7 @@
 
         <FrameLayout
             android:id="@+id/rc_unread_view_right"
+            android:background="@drawable/rc_leave_message_background"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 

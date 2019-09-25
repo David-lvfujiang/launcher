@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.fenda.leavemessage">
+
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+
+    <application>
+        <activity
+            android:name=".LeavemessageDialogActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/MyTranslucentTheme"></activity>
+        <!-- 会话界面 -->
+        <activity
+            android:name=".LeaveMessageConversationActivity"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="com.fenda.launcher"
+                    android:pathPrefix="/conversation/"
+                    android:scheme="rong" />
+            </intent-filter>
+        </activity>
+        <!--&lt;!&ndash; 融云推送消息 &ndash;&gt;-->
+        <!--<receiver-->
+            <!--android:name=".LeaveMessageReceiver"-->
+            <!--android:exported="true">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="io.rong.push.intent.MESSAGE_ARRIVED" />-->
+                <!--<action android:name="io.rong.push.intent.MI_MESSAGE_ARRIVED" />-->
+                <!--<action android:name="io.rong.push.intent.MESSAGE_CLICKED" />-->
+                <!--<action android:name="io.rong.push.intent.MI_MESSAGE_CLICKED" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
+
+    </application>
+
+</manifest>

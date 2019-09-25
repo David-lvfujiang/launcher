@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LeavemessageDialogActivity">
+
+    <RelativeLayout
+        android:layout_width="600dp"
+        android:layout_height="500dp"
+        android:layout_centerInParent="true"
+        android:background="@mipmap/leave_message_dialog_background">
+
+        <TextView
+            android:id="@+id/leave_message_tv"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/demension_dp120"
+            android:textColor="#9fcdfd"
+            android:textSize="40sp" />
+
+        <Button
+            android:id="@+id/leave_message_btn_cancel"
+            android:layout_width="@dimen/demension_dp120"
+            android:layout_height="@dimen/demension_dp80"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="250dp"
+            android:layout_marginRight="160dp"
+            android:background="@drawable/leave_message_radiobutton_background"
+            android:text="@string/leave_message_cancel_button"
+            android:textColor="#9fcdfd"
+            android:textSize="@dimen/demension_dp30" />
+
+        <Button
+            android:id="@+id/leave_message_btn_look"
+            android:layout_width="@dimen/demension_dp120"
+            android:layout_height="@dimen/demension_dp80"
+            android:layout_marginLeft="170dp"
+            android:layout_marginTop="250dp"
+            android:background="@drawable/leave_message_radiobutton_background"
+            android:text="@string/leave_message_look_button"
+            android:textColor="#9fcdfd"
+            android:textSize="@dimen/demension_dp30"
+
+            />
+    </RelativeLayout>
+</RelativeLayout>

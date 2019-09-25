@@ -7,10 +7,10 @@
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:adjustViewBounds="true"
         android:maxWidth="230dp"
-        android:minWidth="52dp">
+        android:minWidth="60dp">
 
         <ImageView
             android:id="@id/rc_img"
@@ -26,7 +26,7 @@
             android:layout_marginLeft="6dp"
             android:textStyle="bold"
             android:textColor="@color/rc_voice_color_left"
-            android:textSize="14sp" />
+            android:textSize="30sp" />
 
         <TextView
             android:id="@id/rc_right"
@@ -36,7 +36,7 @@
             android:layout_marginRight="6dp"
             android:textStyle="bold"
             android:textColor="@color/rc_voice_color_right"
-            android:textSize="14sp" />
+            android:textSize="30sp" />
     </FrameLayout>
 
     <ImageView

@@ -52,7 +52,9 @@ public interface RouterPath {
         String ENCYCLOPEDIA_QUESTIION_ACTIVITY = "/encyclopedia/EncyclopediaQuestiionActivity";
     }
     public interface Leavemessage {
-        String LEAVEMESSAGE_PROVIDER = "/leavemessage/LeaveMessageService";
+        String LEAVEMESSAGE_SERVICE = "/leavemessage/LeaveMessageService";
+        String LEAVEMESSAGE_DIALOG_ACTIVITY = "/leavemessage/LeavemessageDialogActivity";
+
 
     }
     interface SETTINGS {
