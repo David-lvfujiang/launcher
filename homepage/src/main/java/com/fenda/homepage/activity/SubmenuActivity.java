@@ -18,6 +18,7 @@ import com.fenda.common.basebean.player.MusicPlayBean;
 import com.fenda.common.provider.IVoiceRequestProvider;
 import com.fenda.common.provider.IWeatherProvider;
 import com.fenda.common.router.RouterPath;
+import com.fenda.common.util.FastClickUtils;
 import com.fenda.common.util.SPUtils;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.homepage.Adapter.GridAdapter;
@@ -101,6 +102,9 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
         mGridAdapter.setOnItemClickListener(new GridAdapter.OnItemClickListener() {
             @Override
             public void onItemClick( View view, String applyId) {
+                if (FastClickUtils.isFastClick()){
+                    return;
+                }
                 Intent intent = new Intent(SubmenuActivity.this, PromptActivity.class);
                 if(applyId.equals(Constant.SETTINGS)){
                     ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
@@ -120,8 +124,7 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
                     initVoiceProvider.nowWeather();
                 } else if (applyId.equals(Constant.CALENDAR)) {
                     //                    ToastUtils.show("日历");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
+                    ARouter.getInstance().build(RouterPath.Calendar.Perpetual_CALENDAR_ACTIVITY).navigation();
                 } else if (applyId.equals(Constant.PHOTO)) {
                     //                    ToastUtils.show("相册");
                     ARouter.getInstance().build(RouterPath.Gallery.GALLERY_CATOGORY).navigation();

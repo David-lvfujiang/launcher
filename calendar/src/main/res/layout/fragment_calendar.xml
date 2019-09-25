@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/demension_dp20"
+        android:paddingStart="@dimen/demension_dp50"
+        android:paddingEnd="@dimen/demension_dp40">
+        <TextView
+            android:id="@+id/tv_perpetual_calendar_year_month"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2019年9月"
+            android:textColor="#fff"
+            android:textSize="26sp">
+        </TextView>
+        <TextView
+            android:id="@+id/tv_perpetual_calendar_jiazi_year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="己亥猪年"
+            android:textColor="#E6E6E6"
+            android:textSize="24sp">
+        </TextView>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="@dimen/demension_dp50"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:text="一"
+            android:textColor="#FFF"
+            android:textSize="32sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="@dimen/demension_dp50"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:text="二"
+            android:textColor="#FFF"
+            android:textSize="32sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="@dimen/demension_dp50"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:text="三"
+            android:textColor="#FFF"
+            android:textSize="32sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="@dimen/demension_dp50"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:text="四"
+            android:textColor="#FFF"
+            android:textSize="32sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="@dimen/demension_dp50"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:text="五"
+            android:textColor="#FFF"
+            android:textSize="32sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="@dimen/demension_dp50"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:text="六"
+            android:textColor="#FFF"
+            android:textSize="32sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="@dimen/demension_dp50"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:text="日"
+            android:textColor="#FFF"
+            android:textSize="32sp" />
+
+    </LinearLayout>
+    <GridView
+        android:id="@+id/gv_calendar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:horizontalSpacing="5dp"
+        android:listSelector="#00000000"
+        android:numColumns="7"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dp" />
+
+
+    </LinearLayout>
+</LinearLayout>
