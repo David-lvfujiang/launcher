@@ -50,7 +50,7 @@ public class EncyclopediaQuestiionActivity extends BaseActivity implements View.
     @Override
     public void initData() {
         //支持Html格式
-        mTvContent.setText(Html.fromHtml(content, 0));
+        mTvContent.setText(Html.fromHtml(content.trim(), 0));
         mTvTitle.setText(title);
         //滚动条自动滚动
         mAutoScrollView.setAutoToScroll(true);

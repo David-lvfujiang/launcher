@@ -21,15 +21,15 @@ public class EncyclopediaFragmentPensenter implements IEncyclopediaProvider {
     private Context context;
 
     /**
-     * 百科问答
+     * 百科问答、闲聊
      *
      * @param msg
      */
     @Override
     public void processQuestionTextMsg(String msg) {
         JSONObject jsonObject = JSONObject.parseObject(msg);
-        String content = jsonObject.getString("text");
-        String title = jsonObject.getString("input");
+        String content = jsonObject.getJSONObject("dm").getJSONObject("widget").get("text").toString();
+        String title = jsonObject.getJSONObject("dm").get("input").toString();
         ARouter.getInstance().build(RouterPath.Encyclopedia.ENCYCLOPEDIA_QUESTIION_ACTIVITY).withString("content", content).withString("title", title).navigation();
 
     }
