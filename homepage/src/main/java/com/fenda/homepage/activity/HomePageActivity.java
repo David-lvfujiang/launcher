@@ -1,54 +1,45 @@
 package com.fenda.homepage.activity;
 
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
+import android.app.admin.DevicePolicyManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
-import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Handler;
 import android.net.ConnectivityManager;
 import android.net.LinkProperties;
 import android.net.Network;
 import android.net.NetworkCapabilities;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.support.annotation.RequiresApi;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.SlidingDrawer;
 import android.widget.TextClock;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.fenda.common.BaseApplication;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
+import com.fenda.common.basebean.player.FDMusic;
+import com.fenda.common.basebean.player.MusicPlayBean;
 import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.bean.WeatherWithHomeBean;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.db.ContentProviderManager;
 import com.fenda.common.provider.ICallProvider;
-import com.fenda.common.provider.IHomePageProvider;
-import com.fenda.common.provider.IRecommendProvider;
 import com.fenda.common.provider.ISettingsProvider;
 import com.fenda.common.provider.IVoiceInitProvider;
 import com.fenda.common.provider.IVoiceRequestProvider;
@@ -60,35 +51,27 @@ import com.fenda.common.util.ImageUtil;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.SPUtils;
 import com.fenda.common.util.ToastUtils;
-import com.fenda.homepage.Adapter.GridAdapter;
 import com.fenda.homepage.Adapter.MainAdapter;
 import com.fenda.homepage.R;
 import com.fenda.homepage.Util.HomeUtil;
-import com.fenda.homepage.bean.ApplyBean;
 import com.fenda.homepage.bean.RepairPersonHeadBean;
 import com.fenda.homepage.contract.MainContract;
-import com.fenda.homepage.data.AllApplyData;
-import com.fenda.homepage.data.UndevelopedApplyData;
 import com.fenda.homepage.model.MainModel;
 import com.fenda.homepage.observer.MyContentObserver;
 import com.fenda.homepage.presenter.MainPresenter;
 import com.fenda.homepage.receiver.ScreenOffAdminReceiver;
-import com.fenda.homepage.scrollview.ObservableScrollView;
-import com.fenda.homepage.scrollview.ScrollViewListener;
 import com.fenda.protocol.tcp.TCPConfig;
 import com.fenda.protocol.tcp.bean.BaseTcpMessage;
 import com.fenda.protocol.tcp.bean.EventMessage;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.json.JSONObject;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 
 @Route(path = RouterPath.HomePage.HOMEPAGE_MAIN)
-public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener, View.OnTouchListener , ScrollViewListener, IRecommendProvider {
+public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener, View.OnTouchListener  {
     private final static String TAG = "HomePageActivity";
 
     TextClock mHeaderTimeTv;
@@ -117,18 +100,10 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     private DevicePolicyManager mPolicyManager;
     private PowerManager.WakeLock mWakeLock;
     private ComponentName mAdminReceiver;
-    private SlidingDrawer slidingDrawer;
-
-    private List<ApplyBean> mApplyList;
-    private List<ApplyBean> mUndevelopedApplyList;
-    private RecyclerView mSubmenuListRv;
-    private RecyclerView mSubmenuListRv2;
-    private GridAdapter mGridAdapter;
-    private GridAdapter mGridAdapter2;
-    private ImageView submenuDropLeft;
-    private ImageView submenuDropRight;
     private ContentProviderManager manager;
-
+    private List<FDMusic> newsRecommend;
+    private int current = 0;
+    private int number = 0;
 
     Runnable cycleRollRunabler = new Runnable() {
         @Override
@@ -138,7 +113,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             if (showPageIndex + 1 >= HomeUtil.PAGE_NUM_MAX) {
                 mTipInfoRv.scrollToPosition(0);
                 showPageIndex = 0;
-
+                current++;
                 mAiTipIv.setVisibility(View.VISIBLE);
                 mAiTipMicTv.setText(R.string.cm_main_page_title_0);
                 mAiTipTitleTv.setText(R.string.cm_main_page_describe_0);
@@ -163,14 +138,12 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mHeaderWeatherIv = findViewById(R.id.iv_header_weather);
         mHeaderWeatherTv = findViewById(R.id.tv_header_temp);
 
-
-
         mAiTipIv = findViewById(R.id.iv_main_tip_icon);
         mAiTipTitleTv = findViewById(R.id.tv_main_item_content);
         mAiTipMicTv = findViewById(R.id.tv_ai_tiptext);
 
         mPull = findViewById(R.id.iv_homepage_pull);
-        ImageUtil.loadGIFImage(R.mipmap.cm_pull,mPull,R.mipmap.a123456);
+        ImageUtil.loadGIFImage(R.mipmap.cm_pull,mPull,R.mipmap.cm_pull);
         mTipInfoRv.setOnTouchListener(this);
 
         findViewById(R.id.iv_main_phone).setOnClickListener(this);
@@ -180,8 +153,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
         mHeaderWeatherTv.setOnClickListener(this);
         mHeaderWeatherIv.setOnClickListener(this);
-        //二级菜单
-        initSubmenuView();
         IntentFilter btIntentFilter = new IntentFilter();
         btIntentFilter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
         btIntentFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
@@ -224,8 +195,16 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     } else if (showPageIndex == 1) {
                         mAiTipIv.setVisibility(View.GONE);
                         mAiTipMicTv.setText(R.string.cm_main_page_title_1);
-                        mAiTipTitleTv.setText(R.string.cm_main_page_describe_1);
-
+                        if(newsRecommend!=null){
+                            number = newsRecommend.size();
+                            if (current<number){
+                                mAiTipTitleTv.setText("新闻资讯｜"+newsRecommend.get(current).getMusicTitle());
+                            }else {
+                                current=0;
+                            }
+                        } else {
+                            mAiTipTitleTv.setText(R.string.cm_main_page_describe_1);
+                        }
                     } else if (showPageIndex == 2) {
                         mAiTipIv.setVisibility(View.GONE);
                         mAiTipMicTv.setText(R.string.cm_main_page_title_2);
@@ -246,7 +225,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-
                 //              int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
             }
         });
@@ -288,19 +266,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             mICallProvider.initSdk();
         }
 
-        ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
-        if (settingService != null) {
-            settingService.deviceStatus(this);
-        }
         isNetWodrkConnect();
-
-//        ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
-//        if (settingService != null) {
-//            settingService.deviceStatus(this);
-//        }
-
-
-
     }
 
     /**
@@ -344,7 +310,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 if (bean != null) {
                     ContentProviderManager.getInstance(mContext, Constant.Common.URI).updateUserHeadByUserID(bean.getIcon(), bean.getUserId());
                 }
-
             }
         }else if (message.getCode() == Constant.Common.INIT_VOICE_SUCCESS){
             // @todo  勿删 语音初始化成功后会回调这里,在语音成功之前调用会导致应用崩溃
@@ -361,13 +326,11 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 //避免重复调用
                 if (initVoiceProvider != null){
                     initVoiceProvider.requestWeather();
+                    initVoiceProvider.requestNews(20);
                 }
-
             }
-
         }
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void isNetWodrkConnect() {
@@ -464,6 +427,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     LogUtil.d(TAG, "STATE_DISCONNECTED getName = " + mConnectionBluetoothDevice.getName() + ", STATE_DISCONNECTED getAddress = " + mConnectionBluetoothDevice.getAddress());
                 } else if (BluetoothAdapter.STATE_CONNECTED == state) {
                     LogUtil.d(TAG, "蓝牙连上了");
+
+//                    closeDiscoverableTimeout();
+
                     mBtName = mConnectionBluetoothDevice.getName();
                     SPUtils.put(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME, mBtName);
                     LogUtil.d(TAG, "STATE_CONNECTED getName = " + mConnectionBluetoothDevice.getName() + ", STATE_CONNECTED getAddress = " + mConnectionBluetoothDevice.getAddress());
@@ -510,28 +476,22 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     public void onClick(View v) {
         int resId = v.getId();
         if (resId == R.id.iv_main_phone) {
-
             //通讯录
             ARouter.getInstance().build(RouterPath.Call.MAIN_ACTIVITY).navigation();
         } else if (resId == R.id.iv_main_cmcc) {
+//            int i = 1/0;
+//            LogUtil.d(TAG, "i = " + i);
+
             //通讯录
 //            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
-            String saveWeahterValue = (String) SPUtils.get(getApplicationContext(), Constant.Weather.SP_NOW_WEATHER, "");
-            Log.e("消息", saveWeahterValue);
-            mIWeatherProvider.weatherFromVoiceControlToMainPage(saveWeahterValue);
         } else if (resId == R.id.iv_header_weather || resId == R.id.tv_header_temp) {
 
 
             String saveWeahterValue = (String) SPUtils.get(getApplicationContext(), Constant.Weather.SP_NOW_WEATHER, "");
-
             if (saveWeahterValue != null && saveWeahterValue.length() > 1){
-                Log.e("消息1", saveWeahterValue);
                 mIWeatherProvider.weatherFromVoiceControl(saveWeahterValue);
-                //mIWeatherProvider.weatherFromVoiceControlToMainPage(saveWeahterValue);
             }
             else {
-                Log.e("消息2", saveWeahterValue);
-
                 ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN).navigation();
             }
             initVoiceProvider.nowWeather();
@@ -544,8 +504,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             if (initVoiceProvider != null){
                 initVoiceProvider.openAqiyi();
             }
-        } else if (resId == R.id.iv_submenu_drop_left||resId ==R.id.iv_submenu_drop_right) {
-            slidingDrawer.animateClose();
         }
     }
 
@@ -584,14 +542,19 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     float endY = 0;
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        int eventAction = event.getAction();
-        if (eventAction == MotionEvent.ACTION_DOWN) {
-            startY = event.getY();
+        //添加SubmenuActivity是否已经打开判断，防止多次上滑，打开多个activity
+        if(!SubmenuActivity.isSubmenuActivityOpen) {
+            int eventAction = event.getAction();
+            if (eventAction == MotionEvent.ACTION_DOWN) {
+                startY = event.getY();
 
-        } else if (eventAction == MotionEvent.ACTION_UP) {
-            endY = event.getY();
-            if ((endY - startY) < -80) {
-                slidingDrawer.animateOpen();
+            } else if (eventAction == MotionEvent.ACTION_UP) {
+                endY = event.getY();
+                if ((endY - startY) < -80) {
+                    Intent intent = new Intent(this, SubmenuActivity.class);
+                    startActivity(intent);
+                    //                    overridePendingTransition(R.anim.homepage_push_up_in, R.anim.homepage_push_up_out);
+                }
             }
         }
         //一定要返回false，让RecyclerView监听左右滑动
@@ -604,6 +567,11 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         Log.e(TAG, "homePageFromVoiceControl " + weatherWithHomeBean.getWeatherTempNum() + " " + weatherWithHomeBean.getWeatherIconId());
         mHeaderWeatherTv.setText(weatherWithHomeBean.getWeatherTempNum());
         mHeaderWeatherIv.setImageDrawable(getResources().getDrawable(weatherWithHomeBean.getWeatherIconId()));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRecommendEvent(MusicPlayBean bean) {
+        newsRecommend = bean.getFdMusics();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -642,253 +610,35 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         }
     }
 
+    public void closeDiscoverableTimeout() {
+        BluetoothAdapter adapter=BluetoothAdapter.getDefaultAdapter();
+        try {
+            Method setDiscoverableTimeout = BluetoothAdapter.class.getMethod("setDiscoverableTimeout", int.class);
+            setDiscoverableTimeout.setAccessible(true);
+            Method setScanMode =BluetoothAdapter.class.getMethod("setScanMode", int.class,int.class);
+            setScanMode.setAccessible(true);
 
-    /**
-     * 二级菜单
-     */
-    public void initSubmenuView() {
-        mSubmenuListRv = findViewById(R.id.rv_submenu_list);
-        mSubmenuListRv2 = findViewById(R.id.rv_submenu_list2);
-        submenuDropLeft = findViewById(R.id.iv_submenu_drop_left);
-        submenuDropRight = findViewById(R.id.iv_submenu_drop_right);
-        slidingDrawer = findViewById(R.id.slidingdrawer);
-        submenuDropLeft.setOnClickListener(this);
-        submenuDropRight.setOnClickListener(this);
-        ((ObservableScrollView)findViewById(R.id.sv_submenu)).setScrollViewListener(this);
-        (findViewById(R.id.ll_submenu_back)).setOnTouchListener(new View.OnTouchListener() {
-            float startY = 0;
-            float endY = 0;
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                int eventAction = event.getAction();
-
-                if(eventAction==MotionEvent.ACTION_DOWN){
-                    startY = event.getY();
-
-                } else if (eventAction==MotionEvent.ACTION_UP){
-                    endY = event.getY();
-                    if ((endY-startY)>50) {
-                        slidingDrawer.animateClose();
-                    }
-                }
-                return true;
-            }
-        });
-        mApplyList = new ArrayList<>();
-        mApplyList = AllApplyData.dataList(mApplyList);
-        mUndevelopedApplyList = new ArrayList<>();
-        mUndevelopedApplyList = UndevelopedApplyData.dataList(mUndevelopedApplyList);
-        //这里的第二个参数4代表的是网格的列数
-        mSubmenuListRv.setLayoutManager(new GridLayoutManager(mContext, 4){
-            @Override
-            public boolean canScrollVertically() {
-                return false;
-            }
-        });
-        mSubmenuListRv2.setLayoutManager(new GridLayoutManager(mContext, 4){
-            @Override
-            public boolean canScrollVertically() {
-                return false;
-            }
-        });
-
-        slidingDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener() {
-
-            @Override
-            public void onDrawerClosed() {
-                mCyclicRollHandler.postDelayed(cycleRollRunabler, HomeUtil.PAGE_SHOW_TIME);
-            }
-        });
-        slidingDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener() {
-
-            @Override
-            public void onDrawerOpened() {
-                mCyclicRollHandler.removeCallbacks(cycleRollRunabler);
-            }
-        });
-
-        mGridAdapter = new GridAdapter(mApplyList);
-        mGridAdapter2 = new GridAdapter(mUndevelopedApplyList);
-        mSubmenuListRv.setAdapter(mGridAdapter);
-        mSubmenuListRv2.setAdapter(mGridAdapter2);
-        mGridAdapter.setOnItemClickListener(new GridAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick( View view, String applyId) {
-                Intent intent = new Intent(HomePageActivity.this,PromptActivity.class);
-                if(applyId.equals(com.fenda.homepage.data.Constant.SETTINGS)){
-                    ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.CALCULATOR)){
-                    ToastUtils.show("计算器");
-                }
-                else if (applyId.equals(com.fenda.homepage.data.Constant.WEATHER)) {
-                    //                    ToastUtils.show("天气");
-                    String saveWeahterValue = (String) SPUtils.get(getApplicationContext(), com.fenda.common.constant.Constant.Weather.SP_NOW_WEATHER, "");
-                    if (saveWeahterValue != null && saveWeahterValue.length() > 1){
-                        mIWeatherProvider.weatherFromVoiceControl(saveWeahterValue);
-                    }
-                    else {
-                        ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN).navigation();
-                    }
-                    initVoiceProvider.nowWeather();
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.CALENDAR)) {
-                    //                    ToastUtils.show("日历");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.PHOTO)) {
-                    //                    ToastUtils.show("相册");
-                    ARouter.getInstance().build(RouterPath.Gallery.GALLERY_CATOGORY).navigation();
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.TIME)) {
-                    ToastUtils.show("时钟");
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.FM)) {
-                    //                    ToastUtils.show("收音机");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.CAMERA)) {
-                    //                    ToastUtils.show("相机");
-                    PackageManager packageManager = getPackageManager();
-                    Intent packageIntent = packageManager.getLaunchIntentForPackage("com.android.camera2");
-                    startActivity(packageIntent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.PLAY)) {
-                    //                    ToastUtils.show("播放器");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.QQ_MUSIC)) {
-                    //                    ToastUtils.show("QQ音乐");
-                    if (initVoiceProvider != null){
-                        initVoiceProvider.openQQMusic();
-                    }
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.IQIYI)) {
-                    //                    ToastUtils.show("爱奇艺");
-                    if (initVoiceProvider != null){
-                        initVoiceProvider.openAqiyi();
-                    }
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.NEWS)) {
-                    //                    ToastUtils.show("新闻");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.CROSS_TALK)) {
-                    //                    ToastUtils.show("相声");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.CHILDREN)) {
-                    //                    ToastUtils.show("儿歌");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.POETRY)) {
-                    //                    ToastUtils.show("诗词");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.JOKE)) {
-                    //                    ToastUtils.show("笑话");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.IDIOM)) {
-                    //                    ToastUtils.show("成语");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.ENCYCLOPEDIA)) {
-                    //                    ToastUtils.show("百科");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.GUOXUE)) {
-                    //                    ToastUtils.show("国学");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.HOLIDAYS)) {
-                    //                    ToastUtils.show("节假日查询");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.REMIND)) {
-                    //                    ToastUtils.show("提醒");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.STORY)) {
-                    //                    ToastUtils.show("故事");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.TRANSLATION)) {
-                    //                    ToastUtils.show("翻译");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.STOCK)) {
-                    //                    ToastUtils.show("股票");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.UNITS)) {
-                    //                    ToastUtils.show("单位换算");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.RELATIVE)) {
-                    //                    ToastUtils.show("亲戚关系计算");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.CONSTELLATION)) {
-                    //                    ToastUtils.show("星座运势");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.CMCC)) {
-                    ToastUtils.show("10086");
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.GDYD)) {
-                    ToastUtils.show("广东移动营业厅");
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.MIGU_MUSIC)) {
-                    ToastUtils.show("咪咕音乐");
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.MIGU_AIKAN)) {
-                    ToastUtils.show("咪咕爱看");
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.MIGU_ZHIBO)) {
-                    ToastUtils.show("咪咕直播");
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.MIGU_LINGXI)) {
-                    ToastUtils.show("咪咕灵犀");
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.MIGU_QUANQUAN)) {
-                    ToastUtils.show("咪咕圈圈");
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.MIGU_SHANPAO)) {
-                    ToastUtils.show("咪咕擅跑");
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.MIGU_VIDEO)) {
-                    ToastUtils.show("咪咕视频");
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.MIGU_MOVIE)) {
-                    ToastUtils.show("咪咕影院");
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.MIGU_READ)) {
-                    ToastUtils.show("咪咕阅读");
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.MIGU_CITIC)) {
-                    ToastUtils.show("咪咕中信书店");
-                }
-            }
-        });
-        mGridAdapter2.setOnItemClickListener(new GridAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, String applyId) {
-                ToastUtils.show("努力开发中，敬请期待。。。");
-            }
-        });
-
+            setDiscoverableTimeout.invoke(adapter, 1);
+            setScanMode.invoke(adapter, BluetoothAdapter.SCAN_MODE_CONNECTABLE,1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    @Override
-    public void onScrollChanged(ObservableScrollView scrollView, int x, int y, int oldx, int oldy) {
-        //        Log.v("ashgdfaskdfh","y="+y);
-        //        Log.v("ashgdfaskdfh","oldx="+oldy);
-        Animation rotateAnimation = new RotateAnimation(y/125,oldy/125,Animation.RELATIVE_TO_SELF, 0.5f,Animation.RELATIVE_TO_SELF,0.5f);
-        rotateAnimation.setFillAfter(true);
-        rotateAnimation.setDuration(0);
-        rotateAnimation.setRepeatCount(0);
-        rotateAnimation.setInterpolator(new LinearInterpolator());
-        rotateAnimation.setDetachWallpaper(true);
-        submenuDropLeft.startAnimation(rotateAnimation);
-        Animation rotateAnimation2 = new RotateAnimation(-y/125,-oldy/125,Animation.RELATIVE_TO_SELF, 0.5f,Animation.RELATIVE_TO_SELF,0.5f);
-        rotateAnimation2.setFillAfter(true);
-        rotateAnimation2.setDuration(0);
-        rotateAnimation2.setRepeatCount(0);
-        rotateAnimation2.setInterpolator(new LinearInterpolator());
-        rotateAnimation2.setDetachWallpaper(true);
-        submenuDropRight.startAnimation(rotateAnimation2);
+    public void setDiscoverableTimeout(int timeout) {
+        BluetoothAdapter adapter=BluetoothAdapter.getDefaultAdapter();
+        try {
+            Method setDiscoverableTimeout = BluetoothAdapter.class.getMethod("setDiscoverableTimeout", int.class);
+            setDiscoverableTimeout.setAccessible(true);
+            Method setScanMode =BluetoothAdapter.class.getMethod("setScanMode", int.class,int.class);
+            setScanMode.setAccessible(true);
+
+            setDiscoverableTimeout.invoke(adapter, timeout);
+            setScanMode.invoke(adapter, BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE,timeout);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    @Override
-    public void requestRecommend(JSONObject dataRecommend) {
-        //首页推荐内容数据处理
-    }
 
-    @Override
-    public void init(Context context) {
-
-    }
 }

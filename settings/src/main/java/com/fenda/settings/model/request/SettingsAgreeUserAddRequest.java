@@ -11,13 +11,15 @@ public class SettingsAgreeUserAddRequest {
     private String messageType;
     private String sendUserId;
     private String id;
+    private boolean confirmType;
 
-    public SettingsAgreeUserAddRequest(String deviceId, String messageContent, String messageType, String sendUserId, String id) {
+    public SettingsAgreeUserAddRequest(String deviceId, String messageContent, String messageType, String sendUserId, String id, boolean confirmType) {
         this.deviceId = deviceId;
         this.messageContent = messageContent;
         this.messageType = messageType;
         this.sendUserId = sendUserId;
         this.id = id;
+        this.confirmType = confirmType;
     }
 
     public SettingsAgreeUserAddRequest() {
@@ -63,6 +65,13 @@ public class SettingsAgreeUserAddRequest {
         this.id = id;
     }
 
+    public boolean getConfirmType() {
+        return confirmType;
+    }
+
+    public void setConfirmType(boolean confirmType) {
+        this.confirmType = confirmType;
+    }
 
     @Override
     public String toString() {

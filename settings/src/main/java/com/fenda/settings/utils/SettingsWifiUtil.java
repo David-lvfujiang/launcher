@@ -30,6 +30,9 @@ public class SettingsWifiUtil {
     public static final int CLOSE_WIFI_FLAG = 1;
     public static final int OPEN_WIFI_FLAG = 2;
     public static final int OPENED_WIFI = 3;
+    public static final int TYPE_NO_PASSWD = 0x11;
+    public static final int TYPE_WEP = 0x12;
+    public static final int TYPE_WPA = 0x13;
 
     // 定义WifiManager对象
     private WifiManager mWifiManager;
@@ -41,6 +44,8 @@ public class SettingsWifiUtil {
     private List<WifiConfiguration> mWifiConfiguration;
     // 定义一个WifiLock
     WifiManager.WifiLock mWifiLock;
+
+
 
     // 构造器
     public SettingsWifiUtil(Context context) {
@@ -82,6 +87,36 @@ public class SettingsWifiUtil {
 //            Toast.makeText(context,"请重新关闭", Toast.LENGTH_SHORT).show();
 //        }
     }
+
+    /**
+     * 打开wifi
+     */
+    public void openWifi1() {
+        if (!mWifiManager.isWifiEnabled()) {
+            mWifiManager.setWifiEnabled(true);
+        }
+    }
+
+    /**
+     * 关闭wifi
+     */
+    public void closeWifi1() {
+        if (!mWifiManager.isWifiEnabled()) {
+            mWifiManager.setWifiEnabled(false);
+        }
+    }
+
+
+
+    /**
+     * 检查当前wifi状态
+     *
+     * @return
+     */
+    public int checkState1() {
+        return mWifiManager.getWifiState();
+    }
+
 
     // 检查当前WIFI状态
     @SuppressLint("WrongConstant")
@@ -133,6 +168,85 @@ public class SettingsWifiUtil {
         mWifiManager.enableNetwork(mWifiConfiguration.get(index).networkId, true);
     }
 
+    /**
+     * 得到Wifi配置好的信息
+     */
+    public void getConfigurationInfo() {
+        mWifiConfiguration = mWifiManager.getConfiguredNetworks();// 得到配置好的网络信息
+        for (int i = 0; i < mWifiConfiguration.size(); i++) {
+            Log.i("getConfiguration", mWifiConfiguration.get(i).SSID);
+            Log.i("getConfiguration",
+                    String.valueOf(mWifiConfiguration.get(i).networkId));
+        }
+    }
+    /**
+     * 得到配置好的网络
+     *
+     * @return
+     */
+    public List<WifiConfiguration> getWiFiConfiguration() {
+        return mWifiConfiguration;
+    }
+
+
+    /**
+     * 判定指定WIFI是否已经配置好,依据WIFI的地址BSSID,返回NetId
+     *
+     * @param mSSID
+     * @return
+     */
+    public int isConfiguration(String mSSID) {
+        Log.i("IsConfiguration", String.valueOf(mWifiConfiguration.size()));
+        for (int i = 0; i < mWifiConfiguration.size(); i++) {
+            Log.i(mWifiConfiguration.get(i).SSID,
+                    String.valueOf(mWifiConfiguration.get(i).networkId));
+            if (mWifiConfiguration.get(i).SSID.equals(mSSID)) {// 地址相同
+                return mWifiConfiguration.get(i).networkId;
+            }
+        }
+        return -1;
+    }
+
+
+
+    /**
+     * 添加指定WIFI的配置信息,原列表不存在此SSID
+     *
+     * @param wifiList
+     * @param ssid
+     * @param pwd
+     * @return
+     */
+    public int addWifiConfig(List<ScanResult> wifiList, String ssid, String pwd) {
+        int wifiId = -1;
+        for (int i = 0; i < wifiList.size(); i++) {
+            ScanResult wifi = wifiList.get(i);
+            if (wifi.SSID.equals(ssid)) {
+                Log.i("AddWifiConfig", "equals");
+                WifiConfiguration wifiCong = new WifiConfiguration();
+                // \"转义字符，代表"
+                wifiCong.SSID = "\"" + wifi.SSID + "\"";
+                wifiCong.preSharedKey = "\"" + pwd + "\"";// WPA-PSK密码
+                wifiCong.hiddenSSID = false;
+                wifiCong.status = WifiConfiguration.Status.ENABLED;
+                wifiId = mWifiManager.addNetwork(wifiCong);// 将配置好的特定WIFI密码信息添加,添加完成后默认是不激活状态，成功返回ID，否则为-1
+                if (wifiId != -1) {
+                    return wifiId;
+                }
+            }
+        }
+        return wifiId;
+    }
+
+    public void startScan1() {
+        mWifiManager.startScan();
+        // 得到扫描结果
+        mWifiList = mWifiManager.getScanResults();
+        // 得到配置好的网络连接
+        mWifiConfiguration = mWifiManager.getConfiguredNetworks();
+    }
+
+
     @SuppressLint("WrongConstant")
     public void startScan(Context context) {
         Boolean ss = mWifiManager.startScan();
@@ -174,6 +288,15 @@ public class SettingsWifiUtil {
         }
     }
 
+    /**
+     * 得到网络列表
+     *
+     * @return
+     */
+    public List<ScanResult> getWifiList() {
+        return mWifiList;
+    }
+
     // 得到网络列表
     public List<SettingsWifiBean> getWifiList(int status, String ssid) {
         List<SettingsWifiBean> beans = new ArrayList<>();
@@ -186,7 +309,8 @@ public class SettingsWifiUtil {
                 bean.setStatus(status);
                 bean.setResult(scanResult);
                 beans.add(0,bean);
-            }else {
+            }
+            else {
                 bean.setStatus(0);
                 bean.setResult(scanResult);
                 beans.add(bean);
@@ -209,24 +333,21 @@ public class SettingsWifiUtil {
         return stringBuilder;
     }
 
-    // 得到MAC地址
-    public  String getMacAddress() {
-        // return (mWifiInfo == null) ? "NULL" : mWifiInfo.getMacAddress();
+    public String getMacAddress() {
+        return (mWifiInfo == null) ? "NULL" : mWifiInfo.getMacAddress();
+    }
+
+    public String getBssid() {
         return (mWifiInfo == null) ? "NULL" : mWifiInfo.getBSSID();
     }
 
-    // 得到接入点的BSSID
-    public String getBSSID() {
-        return (mWifiInfo == null) ? "NULL" : mWifiInfo.getBSSID();
-    }
-
-    // 得到连接的IP
-    public int getIPAddress() {
+    public int getIpAddress() {
         return (mWifiInfo == null) ? 0 : mWifiInfo.getIpAddress();
     }
 
+
     // 得到连接的ID
-    public int getNetworkId(String sSID) {
+    public int getNetworkId(String mSsid) {
         int connectId = 0;
         List<WifiConfiguration> wifiConfigurationList = mWifiManager.getConfiguredNetworks();
         LogUtil.d(TAG, "wifiConfigurationList = " + wifiConfigurationList);
@@ -234,16 +355,26 @@ public class SettingsWifiUtil {
         if (wifiConfigurationList != null && wifiConfigurationList.size() != 0) {
             for (int i = 0; i < wifiConfigurationList.size(); i++) {
                 WifiConfiguration wifiConfiguration = wifiConfigurationList.get(i);
-                String SSID  = wifiConfiguration.SSID.replace("\"", "");
-                LogUtil.d(TAG, "ssid = " + SSID + "+" + sSID);
+                String mSSID  = wifiConfiguration.SSID.replace("\"", "");
+                LogUtil.d(TAG, "ssid = " + mSSID + "+" + mSsid);
                 // wifiSSID就是SSID
-                if (SSID != null && SSID.equals(sSID)) {
+                if (mSSID != null && mSSID.equals(mSsid)) {
                     connectId = wifiConfiguration.networkId;
                 }
             }
         }
         return connectId;
     }
+
+    /**
+     * 得到连接的ID
+     *
+     * @return
+     */
+    public int getNetWordId2() {
+        return (mWifiInfo == null) ? 0 : mWifiInfo.getNetworkId();
+    }
+
 
     // 得到WifiInfo的所有信息包
     public String getWifiInfo() {
@@ -252,9 +383,9 @@ public class SettingsWifiUtil {
 
     // 添加一个网络并连接
     public void addNetwork(WifiConfiguration wcg) {
-        int wcgID = mWifiManager.addNetwork(wcg);
-        boolean b =  mWifiManager.enableNetwork(wcgID, true);
-        System.out.println("a--" + wcgID);
+        int wcgId = mWifiManager.addNetwork(wcg);
+        boolean b =  mWifiManager.enableNetwork(wcgId, true);
+        System.out.println("a--" + wcgId);
         System.out.println("b--" + b);
     }
 
@@ -271,13 +402,13 @@ public class SettingsWifiUtil {
     /**
      * 判断指定的wifi是否保存
      *
-     * @param SSID
+     * @param mSSID
      * @return
      */
-    public boolean isWifiSave(String SSID) {
+    public boolean isWifiSave(String mSSID) {
         if (mWifiConfiguration != null) {
             for (WifiConfiguration existingConfig : mWifiConfiguration) {
-                if (existingConfig.SSID.equals("\"" + SSID + "\"")) {
+                if (existingConfig.SSID.equals("\"" + mSSID + "\"")) {
                     return true;
                 }
             }
@@ -286,27 +417,27 @@ public class SettingsWifiUtil {
     }
 
     //创建wifi热点的。
-    public WifiConfiguration createWifiInfo(String SSID, String password, int Type) {
+    public WifiConfiguration createWifiInfo(String mSSID, String password, int mType) {
         WifiConfiguration config = new WifiConfiguration();
         config.allowedAuthAlgorithms.clear();
         config.allowedGroupCiphers.clear();
         config.allowedKeyManagement.clear();
         config.allowedPairwiseCiphers.clear();
         config.allowedProtocols.clear();
-        config.SSID = "\"" + SSID + "\"";
+        config.SSID = "\"" + mSSID + "\"";
 
-        WifiConfiguration tempConfig = this.isExsits(SSID);
+        WifiConfiguration tempConfig = this.isExsits(mSSID);
         if(tempConfig != null) {
             mWifiManager.removeNetwork(tempConfig.networkId);
         }
 
-        if(Type == 1) //WIFICIPHER_NOPASS
+        if(mType == 1) //WIFICIPHER_NOPASS
         {
             config.wepKeys[0] = "";
             config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
             config.wepTxKeyIndex = 0;
         }
-        if(Type == 2) //WIFICIPHER_WEP
+        if(mType == 2) //WIFICIPHER_WEP
         {
             config.hiddenSSID = true;
             config.wepKeys[0]= "\""+password+"\"";
@@ -318,7 +449,7 @@ public class SettingsWifiUtil {
             config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
             config.wepTxKeyIndex = 0;
         }
-        if(Type == 3) //WIFICIPHER_WPA
+        if(mType == 3) //WIFICIPHER_WPA
         {
             config.preSharedKey = "\""+password+"\"";
             config.hiddenSSID = true;
@@ -334,12 +465,12 @@ public class SettingsWifiUtil {
         return config;
     }
 
-    private WifiConfiguration isExsits(String SSID)
+    private WifiConfiguration isExsits(String mSSID)
     {
         List<WifiConfiguration> existingConfigs = mWifiManager.getConfiguredNetworks();
         for (WifiConfiguration existingConfig : existingConfigs)
         {
-            if (existingConfig.SSID.equals("\""+SSID+"\""))
+            if (existingConfig.SSID.equals("\""+mSSID+"\""))
             {
                 return existingConfig;
             }
@@ -362,4 +493,39 @@ public class SettingsWifiUtil {
             return false;
         }
     }
+
+    /**
+     * 连接指定Id的WIFI
+     *
+     * @param wifiId
+     * @return
+     */
+    public boolean connectWifi(int wifiId) {
+        for (int i = 0; i < mWifiConfiguration.size(); i++) {
+            WifiConfiguration wifi = mWifiConfiguration.get(i);
+            if (wifi.networkId == wifiId) {
+                // 激活该Id，建立连接
+                while (!(mWifiManager.enableNetwork(wifiId, true))) {
+                    // status:0--已经连接，1--不可连接，2--可以连接
+                    Log.i("ConnectWifi", String.valueOf(mWifiConfiguration.get(wifiId).status));
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+    /**
+     * 指定配置好的网络进行连接
+     *
+     * @param index
+     */
+    public void connetionConfiguration(int index) {
+        if (index > mWifiConfiguration.size()) {
+            return;
+        }
+        // 连接配置好指定ID的网络
+        mWifiManager.enableNetwork(mWifiConfiguration.get(index).networkId,
+                true);
+    }
+
 }

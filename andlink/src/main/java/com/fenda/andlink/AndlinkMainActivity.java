@@ -7,17 +7,16 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
-import com.chinamobile.smartgateway.andsdk.app.SdkApp;
-import com.chinamobile.smartgateway.andsdk.bean.DeviceExtInfo;
 import com.chinamobile.smartgateway.andsdk.device.service.HandleSDKServerMeaasge;
 import com.chinamobile.smartgateway.andsdk.device.serviceimpl.AndSdkImpl;
 import com.fenda.andlink.Model.AndlinkDeviceInfo;
-import com.fenda.common.base.BaseActivity;
+import com.fenda.common.util.LogUtil;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
 public class AndlinkMainActivity extends Activity implements View.OnClickListener {
+    private static final String TAG = "AndlinkMainActivity";
 
     private static String devMac = "D0C5D364BEE5";
 
@@ -33,6 +32,7 @@ public class AndlinkMainActivity extends Activity implements View.OnClickListene
         findViewById(R.id.bt_saveKeyInfo).setOnClickListener(this);
         findViewById(R.id.bt_broadcastQlinkSuc).setOnClickListener(this);
         findViewById(R.id.bt_reset).setOnClickListener(this);
+        findViewById(R.id.back_btn).setOnClickListener(this);
 
         HandleSDKServerMeaasge.getInstance().setCallback(new DeviceClientCallBack());
 
@@ -74,7 +74,8 @@ public class AndlinkMainActivity extends Activity implements View.OnClickListene
             AndSdkImpl.getInstance().init(getApplication(), tGson.toJson(tDevcieInfo));
         }
         else if (v.getId() == R.id.bt_regirst){
-            AndSdkImpl.getInstance().getDeviceInfo();
+            String info = AndSdkImpl.getInstance().getDeviceInfo();
+            LogUtil.d(TAG, "bt_regirst = " + info);
         }
         else if (v.getId() == R.id.bt_saveKeyInfo){
             AndSdkImpl.getInstance().saveKeyInfo(getApplication(), "RLCvVEReNwlGpCOVw-e4ZkazVYNzjlDqP5TBXRVkDZcJ3bwRDG-w2cf8tKpUKizb", "https://cgw.komect.com:443");
@@ -85,13 +86,15 @@ public class AndlinkMainActivity extends Activity implements View.OnClickListene
         }
         else if (v.getId() == R.id.bt_reset){
             AndSdkImpl.getInstance().reset(0);
+        } else if(v.getId() == R.id.back_btn){
+            finish();
         }
     }
 
     @Override
     protected void onDestroy() {
 
-        AndSdkImpl.getInstance().stop(this); //厂商需在onDestroy方法第一句调用，做必要的清理工作
+//        AndSdkImpl.getInstance().stop(this); //厂商需在onDestroy方法第一句调用，做必要的清理工作
 
         super.onDestroy();
 

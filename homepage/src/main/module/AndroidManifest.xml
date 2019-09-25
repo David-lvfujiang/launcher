@@ -35,6 +35,7 @@
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
+        <activity android:name=".activity.SubmenuActivity"/>
         <activity android:name=".activity.PromptActivity"/>
     </application>
 

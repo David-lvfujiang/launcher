@@ -99,4 +99,7 @@ public interface RouterPath {
         String WEATHER_MAIN = "/weather/WeatherActivity";
         String WEATHER_SERVICE = "/weather/WeatherService";
     }
+    interface Recommend {
+        String RECOMMEND = "/recommend/recommend";
+    }
 }

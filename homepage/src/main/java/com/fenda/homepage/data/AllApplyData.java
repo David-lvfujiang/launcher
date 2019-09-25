@@ -42,18 +42,18 @@ public class AllApplyData {
         mList.add(new ApplyBean(Constant.UNITS ,"单位换算", R.mipmap.submenu_ico_units));
         mList.add(new ApplyBean(Constant.RELATIVE ,"亲戚关系计算", R.mipmap.submenu_ico_relative));
         mList.add(new ApplyBean(Constant.CONSTELLATION ,"星座运势", R.mipmap.submenu_ico_constellation));
-        mList.add(new ApplyBean(Constant.CMCC ,"10086", R.mipmap.submenu_ico_10086));
-        mList.add(new ApplyBean(Constant.GDYD,"广东移动营业厅", R.mipmap.submenu_ico_gdyd));
-        mList.add(new ApplyBean(Constant.MIGU_MUSIC ,"咪咕音乐", R.mipmap.submenu_ico_migu_music));
-        mList.add(new ApplyBean(Constant.MIGU_AIKAN ,"咪咕爱看", R.mipmap.submenu_ico_migu_aikan));
-        mList.add(new ApplyBean(Constant.MIGU_ZHIBO ,"咪咕直播", R.mipmap.submenu_ico_migu_zhibo));
-        mList.add(new ApplyBean(Constant.MIGU_LINGXI ,"咪咕灵犀", R.mipmap.submenu_ico_migu_lingxi));
-        mList.add(new ApplyBean(Constant.MIGU_QUANQUAN ,"咪咕圈圈", R.mipmap.submenu_ico_migu_quanquan));
-        mList.add(new ApplyBean(Constant.MIGU_SHANPAO ,"咪咕擅跑", R.mipmap.submenu_ico_migu_shanpao));
-        mList.add(new ApplyBean(Constant.MIGU_VIDEO ,"咪咕视频", R.mipmap.submenu_ico_migu_video));
-        mList.add(new ApplyBean(Constant.MIGU_MOVIE,"咪咕影院", R.mipmap.submenu_ico_migu_movie));
-        mList.add(new ApplyBean(Constant.MIGU_READ,"咪咕阅读", R.mipmap.submenu_ico_migu_read));
-        mList.add(new ApplyBean(Constant.MIGU_CITIC ,"咪咕中信书店", R.mipmap.submenu_ico_migu_citic));
+//        mList.add(new ApplyBean(Constant.CMCC ,"10086", R.mipmap.submenu_ico_10086));
+//        mList.add(new ApplyBean(Constant.GDYD,"广东移动营业厅", R.mipmap.submenu_ico_gdyd));
+//        mList.add(new ApplyBean(Constant.MIGU_MUSIC ,"咪咕音乐", R.mipmap.submenu_ico_migu_music));
+//        mList.add(new ApplyBean(Constant.MIGU_AIKAN ,"咪咕爱看", R.mipmap.submenu_ico_migu_aikan));
+//        mList.add(new ApplyBean(Constant.MIGU_ZHIBO ,"咪咕直播", R.mipmap.submenu_ico_migu_zhibo));
+//        mList.add(new ApplyBean(Constant.MIGU_LINGXI ,"咪咕灵犀", R.mipmap.submenu_ico_migu_lingxi));
+//        mList.add(new ApplyBean(Constant.MIGU_QUANQUAN ,"咪咕圈圈", R.mipmap.submenu_ico_migu_quanquan));
+//        mList.add(new ApplyBean(Constant.MIGU_SHANPAO ,"咪咕擅跑", R.mipmap.submenu_ico_migu_shanpao));
+//        mList.add(new ApplyBean(Constant.MIGU_VIDEO ,"咪咕视频", R.mipmap.submenu_ico_migu_video));
+//        mList.add(new ApplyBean(Constant.MIGU_MOVIE,"咪咕影院", R.mipmap.submenu_ico_migu_movie));
+//        mList.add(new ApplyBean(Constant.MIGU_READ,"咪咕阅读", R.mipmap.submenu_ico_migu_read));
+//        mList.add(new ApplyBean(Constant.MIGU_CITIC ,"咪咕中信书店", R.mipmap.submenu_ico_migu_citic));
         return mList;
     }
 }

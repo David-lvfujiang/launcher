@@ -10,13 +10,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.SystemClock;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
@@ -33,7 +31,7 @@ import com.fenda.common.view.MyListView;
 import com.fenda.settings.R;
 import com.fenda.settings.adapter.SettingsBluetoothAdapter;
 import com.fenda.settings.bean.SettingsBluetoothDeviceBean;
-import com.fenda.settings.utils.SettingsWifiUtil;
+import com.fenda.settings.utils.SettingsBluetoothUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,7 +55,7 @@ public class SettingsActivity extends BaseMvpActivity {
     private MyListView lvDisSetListItem;
     private LinearLayout llDeviceCenter;
 
-    private String mConnectedWifiSSID;
+    private String mConnectedWifiSsid;
     private SimpleAdapter mSimpleAdapter;
     private ArrayList<HashMap<String, String>> mArrayListData;
     private WifiManager mWifiManager;
@@ -93,10 +91,10 @@ public class SettingsActivity extends BaseMvpActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         registerReceiver(mWifiReceiver, filter);
-//        IntentFilter btIntentFilter = new IntentFilter();
-//        btIntentFilter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
-//        btIntentFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-//        registerReceiver(mBtReceiver, btIntentFilter);
+        IntentFilter btIntentFilter = new IntentFilter();
+        btIntentFilter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
+        btIntentFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        registerReceiver(mBtReceiver, btIntentFilter);
     }
 
     @Override
@@ -152,8 +150,9 @@ public class SettingsActivity extends BaseMvpActivity {
                     startActivityForResult(setWifiIntent, 200);
                     finish();
                 } else if (("蓝牙").equals(setClickedListName)) {
-                    Intent setBTIntent = new Intent(SettingsActivity.this, SettingsBluetoothActivity.class);
-                    startActivity(setBTIntent);
+                    Intent setBtIntent = new Intent(SettingsActivity.this, SettingsBluetoothActivity.class);
+                    startActivity(setBtIntent);
+                    finish();
                 } else if (("屏幕保护").equals(setClickedListName)) {
                     Intent mIntent = new Intent(SettingsActivity.this, SettingsScreenActivity.class);
                     startActivity(mIntent);
@@ -181,48 +180,49 @@ public class SettingsActivity extends BaseMvpActivity {
         });
     }
 
-//    private BroadcastReceiver mBtReceiver = new BroadcastReceiver() {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            String action = intent.getAction();
-//            if (action.equals(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED)) {
-//                BluetoothDevice mConnectionBluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-//                int state = intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE, 0);
-//                LogUtil.d(TAG, "BT CONNECT staute " + mConnectionBluetoothDevice.getName() + state);
-//                if (BluetoothAdapter.STATE_DISCONNECTED == state) {
-//                    LogUtil.d(TAG, "蓝牙断开了");
-//                    SPUtils.remove(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME);
-//                    LogUtil.d(TAG, "STATE_DISCONNECTED getName = " + mConnectionBluetoothDevice.getName() + ", STATE_DISCONNECTED getAddress = " + mConnectionBluetoothDevice.getAddress());
-//                } else if (BluetoothAdapter.STATE_CONNECTED == state) {
-//                    LogUtil.d(TAG, "蓝牙连上了");
-//                    mBtName = mConnectionBluetoothDevice.getName();
-//                    SPUtils.put(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME, mBtName);
-//                    LogUtil.d(TAG, "STATE_CONNECTED getName = " + mConnectionBluetoothDevice.getName() + ", STATE_CONNECTED getAddress = " + mConnectionBluetoothDevice.getAddress());
-//                }
-//            } else if (action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
-//                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-//                List<SettingsBluetoothDeviceBean> listDevices = mSettingsBluetoothAdapter.getListDevices();
-//                switch (device.getBondState()) {
-//                    case BluetoothDevice.BOND_BONDING:
-//                        LogUtil.d(TAG, "正在配对......");
-//                        break;
-//                    case BluetoothDevice.BOND_BONDED:
-//                        LogUtil.d(TAG, "完成配对");
-//                        SPUtils.put(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME, device.getName());
-//                        SPUtils.put(getApplicationContext(), String.valueOf(Constant.Settings.BT_CONNECTED_ADDRESS), device.getAddress());
-//                        break;
-//                    case BluetoothDevice.BOND_NONE:
-//                        LogUtil.d(TAG, "取消配对");
-//                        ToastUtils.show("成功取消配对");
-//                        SPUtils.remove(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME);
-//                        SPUtils.remove(getApplicationContext(), String.valueOf(Constant.Settings.BT_CONNECTED_ADDRESS));
-//                        break;
-//                    default:
-//                        break;
-//                }
-//            }
-//        }
-//    };
+    private BroadcastReceiver mBtReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED)) {
+                BluetoothDevice mConnectionBluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                int state = intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE, 0);
+                LogUtil.d(TAG, "BT CONNECT staute " + mConnectionBluetoothDevice.getName() + state);
+                if (BluetoothAdapter.STATE_DISCONNECTED == state) {
+                    LogUtil.d(TAG, "蓝牙断开了");
+                    SPUtils.remove(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME);
+                    LogUtil.d(TAG, "STATE_DISCONNECTED getName = " + mConnectionBluetoothDevice.getName() + ", STATE_DISCONNECTED getAddress = " + mConnectionBluetoothDevice.getAddress());
+                } else if (BluetoothAdapter.STATE_CONNECTED == state) {
+                    LogUtil.d(TAG, "蓝牙连上了");
+                    SettingsBluetoothUtil.closeDiscoverableTimeout();
+                    mBtName = mConnectionBluetoothDevice.getName();
+                    SPUtils.put(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME, mBtName);
+                    LogUtil.d(TAG, "STATE_CONNECTED getName = " + mConnectionBluetoothDevice.getName() + ", STATE_CONNECTED getAddress = " + mConnectionBluetoothDevice.getAddress());
+                }
+            } else if (action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                List<SettingsBluetoothDeviceBean> listDevices = mSettingsBluetoothAdapter.getListDevices();
+                switch (device.getBondState()) {
+                    case BluetoothDevice.BOND_BONDING:
+                        LogUtil.d(TAG, "正在配对......");
+                        break;
+                    case BluetoothDevice.BOND_BONDED:
+                        LogUtil.d(TAG, "完成配对");
+                        SPUtils.put(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME, device.getName());
+                        SPUtils.put(getApplicationContext(), String.valueOf(Constant.Settings.BT_CONNECTED_ADDRESS), device.getAddress());
+                        break;
+                    case BluetoothDevice.BOND_NONE:
+                        LogUtil.d(TAG, "取消配对");
+                        ToastUtils.show("成功取消配对");
+                        SPUtils.remove(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME);
+                        SPUtils.remove(getApplicationContext(), String.valueOf(Constant.Settings.BT_CONNECTED_ADDRESS));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    };
 
     private BroadcastReceiver mWifiReceiver = new BroadcastReceiver() {
         HashMap<String, String> params = new HashMap<>();
@@ -244,11 +244,11 @@ public class SettingsActivity extends BaseMvpActivity {
                     Log.i(TAG, "wifi连接上了");
                     mArrayListData.remove(0);
                     mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-                    mConnectedWifiSSID = mWifiManager.getConnectionInfo().getSSID();
-                    mConnectedWifiSSID = mConnectedWifiSSID.substring(1, mConnectedWifiSSID.length() - 1);
-                    LogUtil.d(TAG, "back wifi name = " + mConnectedWifiSSID);
+                    mConnectedWifiSsid = mWifiManager.getConnectionInfo().getSSID();
+                    mConnectedWifiSsid = mConnectedWifiSsid.substring(1, mConnectedWifiSsid.length() - 1);
+                    LogUtil.d(TAG, "back wifi name = " + mConnectedWifiSsid);
                     params.put("name", "WIFI");
-                    params.put("state", "已连接(" + mConnectedWifiSSID + ")");
+                    params.put("state", "已连接(" + mConnectedWifiSsid + ")");
                     mArrayListData.add(0, params);
                     mSimpleAdapter.notifyDataSetChanged();
                 } else if (NetworkInfo.State.CONNECTING == info.getState()) {//正在连接
@@ -305,7 +305,7 @@ public class SettingsActivity extends BaseMvpActivity {
     @Override
     protected void onDestroy() {
         unregisterReceiver(mWifiReceiver);
-//        unregisterReceiver(mBtReceiver);
+        unregisterReceiver(mBtReceiver);
         super.onDestroy();
     }
 }

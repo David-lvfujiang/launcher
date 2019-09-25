@@ -67,7 +67,7 @@ public class SettingsDeviceInfoActivity extends BaseMvpActivity {
         String[] deviceInfoNamesDis = new String[] {getString(R.string.settings_device_info_sn), getString(R.string.settings_device_info_ip), getString(R.string.settings_device_info_mac), getString(R.string.settings_device_info_launcher_version), getString(R.string.settings_device_info_system_version), getString(R.string.settings_device_info_software_update)};
         String[] deviceInfoStatusDis = new String[]{"FD-R03-001", "", "", "", "", ""};
 
-        String deviceIPString = getIpAddress();
+        String deviceIpString = getIpAddress();
         String deviceMac = mSettingsWifiUtil.getMacAddress();
         String systemVer = getProperty("ro.product.version", "unknown");
 
@@ -76,7 +76,7 @@ public class SettingsDeviceInfoActivity extends BaseMvpActivity {
 
         LogUtil.d(TAG, "apk versionCode = " + versionCode);
         LogUtil.d(TAG, "apk versionName = " + versionName);
-        LogUtil.d(TAG, "device ip = " + deviceIPString);
+        LogUtil.d(TAG, "device ip = " + deviceIpString);
         LogUtil.d(TAG, "device system version = " + systemVer);
 
         List<Map<String, Object>> listitem = new ArrayList<>();
@@ -87,7 +87,7 @@ public class SettingsDeviceInfoActivity extends BaseMvpActivity {
                 if(SettingsWifiUtil.isWifiEnabled(this)) {
                     LogUtil.d(TAG, "wifi status true ");
                     map.put("name", deviceInfoNamesDis[i]);
-                    map.put("state", deviceIPString);
+                    map.put("state", deviceIpString);
                     listitem.add(map);
                 } else {
                     map.put("name", deviceInfoNamesDis[i]);

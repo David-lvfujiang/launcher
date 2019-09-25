@@ -39,13 +39,12 @@ import io.reactivex.functions.Consumer;
 public class SettingsService implements ISettingsProvider {
     private static final String TAG = "SettingsService";
     private String registeName = "FD-R03";
-    private String registeMac = "00:11:22:33:44:55";
+    private String registeMac;
     //    String registeVersion = "V1.0";
     private String registeVersion;
 
     @Override
     public void deviceStatus(Context context) {
-        LogUtil.d(TAG, "sn = " + DeviceIdUtil.getDeviceId());
         if (AppUtils.isRegisterDevice(context) ){
             LogUtil.d(TAG, "device have registered~");
             if (AppUtils.isBindedDevice(context)) {
@@ -77,7 +76,7 @@ public class SettingsService implements ISettingsProvider {
 
     private void registerDevice(final Context context) {
         registeVersion= AppUtils.getVerName(context);
-
+        registeMac = DeviceIdUtil.getLocalMac();
         SettingsRegisterDeviceRequest deviceRegisterRequest = new SettingsRegisterDeviceRequest();
         deviceRegisterRequest.setDeviceId(DeviceIdUtil.getDeviceId());
         deviceRegisterRequest.setName(registeName);
