@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 选择状态下为白色 -->
+    <item
+        android:state_activated="true"
+        android:color="@android:color/white" />
+    <!-- 默认为白色 -->
+    <item
+        android:color="@android:color/white" />
+</selector>

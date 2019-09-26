@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="38dp"
         android:gravity="center"
-        android:textColor="#fff"
+        android:textColor="@drawable/selector_active_calendar_grid_text"
         android:textSize="28sp"
         tools:text="10" />
 

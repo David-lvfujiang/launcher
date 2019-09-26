@@ -15,6 +15,7 @@ public class CalendarUtils {
         private int year;
         private int month;
         private int day;
+        private int week;
 
         public int getYear() {
             return year;
@@ -38,6 +39,14 @@ public class CalendarUtils {
 
         public void setDay(int day) {
             this.day = day;
+        }
+
+        public int getWeek() {
+            return week;
+        }
+
+        public void setWeek(int week) {
+            this.week = week;
         }
 
         public CalendarSimpleDate(int year, int month, int day) {
@@ -138,7 +147,7 @@ public class CalendarUtils {
         }
         //重置
         cal.setTime(sdf.parse(year + "-" + month + "-" + 1));
-        // int first = cal.get(Calendar.DAY_OF_WEEK);
+        int firstWeek = cal.get(Calendar.DAY_OF_WEEK);
         int dayOfLastMonth = getDayOfLastMonth(cal);
         int monthOfLastMonth = getMonthOfLastMonth(cal);
         int yearOfLastMonth = getYearOfLastMonth(cal);
@@ -154,6 +163,7 @@ public class CalendarUtils {
         //填补本月的数据
         for (int i = 1; i <= count; i++) {
             CalendarSimpleDate calendarDate = new CalendarSimpleDate(year, month, i);
+            calendarDate.setWeek((firstWeek+i-2)%7);
             list.add(calendarDate);
             cal.setTime(sdf.parse(year + "-" + month + "-" + i));
 

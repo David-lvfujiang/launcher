@@ -22,8 +22,6 @@ public class CalendarGridViewAdapter extends BaseAdapter {
     private List<CalendarDate> mListData = new ArrayList<>();
     //24节气或者节假日标志
     private boolean festivalFlag = false;
-    //周末标志
-    private boolean weekendFlag = false;
 
 
     public CalendarGridViewAdapter(List<CalendarDate> mListData) {
@@ -80,18 +78,17 @@ public class CalendarGridViewAdapter extends BaseAdapter {
             festivalFlag = false;
         }
         viewHolder.tv_lunar_day.setText(str);
+        if (festivalFlag){
+            viewHolder.tv_lunar_day.setTextColor(Color.parseColor("#E0C297"));
+        }
         if(mListData.get(position).isInThisMonth()){
-            viewHolder.tv_day.setTextColor(Color.parseColor("#FFFFFF"));
+            if (mListData.get(position).getSolar().solarWeek==6||mListData.get(position).getSolar().solarWeek==0){
+                viewHolder.tv_day.setTextColor(Color.parseColor("#1170FF"));
+            }
         }else{
             viewHolder.tv_day.setTextColor(Color.parseColor("#30C4C4C4"));
             viewHolder.tv_lunar_day.setTextColor(Color.parseColor("#30C4C4C4"));
         }
-        if (festivalFlag){
-            viewHolder.tv_lunar_day.setTextColor(Color.parseColor("#E0C297"));
-        }
-//        if (weekendFlag){
-//            viewHolder.tv_day.setTextColor(Color.parseColor("#1170FF"));
-//        }
         return convertView;
     }
 
