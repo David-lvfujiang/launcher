@@ -297,8 +297,8 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             AppUtils.saveBindedDevice(getApplicationContext(), false);
             ARouter.getInstance().build(RouterPath.SETTINGS.SettingsBindDeviceActivity).navigation();
         }
-        //普通成员退出家庭通知
-        else if (message.getCode() == TCPConfig.MessageType.USER_EXIT_FAMILY) {
+        //普通成员退出或加入家庭通知
+        else if (message.getCode() == TCPConfig.MessageType.USER_EXIT_FAMILY || message.getCode() == TCPConfig.MessageType.NEW_USER_ADD) {
             LogUtil.d("bind onReceiveEvent = " + message);
             ContentProviderManager.getInstance(mContext, Constant.Common.URI).clear();
             mPresenter.getFamilyContacts();

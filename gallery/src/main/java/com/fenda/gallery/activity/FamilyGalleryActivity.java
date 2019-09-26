@@ -280,6 +280,7 @@ public class FamilyGalleryActivity extends BaseMvpActivity<GalleryPresenter, Gal
         //相册变化通知
         if (message.getCode() == TCPConfig.MessageType.ALBUM_CHANGE) {
             LogUtils.i("收到相册变化通知");
+            mIndexPage=1;
             cancelDeleteStatus();
             getNetFamilyGallery();
         }
@@ -348,11 +349,7 @@ public class FamilyGalleryActivity extends BaseMvpActivity<GalleryPresenter, Gal
 
     @Override
     public void deleteFamilyPhotoSuccess(BaseResponse response) {
-        setResult(GalleryCategoryActivity.FAMILY_DELETE_NET_RESULT);
-        mIndexPage = 1;
         ToastUtils.show("删除成功");
-        cancelDeleteStatus();
-        getNetFamilyGallery();
     }
 
     @Override

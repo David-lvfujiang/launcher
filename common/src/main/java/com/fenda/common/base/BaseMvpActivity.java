@@ -10,12 +10,11 @@ import com.fenda.common.mvp.BaseView;
 import com.fenda.common.util.TUtil;
 
 /**
-  * @author mirrer.wangzhonglin
-  * @Date 2019/8/27 15:19
-  * @Description
-  *
-  */
-public abstract class BaseMvpActivity<T extends BasePresenter,M extends BaseModel> extends BaseActivity implements BaseView {
+ * @author mirrer.wangzhonglin
+ * @Date 2019/8/27 15:19
+ * @Description
+ */
+public abstract class BaseMvpActivity<T extends BasePresenter, M extends BaseModel> extends BaseActivity implements BaseView {
 
     protected T mPresenter;
     protected M mModel;
@@ -24,10 +23,10 @@ public abstract class BaseMvpActivity<T extends BasePresenter,M extends BaseMode
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        mRxManager=new RxManager();
+        mRxManager = new RxManager();
         mPresenter = TUtil.getT(this, 0);
-        mModel = TUtil.getT(this,1);
-        if (mPresenter != null){
+        mModel = TUtil.getT(this, 1);
+        if (mPresenter != null) {
             mPresenter.mContext = this;
         }
         initPresenter();
@@ -42,10 +41,10 @@ public abstract class BaseMvpActivity<T extends BasePresenter,M extends BaseMode
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mPresenter != null){
+        if (mPresenter != null) {
             mPresenter.onDestroy();
         }
-        if (mRxManager != null){
+        if (mRxManager != null) {
             mRxManager.clear();
         }
 
@@ -65,7 +64,6 @@ public abstract class BaseMvpActivity<T extends BasePresenter,M extends BaseMode
     }
 
 
-
     @Override
     public void showNetError() {
         showNetWorkErrView();
@@ -76,5 +74,16 @@ public abstract class BaseMvpActivity<T extends BasePresenter,M extends BaseMode
     public void hideNetError() {
         hideNetWorkErrView();
 
+    }
+
+    @Override
+    public void showContent() {
+        showContentView(true);
+
+    }
+
+    @Override
+    public void hideContent() {
+        showContentView(false);
     }
 }

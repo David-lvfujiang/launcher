@@ -54,10 +54,6 @@ public class GalleryCategoryActivity extends BaseMvpActivity<GalleryPresenter, G
     private LinearLayout mLServerLayout;
     private int mIndexPage = 1;
     private int mPageCount = 1;
-    public static final int FAMILY_UPLOAD_REQUEST = 100;
-    public static final int FAMILY_DELETE_REQUEST = 200;
-    public static final int FAMILY_UPLOAD_RESULT = 300;
-    public static final int FAMILY_DELETE_NET_RESULT = 400;
     public static final int FAMILY_DELETE_LOCAL_RESULT = 500;
 
     private final String[] IMAGE_PROJECT = {
@@ -128,8 +124,8 @@ public class GalleryCategoryActivity extends BaseMvpActivity<GalleryPresenter, G
                 if (data != null) {
                     int count = data.getCount();
                     mTvLocalCount.setText(mContext.getString(R.string.gallery_photo_count_indicator, count));
-                    data.moveToFirst();
                     if (count > 0) {
+                        data.moveToFirst();
                         String path = data.getString(data.getColumnIndexOrThrow(IMAGE_PROJECT[0]));
                         ImageUtil.loadImg(mContext, mIvLocalCategory, path);
                     } else {
@@ -206,16 +202,6 @@ public class GalleryCategoryActivity extends BaseMvpActivity<GalleryPresenter, G
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if ((requestCode == FAMILY_DELETE_REQUEST && resultCode == FAMILY_DELETE_NET_RESULT)
-                || (requestCode == FAMILY_UPLOAD_REQUEST && resultCode == FAMILY_UPLOAD_RESULT)) {
-            getNetGalleryInfo();
-        }
-    }
-
-
-    @Override
     protected void initPresenter() {
         mPresenter.setVM(this, mModel);
     }
@@ -226,9 +212,9 @@ public class GalleryCategoryActivity extends BaseMvpActivity<GalleryPresenter, G
         if (id == R.id.ivCancel) {
             finish();
         } else if (id == R.id.llLocalLayout) {
-            startActivityForResult(new Intent(mContext, PhotosActivity.class), FAMILY_UPLOAD_REQUEST);
+            startActivity(new Intent(mContext, PhotosActivity.class));
         } else if (id == R.id.llServerLayout) {
-            startActivityForResult(new Intent(mContext, FamilyGalleryActivity.class), FAMILY_DELETE_REQUEST);
+            startActivity(new Intent(mContext, FamilyGalleryActivity.class));
         }
     }
 

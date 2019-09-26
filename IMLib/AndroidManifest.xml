@@ -9,8 +9,10 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application>
-        <!--k51hidwqk4smb 后台-->
-        <!--82hegw5u8xc6x 乔工-->
+        <!--k51hidwqk4smb 本地环境-->
+        <!--82hegw5u8xlqx 测试环境-->
+        <!--bmdehs6pbg7qs 正式环境-->
+
         <!-- imlib config begin -->
         <meta-data
             android:name="RONG_CLOUD_APP_KEY"
