@@ -31,6 +31,7 @@ public class GalleryPresenter extends GalleryContract.Presenter {
 
             @Override
             protected void _onError(String message) {
+                ToastUtils.show(message);
             }
         }));
     }
@@ -49,7 +50,7 @@ public class GalleryPresenter extends GalleryContract.Presenter {
 
             @Override
             protected void _onError(String message) {
-
+                ToastUtils.show(message);
             }
         }));
     }
@@ -62,13 +63,13 @@ public class GalleryPresenter extends GalleryContract.Presenter {
                 if (response.getCode() == 200) {
                     mView.uploadPhotoSuccess(response);
                 } else {
-                    mView.uploadPhotoSuccess(response);
+                    mView.uploadPhotoFailure(response);
                 }
             }
 
             @Override
             protected void _onError(String message) {
-
+                ToastUtils.show(message);
             }
         }));
     }

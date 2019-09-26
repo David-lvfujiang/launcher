@@ -15,5 +15,7 @@ public interface BaseView {
     void showErrorTip(String msg);
     void showNetError();
     void hideNetError();
+    void showContent();
+    void hideContent();
 
 }

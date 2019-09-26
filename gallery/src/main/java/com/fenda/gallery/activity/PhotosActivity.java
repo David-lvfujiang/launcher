@@ -163,42 +163,55 @@ public class PhotosActivity extends BaseMvpActivity<GalleryPresenter, GalleryMod
         int resId = v.getId();
         if (resId == R.id.iv_send) {
             //上传图片
-            List<String> mList = adapter.getSelectList();
+            final List<String> mList = adapter.getSelectList();
             if (mList != null && mList.isEmpty()) {
                 ToastUtils.show(R.string.gallery_select_photo);
                 return;
             }
-            List<MultipartBody.Part> partList = new ArrayList<>();
-            for (String path : mList) {
-                File mFile = new File(path);
-                File pathFile = new File(Constant.PHOTO.DirectoryPath + mFile.getName());
-                if (pathFile.exists()) {
-                    //如果已经压缩直接添加压缩后的图片
-                    RequestBody requestBody = RequestBody.create(MediaType.parse("image/jpg"), pathFile);
-                    MultipartBody.Part part = MultipartBody.Part.createFormData("photos", pathFile.getName(), requestBody);
-                    partList.add(part);
-                } else {
-                    int size = (int) (mFile.length() / 1024);
-                    if (size > 200) {
-                        //大于200KB压缩图片
-                        try {
-                            File comFile = ImageUtil.compressImage(mFile, 640, 480, Bitmap.CompressFormat.JPEG, 100, mFile.getName());
-                            RequestBody requestBody = RequestBody.create(MediaType.parse("image/jpg"), comFile);
-                            MultipartBody.Part part = MultipartBody.Part.createFormData("photos", comFile.getName(), requestBody);
-                            partList.add(part);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        RequestBody requestBody = RequestBody.create(MediaType.parse("image/jpg"), mFile);
-                        MultipartBody.Part part = MultipartBody.Part.createFormData("photos", mFile.getName(), requestBody);
-                        partList.add(part);
-                    }
-                }
+            if (mList != null && mList.size() > 9) {
+                ToastUtils.show("最多只能选择9张图片");
+                return;
             }
-            UploadPhotoRequest request = new UploadPhotoRequest();
-            request.setRequestBody(partList);
-            mPresenter.uploadPhoto(request);
+            showLoading("");
+            hideContent();
+            new Thread(){
+                @Override
+                public void run() {
+                    super.run();
+                    List<MultipartBody.Part> partList = new ArrayList<>();
+                    for (String path : mList) {
+                        File mFile = new File(path);
+                        File pathFile = new File(Constant.PHOTO.DirectoryPath + mFile.getName());
+                        if (pathFile.exists()) {
+                            //如果已经压缩直接添加压缩后的图片
+                            RequestBody requestBody = RequestBody.create(MediaType.parse("image/jpg"), pathFile);
+                            MultipartBody.Part part = MultipartBody.Part.createFormData("photos", pathFile.getName(), requestBody);
+                            partList.add(part);
+                        } else {
+                            int size = (int) (mFile.length() / 1024);
+                            if (size > 200) {
+                                //大于200KB压缩图片
+                                try {
+                                    File comFile = ImageUtil.compressImage(mFile, 640, 480, Bitmap.CompressFormat.JPEG, 100, mFile.getName());
+                                    RequestBody requestBody = RequestBody.create(MediaType.parse("image/jpg"), comFile);
+                                    MultipartBody.Part part = MultipartBody.Part.createFormData("photos", comFile.getName(), requestBody);
+                                    partList.add(part);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                RequestBody requestBody = RequestBody.create(MediaType.parse("image/jpg"), mFile);
+                                MultipartBody.Part part = MultipartBody.Part.createFormData("photos", mFile.getName(), requestBody);
+                                partList.add(part);
+                            }
+                        }
+                    }
+                    UploadPhotoRequest request = new UploadPhotoRequest();
+                    request.setRequestBody(partList);
+                    mPresenter.uploadPhoto(request);
+                }
+            }.start();
+
         } else if (resId == R.id.iv_delete) {
             deleteLocalPhoto();
         } else if (resId == R.id.iv_cancel) {
@@ -232,7 +245,7 @@ public class PhotosActivity extends BaseMvpActivity<GalleryPresenter, GalleryMod
             adapter.getSelectList().clear();
             catalogList.clear();
             initPhoto();
-            EventBusUtils.post(new EventMessage(GalleryCategoryActivity.FAMILY_DELETE_LOCAL_RESULT,new BaseTcpMessage()));
+            EventBusUtils.post(new EventMessage(GalleryCategoryActivity.FAMILY_DELETE_LOCAL_RESULT, new BaseTcpMessage()));
         } else {
             ToastUtils.show(R.string.gallery_select_photo);
         }
@@ -366,7 +379,6 @@ public class PhotosActivity extends BaseMvpActivity<GalleryPresenter, GalleryMod
     @Override
     public void uploadPhotoSuccess(BaseResponse request) {
         ToastUtils.show(R.string.gallery_upload_success);
-        setResult(GalleryCategoryActivity.FAMILY_UPLOAD_RESULT);
         this.finish();
     }
 
@@ -382,7 +394,7 @@ public class PhotosActivity extends BaseMvpActivity<GalleryPresenter, GalleryMod
 
     @Override
     public void uploadPhotoFailure(BaseResponse response) {
-
+        ToastUtils.show(response.getMessage());
     }
 
     @Override
