@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -32,15 +31,12 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.OvershootInterpolator;
-import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.SlidingDrawer;
 import android.widget.TextClock;
 import android.widget.TextView;
 
@@ -57,8 +53,6 @@ import com.fenda.common.bean.WeatherWithHomeBean;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.db.ContentProviderManager;
 import com.fenda.common.provider.ICallProvider;
-import com.fenda.common.provider.IHomePageProvider;
-import com.fenda.common.provider.IRecommendProvider;
 import com.fenda.common.provider.ISettingsProvider;
 import com.fenda.common.provider.IVoiceInitProvider;
 import com.fenda.common.provider.IVoiceRequestProvider;
@@ -79,20 +73,16 @@ import com.fenda.homepage.bean.ApplyBean;
 import com.fenda.homepage.bean.RepairPersonHeadBean;
 import com.fenda.homepage.contract.MainContract;
 import com.fenda.homepage.data.AllApplyData;
-import com.fenda.homepage.data.UndevelopedApplyData;
 import com.fenda.homepage.model.MainModel;
 import com.fenda.homepage.observer.MyContentObserver;
 import com.fenda.homepage.presenter.MainPresenter;
 import com.fenda.homepage.receiver.ScreenOffAdminReceiver;
-import com.fenda.homepage.scrollview.ObservableScrollView;
-import com.fenda.homepage.scrollview.ScrollViewListener;
 import com.fenda.protocol.tcp.TCPConfig;
 import com.fenda.protocol.tcp.bean.BaseTcpMessage;
 import com.fenda.protocol.tcp.bean.EventMessage;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.json.JSONObject;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -139,6 +129,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     private RelativeLayout relaBeDev;
     private ImageView imgGIF;
     private boolean isWeather;
+    private boolean openNewsFlag;
 
     private Handler mHandler = new Handler(){
         @Override
@@ -662,6 +653,14 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRecommendEvent(MusicPlayBean bean) {
         newsRecommend = bean.getFdMusics();
+        List<FDMusic> newsListData;
+        newsListData = bean.getFdMusics();
+        if (newsListData !=null&& openNewsFlag) {
+            openNewsFlag = false;
+            ARouter.getInstance().build(RouterPath.NEWS.NEWS_ACTIVITY)
+                    .withObject("newsListData", newsListData)
+                    .navigation();
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -907,7 +906,8 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 if(applyId.equals(com.fenda.homepage.data.Constant.SETTINGS)){
                     ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.CALCULATOR)){
-                    ToastUtils.show("计算器");
+                    //                    ToastUtils.show("计算器");
+                    ARouter.getInstance().build(RouterPath.Calculator.CALCULATOR_ACTIVITY).navigation();
                 }
                 else if (applyId.equals(com.fenda.homepage.data.Constant.WEATHER)) {
                     //                    ToastUtils.show("天气");
@@ -921,8 +921,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     initVoiceProvider.nowWeather();
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.CALENDAR)) {
                     //                    ToastUtils.show("日历");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
+                    ARouter.getInstance().build(RouterPath.Calendar.Perpetual_CALENDAR_ACTIVITY).navigation();
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.PHOTO)) {
                     //                    ToastUtils.show("相册");
                     ARouter.getInstance().build(RouterPath.Gallery.GALLERY_CATOGORY).navigation();
@@ -953,8 +952,10 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     }
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.NEWS)) {
                     //                    ToastUtils.show("新闻");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
+                    openNewsFlag = true;
+                    if (initVoiceProvider != null){
+                        initVoiceProvider.requestNews(20);
+                    }
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.CROSS_TALK)) {
                     //                    ToastUtils.show("相声");
                     intent.putExtra("applyId", applyId);
