@@ -12,6 +12,7 @@ import android.view.ViewStub;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.R;
 import com.fenda.common.baseapp.AppManager;
 import com.fenda.common.util.NetUtil;
@@ -60,7 +61,7 @@ public abstract class BaseActivity extends RxAppCompatActivity {
         setContentView(R.layout.common_activity_root);
         mContext = this;
         initCommonView();
-//        ARouter.getInstance().inject(this);
+        ARouter.getInstance().inject(this);
         initView();
         initListener();
         initData();

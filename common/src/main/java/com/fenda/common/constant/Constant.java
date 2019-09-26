@@ -96,13 +96,6 @@ public interface Constant {
     }
 
     /**
-     * 音视频组件
-     */
-    interface Call {
-        String TOKEN = "token";
-    }
-
-    /**
      * 设置组件
      */
     interface Settings {
