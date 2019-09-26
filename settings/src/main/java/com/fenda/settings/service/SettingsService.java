@@ -2,6 +2,7 @@ package com.fenda.settings.service;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
@@ -45,15 +46,15 @@ public class SettingsService implements ISettingsProvider {
 
     @Override
     public void deviceStatus(Context context) {
-        if (AppUtils.isRegisterDevice(context) ){
+        if (AppUtils.isRegisterDevice(context)) {
             LogUtil.d(TAG, "device have registered~");
             if (AppUtils.isBindedDevice(context)) {
                 LogUtil.d(TAG, "device have bind~");
                 String userId = (String) SPUtils.get(BaseApplication.getContext(), Constant.Settings.USER_ID, "");
-                String rongCloudToken= (String) SPUtils.get(context, Constant.Settings.RONGYUNCLOUDTOKEN, "");
+                String rongCloudToken = (String) SPUtils.get(context, Constant.Settings.RONGYUNCLOUDTOKEN, "");
                 // 调用音视频服务接口登录IM
                 ICallProvider loginService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
-                if(loginService != null){
+                if (loginService != null) {
                     loginService.login(rongCloudToken);
                 }
                 LogUtil.d(TAG, "userId = " + userId);
@@ -75,7 +76,7 @@ public class SettingsService implements ISettingsProvider {
     }
 
     private void registerDevice(final Context context) {
-        registeVersion= AppUtils.getVerName(context);
+        registeVersion = AppUtils.getVerName(context);
         registeMac = DeviceIdUtil.getLocalMac();
         SettingsRegisterDeviceRequest deviceRegisterRequest = new SettingsRegisterDeviceRequest();
         deviceRegisterRequest.setDeviceId(DeviceIdUtil.getDeviceId());
@@ -90,7 +91,7 @@ public class SettingsService implements ISettingsProvider {
                     public void accept(BaseResponse response) throws Exception {
                         if (response.getCode() == 200 || ("操作成功").equals(response.getMessage())) {  //注册成功
                             registerSuccess(context, response);
-                        } else if(("设备已经注册").equals(response.getMessage())){  //已经注册
+                        } else if (("设备已经注册").equals(response.getMessage())) {  //已经注册
                             haveRegisterSuccess(context);
                         } else {   //注册失败
                             ToastUtils.show("注册失败，请重启后再试！");
@@ -111,12 +112,14 @@ public class SettingsService implements ISettingsProvider {
         SPUtils.put(context, Constant.Settings.DEVICE_NAME, response.getData().getName());
         SPUtils.put(context, Constant.Settings.DEVICE_ICON, response.getData().getIcon());
         SPUtils.put(context, Constant.Settings.VCODE, response.getData().getVcode());
-        SPUtils.put(context, Constant.Settings.RONGYUNCLOUDTOKEN, response.getData().getRongcloud_token());
-
-        // 调用音视频服务接口登录IM
-        ICallProvider loginService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
-        if(loginService != null){
-            loginService.login(response.getData().getRongcloud_token());
+        String rongCloudToken = response.getData().getRongcloud_token();
+        if (!TextUtils.isEmpty(rongCloudToken)) {
+            SPUtils.put(context, Constant.Settings.RONGYUNCLOUDTOKEN, rongCloudToken);
+            // 调用音视频服务接口登录IM
+            ICallProvider loginService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
+            if (loginService != null) {
+                loginService.login(rongCloudToken);
+            }
         }
 
         String userId = (String) SPUtils.get(BaseApplication.getInstance(), Constant.Settings.USER_ID, "");
@@ -146,7 +149,7 @@ public class SettingsService implements ISettingsProvider {
                     public void accept(BaseResponse response) throws Exception {
                         if (response.getCode() == 200) {
                             LogUtil.d(TAG, "getDeviceInfo = " + response.getData());
-                            queryDeviceInfoSuccess(context,  response);
+                            queryDeviceInfoSuccess(context, response);
                         } else {
                             LogUtil.d(TAG, "queryDeviceInfo fail = " + response);
                             ToastUtils.show(R.string.settings_init_device_status_query_fail);
@@ -166,15 +169,16 @@ public class SettingsService implements ISettingsProvider {
         SPUtils.put(context, Constant.Settings.DEVICE_NAME, response.getData().getName());
         SPUtils.put(context, Constant.Settings.DEVICE_ICON, response.getData().getIcon());
         SPUtils.put(context, Constant.Settings.VCODE, response.getData().getVcode());
-        SPUtils.put(context, Constant.Settings.RONGYUNCLOUDTOKEN, response.getData().getRongcloud_token());
-
-        // 调用音视频服务接口登录IM
-        ICallProvider loginService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
-        if(loginService != null){
-            LogUtil.d(TAG, "ICallProvider 登录IM ");
-            loginService.login(response.getData().getRongcloud_token());
+        String rongCloudToken = response.getData().getRongcloud_token();
+        if (!TextUtils.isEmpty(rongCloudToken)) {
+            SPUtils.put(context, Constant.Settings.RONGYUNCLOUDTOKEN, rongCloudToken);
+            // 调用音视频服务接口登录IM
+            ICallProvider loginService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
+            if (loginService != null) {
+                LogUtil.d(TAG, "ICallProvider 登录IM ");
+                loginService.login(rongCloudToken);
+            }
         }
-
         String userId = (String) SPUtils.get(context, Constant.Settings.USER_ID, "");
         LogUtil.d(TAG, "userId = " + userId);
         ClientBootstrap bootstrap = ClientBootstrap.getInstance();
