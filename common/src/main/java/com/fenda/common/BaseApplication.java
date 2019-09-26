@@ -13,6 +13,7 @@ import com.fenda.common.constant.Constant;
 import com.fenda.common.db.ContentProviderManager;
 import com.fenda.common.provider.IVoiceRequestProvider;
 import com.fenda.common.router.RouterPath;
+import com.fenda.common.util.DensityUtil;
 import com.fenda.common.util.LogUtil;
 import com.fenda.protocol.AppApplicaiton;
 import com.orhanobut.logger.AndroidLogAdapter;
@@ -65,6 +66,15 @@ public class BaseApplication extends AppApplicaiton {
      */
     private boolean isCall;
 
+    /**
+     * 屏幕的宽度
+     */
+    private int screenWidth;
+    /**
+     * 屏幕的高度
+     */
+    private int screenHeight;
+
 
 
     @Override
@@ -86,6 +96,8 @@ public class BaseApplication extends AppApplicaiton {
 //                return BuildConfig.LOG_DEBUG;
 //            }
 //        });
+        screenWidth  = DensityUtil.getScreenWidth(this);
+        screenHeight = DensityUtil.getScreenHeight(this);
 
     }
 
@@ -99,12 +111,12 @@ public class BaseApplication extends AppApplicaiton {
         Beta.installTinker();
     }
 
+
+
     public static BaseApplication getBaseInstance() {
         return instance;
     }
-    public static BaseApplication getInstance() {
-        return instance;
-    }
+
 
     public boolean isNewsPlay() {
         return isNewsPlay;
@@ -164,5 +176,19 @@ public class BaseApplication extends AppApplicaiton {
         isCall = call;
     }
 
+    public int getScreenWidth() {
+        return screenWidth;
+    }
 
+    public void setScreenWidth(int screenWidth) {
+        this.screenWidth = screenWidth;
+    }
+
+    public int getScreenHeight() {
+        return screenHeight;
+    }
+
+    public void setScreenHeight(int screenHeight) {
+        this.screenHeight = screenHeight;
+    }
 }

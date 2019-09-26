@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewStub;
 import android.view.Window;
@@ -16,6 +17,7 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.R;
 import com.fenda.common.baseapp.AppManager;
 import com.fenda.common.util.NetUtil;
+import com.fenda.common.util.ScreenSaverManager;
 import com.fenda.common.view.LoadingInitView;
 import com.fenda.common.view.LoadingTransView;
 import com.fenda.common.view.NetErrorView;
@@ -71,10 +73,15 @@ public abstract class BaseActivity extends RxAppCompatActivity {
 
     public boolean initStatusBar() {
         return false;
-
     }
 
-
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_UP) {
+            ScreenSaverManager.eliminateEvent();//设置手指离开屏幕的时间
+        }
+        return super.dispatchTouchEvent(ev);
+    }
     /**
      * 全透状态栏
      */

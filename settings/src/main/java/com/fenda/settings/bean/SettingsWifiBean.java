@@ -37,7 +37,8 @@ public class SettingsWifiBean {
         return itemStatus;
     }
 
-    public void setItemStatus(String itemStatus) {
+    public void setItemStatus(String name, String itemStatus) {
+        this.name = name;
         this.itemStatus = itemStatus;
     }
 

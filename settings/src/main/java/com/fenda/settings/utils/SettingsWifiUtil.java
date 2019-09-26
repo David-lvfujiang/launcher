@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
+import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -106,6 +107,110 @@ public class SettingsWifiUtil {
         }
     }
 
+    /**
+     * Function:判断扫描结果是否连接上<br>
+     * @param result
+     * @return<br>
+     */
+    public boolean isConnect(ScanResult result) {
+        if (result == null) {
+            return false;
+        }
+        mWifiInfo = mWifiManager.getConnectionInfo();
+        String g2 = "\"" + result.SSID + "\"";
+        if (mWifiInfo.getSSID() != null && mWifiInfo.getSSID().endsWith(g2) && mWifiInfo.getSupplicantState() == SupplicantState.COMPLETED) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean connectSpecificAP(ScanResult scan) {
+        List<WifiConfiguration> list = mWifiManager.getConfiguredNetworks();
+        boolean networkInSupplicant = false;
+        boolean connectResult = false;
+        // 重新连接指定AP
+        mWifiManager.disconnect();
+        for (WifiConfiguration w : list) {
+            // 将指定AP 名字转化
+            // String str = convertToQuotedString(info.ssid);
+            if (w.BSSID != null && w.BSSID.equals(scan.BSSID)) {
+                connectResult = mWifiManager.enableNetwork(w.networkId, true);
+                // mWifiManager.saveConfiguration();
+                networkInSupplicant = true;
+                break;
+            }
+        }
+        if (!networkInSupplicant) {
+            WifiConfiguration config = CreateWifiInfo(scan, "");
+            connectResult = addNetwork11(config);
+        }
+
+        return connectResult;
+    }
+
+    /**
+     * 添加到网络
+     *
+     * @param wcg
+     */
+    public boolean addNetwork11(WifiConfiguration wcg) {
+        if (wcg == null) {
+            return false;
+        }
+        // receiverDhcp = new ReceiverDhcp(ctx, mWifiManager, this,
+        // wlanHandler);
+        // ctx.registerReceiver(receiverDhcp, new
+        // IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION));
+        int wcgID = mWifiManager.addNetwork(wcg);
+        boolean b = mWifiManager.enableNetwork(wcgID, true);
+        mWifiManager.saveConfiguration();
+        System.out.println(b);
+        return b;
+    }
+
+
+    // 然后是一个实际应用方法，只验证过没有密码的情况：
+    public WifiConfiguration CreateWifiInfo(ScanResult scan, String Password) {
+        WifiConfiguration config = new WifiConfiguration();
+        config.hiddenSSID = false;
+        config.status = WifiConfiguration.Status.ENABLED;
+
+        if (scan.capabilities.contains("WEP")) {
+            config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+            config.allowedAuthAlgorithms
+                    .set(WifiConfiguration.AuthAlgorithm.OPEN);
+            config.allowedGroupCiphers
+                    .set(WifiConfiguration.GroupCipher.WEP104);
+
+            config.SSID = "\"" + scan.SSID + "\"";
+
+            config.wepTxKeyIndex = 0;
+            config.wepKeys[0] = Password;
+            // config.preSharedKey = "\"" + SHARED_KEY + "\"";
+        } else if (scan.capabilities.contains("PSK")) {
+            //
+            config.SSID = "\"" + scan.SSID + "\"";
+            config.preSharedKey = "\"" + Password + "\"";
+        } else if (scan.capabilities.contains("EAP")) {
+            config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_EAP);
+            config.allowedAuthAlgorithms
+                    .set(WifiConfiguration.AuthAlgorithm.OPEN);
+            config.allowedPairwiseCiphers
+                    .set(WifiConfiguration.PairwiseCipher.TKIP);
+            config.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+            config.SSID = "\"" + scan.SSID + "\"";
+            config.preSharedKey = "\"" + Password + "\"";
+        } else {
+            config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+
+            config.SSID = "\"" + scan.SSID + "\"";
+            // config.BSSID = info.mac;
+            config.preSharedKey = null;
+            //
+        }
+
+        return config;
+    }
 
 
     /**
@@ -309,8 +414,7 @@ public class SettingsWifiUtil {
                 bean.setStatus(status);
                 bean.setResult(scanResult);
                 beans.add(0,bean);
-            }
-            else {
+            } else {
                 bean.setStatus(0);
                 bean.setResult(scanResult);
                 beans.add(bean);
@@ -350,7 +454,7 @@ public class SettingsWifiUtil {
     public int getNetworkId(String mSsid) {
         int connectId = 0;
         List<WifiConfiguration> wifiConfigurationList = mWifiManager.getConfiguredNetworks();
-        LogUtil.d(TAG, "wifiConfigurationList = " + wifiConfigurationList);
+//        LogUtil.d(TAG, "wifiConfigurationList = " + wifiConfigurationList);
 
         if (wifiConfigurationList != null && wifiConfigurationList.size() != 0) {
             for (int i = 0; i < wifiConfigurationList.size(); i++) {

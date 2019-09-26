@@ -302,6 +302,30 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
         message.setData(new BaseTcpMessage());
         EventBusUtils.post(message);
 
+        DDS.getInstance().getAgent().setDMCallback(new DMCallback() {
+            @Override
+            public JSONObject onDMResult(JSONObject jsonObject) {
+                try {
+                    LogUtil.e("onDMResult =====  "+jsonObject.toString());
+                    JSONObject dmJson = jsonObject.optJSONObject("dm");
+                    if (BaseApplication.getBaseInstance().isCall()){
+                        String initentName = dmJson.optString("intentName");
+                        if (!"挂断电话".equals(initentName)){
+                            dmJson.put("nlg","");
+                            dmJson.put("shouldEndSession",false);
+                            jsonObject.put("ignore", true);
+                        }
+                    }else if (BaseApplication.getBaseInstance().isRequestWeather() || BaseApplication.getBaseInstance().isRequestNews()){
+                        dmJson.put("nlg","");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                LogUtil.e("onDMResult ===== end ======  "+jsonObject.toString());
+                return jsonObject;
+            }
+        });
+
 
     }
 
@@ -750,6 +774,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                                             if (weatherProvider != null) {
                                                 weatherProvider.weatherFromVoiceControlToMainPage(data);
                                             }
+                                            DDS.getInstance().getAgent().stopDialog();
                                             BaseApplication.getBaseInstance().setRequestWeather(false);
                                         } else {
                                             if (weatherProvider != null) {
