@@ -5,7 +5,10 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.GET_TASKS" />
 
-    <application android:name="debug.MainApplication">
+    <application
+        android:name="debug.MainApplication"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        >
 
         <!-- 会话界面 -->
         <activity
@@ -24,7 +27,12 @@
         </activity>
 
 
-        <activity android:name="debug.TextActivity"></activity>
+        <activity android:name="debug.TextActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".LeavemessageDialogActivity"

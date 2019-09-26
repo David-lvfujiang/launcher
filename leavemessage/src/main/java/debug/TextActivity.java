@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 
+import com.fenda.leavemessage.LeaveMessageService;
 import com.fenda.leavemessage.R;
 
 import io.rong.imkit.RongIM;
@@ -27,7 +28,9 @@ public class TextActivity extends FragmentActivity implements View.OnClickListen
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.button) {
-            RongIM.getInstance().startConversation(this, Conversation.ConversationType.PRIVATE, "15977395823", "15977395823");
+            LeaveMessageService service = new LeaveMessageService();
+            service.initRongIMlistener();
+              RongIM.getInstance().startConversation(this, Conversation.ConversationType.PRIVATE, "15977395823", "15977395823");
         }
     }
 }
