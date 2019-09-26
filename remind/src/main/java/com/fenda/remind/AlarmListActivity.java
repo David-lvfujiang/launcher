@@ -72,18 +72,14 @@ public class AlarmListActivity extends BaseActivity {
         if (Constant.Remind.DELETE_REMIND.equals(alarmType)){
             tvAlarmEdit.setText("完成");
         }
-        if (alarmBeans == null){
-            alarmList.setVisibility(View.GONE);
-        }else {
-            alarmList.setVisibility(View.VISIBLE);
-            LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-            alarmList.setLayoutManager(manager);
-            alarmList.setItemAnimator(new DefaultItemAnimator());
-            mAdapter = new AlarmAdapter(this, alarmBeans);
-            alarmList.setAdapter(mAdapter);
-            countDownTime();
-            addListener();
-        }
+        LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        alarmList.setLayoutManager(manager);
+        alarmList.setItemAnimator(new DefaultItemAnimator());
+        mAdapter = new AlarmAdapter(this, alarmBeans);
+        alarmList.setAdapter(mAdapter);
+        countDownTime();
+        addListener();
+
 
     }
 
@@ -149,11 +145,6 @@ public class AlarmListActivity extends BaseActivity {
         super.onNewIntent(intent);
         ArrayList<AlarmBean> mAlarmBean = intent.getParcelableArrayListExtra(Constant.Remind.ALARM_LIST);
         alarmType   = intent.getStringExtra(Constant.Remind.ALARM_TYPE);
-        if (mAlarmBean == null){
-            alarmList.setVisibility(View.GONE);
-        }else {
-            alarmList.setVisibility(View.VISIBLE);
-        }
         if (Constant.Remind.DELETE_REMIND.equals(alarmType)){
             if (alarmBeans == null){
                 alarmBeans = mAlarmBean;

@@ -328,7 +328,6 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
         finish();
 //        overridePendingTransition(R.anim.submenu_push_up_in, R.anim.submenu_push_up_out);
     }
-
     @Override
     protected void onStart() {
         super.onStart();

@@ -26,13 +26,11 @@ public class MainActivity extends AppCompatActivity {
 
 //    [{"date":"20190830","id":131,"object":"闹钟","operation":"设置","period":"下午","recent_tsp":1567155600,"time":"17:00:00","timestamp":1567155600,"vid":"7596346627167086667"}]
     private TextView tvTest;
-    private TextView tvTest2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         tvTest = findViewById(R.id.tv_test);
-        tvTest2 = findViewById(R.id.textView);
 
         tvTest.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,14 +86,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-            }
-        });
-
-        tvTest2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, AlarmListActivity.class);
-                startActivity(intent);
             }
         });
     }
