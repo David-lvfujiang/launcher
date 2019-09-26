@@ -5,6 +5,7 @@
     <application>
         <activity android:name=".view.CalendarMainActivity" android:launchMode="singleTask"></activity>
         <activity android:name=".view.HolidayMainActivity" android:launchMode="singleTask"></activity>
+        <activity android:name=".view.PerpetualCalendarActivity" android:launchMode="singleTask"></activity>
     </application>
 
 </manifest>

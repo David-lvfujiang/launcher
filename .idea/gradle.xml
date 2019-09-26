@@ -3,9 +3,6 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
-        <compositeConfiguration>
-          <compositeBuild compositeDefinitionSource="SCRIPT" />
-        </compositeConfiguration>
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
@@ -17,12 +14,14 @@
             <option value="$PROJECT_DIR$/IMLib" />
             <option value="$PROJECT_DIR$/andlink" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/calculator" />
             <option value="$PROJECT_DIR$/calendar" />
             <option value="$PROJECT_DIR$/call" />
             <option value="$PROJECT_DIR$/common" />
             <option value="$PROJECT_DIR$/encyclopedia" />
             <option value="$PROJECT_DIR$/gallery" />
             <option value="$PROJECT_DIR$/homepage" />
+            <option value="$PROJECT_DIR$/leavemessage" />
             <option value="$PROJECT_DIR$/news" />
             <option value="$PROJECT_DIR$/player" />
             <option value="$PROJECT_DIR$/protocol" />
@@ -34,6 +33,7 @@
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
+        <option name="testRunner" value="PLATFORM" />
       </GradleProjectSettings>
     </option>
   </component>

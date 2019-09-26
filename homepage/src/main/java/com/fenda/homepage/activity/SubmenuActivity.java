@@ -13,9 +13,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.base.BaseActivity;
+import com.fenda.common.basebean.player.FDMusic;
+import com.fenda.common.basebean.player.MusicPlayBean;
 import com.fenda.common.provider.IVoiceRequestProvider;
 import com.fenda.common.provider.IWeatherProvider;
 import com.fenda.common.router.RouterPath;
+import com.fenda.common.util.FastClickUtils;
 import com.fenda.common.util.SPUtils;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.homepage.Adapter.GridAdapter;
@@ -26,6 +29,11 @@ import com.fenda.homepage.data.Constant;
 import com.fenda.homepage.data.UndevelopedApplyData;
 import com.fenda.homepage.scrollview.ObservableScrollView;
 import com.fenda.homepage.scrollview.ScrollViewListener;
+
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +55,6 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
     private ImageView submenuDropRight;
     IVoiceRequestProvider initVoiceProvider;
     IWeatherProvider mIWeatherProvider;
-
     @Override
     public int onBindLayout() {
         return R.layout.activity_submenu;
@@ -95,11 +102,15 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
         mGridAdapter.setOnItemClickListener(new GridAdapter.OnItemClickListener() {
             @Override
             public void onItemClick( View view, String applyId) {
+                if (FastClickUtils.isFastClick()){
+                    return;
+                }
                 Intent intent = new Intent(SubmenuActivity.this, PromptActivity.class);
                 if(applyId.equals(Constant.SETTINGS)){
                     ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
                 } else if (applyId.equals(Constant.CALCULATOR)){
-                    ToastUtils.show("计算器");
+//                    ToastUtils.show("计算器");
+                    ARouter.getInstance().build(RouterPath.Calculator.CALCULATOR_ACTIVITY).navigation();
                 }
                 else if (applyId.equals(Constant.WEATHER)) {
 //                    ToastUtils.show("天气");
@@ -113,13 +124,12 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
                     initVoiceProvider.nowWeather();
                 } else if (applyId.equals(Constant.CALENDAR)) {
                     //                    ToastUtils.show("日历");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
+                    ARouter.getInstance().build(RouterPath.Calendar.Perpetual_CALENDAR_ACTIVITY).navigation();
                 } else if (applyId.equals(Constant.PHOTO)) {
                     //                    ToastUtils.show("相册");
                     ARouter.getInstance().build(RouterPath.Gallery.GALLERY_CATOGORY).navigation();
                 } else if (applyId.equals(Constant.TIME)) {
-                    ToastUtils.show("时钟");
+                    ToastUtils.show("闹钟");
                 } else if (applyId.equals(Constant.FM)) {
                     //                    ToastUtils.show("收音机");
                     intent.putExtra("applyId", applyId);
@@ -129,10 +139,6 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
                     PackageManager packageManager = getPackageManager();
                     Intent packageIntent = packageManager.getLaunchIntentForPackage("com.android.camera2");
                     startActivity(packageIntent);
-                } else if (applyId.equals(Constant.PLAY)) {
-//                    ToastUtils.show("播放器");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
                 } else if (applyId.equals(Constant.QQ_MUSIC)) {
                     //                    ToastUtils.show("QQ音乐");
                     if (initVoiceProvider != null){
@@ -145,8 +151,9 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
                     }
                 } else if (applyId.equals(Constant.NEWS)) {
 //                    ToastUtils.show("新闻");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
+                    if (initVoiceProvider != null){
+                        initVoiceProvider.requestNews(20);
+                    }
                 } else if (applyId.equals(Constant.CROSS_TALK)) {
                     //                    ToastUtils.show("相声");
                     intent.putExtra("applyId", applyId);
@@ -245,14 +252,16 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
 
     @Override
     public void initData() {
-        isSubmenuActivityOpen = true;
         if (initVoiceProvider == null) {
             initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
         }
         if (mIWeatherProvider == null){
             mIWeatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
         }
-
+        if (initVoiceProvider != null){
+            initVoiceProvider.openVoice();
+        }
+        ARouter.getInstance().inject(this);
 
     }
 
@@ -301,7 +310,17 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
         rotateAnimation2.setInterpolator(new LinearInterpolator());
         rotateAnimation2.setDetachWallpaper(true);
         submenuDropRight.startAnimation(rotateAnimation2);
+    }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNewsEvent(MusicPlayBean newsBean) {
+        List<FDMusic> newsListData;
+        newsListData = newsBean.getFdMusics();
+        if (newsListData !=null) {
+            ARouter.getInstance().build(RouterPath.NEWS.NEWS_ACTIVITY)
+                    .withObject("newsListData", newsListData)
+                    .navigation();
+        }
     }
 
     @Override
@@ -309,10 +328,20 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
         finish();
 //        overridePendingTransition(R.anim.submenu_push_up_in, R.anim.submenu_push_up_out);
     }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        isSubmenuActivityOpen = true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isSubmenuActivityOpen = false;
+    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        isSubmenuActivityOpen = false;
     }
 }

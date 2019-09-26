@@ -45,6 +45,7 @@ public interface RouterPath {
         String CALENDAR_ACTIVITY = "/calendar/CalendarActivity";
         String CALENDAR_PROVIDER = "/calendar/CalendarPresenTer";
         String HOLIDAY_ACTIVITY = "/calendar/HolidayActivity";
+        String Perpetual_CALENDAR_ACTIVITY = "/calendar/PerpetualCalendarActivity";
     }
     public interface Encyclopedia {
         String ENCYCLOPEDIA_PROVIDER = "/encyclopedia/EncyclopediaFragmentPensenter";
@@ -103,5 +104,8 @@ public interface RouterPath {
     }
     interface Recommend {
         String RECOMMEND = "/recommend/recommend";
+    }
+    interface Calculator {
+        String CALCULATOR_ACTIVITY = "/calculator/calculator";
     }
 }

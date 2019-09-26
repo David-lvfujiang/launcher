@@ -14,6 +14,7 @@ import com.fenda.common.util.ImageUtil;
 import com.fenda.news.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author matt.liaojianpeng
@@ -25,9 +26,9 @@ import java.util.ArrayList;
  */
 public class ViewPagerCardAdapter extends PagerAdapter {
     private Context mContext;
-    private ArrayList<FDMusic> newsListData;
+    private List<FDMusic> newsListData;
 
-    public ViewPagerCardAdapter(Context mContext, ArrayList<FDMusic> newsListData) {
+    public ViewPagerCardAdapter(Context mContext, List<FDMusic> newsListData) {
         this.mContext = mContext;
         this.newsListData = newsListData;
     }

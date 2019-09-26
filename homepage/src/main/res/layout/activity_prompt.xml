@@ -7,25 +7,21 @@
     android:layout_height="match_parent"
     android:background="@mipmap/cm_bg_03">
 
-    <ImageView
-        android:id="@+id/iv_prompt_back"
-        android:layout_width="100dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="35dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/submenu_back" />
 
     <TextView
         android:id="@+id/tv_prompt_title"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="语音提示"
+        android:layout_height="35dp"
+        android:layout_marginTop="35dp"
+        android:drawableStart="@mipmap/submenu_back"
+        android:paddingStart="50dp"
+        android:paddingEnd="50dp"
+        android:text="@string/prompt_title"
         android:textColor="#fff"
         android:textSize="28sp"
-        app:layout_constraintBottom_toBottomOf="@id/iv_prompt_back"
-        app:layout_constraintStart_toEndOf="@id/iv_prompt_back"
-        app:layout_constraintTop_toTopOf="@id/iv_prompt_back" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <TextView
         android:id="@+id/tv_prompt1"

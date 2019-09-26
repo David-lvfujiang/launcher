@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">news</string>
     <string name="news_time_source">%s&#160;&#160;&#160;&#160;%s</string>
+    <string name="news_title">今日资讯</string>
+    <string name="news_tips">可以试试“你好小乐，返回”</string>
 </resources>

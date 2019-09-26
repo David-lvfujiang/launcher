@@ -1,13 +1,8 @@
 package com.fenda.settings.activity;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.net.ConnectivityManager;
-import android.net.LinkProperties;
-import android.net.Network;
-import android.net.NetworkCapabilities;
 import android.net.Uri;
 import android.os.Build;
 import android.os.SystemClock;
@@ -24,7 +19,6 @@ import com.fenda.common.base.BaseResponse;
 import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.db.ContentProviderManager;
-import com.fenda.common.provider.ICallProvider;
 import com.fenda.common.provider.IVoiceRequestProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.AppUtils;
@@ -263,16 +257,6 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
         SPUtils.put(getApplicationContext(), Constant.Settings.DEVICE_NAME, queryDeviceInfoResponse.getName());
         SPUtils.put(getApplicationContext(), Constant.Settings.DEVICE_ICON, queryDeviceInfoResponse.getIcon());
         SPUtils.put(getApplicationContext(), Constant.Settings.VCODE, queryDeviceInfoResponse.getVcode());
-        SPUtils.put(getApplicationContext(), Constant.Settings.RONGYUNCLOUDTOKEN, queryDeviceInfoResponse.getRongcloud_token());
-
-       // 调用音视频服务接口登录IM
-        ICallProvider loginService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
-        if(loginService != null){
-            LogUtil.d(TAG, "ICallProvider 登录IM");
-            loginService.login(queryDeviceInfoResponse.getRongcloud_token());
-        } else {
-            LogUtil.d(TAG, "ICallProvider 登录IM为空");
-        }
         final String filePath2 = QRcodeUtil.getFileRoot(SettingsBindDeviceActivity.this) + File.separator + "qr_" + System.currentTimeMillis() + ".jpg";
 //        二维码图片较大时，生成图片、保存文件的时间可能较长，因此放在新线程中
         CThreadPoolExecutor.runInBackground(new Runnable() {
