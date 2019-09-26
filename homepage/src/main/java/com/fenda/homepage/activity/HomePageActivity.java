@@ -231,7 +231,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-
                 //              int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
             }
         });
@@ -273,12 +272,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             mICallProvider.initSdk();
         }
 
-        ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
-        if (settingService != null) {
-            settingService.deviceStatus(this);
-        }
         isNetWodrkConnect();
-
     }
 
     /**
@@ -309,8 +303,8 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             AppUtils.saveBindedDevice(getApplicationContext(), false);
             ARouter.getInstance().build(RouterPath.SETTINGS.SettingsBindDeviceActivity).navigation();
         }
-        //普通成员退出家庭通知
-        else if (message.getCode() == TCPConfig.MessageType.USER_EXIT_FAMILY) {
+        //普通成员退出或加入家庭通知
+        else if (message.getCode() == TCPConfig.MessageType.USER_EXIT_FAMILY || message.getCode() == TCPConfig.MessageType.NEW_USER_ADD) {
             LogUtil.d("bind onReceiveEvent = " + message);
             ContentProviderManager.getInstance(mContext, Constant.Common.URI).clear();
             mPresenter.getFamilyContacts();
@@ -322,7 +316,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 if (bean != null) {
                     ContentProviderManager.getInstance(mContext, Constant.Common.URI).updateUserHeadByUserID(bean.getIcon(), bean.getUserId());
                 }
-
             }
         }else if (message.getCode() == Constant.Common.INIT_VOICE_SUCCESS){
             // @todo  勿删 语音初始化成功后会回调这里,在语音成功之前调用会导致应用崩溃
@@ -341,12 +334,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     initVoiceProvider.requestWeather();
                     initVoiceProvider.requestNews(20);
                 }
-
             }
-
         }
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void isNetWodrkConnect() {
@@ -443,6 +433,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     LogUtil.d(TAG, "STATE_DISCONNECTED getName = " + mConnectionBluetoothDevice.getName() + ", STATE_DISCONNECTED getAddress = " + mConnectionBluetoothDevice.getAddress());
                 } else if (BluetoothAdapter.STATE_CONNECTED == state) {
                     LogUtil.d(TAG, "蓝牙连上了");
+
+//                    closeDiscoverableTimeout();
+
                     mBtName = mConnectionBluetoothDevice.getName();
                     SPUtils.put(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME, mBtName);
                     LogUtil.d(TAG, "STATE_CONNECTED getName = " + mConnectionBluetoothDevice.getName() + ", STATE_CONNECTED getAddress = " + mConnectionBluetoothDevice.getAddress());
@@ -492,6 +485,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             //通讯录
             ARouter.getInstance().build(RouterPath.Call.MAIN_ACTIVITY).navigation();
         } else if (resId == R.id.iv_main_cmcc) {
+//            int i = 1/0;
+//            LogUtil.d(TAG, "i = " + i);
+
             //通讯录
 //            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
         } else if (resId == R.id.iv_header_weather || resId == R.id.tv_header_temp) {
@@ -619,4 +615,36 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             ToastUtils.show("没有设备管理员权限");
         }
     }
+
+    public void closeDiscoverableTimeout() {
+        BluetoothAdapter adapter=BluetoothAdapter.getDefaultAdapter();
+        try {
+            Method setDiscoverableTimeout = BluetoothAdapter.class.getMethod("setDiscoverableTimeout", int.class);
+            setDiscoverableTimeout.setAccessible(true);
+            Method setScanMode =BluetoothAdapter.class.getMethod("setScanMode", int.class,int.class);
+            setScanMode.setAccessible(true);
+
+            setDiscoverableTimeout.invoke(adapter, 1);
+            setScanMode.invoke(adapter, BluetoothAdapter.SCAN_MODE_CONNECTABLE,1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setDiscoverableTimeout(int timeout) {
+        BluetoothAdapter adapter=BluetoothAdapter.getDefaultAdapter();
+        try {
+            Method setDiscoverableTimeout = BluetoothAdapter.class.getMethod("setDiscoverableTimeout", int.class);
+            setDiscoverableTimeout.setAccessible(true);
+            Method setScanMode =BluetoothAdapter.class.getMethod("setScanMode", int.class,int.class);
+            setScanMode.setAccessible(true);
+
+            setDiscoverableTimeout.invoke(adapter, timeout);
+            setScanMode.invoke(adapter, BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE,timeout);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

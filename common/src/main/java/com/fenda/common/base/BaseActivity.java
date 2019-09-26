@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewStub;
 import android.view.Window;
@@ -16,7 +15,6 @@ import android.view.WindowManager;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.R;
 import com.fenda.common.baseapp.AppManager;
-import com.fenda.common.mvp.BaseView;
 import com.fenda.common.util.NetUtil;
 import com.fenda.common.view.LoadingInitView;
 import com.fenda.common.view.LoadingTransView;
@@ -30,15 +28,13 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import io.reactivex.disposables.CompositeDisposable;
-
 
 /**
  * @Author mirrer.wangzhonglin
  * @Time 2019/8/26  15:32
  * @Description This is BaseActivity
  */
-public abstract class BaseActivity extends RxAppCompatActivity{
+public abstract class BaseActivity extends RxAppCompatActivity {
 
 
     protected Context mContext;
@@ -53,15 +49,13 @@ public abstract class BaseActivity extends RxAppCompatActivity{
     private ViewStub mViewNoData;
     private ViewStub mViewError;
     private boolean isConfigChange = false;
-
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         boolean isFull = initStatusBar();
-        if (!isFull){
+        if (!isFull) {
             setStatusBarFullTransparent();
-        }else {
+        } else {
             NoTitleFullScreen();
         }
         setContentView(R.layout.common_activity_root);
@@ -104,13 +98,12 @@ public abstract class BaseActivity extends RxAppCompatActivity{
     /**
      * 全屏显示 设置这个状态可能无法下拉状态栏
      */
-    private void NoTitleFullScreen(){
+    private void NoTitleFullScreen() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
-
 
 
     protected void initCommonView() {
@@ -167,7 +160,6 @@ public abstract class BaseActivity extends RxAppCompatActivity{
     }
 
 
-
     public abstract int onBindLayout();
 
     public abstract void initView();
@@ -178,10 +170,10 @@ public abstract class BaseActivity extends RxAppCompatActivity{
     }
 
 
-
     public void showInitLoadView() {
         showInitLoadView(true);
     }
+
     public void hideInitLoadView() {
         showInitLoadView(false);
     }
@@ -197,9 +189,11 @@ public abstract class BaseActivity extends RxAppCompatActivity{
     public void showNoDataView() {
         showNoDataView(true);
     }
+
     public void showNoDataView(int resid) {
         showNoDataView(true, resid);
     }
+
     public void hideNoDataView() {
         showNoDataView(false);
     }
@@ -211,9 +205,6 @@ public abstract class BaseActivity extends RxAppCompatActivity{
     public void showNetWorkErrView() {
 //        showNetWorkErrView(true);
     }
-
-
-
 
 
     private void showInitLoadView(boolean show) {
@@ -244,13 +235,19 @@ public abstract class BaseActivity extends RxAppCompatActivity{
         mNetErrorView.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
-
     private void showNoDataView(boolean show) {
         if (mNoDataView == null) {
             View view = mViewNoData.inflate();
             mNoDataView = view.findViewById(R.id.view_no_data);
         }
         mNoDataView.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    public void showContentView(boolean show) {
+        if (mViewContent != null) {
+            mViewContent.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+
     }
 
     private void showNoDataView(boolean show, int resid) {
@@ -270,25 +267,23 @@ public abstract class BaseActivity extends RxAppCompatActivity{
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public  void onEvent(EventMessage<BaseTcpMessage> event) {
+    public void onEvent(EventMessage<BaseTcpMessage> event) {
     }
-
 
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         //横竖切换
-        isConfigChange=true;
+        isConfigChange = true;
     }
-
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-        if (!isConfigChange){
+        if (!isConfigChange) {
             AppManager.getAppManager().finishActivity(this);
         }
     }

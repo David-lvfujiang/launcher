@@ -16,6 +16,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
+import com.fenda.common.BaseApplication;
 import com.fenda.common.R;
 
 import java.io.File;
@@ -149,7 +150,7 @@ public class ImageUtil {
     }
 
 
-    public static final String DirectoryPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + File.separator + "imgs" + File.separator;
+    public static final String DirectoryPath =  BaseApplication.getBaseInstance().getCacheDir().getAbsolutePath() + File.separator + "imgs"+File.separator;
 
     public static void loadImg(Context context, ImageView v, String url) {
         RequestOptions options = new RequestOptions()

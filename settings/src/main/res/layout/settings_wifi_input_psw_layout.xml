@@ -68,7 +68,9 @@
             app:layout_constraintTop_toTopOf="parent"
             android:hint="@string/settings_wifi_hint_input_wifi_psw"
             android:textColorHint="@color/color_B559CBD9"
-            android:layout_marginLeft="10dp"/>
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:inputType="textPassword"/>
 
     </LinearLayout>
 

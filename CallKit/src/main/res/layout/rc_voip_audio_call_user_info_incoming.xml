@@ -39,7 +39,6 @@
             android:layout_height="@dimen/userhead188dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            app:RCDefDrawable="@drawable/rc_voip_head"
             app:RCShape="circle" />
 
         <TextView

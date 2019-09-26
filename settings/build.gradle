@@ -120,5 +120,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':common')
+
     annotationProcessor deps.arouter_compiler
 }

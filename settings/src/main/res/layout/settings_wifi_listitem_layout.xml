@@ -34,8 +34,8 @@
 
         <ImageView
             android:id="@+id/wifi_list_item_connecting"
-            android:layout_width="30dp"
-            android:layout_height="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="visible"
             android:layout_marginRight="55dp" />

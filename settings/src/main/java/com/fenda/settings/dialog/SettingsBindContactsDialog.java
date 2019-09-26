@@ -47,7 +47,7 @@ public class SettingsBindContactsDialog extends Dialog {
         tvContent.setText(text);
     }
 
-    public void setTvConcelVisibiltyGONE(){
+    public void setTvConcelVisibiltyGone(){
         tvCancel.setVisibility(View.GONE);
     }
 

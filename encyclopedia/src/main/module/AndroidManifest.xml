@@ -6,7 +6,6 @@
     <application >
         <activity android:name="com.fenda.encyclopedia.view.EncyclopediaNotAnswerActivity" android:launchMode="singleTask"></activity>
         <activity android:name="com.fenda.encyclopedia.view.EncyclopediaQuestiionActivity" android:launchMode="singleTask"/>
-        <activity android:name="com.fenda.encyclopedia.view.TextActivity"></activity>
         <activity android:name="com.fenda.encyclopedia.view.EncyclopediaSharesActivity" android:launchMode="singleTask" />
     </application>
 

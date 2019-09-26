@@ -57,7 +57,7 @@ public class SettingsWifiInputPswActivity extends BaseMvpActivity {
 
         Intent mIntent = getIntent();
         mConnectSsid = mIntent.getStringExtra("MESSAGE");
-        tvConnectName.setText("请连接" + mConnectSsid);
+        tvConnectName.setText("请输入密码连接 " + mConnectSsid);
     }
 
     @Override
