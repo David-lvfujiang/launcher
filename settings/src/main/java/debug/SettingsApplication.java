@@ -2,6 +2,7 @@ package debug;
 
 
 import com.fenda.common.BaseApplication;
+import com.fenda.common.util.ScreenSaverManager;
 
 /**
  * Created by  Android Studio.
@@ -14,5 +15,11 @@ public class SettingsApplication extends BaseApplication {
     public void onCreate() {
         super.onCreate();
 //        MTSdk.init(this, null, null, null, null);
+
+        //待机界面
+        ScreenSaverManager.init(this);
+        ScreenSaverManager.startMonitor();
+        ScreenSaverManager.eliminateEvent();
+
     }
 }

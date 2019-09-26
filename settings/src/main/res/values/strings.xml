@@ -2,6 +2,7 @@
     <string name="app_name">Settings</string>
     <string name="settings_sure">确定</string>
     <string name="settings_cancel">取消</string>
+    <string name="settings_reject">拒绝</string>
 
     <!--SettingsActivity start -->
     <string name="settings_setting">设置</string>

@@ -427,9 +427,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     LogUtil.d(TAG, "STATE_DISCONNECTED getName = " + mConnectionBluetoothDevice.getName() + ", STATE_DISCONNECTED getAddress = " + mConnectionBluetoothDevice.getAddress());
                 } else if (BluetoothAdapter.STATE_CONNECTED == state) {
                     LogUtil.d(TAG, "蓝牙连上了");
-
-//                    closeDiscoverableTimeout();
-
                     mBtName = mConnectionBluetoothDevice.getName();
                     SPUtils.put(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME, mBtName);
                     LogUtil.d(TAG, "STATE_CONNECTED getName = " + mConnectionBluetoothDevice.getName() + ", STATE_CONNECTED getAddress = " + mConnectionBluetoothDevice.getAddress());
