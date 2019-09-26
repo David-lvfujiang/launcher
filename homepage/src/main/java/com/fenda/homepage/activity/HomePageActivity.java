@@ -201,6 +201,12 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                                 mAiTipTitleTv.setText("新闻资讯｜"+newsRecommend.get(current).getMusicTitle());
                             }else {
                                 current=0;
+                                if (initVoiceProvider == null) {
+                                    initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
+                                }
+                                if (initVoiceProvider != null){
+                                    initVoiceProvider.requestNews(20);
+                                }
                             }
                         } else {
                             mAiTipTitleTv.setText(R.string.cm_main_page_describe_1);

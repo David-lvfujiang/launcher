@@ -23,6 +23,7 @@ public interface RouterPath {
         String ALARM = "/remind/AlarmActivity";
         String ALARM_LIST = "/remind/AlarmListActivity";
         String ALARM_SERVICE = "/remind/AlarmService";
+        String ALARM_RUERY = "/remind/AlarmQuery";
     }
 
     interface COMMON{

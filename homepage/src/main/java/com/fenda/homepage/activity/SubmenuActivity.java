@@ -252,7 +252,6 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
 
     @Override
     public void initData() {
-        isSubmenuActivityOpen = true;
         if (initVoiceProvider == null) {
             initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
         }
@@ -331,8 +330,19 @@ public class SubmenuActivity extends BaseActivity implements View.OnTouchListene
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        isSubmenuActivityOpen = true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isSubmenuActivityOpen = false;
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        isSubmenuActivityOpen = false;
     }
 }
