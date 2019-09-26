@@ -16,6 +16,8 @@ import com.fenda.common.provider.IPlayerProvider;
 import com.fenda.common.provider.IVoiceRequestProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.AppTaskUtil;
+import com.fenda.protocol.tcp.bean.BaseTcpMessage;
+import com.fenda.protocol.tcp.bean.EventMessage;
 import com.fenda.protocol.tcp.bus.EventBusUtils;
 
 import io.reactivex.Observable;
@@ -198,6 +200,10 @@ public class SystemControl extends SystemCtrl {
         if (Util.isQIYIPlay()) {
             IQiyiPlugin.get().getVideoApi().exit();
         }
+        EventMessage<BaseTcpMessage> message = new EventMessage();
+        message.setCode(Constant.Common.GO_HOME);
+        message.setData(new BaseTcpMessage());
+        EventBusUtils.post(message);
 
         return super.goHome();
     }

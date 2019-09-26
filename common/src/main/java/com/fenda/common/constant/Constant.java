@@ -122,6 +122,10 @@ public interface Constant {
         String VOICE_CONTROL="mVoiceControl";
 
         int INIT_VOICE_SUCCESS = Integer.MAX_VALUE;
+        //回到首页
+        int GO_HOME = Integer.MAX_VALUE-1;
+        //最小滑动距离
+        int MIX_MOVE = -10;
 
     }
 

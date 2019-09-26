@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.common.BaseApplication;
+import com.fenda.common.base.BaseActivity;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.router.RouterPath;
@@ -46,7 +47,7 @@ import java.util.Set;
  * Date:   2019/8/30 11:31
  */
 @Route(path = RouterPath.SETTINGS.SettingsActivity)
-public class SettingsActivity extends BaseMvpActivity {
+public class SettingsActivity extends BaseActivity {
     private static final String TAG = "SettingsActivity";
 
     private ImageView ivBack;
@@ -66,10 +67,6 @@ public class SettingsActivity extends BaseMvpActivity {
     private long [] mHits = null;
     private boolean mShow;
 
-    @Override
-    protected void initPresenter() {
-
-    }
 
     @Override
     public int onBindLayout() {
@@ -264,9 +261,6 @@ public class SettingsActivity extends BaseMvpActivity {
         }
     };
 
-    @Override
-    public void showErrorTip(String msg) {
-    }
 
     public void enterBind() {
         LogUtil.d(TAG, "onDisplaySettingButton----");
