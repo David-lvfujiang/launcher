@@ -50,7 +50,7 @@ public class LeavemessageDialogActivity extends BaseActivity implements View.OnC
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.leave_message_btn_look) {
-            RongIM.getInstance().startConversation(this, Conversation.ConversationType.PRIVATE, "15977395823", userName);
+            RongIM.getInstance().startConversation(this, Conversation.ConversationType.PRIVATE, userId, userName);
             finish();
         }
         if (view.getId() == R.id.leave_message_btn_cancel) {
