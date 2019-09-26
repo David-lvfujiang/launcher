@@ -16,8 +16,6 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.ai.VoiceConstant;
 import com.fenda.ai.skill.Util;
 import com.fenda.common.BaseApplication;
-import com.fenda.common.bean.UserInfoBean;
-import com.fenda.common.constant.Constant;
 import com.fenda.common.provider.IVoiceRequestProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.LogUtil;
@@ -51,37 +49,13 @@ public class RequestService implements IVoiceRequestProvider {
     @Override
     public void requestWeather(){
         try {
+            BaseApplication.getBaseInstance().setRequestWeather(true);
             Thread.sleep(600);
             LogUtil.e("requestWeather ==== 请求天气 ====");
-            BaseApplication.getBaseInstance().setRequestWeather(true);
             SkillIntent skillIntent = new SkillIntent("2019042500000544",
                     VoiceConstant.SIBICHI.TASK, "查询天气",
                     new JSONObject().put("text", "现在的天气").toString());
             DDS.getInstance().getAgent().triggerIntent(skillIntent);
-            DDS.getInstance().getAgent().setDMCallback(new DMCallback() {
-                @Override
-                public JSONObject onDMResult(JSONObject jsonObject) {
-                    try {
-                        LogUtil.e("onDMResult =====  "+jsonObject.toString());
-                        JSONObject dmJson = jsonObject.optJSONObject("dm");
-                        if (BaseApplication.getBaseInstance().isCall()){
-                            String initentName = dmJson.optString("intentName");
-                            if (!"挂断电话".equals(initentName)){
-                                dmJson.put("nlg","");
-                                dmJson.put("shouldEndSession",false);
-                                jsonObject.put("ignore", true);
-                            }
-                        }else if (BaseApplication.getBaseInstance().isRequestWeather() || BaseApplication.getBaseInstance().isRequestNews()){
-                            dmJson.put("nlg","");
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    LogUtil.e("onDMResult ===== end ======  "+jsonObject.toString());
-                    return jsonObject;
-                }
-            });
-
 
         } catch (Exception e) {
             LogUtil.e("Exception === "+e.getMessage());

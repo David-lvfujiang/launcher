@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
-import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.call.utils.ImConnectUtil;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.provider.IAppLeaveMessageProvider;

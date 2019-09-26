@@ -53,9 +53,9 @@ public class SettingsModel implements SettingsContract.Model {
     }
 
     @Override
-    public Observable<BaseResponse> agreeUserAddDevice(SettingsAgreeUserAddRequest agreeUserAddRequest) {
+    public Observable<BaseResponse> agreeUserAddDevice(SettingsAgreeUserAddRequest agreeUserAddRequest, boolean confirmType) {
         return RetrofitHelper.getInstance(SettingsContant.TEST_BASE_URL).getServer(SettingsApiService.class)
-                .confirmDeviceBind(agreeUserAddRequest)
+                .confirmDeviceBind(agreeUserAddRequest, confirmType)
                 .compose(RxSchedulers.<BaseResponse>io_main());
     }
 

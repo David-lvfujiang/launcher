@@ -769,6 +769,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                 message.setMusicName(tMusic.getMusicArtist());
                 message.setContentType(contentType);
                 message.setContent(tMusic.getContent());
+                LogUtil.e("PlayerMessage musicActivity = "+message.toString());
                 EventBusUtils.post(message);
                 // 准备播放（异步）
                 mediaPlayer.prepareAsync();

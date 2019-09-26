@@ -96,10 +96,6 @@ public class PhoneCameraAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         }
                         cameraBean.setSelectStatus(1);
                     } else if (cameraBean.getSelectStatus() == 1) {
-                        if (mSelectList.size() >= 9) {
-                            ToastUtils.show("最多只能选择9张图片");
-                            return;
-                        }
                         holder.imgSelect.setImageResource(R.mipmap.gallery_photo_selected);
                         if (!mSelectList.contains(cameraBean.getPhotos())) {
                             mSelectList.add(cameraBean.getPhotos());

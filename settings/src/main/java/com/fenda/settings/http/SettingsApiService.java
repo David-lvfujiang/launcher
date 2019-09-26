@@ -15,6 +15,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Query;
 
 /**
  * Created by  Android Studio.
@@ -41,7 +42,7 @@ public interface SettingsApiService {
 
     //设备端同意添加联系人邀请
     @POST("south-device/manage/confirmDeviceBind")
-    Observable<BaseResponse<SettingsQueryDeviceInfoResponse>> confirmDeviceBind(@Body SettingsAgreeUserAddRequest request);
+    Observable<BaseResponse> confirmDeviceBind(@Body SettingsAgreeUserAddRequest request, @Query("confirmType") boolean confirmType);
 
     //修改家庭圈昵称
     @FormUrlEncoded

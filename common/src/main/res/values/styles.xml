@@ -20,6 +20,12 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
+    <style name="LauncherTheme1" parent="NoTitleFullscreen">
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+
 
 
     <style name="view_anim" parent="android:Animation">

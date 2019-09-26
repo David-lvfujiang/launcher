@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.fenda.common.base.BaseFragment;
 import com.fenda.common.basebean.player.FDMusic;
+import com.fenda.common.util.LogUtil;
 import com.fenda.player.R;
 import com.fenda.player.bean.PlayerMessage;
 import com.fenda.protocol.tcp.bus.EventBusUtils;
@@ -99,7 +100,10 @@ public class LyricFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvnet(PlayerMessage message){
-        initLyricData(message.getMusicTitle(),message.getMusicName(),message.getContent());
+        LogUtil.e("PlayerMessage LyricFragment = "+message.toString());
+        if (message.getMsgType() == 0){
+            initLyricData(message.getMusicTitle(),message.getMusicName(),message.getContent());
+        }
 
     }
 

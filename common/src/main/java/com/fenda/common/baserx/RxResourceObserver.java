@@ -1,11 +1,7 @@
 package com.fenda.common.baserx;
 
-import android.content.Context;
-
-
 import com.fenda.common.BaseApplication;
 import com.fenda.common.R;
-import com.fenda.common.base.BaseActivity;
 import com.fenda.common.mvp.BaseView;
 import com.fenda.common.util.NetUtil;
 import com.fenda.common.util.ToastUtils;
@@ -58,6 +54,7 @@ public abstract class RxResourceObserver<T> extends ResourceObserver<T> {
         // TODO 在这里可以添加请求网络前的一些初始化操作,比如打开请求网络的loading
         if (showLoading && mView != null){
             mView.showLoading(msg);
+            mView.hideContent();
         }
     }
 
@@ -66,8 +63,8 @@ public abstract class RxResourceObserver<T> extends ResourceObserver<T> {
         if (mView != null){
             mView.hideLoading();
             mView.hideNetError();
+            mView.showContent();
         }
-
     }
 
     @Override

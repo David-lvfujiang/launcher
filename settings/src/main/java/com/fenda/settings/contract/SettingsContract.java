@@ -51,7 +51,7 @@ public interface SettingsContract {
         Observable<BaseResponse> queryDeviceInfo();
         Observable<BaseResponse> unbindDevice();
         Observable<BaseResponse> registerDevice(SettingsRegisterDeviceRequest deviceRegisterRequest);
-        Observable<BaseResponse> agreeUserAddDevice(SettingsAgreeUserAddRequest agreeUserAddRequest);
+        Observable<BaseResponse> agreeUserAddDevice(SettingsAgreeUserAddRequest agreeUserAddRequest, boolean confirmType);
         Observable<BaseResponse> changeContractNickName(SettingChangeContractNickNameRequest changeContractNickNameRequest);
         Observable<BaseResponse> deleteLinkmanFromDevice(SettingDeleteLinkmanRequest deleteLinkmanRequest);
         Observable<BaseResponse<List<UserInfoBean>>> getContactsList();
@@ -63,7 +63,9 @@ public interface SettingsContract {
         public abstract  void queryDeviceInfo();
         public abstract void unbindDevice();
         public abstract void registerDevice(SettingsRegisterDeviceRequest deviceRegisterRequest);
-        public abstract void agreeUserAddDevice(SettingsAgreeUserAddRequest agreeUserAddRequest);
+
+        public abstract void agreeUserAddDevice(SettingsAgreeUserAddRequest agreeUserAddRequest, boolean confirmType);
+
         public abstract void changeContractNickName(SettingChangeContractNickNameRequest changeContractNickNameRequest);
         public abstract void deleteLinkmanFromDevice(SettingDeleteLinkmanRequest deleteLinkmanRequest);
         public abstract void getContactsList();

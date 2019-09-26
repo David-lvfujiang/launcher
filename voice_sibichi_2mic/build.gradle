@@ -122,8 +122,8 @@ android {
                     authentication(userName: "admin", password: "fenda_nexus123")
                 }
                 pom.groupId = "com.fenda.ai"// 唯一标识（通常为模块包名，也可以任意）
-                pom.artifactId = "VoiceSibiche2mic" // 项目名称（通常为类库模块名称，也可以任意）
-                pom.version = "1.0.1" // 版本号
+                pom.artifactId = "ai_sibichi" // 项目名称（通常为类库模块名称，也可以任意）
+                pom.version = "1.0.2" // 版本号
                 pom.packaging = "aar"//打包类型
 
             }
@@ -142,12 +142,13 @@ repositories {
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     //AI语音
-    implementation 'com.sibichi.lib_dds:dds:1.10.1@aar'
+    implementation 'com.sibichi.dds:dds:1.11.1@aar'
+//    api (name: 'lib-dds-1.1.11.1-release', ext: 'aar')
     implementation 'com.sibichi.skill:iqiyi:1.0.1@aar'
     implementation 'com.sibichi.skill_mediactrl:mediacatrl:1.0.1@aar'
     implementation 'com.sibichi.skill_music:music:1.0.1@aar'
     implementation 'com.sibichi.skill_remind:remind:1.0.1@aar'
-    implementation 'com.sibichi.skill_setting:setting:1.0.1@aar'
+    implementation 'com.sibichi.skill_setting:setting:1.0.2@aar'
     implementation 'com.sibichi.skill_tvctrl:tvctrl:1.0.1@aar'
 
     implementation project(path: ':common')

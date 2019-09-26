@@ -54,7 +54,7 @@ public class ImConnectUtil {
 
         if (!RongIMClient.getInstance().getCurrentConnectionStatus().equals(RongIMClient.ConnectionStatusListener.ConnectionStatus.CONNECTED)) {
             Toast.makeText(context, "连接IM失败,正在重新连接,请稍后重试", Toast.LENGTH_SHORT).show();
-            String rongCloudToken = (String) SPUtils.get(BaseApplication.getInstance(), Constant.Call.TOKEN, "");
+            String rongCloudToken = (String) SPUtils.get(BaseApplication.getInstance(), Constant.Settings.RONGYUNCLOUDTOKEN, "");
             connectIm(rongCloudToken);
             return false;
         }

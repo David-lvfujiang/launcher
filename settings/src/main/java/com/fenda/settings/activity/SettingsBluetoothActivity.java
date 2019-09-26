@@ -130,10 +130,13 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
         mIntentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         mIntentFilter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
         mIntentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        mIntentFilter.addAction(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
         mIntentFilter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
         mIntentFilter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
-
+        int btMode = SettingsBluetoothUtil.getBluetoothScanMode();
         registerReceiver(mBroadcastReceiver, mIntentFilter);
+
+        LogUtil.d(TAG, "getBtMode = " + btMode);
     }
 
     @Override
@@ -217,6 +220,10 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
                 if (isChecked) {
                     LogUtil.d(TAG, "BT switch checked  " + isChecked);
                     mBluetoothAdapter.enable();
+
+                    int btMode2 = SettingsBluetoothUtil.getBluetoothScanMode();
+                    LogUtil.d(TAG, "getBtMode22 = " + btMode2);
+
 //                    if(mGetConnectedBtName1 != ""){
 //                        LogUtil.d(TAG, "mGetConnectedBtName1 = " + mGetConnectedBtName1);
 //                        SettingsBluetoothUtil.closeDiscoverableTimeout();
@@ -410,7 +417,7 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
 
                 if(mGetConnectedBtName.equals(bluetoothDevice.getName())){
                     blueDevice.setStatus("已连接");
-//                    SettingsBluetoothUtil.closeDiscoverableTimeout();
+                    SettingsBluetoothUtil.closeDiscoverableTimeout();
                 }
             }
             mSettingsBluetoothAdapter.getListDevices().add(blueDevice);
@@ -512,6 +519,8 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
                 setProgressBarIndeterminateVisibility(false);
                 LogUtil.d(TAG, "搜索完成......");
                 hideProgressDailog();
+            } else if(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED.equals(action)){
+                LogUtil.d(TAG, "ACTION_SCAN_MODE_CHANGED = " + action);
             } else if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
                 LogUtil.d(TAG, "BT status is changed~");
                 int blueState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 0);

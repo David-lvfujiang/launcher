@@ -94,8 +94,8 @@ public class SettingsPresenter extends SettingsContract.Presenter {
     }
 
     @Override
-    public void agreeUserAddDevice(SettingsAgreeUserAddRequest agreeUserAddRequest) {
-        mRxManage.add(mModel.agreeUserAddDevice(agreeUserAddRequest).subscribeWith(new RxResourceObserver<BaseResponse>(mView,false) {
+    public void agreeUserAddDevice(SettingsAgreeUserAddRequest agreeUserAddRequest, boolean confirmType) {
+        mRxManage.add(mModel.agreeUserAddDevice(agreeUserAddRequest, confirmType).subscribeWith(new RxResourceObserver<BaseResponse>(mView,false) {
             @Override
             protected void _onNext(BaseResponse response) {
                 if (response.getCode() == 200) {
