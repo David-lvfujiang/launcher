@@ -11,7 +11,6 @@ import com.fenda.common.util.LogUtil;
 import com.fenda.settings.bean.SettingsBluetoothDeviceBean;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.UUID;
 
@@ -112,9 +111,27 @@ public class SettingsBluetoothUtil {
         blueSocket = temp;
     }
 
+    public static int getBluetoothScanMode() {
+        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        int mode = 0;
+        try {
+            Method getScanMode =BluetoothAdapter.class.getMethod("getScanMode");
+            getScanMode.setAccessible(true);
+
+            mode = (int)getScanMode.invoke(adapter);
+
+            LogUtil.d(TAG, "getBluetoothScanMode = " +  mode);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return mode;
+    }
+
     public static void closeDiscoverableTimeout() {
         LogUtil.d(TAG, "closeDiscoverableTimeout");
-        BluetoothAdapter adapter=BluetoothAdapter.getDefaultAdapter();
+        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        getBluetoothScanMode();
         try {
             Method setDiscoverableTimeout = BluetoothAdapter.class.getMethod("setDiscoverableTimeout", int.class);
             setDiscoverableTimeout.setAccessible(true);
@@ -122,14 +139,19 @@ public class SettingsBluetoothUtil {
             setScanMode.setAccessible(true);
 
             setDiscoverableTimeout.invoke(adapter, 1);
-            setScanMode.invoke(adapter, BluetoothAdapter.SCAN_MODE_CONNECTABLE,1);
+            boolean mode = (boolean)setScanMode.invoke(adapter, BluetoothAdapter.SCAN_MODE_CONNECTABLE,1);
+            if (mode) {
+                LogUtil.d(TAG, "setScanMode  success!");
+            }
+
+            getBluetoothScanMode();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public static void setDiscoverableTimeout(int timeout) {
-        BluetoothAdapter adapter=BluetoothAdapter.getDefaultAdapter();
+        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
         try {
             Method setDiscoverableTimeout = BluetoothAdapter.class.getMethod("setDiscoverableTimeout", int.class);
             setDiscoverableTimeout.setAccessible(true);

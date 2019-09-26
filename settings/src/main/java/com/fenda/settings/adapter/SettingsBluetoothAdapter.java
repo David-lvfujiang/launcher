@@ -125,4 +125,5 @@ public class SettingsBluetoothAdapter extends BaseAdapter {
             e.printStackTrace();
         }
     }
+
 }

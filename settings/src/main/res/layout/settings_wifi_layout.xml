@@ -44,7 +44,9 @@
                 android:layout_width="964px"
                 android:layout_height="100dp"
                 android:orientation="horizontal"
-                android:background="@mipmap/settings_item">
+                android:background="@mipmap/settings_item"
+                android:focusable="true"
+                android:focusableInTouchMode="true">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -111,6 +113,13 @@
                     android:layout_marginLeft="10dp"/>
             </LinearLayout>
 
+            <!--<com.fenda.common.view.MyListView-->
+                <!--android:id="@+id/set_wifi_listview"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:focusableInTouchMode="false"-->
+                <!--android:focusable="false">-->
+            <!--</com.fenda.common.view.MyListView>-->
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/set_wifi_listview"
                 android:layout_width="match_parent"
