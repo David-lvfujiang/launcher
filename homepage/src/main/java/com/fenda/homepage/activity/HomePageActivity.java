@@ -63,6 +63,7 @@ import com.fenda.common.util.GsonUtil;
 import com.fenda.common.util.ImageUtil;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.SPUtils;
+import com.fenda.common.util.SystemPropertiesProxyUtil;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.common.view.MyNestedScrollView;
 import com.fenda.homepage.Adapter.GridAdapter;
@@ -87,6 +88,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.netty.util.internal.SystemPropertyUtil;
 
 @Route(path = RouterPath.HomePage.HOMEPAGE_MAIN)
 public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener {
@@ -212,6 +215,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         initRecycleView();
         initSleepView();
 
+        String num = SystemPropertiesProxyUtil.getString(this,"persist.key.num");
+        LogUtil.e("persist.key.num = "+num);
+
         LogUtil.e("进入了Oncreate的initView");
 
 
@@ -226,7 +232,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
                 Message msg = mHandler.obtainMessage();
                 mHandler.sendMessage(msg);
                 LogUtil.e("进入了Oncreate的发送了handler信息");
@@ -276,7 +281,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                         mAiTipMicTv.setText(R.string.cm_main_page_title_0);
                         mAiTipTitleTv.setText(R.string.cm_main_page_describe_0);
                     } else if (showPageIndex == 1) {
-                        mAiTipIv.setVisibility(View.GONE);
+                        mAiTipIv.setVisibility(View.INVISIBLE);
                         mAiTipMicTv.setText(R.string.cm_main_page_title_1);
                         if(newsRecommend!=null){
                             number = newsRecommend.size();
@@ -295,16 +300,16 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                             mAiTipTitleTv.setText(R.string.cm_main_page_describe_1);
                         }
                     } else if (showPageIndex == 2) {
-                        mAiTipIv.setVisibility(View.GONE);
+                        mAiTipIv.setVisibility(View.INVISIBLE);
                         mAiTipMicTv.setText(R.string.cm_main_page_title_2);
                         mAiTipTitleTv.setText(R.string.cm_main_page_describe_2);
                     } else if (showPageIndex == 3) {
-                        mAiTipIv.setVisibility(View.GONE);
+                        mAiTipIv.setVisibility(View.INVISIBLE);
                         mAiTipMicTv.setText(R.string.cm_main_page_title_3);
                         mAiTipTitleTv.setText(R.string.cm_main_page_describe_3);
 
                     } else if (showPageIndex == 4) {
-                        mAiTipIv.setVisibility(View.GONE);
+                        mAiTipIv.setVisibility(View.INVISIBLE);
                         mAiTipMicTv.setText(R.string.cm_main_page_title_4);
                         mAiTipTitleTv.setText(R.string.cm_main_page_describe_4);
                     }
@@ -347,7 +352,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
 
         LogUtil.e("进入了Oncreate的initData");
-
 
 
         if (mICallProvider != null) {
@@ -801,8 +805,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
             @Override
             public void onAnimationEnd(Animator animation, boolean isReverse) {
-                Log.e("TAG","onAnimationEnd 动画结束 :" + isReverse);
-                mCyclicRollHandler.removeCallbacks(cycleRollRunabler);
             }
         });
         animator.start();
@@ -887,7 +889,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) ll_submenu_back.getLayoutParams();
         params.topMargin = 0;
         ll_submenu_back.setLayoutParams(params);
-        mCyclicRollHandler.postDelayed(cycleRollRunabler, HomeUtil.PAGE_SHOW_TIME);
     }
 
     private void initAdapter() {
