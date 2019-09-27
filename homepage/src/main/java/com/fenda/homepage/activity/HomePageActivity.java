@@ -52,7 +52,6 @@ import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.bean.WeatherWithHomeBean;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.db.ContentProviderManager;
-import com.fenda.common.provider.IAppLeaveMessageProvider;
 import com.fenda.common.provider.ICallProvider;
 import com.fenda.common.provider.ISettingsProvider;
 import com.fenda.common.provider.IVoiceInitProvider;
@@ -202,12 +201,12 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mAiTipMicTv = findViewById(R.id.tv_ai_tiptext);
         imgGIF  = findViewById(R.id.img_gif);
 
-//
+        //
         findViewById(R.id.tv_main_phone).setOnClickListener(this);
         findViewById(R.id.tv_main_cmcc).setOnClickListener(this);
         findViewById(R.id.tv_main_qqmusic).setOnClickListener(this);
         findViewById(R.id.tv_main_iqiyi).setOnClickListener(this);
-//
+        //
         mHeaderWeatherTv.setOnClickListener(this);
         mHeaderWeatherIv.setOnClickListener(this);
         initRecycleView();
@@ -353,9 +352,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
         if (mICallProvider != null) {
             mICallProvider.initSdk();
-            Log.e("TAG", "初始化");
-            IAppLeaveMessageProvider leaveMessageProvider = (IAppLeaveMessageProvider) ARouter.getInstance().build(RouterPath.Leavemessage.LEAVEMESSAGE_SERVICE).navigation();
-            leaveMessageProvider.initRongIMlistener();
         }
 
     }
@@ -587,7 +583,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             ARouter.getInstance().build(RouterPath.Call.MAIN_ACTIVITY).navigation();
         } else if (resId == R.id.tv_main_cmcc) {
             //通讯录
-//            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
+            //            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
         } else if (resId == R.id.iv_header_weather || resId == R.id.tv_header_temp) {
 
 
@@ -609,7 +605,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 initVoiceProvider.openAqiyi();
             }
         } else if (resId == R.id.iv_submenu_drop_left||resId ==R.id.iv_submenu_drop_right) {
-//            slidingDrawer.animateClose();
+            //            slidingDrawer.animateClose();
         }
     }
 
@@ -657,6 +653,14 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRecommendEvent(MusicPlayBean bean) {
         newsRecommend = bean.getFdMusics();
+        List<FDMusic> newsListData;
+        newsListData = bean.getFdMusics();
+        if (newsListData !=null&& openNewsFlag) {
+            openNewsFlag = false;
+            ARouter.getInstance().build(RouterPath.NEWS.NEWS_ACTIVITY)
+                    .withObject("newsListData", newsListData)
+                    .navigation();
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -917,8 +921,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     initVoiceProvider.nowWeather();
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.CALENDAR)) {
                     //                    ToastUtils.show("日历");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
+                    ARouter.getInstance().build(RouterPath.Calendar.Perpetual_CALENDAR_ACTIVITY).navigation();
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.PHOTO)) {
                     //                    ToastUtils.show("相册");
                     ARouter.getInstance().build(RouterPath.Gallery.GALLERY_CATOGORY).navigation();
@@ -949,8 +952,10 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     }
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.NEWS)) {
                     //                    ToastUtils.show("新闻");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
+                    if (initVoiceProvider != null){
+                        openNewsFlag = true;
+                        initVoiceProvider.requestNews(20);
+                    }
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.CROSS_TALK)) {
                     //                    ToastUtils.show("相声");
                     intent.putExtra("applyId", applyId);

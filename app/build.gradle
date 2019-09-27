@@ -110,17 +110,19 @@ dependencies {
     api (name: 'settings-_dev-release', ext: 'aar')
 //    api (name: 'encyclopedia-_dev-release', ext: 'aar')
 //    api (name: 'player-release', ext: 'aar')
+//    api (name: 'calculator-release', ext: 'aar')
 
 
     implementation 'com.fenda.ai:ai_sibichi:1.0.2'
     implementation 'com.fenda.call:call:1.0.2'
-    implementation 'com.fenda.calendar:calendar:1.0.1'
+    implementation 'com.fenda.calendar:calendar:1.0.2'
     implementation 'com.fenda.encyclopedia:encyclopedia:1.0.1'
     implementation 'com.fenda.news:news:1.0.3'
     implementation 'com.fenda.player:player:1.0.2@aar'
     implementation 'com.fenda.remind:remind:1.0.1'
     implementation 'com.fenda.weather:weather:1.0.2'
-    implementation 'com.fenda.leavemessage:leavemessage:1.0.1'
+    implementation 'com.fenda.leavemessage:leavemessage:1.0.2'
+    implementation 'com.fenda.calculator:calculator:1.0.1'
 
     annotationProcessor deps.arouter_compiler
 //    implementation project(path: ':CallLib')

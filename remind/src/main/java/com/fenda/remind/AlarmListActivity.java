@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -41,6 +42,7 @@ public class AlarmListActivity extends BaseActivity {
     ImageView imgAlarmBack;
     TextView tvAlarmEdit;
     RecyclerView alarmList;
+    ConstraintLayout clAlarmTips;
     private ArrayList<AlarmBean> alarmBeans;
     private String alarmType;
 
@@ -61,6 +63,7 @@ public class AlarmListActivity extends BaseActivity {
         imgAlarmBack    = findViewById(R.id.img_alarm_back);
         tvAlarmEdit     = findViewById(R.id.tv_alarm_edit);
         alarmList       = findViewById(R.id.alarm_list);
+        clAlarmTips     = findViewById(R.id.alarm_tips);
 
     }
 
@@ -74,8 +77,10 @@ public class AlarmListActivity extends BaseActivity {
         }
         if (alarmBeans == null){
             alarmList.setVisibility(View.GONE);
+            clAlarmTips.setVisibility(View.VISIBLE);
         }else {
             alarmList.setVisibility(View.VISIBLE);
+            clAlarmTips.setVisibility(View.GONE);
             LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
             alarmList.setLayoutManager(manager);
             alarmList.setItemAnimator(new DefaultItemAnimator());
@@ -159,8 +164,10 @@ public class AlarmListActivity extends BaseActivity {
         alarmType   = intent.getStringExtra(Constant.Remind.ALARM_TYPE);
         if (mAlarmBean == null){
             alarmList.setVisibility(View.GONE);
+            clAlarmTips.setVisibility(View.VISIBLE);
         }else {
             alarmList.setVisibility(View.VISIBLE);
+            clAlarmTips.setVisibility(View.GONE);
         }
 
         if (Constant.Remind.DELETE_REMIND.equals(alarmType)){
