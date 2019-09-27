@@ -58,5 +58,4 @@ public interface SettingsApiService {
     @GET("south-device/manage/getLinkUserInfoList")
     Observable<BaseResponse<List<UserInfoBean>>> getContactsList();
 
-
 }
