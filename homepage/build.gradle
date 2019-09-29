@@ -111,4 +111,5 @@ dependencies {
     annotationProcessor deps.arouter_compiler
     implementation project(path: ':common')
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    compile project(path: ':leavemessage')
 }

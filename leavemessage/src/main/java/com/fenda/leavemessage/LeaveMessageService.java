@@ -77,11 +77,11 @@ public class LeaveMessageService implements IAppLeaveMessageProvider, RongIMClie
     public boolean onReceived(Message message, int i) {
         LogUtil.e(message.toString());
         userId = message.getSenderUserId();
-        MessageContent content = message.getContent();
-        UserInfo userInfo = content.getUserInfo();
-        String userName = userInfo.getName();
-        LogUtil.e(userInfo.getName());
-        openConversationActivity(userId, userName);
+//        MessageContent content = message.getContent();
+//        UserInfo userInfo = content.getUserInfo();
+//        String userName = userInfo.getName();
+//        LogUtil.e(userInfo.getName());
+        openConversationActivity(userId, "12");
         return true;
     }
 

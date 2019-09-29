@@ -63,6 +63,7 @@ import com.fenda.common.util.AppUtils;
 import com.fenda.common.util.GsonUtil;
 import com.fenda.common.util.ImageUtil;
 import com.fenda.common.util.LogUtil;
+import com.fenda.common.util.LogUtils;
 import com.fenda.common.util.SPUtils;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.common.view.MyNestedScrollView;
@@ -78,6 +79,7 @@ import com.fenda.homepage.model.MainModel;
 import com.fenda.homepage.observer.MyContentObserver;
 import com.fenda.homepage.presenter.MainPresenter;
 import com.fenda.homepage.receiver.ScreenOffAdminReceiver;
+import com.fenda.leavemessage.model.LeaveMessageBean;
 import com.fenda.protocol.tcp.TCPConfig;
 import com.fenda.protocol.tcp.bean.BaseTcpMessage;
 import com.fenda.protocol.tcp.bean.EventMessage;
@@ -129,8 +131,12 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     private LinearLayout ll_submenu_back;
     private RelativeLayout relaBeDev;
     private ImageView imgGIF;
+    private TextView mMsgTv;
     private boolean isWeather;
     private boolean openNewsFlag;
+    private List<FDMusic> newsRecommend;
+    private int current = 0;
+    private int number = 0;
 
     private Handler mHandler = new Handler(){
         @Override
@@ -154,10 +160,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     };
 
 
-
-    private List<FDMusic> newsRecommend;
-    private int current = 0;
-    private int number = 0;
 
     Runnable cycleRollRunabler = new Runnable() {
         @Override
@@ -201,6 +203,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mAiTipTitleTv = findViewById(R.id.tv_main_item_content);
         mAiTipMicTv = findViewById(R.id.tv_ai_tiptext);
         imgGIF  = findViewById(R.id.img_gif);
+        mMsgTv  = findViewById(R.id.tv_home_nsg_dot_red);
 
 //
         findViewById(R.id.tv_main_phone).setOnClickListener(this);
@@ -657,7 +660,29 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRecommendEvent(MusicPlayBean bean) {
         newsRecommend = bean.getFdMusics();
+        List<FDMusic> newsListData;
+        newsListData = bean.getFdMusics();
+        if (newsListData !=null&& openNewsFlag) {
+            openNewsFlag = false;
+            ARouter.getInstance().build(RouterPath.NEWS.NEWS_ACTIVITY)
+                    .withObject("newsListData", newsListData)
+                    .navigation();
+        }
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMsgEvent(LeaveMessageBean msgBean) {
+        int msgNum =msgBean.getLeaveMessageNumber();
+        if (msgNum == 0){
+            mMsgTv.setVisibility(View.VISIBLE);
+        } else {
+            mMsgTv.setVisibility(View.INVISIBLE);
+            mMsgTv.setText(msgNum);
+        }
+
+        LogUtils.e("onMsgEvent: "+msgNum);
+    }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onScreenEvent(String type) {
@@ -917,13 +942,12 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     initVoiceProvider.nowWeather();
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.CALENDAR)) {
                     //                    ToastUtils.show("日历");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
+                    ARouter.getInstance().build(RouterPath.Calendar.Perpetual_CALENDAR_ACTIVITY).navigation();
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.PHOTO)) {
                     //                    ToastUtils.show("相册");
                     ARouter.getInstance().build(RouterPath.Gallery.GALLERY_CATOGORY).navigation();
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.TIME)) {
-                    ToastUtils.show("时钟");
+                    ToastUtils.show("闹钟");
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.FM)) {
                     //                    ToastUtils.show("收音机");
                     intent.putExtra("applyId", applyId);
@@ -949,8 +973,10 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     }
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.NEWS)) {
                     //                    ToastUtils.show("新闻");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
+                    if (initVoiceProvider != null){
+                        openNewsFlag = true;
+                        initVoiceProvider.requestNews(20);
+                    }
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.CROSS_TALK)) {
                     //                    ToastUtils.show("相声");
                     intent.putExtra("applyId", applyId);
