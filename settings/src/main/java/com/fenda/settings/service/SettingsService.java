@@ -39,9 +39,8 @@ import io.reactivex.functions.Consumer;
 @Route(path = RouterPath.SETTINGS.SettingsService)
 public class SettingsService implements ISettingsProvider {
     private static final String TAG = "SettingsService";
-    private String registeName = "FD-R03";
+    private String registeName = "奋达小和";
     private String registeMac;
-    //    String registeVersion = "V1.0";
     private String registeVersion;
 
     @Override

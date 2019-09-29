@@ -25,7 +25,7 @@
     <!--下部按钮 标题 菜单条目 开始-->
     <TextView
         android:id="@+id/tv_main_phone"
-        android:layout_width="wrap_content"
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
         android:layout_marginLeft="100dp"
@@ -48,7 +48,6 @@
         android:layout_alignTop="@id/tv_main_phone"
         android:layout_alignBottom="@id/tv_main_phone"
         android:layout_marginStart="341dp"
-        android:layout_marginEnd="583dp"
         android:drawableTop="@mipmap/cm_china_mobile"
         android:drawablePadding="10dp"
         android:text="@string/cm_main_chinamobile_title"
@@ -66,11 +65,11 @@
         android:text="@string/cm_main_QQ_music"
         android:textColor="@color/color_ffffff"
         android:textSize="28sp"
-        android:layout_marginEnd="341dp"
         android:layout_marginStart="583dp"
         android:drawableTop="@mipmap/submenu_ico_qq_music"
         android:layout_alignBottom="@id/tv_main_phone"
         android:layout_alignTop="@id/tv_main_phone"
+        android:gravity="center_horizontal"
 
         />
 
@@ -125,6 +124,8 @@
         android:textSize="48sp"
         android:layout_below="@id/iv_main_tip_icon"
         android:layout_alignLeft="@id/tv_header_time"
+        android:maxLines="1"
+        android:ellipsize="end"
 
 
         />
@@ -232,8 +233,8 @@
 
     <ImageView
         android:id="@+id/img_gif"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="94px"
+        android:layout_height="48px"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/demension_dp80"

@@ -14,6 +14,7 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
 import com.fenda.common.bean.UserInfoBean;
+import com.fenda.common.constant.Constant;
 import com.fenda.common.db.ContentProviderManager;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.GsonUtil;
@@ -159,6 +160,8 @@ public class SettingsContractsNickNameEditActivity extends BaseMvpActivity<Setti
     public void onReceiveEvent(final EventMessage<BaseTcpMessage> message) {
         //修改家庭圈昵称通知
         if (message.getCode() == TCPConfig.MessageType.CHANGE_NICK_NAME) {
+            LogUtil.d(TAG, "修改家庭圈昵称通知");
+
             if (message != null && message.getData() != null) {
                 BaseTcpMessage baseTcpMessage = message.getData();
                 String msg = baseTcpMessage.getMsg();
@@ -167,8 +170,16 @@ public class SettingsContractsNickNameEditActivity extends BaseMvpActivity<Setti
                     ContentProviderManager.getInstance(SettingsContractsNickNameEditActivity.this, mUri).updateNickNameByUserID(bean.getNickName(), bean.getUserId());
                 }
             }
+        } else if(message.getCode() == TCPConfig.MessageType.USER_EXIT_FAMILY){
+            LogUtil.d(TAG, "普通成员退出家庭通知");
+
+//                普通成员退出家庭通知
+            ContentProviderManager.getInstance(SettingsContractsNickNameEditActivity.this, mUri).clear();
+            mPresenter.getContactsList();
+
         }
     }
+
 
     @Override
     public void showErrorTip(String msg) {
@@ -210,6 +221,12 @@ public class SettingsContractsNickNameEditActivity extends BaseMvpActivity<Setti
 
     @Override
     public void getContactsListSuccess(BaseResponse<List<UserInfoBean>> response) {
+        LogUtil.d(TAG, "修改昵称获取联系人列表成功");
+        ContentProviderManager.getInstance(mContext, Constant.Common.URI).insertUsers(response.getData());
+
+        Intent mIntent = new Intent(SettingsContractsNickNameEditActivity.this, SettingsDeviceContractsActivity.class);
+        startActivity(mIntent);
+        finish();
 
     }
 

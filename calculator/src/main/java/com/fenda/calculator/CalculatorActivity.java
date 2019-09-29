@@ -4,11 +4,11 @@ import android.annotation.SuppressLint;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.common.base.BaseActivity;
 import com.fenda.common.router.RouterPath;
+import com.fenda.common.util.ToastUtils;
 
 @Route(path = RouterPath.Calculator.CALCULATOR_ACTIVITY)
 public class CalculatorActivity extends BaseActivity implements View.OnClickListener {
@@ -480,7 +480,7 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
                     }
                 }
                 if (count_bracket_left != count_bracket_right) {
-                    Toast.makeText(CalculatorActivity.this, "请注意括号匹配", Toast.LENGTH_SHORT).show();
+                    ToastUtils.show( "请注意括号匹配");
                 }
                 if (count_bracket_left == count_bracket_right &&
                         ((mStringBuilder.charAt(mStringBuilder.length() - 1) >= '0' && mStringBuilder.charAt(mStringBuilder.length() - 1) <= '9') || mStringBuilder.charAt(mStringBuilder.length() - 1) == ')')) {

@@ -18,18 +18,20 @@ public class ScreenSaverManager {
     private static final String TAG = "ScreenSaverManager";
 
     private static Context mContext;
-    private static long lastTime = 0;//最后一次点击的时间
-
-    public static final int PLAY_TIME = 1 * 60 * 1000;//一分钟没有触发就播放视频
-
-    public static final int SEND_TIME = 3 * 1000;//每3秒钟发送一次信息
+    //最后一次点击的时间
+    private static long lastTime = 0;
+    //一分钟没有触发就播放视频
+    public static final int PLAY_TIME = 1 * 60 * 1000;
+    //每3秒钟发送一次信息
+    public static final int SEND_TIME = 3 * 1000;
 
     public static void init(Context context) {
         mContext = context;
     }
 
     public static void startMonitor() {
-        handler.sendEmptyMessageDelayed(0, SEND_TIME);//每3秒钟发送一次信息
+        //每3秒钟发送一次信息
+        handler.sendEmptyMessageDelayed(0, SEND_TIME);
     }
 
     /**
