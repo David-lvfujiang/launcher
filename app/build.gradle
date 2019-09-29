@@ -100,7 +100,7 @@ dependencies {
 //    api (name: 'voice_sibichi_2mic-release', ext: 'aar')
 //    api (name: 'remind-release', ext: 'aar')
 
-    //api (name: 'leavemessage-release', ext: 'aar')
+    api (name: 'leavemessage-release', ext: 'aar')
     //api (name: 'call-release', ext: 'aar')
     api (name: 'gallery-_dev-release', ext: 'aar')
     api (name: 'homepage-_dev-release', ext: 'aar')

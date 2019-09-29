@@ -95,60 +95,49 @@
     <!--中部 语音提示信息布局 开始-->
 
 
-
-
-
-
-
-
     <ImageView
         android:id="@+id/iv_main_tip_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
-        android:src="@mipmap/cm_4g"
-        android:layout_below="@id/tv_header_time"
-        android:layout_marginTop="60dp"
+        android:layout_above="@+id/tv_main_item_content"
         android:layout_alignLeft="@id/tv_header_time"
-
-        />
-
-    <TextView
-        android:id="@+id/tv_main_item_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/iv_main_tip_icon"
-        android:layout_alignLeft="@id/tv_header_time"
-        android:ellipsize="end"
-        android:maxLines="3"
-        android:layout_marginRight="40dp"
-        android:text="移动王卡 | 激活立即赠送20元话费！"
-        android:textColor="@color/color_ffffff"
-        android:textSize="48sp"
-        android:gravity="bottom"
-
-        />
-
-    <TextView
-        android:id="@+id/tv_ai_tiptext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="10dp"
-        android:text="咪咕咪咕, 我要了解更多"
-        android:textColor="@color/color_ffffff"
-        android:drawableLeft="@mipmap/cm_ico_microphone"
-        android:drawablePadding="10dp"
-        android:textSize="20sp"
-        android:layout_below="@id/tv_main_item_content"
-        android:layout_alignLeft="@id/tv_header_time"
-        />
+        android:src="@mipmap/cm_4g" />
 
     <!--中部 语音提示信息布局 结束-->
 
 
     <!--头部 时间,天气,收藏,记录 按钮 布局 开始-->
 
+
+    <TextView
+        android:id="@+id/tv_main_item_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tv_ai_tiptext"
+        android:layout_alignLeft="@id/tv_header_time"
+        android:layout_marginLeft="-1dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="5dp"
+        android:ellipsize="end"
+        android:gravity="bottom"
+        android:maxLines="2"
+        android:text="移动王卡 | 激活立即赠送20元话费！"
+        android:textColor="@color/color_ffffff"
+        android:textSize="48sp" />
+
+    <TextView
+        android:id="@+id/tv_ai_tiptext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tv_main_phone"
+        android:layout_alignLeft="@id/tv_header_time"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="15dp"
+        android:drawableLeft="@mipmap/cm_ico_microphone"
+        android:drawablePadding="10dp"
+        android:text="咪咕咪咕, 我要了解更多"
+        android:textColor="@color/color_ffffff"
+        android:textSize="20sp" />
 
     <TextClock
         android:id="@+id/tv_header_time"
@@ -186,6 +175,7 @@
         android:textColor="#fff"
         android:gravity="center"
         android:text="1"
+        android:visibility="invisible"
         android:layout_alignTop="@id/tv_header_time"
         android:layout_toRightOf="@id/iv_header_love" />
     <ImageView
