@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                     music.setMusicUri("http://oss.iot.aispeech.com/dcmp/CBF3532970CF927A663B7C1E1ECAF2BE.mp3");
                     music.setMusicImage("http://oss.iot.aispeech.com/dcmp/5566C6925BE7F17659754D9DD742CF55.png");
                     music.setMusicTitle("送友人");
-                    music.setContent("水国蒹葭夜有霜，月寒山色共苍苍。谁言千里自今夕，离梦杳如关塞长。");
+                    music.setContent("水国蒹葭夜有霜，月寒山色共苍苍。谁言千里自今夕，离梦杳如关塞长。水国蒹葭夜有霜，月寒山色共苍苍。谁言千里自今夕，离梦杳如关塞长。水国蒹葭夜有霜，月寒山色共苍苍。谁言千里自今夕，离梦杳如关塞长。水国蒹葭夜有霜，月寒山色共苍苍。谁言千里自今夕，离梦杳如关塞长。水国蒹葭夜有霜，月寒山色共苍苍。谁言千里自今夕，离梦杳如关塞长。水国蒹葭夜有霜，月寒山色共苍苍。谁言千里自今夕，离梦杳如关塞长。");
                     musicList.add(music);
                 }
                 bean.setFdMusics(musicList);
