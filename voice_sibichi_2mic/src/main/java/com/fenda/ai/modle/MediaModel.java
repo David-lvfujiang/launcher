@@ -3,6 +3,7 @@ package com.fenda.ai.modle;
 
 import android.text.TextUtils;
 
+import com.aispeech.dui.dds.DDS;
 import com.aispeech.dui.plugin.music.MusicPlugin;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.ai.skill.Util;
@@ -81,6 +82,8 @@ public class MediaModel {
                                 if (recommendProvider != null){
                                     recommendProvider.requestRecommend(dataJsonObject);
                                 }
+                                DDS.getInstance().getAgent().stopDialog();
+                                BaseApplication.getBaseInstance().setRequestNews(false);
                             }else {
                                 if (provider == null){
                                     provider = ARouter.getInstance().navigation(INewsProvider.class);

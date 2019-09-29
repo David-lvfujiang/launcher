@@ -37,7 +37,7 @@ public class LeaveMessageService implements IAppLeaveMessageProvider, RongIMClie
         RongIM.setConnectionStatusListener(new RongIMClient.ConnectionStatusListener() {
             @Override
             public void onChanged(ConnectionStatus connectionStatus) {
-                switch (connectionStatus){
+                switch (connectionStatus) {
                     case CONNECTED://连接成功。
 
                         Log.i("yuki", "--------------------连接成功");
@@ -77,11 +77,16 @@ public class LeaveMessageService implements IAppLeaveMessageProvider, RongIMClie
     public boolean onReceived(Message message, int i) {
         LogUtil.e(message.toString());
         userId = message.getSenderUserId();
-//        MessageContent content = message.getContent();
-//        UserInfo userInfo = content.getUserInfo();
-//        String userName = userInfo.getName();
-//        LogUtil.e(userInfo.getName());
-        openConversationActivity(userId, "12");
+        MessageContent content = message.getContent();
+        UserInfo userInfo = content.getUserInfo();
+        String userName = userInfo.getName();
+        LogUtil.e(userInfo.getName());
+        if (userName == null || ("").equals(userName))
+        {
+            openConversationActivity(userId, "留言");
+        } else{
+            openConversationActivity(userId, userName);
+        }
         return true;
     }
 

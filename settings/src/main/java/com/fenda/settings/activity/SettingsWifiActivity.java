@@ -1,16 +1,14 @@
 package com.fenda.settings.activity;
 
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.ConnectivityManager;
+import android.net.LinkProperties;
 import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
@@ -23,7 +21,6 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +38,7 @@ import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.settings.R;
 import com.fenda.settings.bean.SettingsWifiBean;
+import com.fenda.settings.utils.SettingsCheckWifiLoginTask;
 import com.fenda.settings.utils.SettingsWifiUtil;
 
 import java.util.ArrayList;
@@ -93,6 +91,7 @@ public class SettingsWifiActivity extends BaseMvpActivity{
         return R.layout.settings_wifi_layout;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void initView() {
         ivImageView = findViewById(R.id.wifi_circle_progress);
@@ -125,7 +124,9 @@ public class SettingsWifiActivity extends BaseMvpActivity{
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         filter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         filter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(mWifiReceiver, filter);
+        isNetWodrkConnect();
     }
 
     @Override
@@ -182,16 +183,9 @@ public class SettingsWifiActivity extends BaseMvpActivity{
             } else {
                 mSettingsWifiUtil.startScan(getApplicationContext());
                 mScanWifiListBean.clear();
-                LogUtil.d(TAG, "mWifiList = " + mScanWifiListBean.size());
                 mScanWifiListBean.addAll(mSettingsWifiUtil.getWifiList(1, mConnectedSsid));
-//                if(mConnectedSsid == null){
-//                    mScanWifiListBean.addAll(mSettingsWifiUtil.getWifiList(4, mConnectedSsid));
-//                } else {
-//                    mScanWifiListBean.addAll(mSettingsWifiUtil.getWifiList(1, mConnectedSsid));
-//                }
-                LogUtil.d(TAG, "mWifiList 2 = " + mScanWifiListBean.size());
-                LogUtil.d(TAG, "bindView status === " + mSettingsWifiBean.getStatus());
-
+                LogUtil.d(TAG, "mWifiList = " + mScanWifiListBean.size());
+//                LogUtil.d(TAG, "bindView status === " + mSettingsWifiBean.getStatus());
                 if(mScanWifiListBean.size() > 0) {
                     wifiSwitch.setVisibility(View.VISIBLE);
                     ivImageView.setVisibility(View.GONE);
@@ -301,7 +295,7 @@ public class SettingsWifiActivity extends BaseMvpActivity{
             mSettingsWifiBean = mWifiBeanList.get(position);
             final ScanResult scanResult = mSettingsWifiBean.getResult();
             final int status = mSettingsWifiBean.getStatus();
-            LogUtil.d(TAG,  "onBindViewHolder status = " + status);
+//            LogUtil.d(TAG,  "onBindViewHolder status = " + status);
 //            if(mPswSureSsid != null && scanResult.SSID != null){
 //                if(mPswSureSsid.equals(scanResult.SSID)){
 //                    mHolder.connectWifiLoading.setVisibility(View.VISIBLE);
@@ -329,7 +323,6 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                 mHolder.connectWifiIcon.setVisibility(View.GONE);
             } else if (status == 1){
                 LogUtil.d(TAG, "wifi 连接上了 connect sucess ");
-
                 mHolder.tvStatus.setVisibility(View.VISIBLE);
                 mHolder.tvStatus.setText(getString(R.string.settings_wifi_connected_status));
                 mHolder.connectWifiIcon.setVisibility(View.VISIBLE);
@@ -372,7 +365,7 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                     config.hiddenSSID=true;
 
                     List<WifiConfiguration> wifiConfigurationList = mSettingsWifiUtil.getConfiguration();
-                    LogUtil.d(TAG, "wifiConfigurationList = " + wifiConfigurationList);
+//                    LogUtil.d(TAG, "wifiConfigurationList = " + wifiConfigurationList);
                     LogUtil.d(TAG, "connected wifi ssid = " + mConnectedSsid);
                     LogUtil.d(TAG, "clicked wifi ssid = " + mListItemClickedSsid);
 
@@ -406,6 +399,7 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                                     e.printStackTrace();
                                 }
                                 if (isWifi) {
+                                    LogUtil.d(TAG, "无密码wifi连接成功");
 //                                    if (checkPackInfo("com.hoge.android.app.nanchangbaoye")) {
 //                                        LogUtil.d(TAG, "checkPackInfo OK");
 //                                        boolean openPackage = openPackage(getApplicationContext(),"com.hoge.android.app.nanchangbaoye");
@@ -451,75 +445,6 @@ public class SettingsWifiActivity extends BaseMvpActivity{
             }
         }
     }
-
-    /**
-     * 检查包是否存在
-     *
-     * @param packname
-     * @return
-     */
-    private boolean checkPackInfo(String packname) {
-        PackageInfo packageInfo = null;
-        try {
-            packageInfo = getPackageManager().getPackageInfo(packname, 0);
-            Log.d(TAG, "checkPackInfo  " + packageInfo.packageName);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return packageInfo != null;
-    }
-
-    public  boolean openPackage(Context context, String packageName) {
-        Context pkgContext = getPackageContext(context, packageName);
-        Intent intent = getAppOpenIntentByPackageName(context, packageName);
-        if (pkgContext != null && intent != null) {
-            pkgContext.startActivity(intent);
-            return true;
-        }
-        return false;
-    }
-
-    public  Context getPackageContext(Context context, String packageName) {
-        Context pkgContext = null;
-        if (context.getPackageName().equals(packageName)) {
-            pkgContext = context;
-        } else {
-            // 创建第三方应用的上下文环境
-            try {
-                pkgContext = context.createPackageContext(packageName,
-                        Context.CONTEXT_IGNORE_SECURITY
-                                | Context.CONTEXT_INCLUDE_CODE);
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-        return pkgContext;
-    }
-
-    public  Intent getAppOpenIntentByPackageName(Context context,String packageName){
-        //Activity完整名
-        String mainAct = null;
-        //根据包名寻找
-        PackageManager pkgMag = context.getPackageManager();
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        List<ResolveInfo> list = pkgMag.queryIntentActivities(intent, PackageManager.GET_ACTIVITIES);
-        for (int i = 0; i < list.size(); i++) {
-            ResolveInfo info = list.get(i);
-            if (info.activityInfo.packageName.equals(packageName)) {
-                mainAct = info.activityInfo.name;
-                break;
-            }
-        }
-        if (TextUtils.isEmpty(mainAct)) {
-            return null;
-        }
-        intent.setComponent(new ComponentName(packageName, mainAct));
-        return intent;
-    }
-
 
     //监听wifi状态变化
     private BroadcastReceiver mWifiReceiver = new BroadcastReceiver () {
@@ -570,12 +495,10 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                     mSettingsWifiBean.setStatus(1);
                     mWifiInfo = mWifiManager.getConnectionInfo();
                     mConnectedSsid = mWifiInfo.getSSID().replace("\"", "");
-                    LogUtil.d(TAG, "BroadcastReceiver wifiSSID = "+ mConnectedSsid);
                     wifiSwitch.setChecked(true);
                 } else if (NetworkInfo.State.CONNECTING == info.getState()) {
                     mSettingsWifiBean.setStatus(3);
                     mBroadcastStatus = 3;
-                    Log.i(TAG, "wifi正在连接 status = " + mSettingsWifiBean.getStatus());
                     String extra = info.getExtraInfo();
                     Log.i(TAG, "extra = " + extra);
                     extra = extra.substring(1, extra.length() - 1);
@@ -585,10 +508,8 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                     mMyWifiAdapter.notifyDataSetChanged();
                 }
             } else if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(intent.getAction())) {
-                Log.i(TAG, "网络列表变化了");
             } else if (WifiManager.SUPPLICANT_STATE_CHANGED_ACTION.equals(intent.getAction())) {
                 int linkWifiResult = intent.getIntExtra(WifiManager.EXTRA_SUPPLICANT_ERROR, 123);
-
                 if (linkWifiResult == WifiManager.ERROR_AUTHENTICATING) {
                     Log.e(TAG, "mWifiReceiver : wifi密码错误");
                     mSettingsWifiBean.setStatus(2);
@@ -601,7 +522,6 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                         if(mPswSureSsid.equals(wifiSsid2)){
                             ToastUtils.show(wifiSsid1 + "  密码错误，请重试");
                             Log.e(TAG, "wifi密码错误 SSID = " + wifiSsid2);
-                            Log.e(TAG, "bindView status ===== " + mSettingsWifiBean.getStatus());
                             int ssidId = mSettingsWifiUtil.getNetworkId(wifiSsid2);
                             mSettingsWifiUtil.removeWifi(ssidId);
                         }
@@ -611,10 +531,88 @@ public class SettingsWifiActivity extends BaseMvpActivity{
         }
     };
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void isNetWodrkConnect() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        Network activeInfo = connectivityManager.getActiveNetwork();
+        LogUtil.d(TAG, "activeInfo = " + activeInfo);
+
+        if (activeInfo == null) {//|| !activeInfo. || !activeInfo.isAvailable) {
+            //  tv.text = "网络不可用—NetworkCallback"
+            //noNetWorkSnackBar();
+            ToastUtils.show("网络未连接，请先连接网络！");
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            connectivityManager.registerDefaultNetworkCallback(new ConnectivityManager.NetworkCallback() {
+                @Override
+                public void onAvailable(Network network) {
+                    super.onAvailable(network);
+                    LogUtil.d(TAG, "wifi onAvailable: " + network);
+                    portalWifi();
+                }
+
+                @Override
+                public void onLosing(Network network, int maxMsToLive) {
+                    super.onLosing(network, maxMsToLive);
+                    LogUtil.d(TAG, "onLosing: " + network);
+                }
+
+                @Override
+                public void onLost(Network network) {
+                    super.onLost(network);
+                    LogUtil.d(TAG, "onLost: " + network);
+                    // ToastUtils.show(getString(R.string.network_not_connect));
+                }
+
+                @Override
+                public void onUnavailable() {
+                    super.onUnavailable();
+                    LogUtil.d(TAG, "onUnavailable: ");
+                }
+
+                @Override
+                public void onCapabilitiesChanged(Network network, NetworkCapabilities networkCapabilities) {
+                    super.onCapabilitiesChanged(network, networkCapabilities);
+                    LogUtil.d(TAG, "onCapabilitiesChanged: " + network);
+                }
+
+                @Override
+                public void onLinkPropertiesChanged(Network network, LinkProperties linkProperties) {
+                    super.onLinkPropertiesChanged(network, linkProperties);
+                    LogUtil.d(TAG, "onLinkPropertiesChanged: " + network);
+                }
+            });
+        }
+    }
+
+
     @Override
     protected void onDestroy() {
         unregisterReceiver(mWifiReceiver);
         mHandler.removeCallbacksAndMessages(null);
         super.onDestroy();
+    }
+
+
+    /** wifi 认证 检测 **/
+    private void portalWifi() {
+        SettingsCheckWifiLoginTask.checkWifi(new SettingsCheckWifiLoginTask.ICheckWifiCallBack() {
+            @Override
+            public void portalNetWork(boolean isLogin) {
+                //不需要wifi认证
+                if(!isLogin){
+                    LogUtil.d(TAG, "不需要wifi门户验证");
+                    //TODO...
+                }else {
+                    LogUtil.d(TAG, "需要wifi门户验证");
+                    //TODO...
+                    String apksUrl = "https://www.baidu.com/";
+                    Intent aboutIntent = new Intent(SettingsWifiActivity.this, SettingsLoadWebviewActivity.class);
+                    aboutIntent.putExtra("APK_URL", apksUrl);
+                    startActivity(aboutIntent);
+                }
+            }
+        });
     }
 }

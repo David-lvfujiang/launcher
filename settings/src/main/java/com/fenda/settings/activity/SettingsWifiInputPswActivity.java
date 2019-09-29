@@ -34,6 +34,8 @@ public class SettingsWifiInputPswActivity extends BaseMvpActivity {
 
     private String mInputWifiPsw;
     private String mConnectSsid;
+    private int mPswMinLength = 8;
+    private int mPswMaxLength = 64;
 
     @Override
     protected void initPresenter() {
@@ -92,7 +94,7 @@ public class SettingsWifiInputPswActivity extends BaseMvpActivity {
 
         @Override
         public void afterTextChanged(Editable s) {
-            if(etPsw.length() >= 8){
+            if(etPsw.length() >= mPswMinLength && etPsw.length() < mPswMaxLength){
                 tvSurebtn.setVisibility(View.VISIBLE);
                 tvSurebtn.setClickable(true);
                 tvSurebtn.setOnClickListener(new View.OnClickListener() {
@@ -112,6 +114,9 @@ public class SettingsWifiInputPswActivity extends BaseMvpActivity {
                         finish();
                     }
                 });
+            } else {
+                tvSurebtn.setVisibility(View.GONE);
+                tvSurebtn.setClickable(false);
             }
         }
     };
