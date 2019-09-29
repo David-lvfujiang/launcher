@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.fenda.common.base.BaseFragment;
 import com.fenda.common.basebean.player.FDMusic;
+import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.LogUtils;
 import com.fenda.common.view.AutoScrollView;
 import com.fenda.player.R;
@@ -27,12 +28,15 @@ import org.greenrobot.eventbus.ThreadMode;
  * @author WangZL
  * @Date $date$ $time$
  */
-public class LyricFragment extends BaseFragment implements View.OnTouchListener, GestureDetector.OnGestureListener {
+public class LyricFragment extends BaseFragment implements View.OnTouchListener {
 
     TextView tvTitle;
     TextView tvAuthor;
     LinearLayout linContent;
     AutoScrollView mAutoScrollView;
+    int mPosX = 0, mPosY = 0, mCurPosX = 0, mCurPosY = 0;
+    private static final long TIME_INTERVAL = 500L;
+    long downTime = 0;
 
     public static LyricFragment getInstance(FDMusic music) {
         LyricFragment fragment = new LyricFragment();
@@ -150,54 +154,32 @@ public class LyricFragment extends BaseFragment implements View.OnTouchListener,
      */
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        switch (motionEvent.getAction()) {
-            //点击
-            case MotionEvent.ACTION_DOWN:
-                //关闭自动滑动
+        int i = motionEvent.getAction();
+        if (i == MotionEvent.ACTION_DOWN) {
+            //记录触屏最开的位置
+            mPosX = (int) motionEvent.getX();
+            mPosY = (int) motionEvent.getY();
+            //判断是否连续点击，是则停止滚动
+            if (System.currentTimeMillis() - downTime > TIME_INTERVAL) {
+                downTime = System.currentTimeMillis();
+            } else {
                 mAutoScrollView.setAutoToScroll(false);
-                break;
-            //滑动
-            case MotionEvent.ACTION_MOVE:
+            }
+            LogUtil.e(mPosY + "");
+        }
+        if (i == MotionEvent.ACTION_MOVE) {
+            mCurPosX = (int) motionEvent.getX();
+            mCurPosY = (int) motionEvent.getY();
+            //判断是否向下或者向上滑动，是则停止滚动
+            if (Math.abs(mCurPosY - mPosY) > 50) {
+                LogUtil.e(mCurPosY + "");
+                LogUtil.e("向下、向下滑动");
                 mAutoScrollView.setAutoToScroll(false);
-                break;
-            default:
-                break;
-
+            }
         }
+
         return false;
     }
 
-    @Override
-    public boolean onDown(MotionEvent motionEvent) {
-        return false;
-    }
 
-    @Override
-    public void onShowPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float v, float v1) {
-        final int FLING_MIN_DISTANCE = 100, FLING_MIN_VELOCITY = 200;
-        if (e1.getY() - e2.getY() != 0) {
-            LogUtils.e("向上滑动");
-        }
-        return false;
-    }
 }
