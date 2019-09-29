@@ -1,5 +1,6 @@
 package com.fenda.leavemessage;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -9,8 +10,13 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.base.BaseActivity;
 import com.fenda.common.router.RouterPath;
+import com.fenda.common.util.LogUtil;
+import com.fenda.common.util.ToastUtils;
+import com.fenda.leavemessage.model.LeaveMessageBean;
+import com.fenda.protocol.tcp.bus.EventBusUtils;
 
 import io.rong.imkit.RongIM;
+import io.rong.imkit.manager.IUnReadMessageObserver;
 import io.rong.imlib.model.Conversation;
 
 /**
@@ -45,8 +51,16 @@ public class LeavemessageDialogActivity extends BaseActivity implements View.OnC
     @Override
     public void initData() {
         mTvMessageContent.setText(userName+"给您留言了");
+        RongIM.getInstance().addUnReadMessageCountChangedObserver(
+                new IUnReadMessageObserver() {
+                    @Override
+                    public void onCountChanged(int i) {
+                        LogUtil.e("数量变化：" + i);
+                        LeaveMessageBean leaveMessageBean =   new LeaveMessageBean(i);
+                        EventBusUtils.post(leaveMessageBean);
+                    }
+                }, Conversation.ConversationType.PRIVATE);
     }
-
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.leave_message_btn_look) {
@@ -54,8 +68,14 @@ public class LeavemessageDialogActivity extends BaseActivity implements View.OnC
             finish();
         }
         if (view.getId() == R.id.leave_message_btn_cancel) {
-            finish();
+             finish();
         }
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        userId = intent.getStringExtra("userId");
+        userName = intent.getStringExtra("userName");
+    }
 }

@@ -9,7 +9,12 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.LogUtil;
+import com.fenda.leavemessage.model.LeaveMessageBean;
+import com.fenda.protocol.tcp.bus.EventBusUtils;
 
+import io.rong.imkit.RongIM;
+import io.rong.imkit.manager.IUnReadMessageObserver;
+import io.rong.imlib.model.Conversation;
 import io.rong.push.PushType;
 import io.rong.push.notification.PushMessageReceiver;
 import io.rong.push.notification.PushNotificationMessage;
@@ -25,8 +30,15 @@ public class LeaveMessageReceiver extends PushMessageReceiver {
 
     @Override
     public boolean onNotificationMessageArrived(Context context, PushType pushType, PushNotificationMessage pushNotificationMessage) {
-        Log.d("TAG","接受到消息------》onNotificationMessageArrived"+pushNotificationMessage.getTargetId()+"--"+pushNotificationMessage.getPushData()+pushNotificationMessage.getSenderName());
-        openConversationActivity("15977395823","你的城市");
+        RongIM.getInstance().addUnReadMessageCountChangedObserver(
+                new IUnReadMessageObserver() {
+                    @Override
+                    public void onCountChanged(int i) {
+                        LogUtil.e("数量变化：" + i);
+                        LeaveMessageBean leaveMessageBean =   new LeaveMessageBean(i);
+                        EventBusUtils.post(leaveMessageBean);
+                    }
+                }, Conversation.ConversationType.PRIVATE);
         return false;
     }
 
