@@ -32,6 +32,14 @@ public class LeavemessageDialogActivity extends BaseActivity implements View.OnC
     String userId;
     @Autowired
     String userName;
+    private IUnReadMessageObserver observer = new IUnReadMessageObserver() {
+        @Override
+        public void onCountChanged(int i) {
+            LogUtil.e("数量变化：" + i);
+            LeaveMessageBean leaveMessageBean = new LeaveMessageBean(i);
+            EventBusUtils.post(leaveMessageBean);
+        }
+    };
 
     @Override
     public int onBindLayout() {
@@ -50,17 +58,10 @@ public class LeavemessageDialogActivity extends BaseActivity implements View.OnC
 
     @Override
     public void initData() {
-        mTvMessageContent.setText(userName+"给您留言了");
-        RongIM.getInstance().addUnReadMessageCountChangedObserver(
-                new IUnReadMessageObserver() {
-                    @Override
-                    public void onCountChanged(int i) {
-                        LogUtil.e("数量变化：" + i);
-                        LeaveMessageBean leaveMessageBean =   new LeaveMessageBean(i);
-                        EventBusUtils.post(leaveMessageBean);
-                    }
-                }, Conversation.ConversationType.PRIVATE);
+        mTvMessageContent.setText(userName + "给您留言了");
+        RongIM.getInstance().addUnReadMessageCountChangedObserver(observer, Conversation.ConversationType.PRIVATE);
     }
+
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.leave_message_btn_look) {
@@ -68,7 +69,7 @@ public class LeavemessageDialogActivity extends BaseActivity implements View.OnC
             finish();
         }
         if (view.getId() == R.id.leave_message_btn_cancel) {
-             finish();
+            finish();
         }
     }
 
@@ -77,5 +78,14 @@ public class LeavemessageDialogActivity extends BaseActivity implements View.OnC
         super.onNewIntent(intent);
         userId = intent.getStringExtra("userId");
         userName = intent.getStringExtra("userName");
+        initData();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //移除监听
+        RongIM.getInstance().removeUnReadMessageCountChangedObserver(observer);
+
     }
 }
