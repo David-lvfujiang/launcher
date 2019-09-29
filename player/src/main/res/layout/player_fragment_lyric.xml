@@ -1,55 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.fenda.common.view.AutoScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/auto_scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:gravity="center_horizontal"
+        android:orientation="vertical"
         android:paddingTop="20px"
-        android:paddingBottom="60px"
-        >
+        android:paddingBottom="60px">
 
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/player_white"
-            android:textSize="40sp"
-            android:text="月下独酌"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="10px"
+            android:text="月下独酌"
+            android:textColor="@color/player_white"
+            android:textSize="40sp"
 
             />
+
         <TextView
             android:id="@+id/tv_author"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/player_white"
-            android:textSize="40sp"
-            android:text="李白"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="10px"
+            android:text="李白"
+            android:textColor="@color/player_white"
+            android:textSize="40sp"
 
             />
 
-        <LinearLayout
-            android:id="@+id/lin_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal"
-            android:layout_marginTop="10px"
-            ></LinearLayout>
 
+
+            <LinearLayout
+                android:id="@+id/lin_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20px"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/demension_dp10"
+                >
+
+            </LinearLayout>
 
 
     </LinearLayout>
 
 
-
-
-</ScrollView>
+</com.fenda.common.view.AutoScrollView>
