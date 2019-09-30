@@ -70,7 +70,10 @@ public class CalendarGridViewAdapter extends BaseAdapter {
         if(!TextUtils.isEmpty(calendarDate.getSolar().solar24Term)){
             str =  calendarDate.getSolar().solar24Term;
             festivalFlag = true;
-        }else if(!TextUtils.isEmpty(calendarDate.getSolar().solarFestivalName)){
+        }else if(!TextUtils.isEmpty(calendarDate.getLunar().lunarFestivalName)){
+            str = calendarDate.getLunar().lunarFestivalName;
+            festivalFlag= true;
+        } else if(!TextUtils.isEmpty(calendarDate.getSolar().solarFestivalName)){
             str = calendarDate.getSolar().solarFestivalName;
             festivalFlag= true;
         }else{
