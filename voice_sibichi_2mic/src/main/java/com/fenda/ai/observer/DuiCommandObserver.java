@@ -41,6 +41,8 @@ public class DuiCommandObserver implements CommandObserver {
     private static final String SYS_VOICE_CALL = "call_voice";
     private static final String SYS_VIDEO_CALL = "call_video";
     private static final String SYS_END_CALL = "end_call";
+    private static final String SYS_ACCEPT_CALL = "accept_call";
+    private static final String SYS_MUTE_CALL = "mute_call";
     private static final String COMMAND_WEATHER = "command_weather";
 
     private ICallProvider callProvider;
@@ -53,17 +55,16 @@ public class DuiCommandObserver implements CommandObserver {
 
     /**
      * 注册当前更新消息
-      */
+     */
     public void regist() {
         DDS.getInstance().getAgent().subscribe(new String[]{
-                       SYS_VIDEO_CALL,SYS_VOICE_CALL,COMMAND_WEATHER,SYS_END_CALL
+                        SYS_VIDEO_CALL, SYS_VOICE_CALL, COMMAND_WEATHER, SYS_END_CALL, SYS_ACCEPT_CALL, SYS_MUTE_CALL
                 },
                 this);
     }
 
     /**
-     *  注销当前更新消息
-     *
+     * 注销当前更新消息
      */
     public void unregist() {
         DDS.getInstance().getAgent().unSubscribe(this);
@@ -77,24 +78,24 @@ public class DuiCommandObserver implements CommandObserver {
         ResultOnCall(command, data);
     }
 
-    private void ResultOnCall(String command, String data) {
-        if (command.equals(SYS_VOICE_CALL)){
-           try {
-               if (!BaseApplication.getBaseInstance().isCall()){
-                   call(data,0);
-               }
-           } catch (JSONException e) {
-               e.printStackTrace();
-           }
-       }else if (command.equals(SYS_VIDEO_CALL)){
-           try {
-               if (!BaseApplication.getBaseInstance().isCall()){
-                   call(data,1);
-               }
-           } catch (JSONException e) {
-               e.printStackTrace();
-           }
-       }else if (command.equals(SYS_END_CALL)){
+    private void ResultOnCall(final String command, final String data) {
+        if (command.equals(SYS_VOICE_CALL)) {
+            try {
+                if (!BaseApplication.getBaseInstance().isCall()) {
+                    call(data, 0);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else if (command.equals(SYS_VIDEO_CALL)) {
+            try {
+                if (!BaseApplication.getBaseInstance().isCall()) {
+                    call(data, 1);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else if (command.equals(SYS_END_CALL)) {
             Observable.create(new ObservableOnSubscribe<String>() {
                 @Override
                 public void subscribe(ObservableEmitter<String> emitter) throws Exception {
@@ -104,11 +105,31 @@ public class DuiCommandObserver implements CommandObserver {
                     .subscribe(new Consumer<String>() {
                         @Override
                         public void accept(String s) throws Exception {
-                            if (callProvider == null){
+                            if (callProvider == null) {
                                 callProvider = ARouter.getInstance().navigation(ICallProvider.class);
                             }
-                            if (callProvider != null){
+                            if (callProvider != null) {
                                 callProvider.endCall();
+                            }
+                        }
+                    });
+
+        } else if (command.equals(SYS_ACCEPT_CALL)) {
+            Observable.create(new ObservableOnSubscribe<String>() {
+                @Override
+                public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                    emitter.onNext("");
+                }
+            }).compose(RxSchedulers.<String>io_main())
+                    .subscribe(new Consumer<String>() {
+                        @Override
+                        public void accept(String s) throws Exception {
+                            if (callProvider == null) {
+                                callProvider = ARouter.getInstance().navigation(ICallProvider.class);
+                            }
+                            if (callProvider != null) {
+                                LogUtil.i("command:" + command + "data:" + data);
+                                callProvider.acceptCall();
                             }
                         }
                     });
@@ -117,13 +138,13 @@ public class DuiCommandObserver implements CommandObserver {
     }
 
     private void call(String data, final int type) throws JSONException {
-        if (Util.isTaskQQmusic(BaseApplication.getBaseInstance())){
+        if (Util.isTaskQQmusic(BaseApplication.getBaseInstance())) {
             MusicPlugin.get().getMusicApi().exit();
         }
         JSONObject object = new JSONObject(data);
         String nickName = object.optString("contact");
         final String phone = searchContacts(nickName);
-        if (!TextUtils.isEmpty(phone.trim())){
+        if (!TextUtils.isEmpty(phone.trim())) {
             Observable.create(new ObservableOnSubscribe<String>() {
                 @Override
                 public void subscribe(ObservableEmitter<String> emitter) throws Exception {
@@ -134,8 +155,8 @@ public class DuiCommandObserver implements CommandObserver {
                         @Override
                         public void accept(String s) throws Exception {
                             callProvider = ARouter.getInstance().navigation(ICallProvider.class);
-                            if (callProvider != null){
-                                callProvider.call(type,phone);
+                            if (callProvider != null) {
+                                callProvider.call(type, phone);
                             }
                         }
                     });
@@ -143,17 +164,15 @@ public class DuiCommandObserver implements CommandObserver {
     }
 
     private String searchContacts(String searchName) {
-        ContentProviderManager manager = ContentProviderManager.getInstance(BaseApplication.getBaseInstance(), Uri.parse(ContentProviderManager.BASE_URI+"/user"));
-        List<UserInfoBean> beanList = manager.queryUser("name = ? ",new String[]{searchName});
-        if (beanList != null && beanList.size() > 0){
+        ContentProviderManager manager = ContentProviderManager.getInstance(BaseApplication.getBaseInstance(), Uri.parse(ContentProviderManager.BASE_URI + "/user"));
+        List<UserInfoBean> beanList = manager.queryUser("name = ? ", new String[]{searchName});
+        if (beanList != null && beanList.size() > 0) {
             String phone = beanList.get(0).getMobile();
-            LogUtil.i("phone = "+phone);
+            LogUtil.i("phone = " + phone);
             return phone;
         }
         return "";
     }
-
-
 
 
 }
