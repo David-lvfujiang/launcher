@@ -59,6 +59,7 @@ public class SettingsScreenIntoStandbyActivity extends BaseMvpActivity {
 
         if(getString(R.string.settings_standby_3_1).equals(mIntentSeclectTime)){
             rbTimeThirty.setChecked(true);
+
         } else if(getString(R.string.settings_standby_2).equals(mIntentSeclectTime)){
             rbTimeTwenty.setChecked(true);
         } else if(getString(R.string.settings_standby_1).equals(mIntentSeclectTime)){

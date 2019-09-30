@@ -231,7 +231,7 @@ public class BaseCallActivity extends BaseNoActionBarActivity implements IRongCa
             if (am != null) {
                 am.setSpeakerphoneOn(false);
                 // 设置此值可在拨打时控制响铃音量
-                am.setMode(AudioManager.MODE_IN_COMMUNICATION);
+//                am.setMode(AudioManager.MODE_IN_COMMUNICATION);
                 // 设置拨打时响铃音量默认值
                 int index = am.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
                 RLog.d(TAG, "set stream volume : " + index);
