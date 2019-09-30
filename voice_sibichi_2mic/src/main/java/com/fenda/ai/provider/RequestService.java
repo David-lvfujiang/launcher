@@ -39,9 +39,7 @@ public class RequestService implements IVoiceRequestProvider {
     @Override
     public void init(Context context) {
         mContext = context;
-
     }
-
 
     /**
      * 请求天气接口
@@ -50,13 +48,14 @@ public class RequestService implements IVoiceRequestProvider {
     public void requestWeather(){
         try {
             BaseApplication.getBaseInstance().setRequestWeather(true);
-            Thread.sleep(600);
+            Thread.sleep(800);
             LogUtil.e("requestWeather ==== 请求天气 ====");
             SkillIntent skillIntent = new SkillIntent("2019042500000544",
                     VoiceConstant.SIBICHI.TASK, "查询天气",
                     new JSONObject().put("text", "现在的天气").toString());
             DDS.getInstance().getAgent().triggerIntent(skillIntent);
 
+//            requestNews(10);
         } catch (Exception e) {
             LogUtil.e("Exception === "+e.getMessage());
             e.printStackTrace();
@@ -195,14 +194,21 @@ public class RequestService implements IVoiceRequestProvider {
     @Override
     public void requestNews(int number) {
         try {
+
             BaseApplication.getBaseInstance().setRequestNews(true);
+            Thread.sleep(600);
             SkillIntent skillIntent = new SkillIntent("2019031900001180",
                     "新闻", "播报新闻",
-                    new JSONObject().put(VoiceConstant.SIBICHI.TALK_KEY, "最新新闻").toString());
+                    new JSONObject().put("text", "播放新闻").toString());
             DDS.getInstance().getAgent().triggerIntent(skillIntent);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void requestAlarm() {
+
     }
 
 

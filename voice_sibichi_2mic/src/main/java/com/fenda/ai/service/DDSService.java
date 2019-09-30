@@ -43,6 +43,7 @@ import com.fenda.common.baserx.RxSchedulers;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.provider.ICalendarProvider;
 import com.fenda.common.provider.IEncyclopediaProvider;
+import com.fenda.common.provider.IRecommendProvider;
 import com.fenda.common.provider.IRemindProvider;
 import com.fenda.common.provider.IWeatherProvider;
 import com.fenda.common.router.RouterPath;
@@ -55,6 +56,7 @@ import com.fenda.protocol.tcp.bean.BaseTcpMessage;
 import com.fenda.protocol.tcp.bean.EventMessage;
 import com.fenda.protocol.tcp.bus.EventBusUtils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -306,9 +308,9 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
             @Override
             public JSONObject onDMResult(JSONObject jsonObject) {
                 try {
-                    LogUtil.e("onDMResult =====  " + jsonObject.toString());
+                    LogUtil.e("onDMResult =====  "+jsonObject.toString());
                     JSONObject dmJson = jsonObject.optJSONObject("dm");
-                    if (BaseApplication.getBaseInstance().isCall()) {
+                    if (BaseApplication.getBaseInstance().isCall()){
                         String initentName = dmJson.optString("intentName");
                         String input = dmJson.optString("input");
                         if (!"挂断电话".equals(initentName) && !"接听".equals(initentName) && !"静音".equals(input) && !"取消静音".equals(input)) {
@@ -316,14 +318,38 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                             dmJson.put("shouldEndSession", false);
                             jsonObject.put("ignore", true);
                         }
-                    } else if (BaseApplication.getBaseInstance().isRequestWeather() || BaseApplication.getBaseInstance().isRequestNews()) {
-                        dmJson.put("nlg", "");
+                    }else if (BaseApplication.getBaseInstance().isRequestWeather() ){
+                        JSONObject widgetObject = dmJson.optJSONObject("widget");
+                        JSONObject webhookResp = widgetObject.optJSONObject("webhookResp");
+                        JSONObject extra = webhookResp.optJSONObject("extra");
+                        JSONArray forecastArray = extra.optJSONArray("forecast");
+                        JSONObject mainWeather = forecastArray.optJSONObject(0);
+                        if (weatherProvider == null) {
+                            weatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
+                        }
+                        if (weatherProvider != null) {
+                            weatherProvider.weatherFromVoiceControlToMainPage(mainWeather.toString());
+                        }
+                        BaseApplication.getBaseInstance().setRequestWeather(false);
+                        dmJson.put("nlg","");
+                        dmJson.put("shouldEndSession",false);
+                        jsonObject.put("ignore", true);
 
+                    }else if (BaseApplication.getBaseInstance().isRequestNews()){
+                        JSONObject widgetJson  = dmJson.optJSONObject("widget");
+                        IRecommendProvider recommendProvider = ARouter.getInstance().navigation(IRecommendProvider.class);
+                        if (recommendProvider != null){
+                            recommendProvider.requestRecommend(widgetJson);
+                        }
+                        dmJson.put("nlg","");
+                        dmJson.put("shouldEndSession",false);
+                        jsonObject.put("ignore", true);
+                        BaseApplication.getBaseInstance().setRequestNews(false);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                LogUtil.e("onDMResult ===== end ======  " + jsonObject.toString());
+                LogUtil.e("onDMResult ===== end ======  "+jsonObject.toString());
                 return jsonObject;
             }
         });
@@ -528,7 +554,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
         config.addConfig(DDSConfig.K_USE_UPDATE_DUICORE, "false");
         // 是否使用内置的资源更新通知栏
         config.addConfig(DDSConfig.K_USE_UPDATE_NOTIFICATION, "false");
-        config.addConfig(DDSConfig.K_MIC_TYPE, "2");
+        config.addConfig(DDSConfig.K_MIC_TYPE, "5");
         config.addConfig(DDSConfig.K_AEC_MODE, "external");
 //        config.addConfig(DDSConfig.K_AUDIO_FOCUS_MODE, "external"); //TTS
         // 用于唤醒音频调试, 开启后在 "/sdcard/Android/data/包名/cache" 目录下会生成唤醒音频
@@ -772,18 +798,9 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                                         if (weatherProvider == null) {
                                             weatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
                                         }
-                                        if (BaseApplication.getBaseInstance().isRequestWeather()) {
-                                            if (weatherProvider != null) {
-                                                weatherProvider.weatherFromVoiceControlToMainPage(data);
-                                            }
-                                            DDS.getInstance().getAgent().stopDialog();
-                                            BaseApplication.getBaseInstance().setRequestWeather(false);
-                                        } else {
                                             if (weatherProvider != null) {
                                                 weatherProvider.weatherFromVoiceControl(data);
                                             }
-                                        }
-
                                     }
                                 });
                     } else if ("stock".equals(widgetName)) {

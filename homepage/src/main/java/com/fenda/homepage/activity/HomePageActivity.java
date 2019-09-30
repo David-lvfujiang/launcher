@@ -80,7 +80,6 @@ import com.fenda.homepage.model.MainModel;
 import com.fenda.homepage.observer.MyContentObserver;
 import com.fenda.homepage.presenter.MainPresenter;
 import com.fenda.homepage.receiver.ScreenOffAdminReceiver;
-import com.fenda.leavemessage.model.LeaveMessageBean;
 import com.fenda.protocol.tcp.TCPConfig;
 import com.fenda.protocol.tcp.bean.BaseTcpMessage;
 import com.fenda.protocol.tcp.bean.EventMessage;
@@ -216,6 +215,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
     @Override
     public void initView() {
+        BaseApplication.getBaseInstance().setRequestWeather(false);
         mHeaderTimeTv = findViewById(R.id.tv_header_time);
         mTipInfoRv = findViewById(R.id.rv_Tipinfo);
         mHeaderWeatherIv = findViewById(R.id.iv_header_weather);
@@ -238,8 +238,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         initRecycleView();
         initSleepView();
 
-        String num = SystemPropertiesProxyUtil.getString(this,"persist.key.num");
-        LogUtil.e("persist.key.num = "+num);
+
 
         LogUtil.e("进入了Oncreate的initView");
     }
@@ -441,11 +440,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 getContentResolver().registerContentObserver(Uri.parse(ContentProviderManager.BASE_URI),true,new MyContentObserver(new Handler(),manager));
 
             }
-            weather();
             //避免重复调用
             if (initVoiceProvider != null){
                 initVoiceProvider.requestWeather();
-                initVoiceProvider.requestNews(20);
             }
 
 
@@ -689,27 +686,27 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMsgEvent(LeaveMessageBean msgBean) {
-        final int msgNum = msgBean.getLeaveMessageNumber();
-        if (msgNum == 0) {
-            mMsgTv.setVisibility(View.INVISIBLE);
-            LogUtils.e("onMsgEvent: " + msgNum);
-        } else {
-            LogUtils.e("onMsgEvent: " + msgNum);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    //新建一个Message对象，存储需要发送的消息
-                    Message message = new Message();
-                    message.what = CHANGE_Msg;
-                    message.obj = msgNum + "";
-                    //然后将消息发送出去
-                    mHandlerMsg.sendMessage(message);
-                }
-            }).start();
-        }
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onMsgEvent(LeaveMessageBean msgBean) {
+//        final int msgNum = msgBean.getLeaveMessageNumber();
+//        if (msgNum == 0) {
+//            mMsgTv.setVisibility(View.INVISIBLE);
+//            LogUtils.e("onMsgEvent: " + msgNum);
+//        } else {
+//            LogUtils.e("onMsgEvent: " + msgNum);
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    //新建一个Message对象，存储需要发送的消息
+//                    Message message = new Message();
+//                    message.what = CHANGE_Msg;
+//                    message.obj = msgNum + "";
+//                    //然后将消息发送出去
+//                    mHandlerMsg.sendMessage(message);
+//                }
+//            }).start();
+//        }
+//    }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -948,9 +945,13 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mGridAdapter.setOnItemClickListener(new GridAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, String applyId) {
+                LogUtil.e("applyId = "+applyId);
                 Intent intent = new Intent(HomePageActivity.this, PromptActivity.class);
                 if(applyId.equals(com.fenda.homepage.data.Constant.SETTINGS)){
+
                     ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
+
+                    LogUtil.e("applyId 打开设置页面 = "+RouterPath.SETTINGS.SettingsActivity);
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.CALCULATOR)){
                     //                    ToastUtils.show("计算器");
                     ARouter.getInstance().build(RouterPath.Calculator.CALCULATOR_ACTIVITY).navigation();

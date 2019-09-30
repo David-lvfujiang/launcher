@@ -187,14 +187,14 @@ public class SystemControl extends SystemCtrl {
                 .subscribe(new Consumer<String>() {
                     @Override
                     public void accept(String s) throws Exception {
-                        if (!AppManager.getAppManager().isForeground("SettingsActivity") || !AppTaskUtil.isLauncherForeground()) {
-                            try {
-                                AppManager.getAppManager().finishActivity(Class.forName("com.fenda.settings.activity.SettingsActivity"));
-                            } catch (ClassNotFoundException e) {
-                                e.printStackTrace();
-                            }
-                            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
-                        }
+//                        if (!AppManager.getAppManager().isForeground("SettingsActivity") || !AppTaskUtil.isLauncherForeground()) {
+//                            try {
+//                                AppManager.getAppManager().finishActivity(Class.forName("com.fenda.settings.activity.SettingsActivity"));
+//                            } catch (ClassNotFoundException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+                        ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
                     }
                 });
         return SettingPlugin.ERR_OK;

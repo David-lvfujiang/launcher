@@ -1,7 +1,6 @@
 package com.fenda.common.provider;
 
 import com.alibaba.android.arouter.facade.template.IProvider;
-import com.fenda.common.bean.UserInfoBean;
 
 import java.util.List;
 
@@ -34,6 +33,8 @@ public interface IVoiceRequestProvider extends IProvider {
     void openAqiyi();
     /**请求新闻**/
     void requestNews(int number);
+    /**请求闹钟**/
+    void requestAlarm();
 
 
 }
