@@ -1,7 +1,6 @@
 package com.fenda.common.util;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -42,7 +41,7 @@ public class SystemPropertiesProxyUtil  {
             } catch (IllegalArgumentException e) {
                 //e.printStackTrace();
                 //如果key超过32个字符则抛出该异常
-                Log.w(TAG, "key超过32个字符");
+                LogUtil.d(TAG, "key超过32个字符");
             } catch (Exception e) {
                 result = "";
             }
@@ -78,7 +77,7 @@ public class SystemPropertiesProxyUtil  {
             } catch (IllegalArgumentException e) {
                 //e.printStackTrace();
                 //如果key超过32个字符则抛出该异常
-                Log.w(TAG, "key超过32个字符");
+                LogUtil.d(TAG, "key超过32个字符");
             } catch (Exception e) {
                 result = def;
             }
@@ -113,7 +112,7 @@ public class SystemPropertiesProxyUtil  {
             } catch (IllegalArgumentException e) {
                 //e.printStackTrace();
                 //如果key超过32个字符则抛出该异常
-                Log.w(TAG, "key超过32个字符");
+                LogUtil.d(TAG, "key超过32个字符");
             } catch (Exception e) {
                 result = def;
             }
@@ -148,7 +147,7 @@ public class SystemPropertiesProxyUtil  {
             } catch (IllegalArgumentException e) {
                 //e.printStackTrace();
                 //如果key超过32个字符则抛出该异常
-                Log.w(TAG, "key超过32个字符");
+                LogUtil.d(TAG, "key超过32个字符");
             } catch (Exception e) {
                 result = def;
             }
@@ -186,7 +185,7 @@ public class SystemPropertiesProxyUtil  {
             } catch (IllegalArgumentException e) {
                 //e.printStackTrace();
                 //如果key超过32个字符则抛出该异常
-                Log.w(TAG, "key超过32个字符");
+                LogUtil.d(TAG, "key超过32个字符");
             } catch (Exception e) {
                 result = def;
             }
@@ -221,7 +220,7 @@ public class SystemPropertiesProxyUtil  {
             } catch (IllegalArgumentException e) {
                 //e.printStackTrace();
                 //如果key超过32个字符或者value超过92个字符则抛出该异常
-                Log.w(TAG, "key超过32个字符或者value超过92个字符");
+                LogUtil.d(TAG, "key超过32个字符或者value超过92个字符");
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -221,7 +221,7 @@ public class SettingsContractsNickNameEditActivity extends BaseMvpActivity<Setti
 
     @Override
     public void getContactsListSuccess(BaseResponse<List<UserInfoBean>> response) {
-        LogUtil.d(TAG, "修改昵称获取联系人列表成功");
+        LogUtil.d(TAG, "   ");
         ContentProviderManager.getInstance(mContext, Constant.Common.URI).insertUsers(response.getData());
 
         Intent mIntent = new Intent(SettingsContractsNickNameEditActivity.this, SettingsDeviceContractsActivity.class);
