@@ -1,29 +1,15 @@
 package com.fenda.common;
 
 import android.content.Context;
-import android.database.ContentObserver;
-import android.net.Uri;
-import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.multidex.MultiDex;
 
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.fenda.common.bean.UserInfoBean;
-import com.fenda.common.constant.Constant;
-import com.fenda.common.db.ContentProviderManager;
-import com.fenda.common.provider.IVoiceRequestProvider;
-import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.DensityUtil;
-import com.fenda.common.util.LogUtil;
 import com.fenda.protocol.AppApplicaiton;
-import com.orhanobut.logger.AndroidLogAdapter;
-import com.orhanobut.logger.Logger;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 
 /**
