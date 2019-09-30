@@ -6,10 +6,12 @@ import android.util.Log;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.call.utils.ImConnectUtil;
 import com.fenda.common.BaseApplication;
+import com.fenda.common.constant.Constant;
 import com.fenda.common.provider.IAppLeaveMessageProvider;
 import com.fenda.common.provider.ICallProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.LogUtils;
+import com.fenda.protocol.tcp.bus.EventBusUtils;
 
 import io.rong.callkit.RongCallKit;
 import io.rong.calllib.RongCallClient;
@@ -59,5 +61,24 @@ public class CallService implements ICallProvider {
         if (session != null) {
             RongCallClient.getInstance().hangUpCall(session.getCallId());
         }
+    }
+
+    @Override
+    public void muteCall(boolean isMute) {
+        if (isMute) {
+            EventBusUtils.post(Constant.Common.OPEN_MUTE);
+        }else{
+            EventBusUtils.post(Constant.Common.CLOSE_MUTE);
+        }
+
+    }
+
+    @Override
+    public void acceptCall() {
+        RongCallSession session = RongCallClient.getInstance().getCallSession();
+        if (session != null) {
+            RongCallClient.getInstance().acceptCall(session.getCallId());
+        }
+
     }
 }

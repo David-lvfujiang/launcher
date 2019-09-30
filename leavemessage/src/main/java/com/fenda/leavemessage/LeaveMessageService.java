@@ -34,6 +34,31 @@ public class LeaveMessageService implements IAppLeaveMessageProvider, RongIMClie
         //设置消息接收监听器
         Log.e("消息", "接收: ");
         RongIM.setOnReceiveMessageListener(this);
+        RongIM.setConnectionStatusListener(new RongIMClient.ConnectionStatusListener() {
+            @Override
+            public void onChanged(ConnectionStatus connectionStatus) {
+                switch (connectionStatus) {
+                    case CONNECTED://连接成功。
+
+                        Log.i("yuki", "--------------------连接成功");
+                        break;
+                    case DISCONNECTED://断开连接。
+                        Log.i("yuki", "--------------------断开连接");
+                        break;
+                    case CONNECTING://连接中。
+                        Log.i("yuki", "--------------------链接中");
+                        break;
+                    case NETWORK_UNAVAILABLE://网络不可用。
+                        Log.i("yuki", "--------------------网络不可用");
+                        break;
+                    case KICKED_OFFLINE_BY_OTHER_CLIENT://用户账户在其他设备登录，本机会被踢掉线
+                        Log.i("yuki", "--------------------掉线");
+                        break;
+
+                }
+            }
+
+        });
 
     }
 
@@ -50,14 +75,18 @@ public class LeaveMessageService implements IAppLeaveMessageProvider, RongIMClie
      */
     @Override
     public boolean onReceived(Message message, int i) {
-        Log.e("消息", "接收1: ");
         LogUtil.e(message.toString());
         userId = message.getSenderUserId();
         MessageContent content = message.getContent();
         UserInfo userInfo = content.getUserInfo();
         String userName = userInfo.getName();
-        Log.e("TAG", userInfo.getName());
-        openConversationActivity(userId, userName);
+        LogUtil.e(userInfo.getName());
+        if (userName == null || ("").equals(userName))
+        {
+            openConversationActivity(userId, "留言");
+        } else{
+            openConversationActivity(userId, userName);
+        }
         return true;
     }
 
@@ -78,6 +107,10 @@ public class LeaveMessageService implements IAppLeaveMessageProvider, RongIMClie
             //打开提示界面
             ARouter.getInstance().build(RouterPath.Leavemessage.LEAVEMESSAGE_DIALOG_ACTIVITY).withString("userId", userId).withString("userName", userName).navigation();
         }
+    }
+
+    public void openConversationListActivity() {
+        RongIM.getInstance().startConversationList(BaseApplication.getBaseInstance());
     }
 
 
