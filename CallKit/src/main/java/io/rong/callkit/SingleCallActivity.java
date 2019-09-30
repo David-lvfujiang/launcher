@@ -27,7 +27,14 @@ import android.widget.Toast;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.BaseApplication;
+import com.fenda.common.constant.Constant;
 import com.fenda.common.provider.IVoiceRequestProvider;
+import com.fenda.common.util.LogUtil;
+import com.fenda.protocol.tcp.bus.EventBusUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -79,7 +86,7 @@ public class SingleCallActivity extends BaseCallActivity implements Handler.Call
 
     private int EVENT_FULL_SCREEN = 1;
 
-    private String targetId ="";
+    private String targetId = "";
     private RongCallCommon.CallMediaType mediaType;
     private RongCallCommon.CallMediaType remoteMediaType;
     public static final int DISABLE_EXPAND = 0x00010000;
@@ -90,6 +97,8 @@ public class SingleCallActivity extends BaseCallActivity implements Handler.Call
     Uri mUri = Uri.parse(ContentProviderManager.BASE_URI + "/user");
     private SqliteManager mSqliteManager;
     private long mCallTime;
+    private boolean onCallConnected = false;
+
     @Override
     final public boolean handleMessage(Message msg) {
         if (msg.what == EVENT_FULL_SCREEN) {
@@ -105,10 +114,11 @@ public class SingleCallActivity extends BaseCallActivity implements Handler.Call
         super.onCreate(savedInstanceState);
         setStatusBarDisable(DISABLE_EXPAND);
         //设置全屏
-        requestWindowFeature( Window.FEATURE_NO_TITLE );
-        getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN );
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.rc_voip_activity_single_call);
+        EventBus.getDefault().register(this);
         // 音视频通话时设置标志禁止其他语言操作
         BaseApplication.getBaseInstance().setCall(true);
         // 音视频通话时关闭音乐
@@ -526,10 +536,36 @@ public class SingleCallActivity extends BaseCallActivity implements Handler.Call
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMuteEvent(String type) {
+        if (type.equals(Constant.Common.OPEN_MUTE)) {
+            LogUtil.i("SingleCallActivity:open_mute");
+            if (onCallConnected) {
+                RongCallClient.getInstance().setEnableLocalAudio(false);
+                View muteV = mButtonContainer.findViewById(R.id.rc_voip_call_mute);
+                if (muteV != null) {
+                    muteV.setSelected(true);
+                    muted= muteV.isSelected();
+                }
+            }
+        } else if (type.equals(Constant.Common.CLOSE_MUTE)) {
+            LogUtil.i("SingleCallActivity:close_mute");
+            if (onCallConnected) {
+                RongCallClient.getInstance().setEnableLocalAudio(true);
+                View muteV = mButtonContainer.findViewById(R.id.rc_voip_call_mute);
+                if (muteV != null) {
+                    muteV.setSelected(false);
+                    muted= muteV.isSelected();
+                }
+            }
+        }
+    }
+
     @Override
     public void onCallConnected(RongCallSession callSession, SurfaceView localVideo) {
         super.onCallConnected(callSession, localVideo);
 //        sendMicDisableBroad();
+        onCallConnected = true;
         this.callSession = callSession;
         FinLog.v(TAG, "onCallConnected----mediaType=" + callSession.getMediaType().getValue());
         if (callSession.getMediaType().equals(RongCallCommon.CallMediaType.AUDIO)) {
@@ -606,6 +642,7 @@ public class SingleCallActivity extends BaseCallActivity implements Handler.Call
             wakeLock.setReferenceCounted(false);
             wakeLock.release();
         }
+        EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 
@@ -824,11 +861,12 @@ public class SingleCallActivity extends BaseCallActivity implements Handler.Call
 
     /**
      * 保存通话记录到数据库
+     *
      * @param callSession
      */
     private void saveCallRecorder2DB(RongCallSession callSession) {
         UserInfoBean userInfo = ContentProviderManager.getInstance(this, mUri).queryUserById(targetId);
-        if (userInfo!=null) {
+        if (userInfo != null) {
             String name = userInfo.getUserName();
             String phone = userInfo.getMobile();
             String icon = userInfo.getIcon();

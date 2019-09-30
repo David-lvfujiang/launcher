@@ -12,6 +12,7 @@ import com.fenda.common.BaseApplication;
 import com.fenda.common.baseapp.AppManager;
 import com.fenda.common.baserx.RxSchedulers;
 import com.fenda.common.constant.Constant;
+import com.fenda.common.provider.ICallProvider;
 import com.fenda.common.provider.IPlayerProvider;
 import com.fenda.common.provider.IVoiceRequestProvider;
 import com.fenda.common.router.RouterPath;
@@ -66,6 +67,16 @@ public class SystemControl extends SystemCtrl {
                     e.printStackTrace();
                 }
                 ARouter.getInstance().build(RouterPath.Gallery.GALLERY_CATOGORY).navigation();
+            }
+            return SettingPlugin.ERR_OK;
+        } else if (("日历").equals(s)) {
+            if (!AppManager.getAppManager().isForeground("PerpetualCalendarActivity") || !AppTaskUtil.isLauncherForeground()) {
+                try {
+                    AppManager.getAppManager().finishActivity(Class.forName("com.fenda.calendar.view.PerpetualCalendarActivity"));
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                ARouter.getInstance().build(RouterPath.Calendar.Perpetual_CALENDAR_ACTIVITY).navigation();
             }
             return SettingPlugin.ERR_OK;
         } else {
@@ -124,6 +135,35 @@ public class SystemControl extends SystemCtrl {
 //        DispatchManager.startService(Constant.AIDL.SCREEN_ON, Constant.AIDL.SCREEN_ON,"",Constant.AIDL.LAUNCHER);
         EventBusUtils.post(Constant.Common.SCREEN_ON);
         return SettingPlugin.ERR_OK;
+    }
+
+    @Override
+    public int openMode(Mode mode) {
+        if (BaseApplication.getBaseInstance().isCall() && mode == (Mode.Mute)) {
+            // 音视频通话时静音
+            ICallProvider callProvider = ARouter.getInstance().navigation(ICallProvider.class);
+            if (callProvider != null) {
+                callProvider.muteCall(true);
+            }
+            return SettingPlugin.ERR_OK;
+        } else {
+            return super.openMode(mode);
+        }
+    }
+
+
+    @Override
+    public int closeMode(Mode mode) {
+        if (BaseApplication.getBaseInstance().isCall() && mode == (Mode.Mute)) {
+            // 音视频通话时静音
+            ICallProvider callProvider = ARouter.getInstance().navigation(ICallProvider.class);
+            if (callProvider != null) {
+                callProvider.muteCall(false);
+            }
+            return SettingPlugin.ERR_OK;
+        } else {
+            return super.openMode(mode);
+        }
     }
 
     @Override

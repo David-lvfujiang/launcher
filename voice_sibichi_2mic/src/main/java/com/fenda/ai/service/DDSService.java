@@ -306,23 +306,24 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
             @Override
             public JSONObject onDMResult(JSONObject jsonObject) {
                 try {
-                    LogUtil.e("onDMResult =====  "+jsonObject.toString());
+                    LogUtil.e("onDMResult =====  " + jsonObject.toString());
                     JSONObject dmJson = jsonObject.optJSONObject("dm");
-                    if (BaseApplication.getBaseInstance().isCall()){
+                    if (BaseApplication.getBaseInstance().isCall()) {
                         String initentName = dmJson.optString("intentName");
-                        if (!"挂断电话".equals(initentName)){
-                            dmJson.put("nlg","");
-                            dmJson.put("shouldEndSession",false);
+                        String input = dmJson.optString("input");
+                        if (!"挂断电话".equals(initentName) && !"接听".equals(initentName) && !"静音".equals(input) && !"取消静音".equals(input)) {
+                            dmJson.put("nlg", "");
+                            dmJson.put("shouldEndSession", false);
                             jsonObject.put("ignore", true);
                         }
-                    }else if (BaseApplication.getBaseInstance().isRequestWeather() || BaseApplication.getBaseInstance().isRequestNews()){
-                        dmJson.put("nlg","");
+                    } else if (BaseApplication.getBaseInstance().isRequestWeather() || BaseApplication.getBaseInstance().isRequestNews()) {
+                        dmJson.put("nlg", "");
 
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                LogUtil.e("onDMResult ===== end ======  "+jsonObject.toString());
+                LogUtil.e("onDMResult ===== end ======  " + jsonObject.toString());
                 return jsonObject;
             }
         });
@@ -527,7 +528,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
         config.addConfig(DDSConfig.K_USE_UPDATE_DUICORE, "false");
         // 是否使用内置的资源更新通知栏
         config.addConfig(DDSConfig.K_USE_UPDATE_NOTIFICATION, "false");
-        config.addConfig(DDSConfig.K_MIC_TYPE, "5");
+        config.addConfig(DDSConfig.K_MIC_TYPE, "2");
         config.addConfig(DDSConfig.K_AEC_MODE, "external");
 //        config.addConfig(DDSConfig.K_AUDIO_FOCUS_MODE, "external"); //TTS
         // 用于唤醒音频调试, 开启后在 "/sdcard/Android/data/包名/cache" 目录下会生成唤醒音频
