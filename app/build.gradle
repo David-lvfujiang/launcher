@@ -105,7 +105,7 @@ dependencies {
     api (name: 'gallery-_dev-release', ext: 'aar')
     api (name: 'homepage-_dev-release', ext: 'aar')
 //    api (name: 'news-release', ext: 'aar')
-// api (name: 'weather-release', ext: 'aar')
+ api (name: 'weather-release', ext: 'aar')
 //    api (name: 'calendar-_dev-release', ext: 'aar')
     api (name: 'settings-_dev-release', ext: 'aar')
 //    api (name: 'encyclopedia-_dev-release', ext: 'aar')
@@ -114,14 +114,14 @@ dependencies {
 
     implementation 'com.fenda.ai:ai_sibichi:1.0.2'
     implementation 'com.fenda.call:call:1.0.2'
-    implementation 'com.fenda.calendar:calendar:1.0.2'
-    implementation 'com.fenda.calculator:calculator:1.0.0'
+    implementation 'com.fenda.calendar:calendar:1.0.3'
+    implementation 'com.fenda.calculator:calculator:1.0.1'
     implementation 'com.fenda.encyclopedia:encyclopedia:1.0.1'
-    implementation 'com.fenda.news:news:1.0.2'
+    implementation 'com.fenda.news:news:1.0.3'
     implementation 'com.fenda.player:player:1.0.2@aar'
     implementation 'com.fenda.remind:remind:1.0.1'
-    implementation 'com.fenda.weather:weather:1.0.2'
-    implementation 'com.fenda.leavemessage:leavemessage:1.0.2'
+//    implementation 'com.fenda.weather:weather:1.0.2'
+    implementation 'com.fenda.leavemessage:leavemessage:1.0.3'
 
     annotationProcessor deps.arouter_compiler
 //    implementation project(path: ':CallLib')
