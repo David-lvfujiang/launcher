@@ -4,22 +4,22 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.app.admin.DevicePolicyManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
-import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Handler;
 import android.net.ConnectivityManager;
 import android.net.LinkProperties;
 import android.net.Network;
 import android.net.NetworkCapabilities;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.support.annotation.RequiresApi;
@@ -88,8 +88,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-
-import io.netty.util.internal.SystemPropertyUtil;
 
 @Route(path = RouterPath.HomePage.HOMEPAGE_MAIN)
 public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener {
@@ -204,12 +202,10 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mAiTipMicTv = findViewById(R.id.tv_ai_tiptext);
         imgGIF  = findViewById(R.id.img_gif);
 
-        //
         findViewById(R.id.tv_main_phone).setOnClickListener(this);
         findViewById(R.id.tv_main_cmcc).setOnClickListener(this);
         findViewById(R.id.tv_main_qqmusic).setOnClickListener(this);
         findViewById(R.id.tv_main_iqiyi).setOnClickListener(this);
-        //
         mHeaderWeatherTv.setOnClickListener(this);
         mHeaderWeatherIv.setOnClickListener(this);
         initRecycleView();
@@ -219,8 +215,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         LogUtil.e("persist.key.num = "+num);
 
         LogUtil.e("进入了Oncreate的initView");
-
-
     }
 
     private void initSleepView() {
@@ -393,7 +387,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             LogUtil.d("bind onReceiveEvent = " + message);
             ContentProviderManager.getInstance(mContext, Constant.Common.URI).clear();
             mPresenter.getFamilyContacts();
-        } else if (message.getCode() == TCPConfig.MessageType.USER_REPAIR_HEAD) {
+
+        }
+        else if (message.getCode() == TCPConfig.MessageType.USER_REPAIR_HEAD) {
             if (message != null && message.getData() != null) {
                 BaseTcpMessage baseTcpMessage = (BaseTcpMessage) message.getData();
                 String msg = baseTcpMessage.getMsg();
@@ -624,6 +620,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     @Override
     public void getFamilyContactsSuccess(BaseResponse<List<UserInfoBean>> response) {
         ContentProviderManager.getInstance(mContext, Constant.Common.URI).insertUsers(response.getData());
+        LogUtil.d(TAG, "主页获取联系人列表成功");
     }
 
     @Override
