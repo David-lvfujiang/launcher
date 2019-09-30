@@ -85,6 +85,10 @@ public class BaseApplication extends AppApplicaiton {
         screenWidth  = DensityUtil.getScreenWidth(this);
         screenHeight = DensityUtil.getScreenHeight(this);
 
+//        //待机界面
+//        ScreenSaverManager.init(this);
+//        ScreenSaverManager.startMonitor();
+//        ScreenSaverManager.eliminateEvent();
     }
 
     @Override

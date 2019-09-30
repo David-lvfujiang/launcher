@@ -21,7 +21,6 @@ import android.widget.TextView;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.base.BaseActivity;
-import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.AppUtils;
@@ -66,7 +65,6 @@ public class SettingsActivity extends BaseActivity {
     private String mBtName;
     private long [] mHits = null;
     private boolean mShow;
-
 
     @Override
     public int onBindLayout() {

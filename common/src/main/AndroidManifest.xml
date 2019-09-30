@@ -20,5 +20,6 @@
         </service>
 
         <activity android:name=".activity.SettingsScreenDigClockActivity"/>
+        <activity android:name=".activity.SettingsScreenSimClockActivity"/>
     </application>
 </manifest>
