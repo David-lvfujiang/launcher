@@ -9,5 +9,6 @@ import com.alibaba.android.arouter.facade.template.IProvider;
  */
 public interface IAppLeaveMessageProvider extends IProvider {
     public void initRongIMlistener();
+    public void openConversationListActivity();
 
 }
