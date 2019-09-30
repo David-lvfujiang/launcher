@@ -20,7 +20,7 @@
         android:id="@+id/bind_contacts_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="30dp"
+        android:textSize="25dp"
         android:textColor="@color/white"
         android:layout_gravity="center"
         app:layout_constraintLeft_toLeftOf="parent"
