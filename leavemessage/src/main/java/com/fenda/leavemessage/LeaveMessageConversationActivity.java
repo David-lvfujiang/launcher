@@ -2,12 +2,15 @@ package com.fenda.leavemessage;
 
 import android.content.Intent;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fenda.common.base.BaseActivity;
-
+import com.fenda.common.basebean.leavemessage.LeaveMessageBean;
+import com.fenda.common.util.LogUtil;
+import com.fenda.protocol.tcp.bus.EventBusUtils;
 /**
  * @Author: david.lvfujiang
  * @Date: 2019/9/18
@@ -33,6 +36,9 @@ public class LeaveMessageConversationActivity extends BaseActivity implements Vi
 
     @Override
     public void initData() {
+        LeaveMessageBean leaveMessageBean = new LeaveMessageBean(0);
+        EventBusUtils.post(leaveMessageBean);
+        LogUtil.e("数量变化"+0);
         //会话界面 对方id
         targetId = getIntent().getData().getQueryParameter("targetId");
         //对方 昵称

@@ -7,12 +7,13 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="#9fcdfd">
+        android:background="@color/black"
+        >
 
         <ImageView
             android:id="@+id/leave_message_back_img"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/demension_dp80"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/demension_dp25"
             android:background="@mipmap/leave_message_back_icon" />
 

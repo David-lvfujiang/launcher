@@ -8,10 +8,20 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.fenda.common.base.BaseActivity;
+import com.fenda.common.basebean.leavemessage.LeaveMessageBean;
+import com.fenda.common.util.LogUtil;
+import com.fenda.protocol.tcp.bus.EventBusUtils;
 
+import io.rong.imkit.RongIM;
 import io.rong.imkit.fragment.ConversationListFragment;
+import io.rong.imkit.manager.IUnReadMessageObserver;
 import io.rong.imlib.model.Conversation;
 
+/**
+ * @Author: david.lvfujiang
+ * @Date: 2019/9/18
+ * @Describe: 聊天会话列表
+ */
 public class LeaveMessageListConversationActivity extends BaseActivity implements View.OnClickListener {
     private ImageView mImgReturnBack;
 
@@ -47,4 +57,5 @@ public class LeaveMessageListConversationActivity extends BaseActivity implement
             finish();
         }
     }
+
 }

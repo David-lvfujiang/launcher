@@ -1,4 +1,4 @@
-package com.fenda.leavemessage.model;
+package com.fenda.common.basebean.leavemessage;
 
 /**
  * @Author: david.lvfujiang

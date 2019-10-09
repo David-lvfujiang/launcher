@@ -11,8 +11,7 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.base.BaseActivity;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.LogUtil;
-import com.fenda.common.util.ToastUtils;
-import com.fenda.leavemessage.model.LeaveMessageBean;
+import com.fenda.common.basebean.leavemessage.LeaveMessageBean;
 import com.fenda.protocol.tcp.bus.EventBusUtils;
 
 import io.rong.imkit.RongIM;
@@ -49,6 +48,7 @@ public class LeavemessageDialogActivity extends BaseActivity implements View.OnC
 
     @Override
     public void initView() {
+        RongIM.getInstance().addUnReadMessageCountChangedObserver(observer, Conversation.ConversationType.PRIVATE);
         mBtCancel = findViewById(R.id.leave_message_btn_cancel);
         mBtlook = findViewById(R.id.leave_message_btn_look);
         mTvMessageContent = findViewById(R.id.leave_message_tv);
@@ -59,7 +59,7 @@ public class LeavemessageDialogActivity extends BaseActivity implements View.OnC
     @Override
     public void initData() {
         mTvMessageContent.setText(userName + "给您留言了");
-        RongIM.getInstance().addUnReadMessageCountChangedObserver(observer, Conversation.ConversationType.PRIVATE);
+
     }
 
     @Override
