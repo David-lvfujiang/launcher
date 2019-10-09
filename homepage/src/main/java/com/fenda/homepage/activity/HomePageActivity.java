@@ -48,6 +48,7 @@ import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
 import com.fenda.common.basebean.player.FDMusic;
 import com.fenda.common.basebean.player.MusicPlayBean;
+import com.fenda.common.bean.LeaveMessageBean;
 import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.bean.WeatherWithHomeBean;
 import com.fenda.common.constant.Constant;
@@ -443,6 +444,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             //避免重复调用
             if (initVoiceProvider != null){
                 initVoiceProvider.requestWeather();
+                initVoiceProvider.requestNews(20);
             }
 
 
@@ -686,27 +688,27 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         }
     }
 
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onMsgEvent(LeaveMessageBean msgBean) {
-//        final int msgNum = msgBean.getLeaveMessageNumber();
-//        if (msgNum == 0) {
-//            mMsgTv.setVisibility(View.INVISIBLE);
-//            LogUtils.e("onMsgEvent: " + msgNum);
-//        } else {
-//            LogUtils.e("onMsgEvent: " + msgNum);
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    //新建一个Message对象，存储需要发送的消息
-//                    Message message = new Message();
-//                    message.what = CHANGE_Msg;
-//                    message.obj = msgNum + "";
-//                    //然后将消息发送出去
-//                    mHandlerMsg.sendMessage(message);
-//                }
-//            }).start();
-//        }
-//    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMsgEvent(LeaveMessageBean msgBean) {
+        final int msgNum = msgBean.getLeaveMessageNumber();
+        if (msgNum == 0) {
+            mMsgTv.setVisibility(View.INVISIBLE);
+            LogUtils.e("onMsgEvent: " + msgNum);
+        } else {
+            LogUtils.e("onMsgEvent: " + msgNum);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    //新建一个Message对象，存储需要发送的消息
+                    Message message = new Message();
+                    message.what = CHANGE_Msg;
+                    message.obj = msgNum + "";
+                    //然后将消息发送出去
+                    mHandlerMsg.sendMessage(message);
+                }
+            }).start();
+        }
+    }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -1035,8 +1037,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     startActivity(intent);
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.REMIND)) {
                     //                    ToastUtils.show("提醒");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
+                    if (initVoiceProvider != null){
+                        initVoiceProvider.requestAlarm();
+                    }
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.STORY)) {
                     //                    ToastUtils.show("故事");
                     intent.putExtra("applyId", applyId);

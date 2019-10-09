@@ -71,7 +71,7 @@ android {
                 }
                 pom.groupId = "com.fenda.news"// 唯一标识（通常为模块包名，也可以任意）
                 pom.artifactId = "news" // 项目名称（通常为类库模块名称，也可以任意）
-                pom.version = "1.0.3" // 版本号
+                pom.version = "1.0.4" // 版本号
                 pom.packaging = "aar"//打包类型
 
             }
