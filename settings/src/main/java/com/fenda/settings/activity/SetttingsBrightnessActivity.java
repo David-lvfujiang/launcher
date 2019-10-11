@@ -75,7 +75,6 @@ public class SetttingsBrightnessActivity extends BaseMvpActivity {
             }
         }
         catch (Settings.SettingNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         //获取当前亮度,获取失败则返回255
@@ -92,11 +91,7 @@ public class SetttingsBrightnessActivity extends BaseMvpActivity {
         brightnessBar.setOnSeekBarChangeListener(new MyOnSeekBarChangeListener());
     }
 
-    /**
-     * 改变App当前Window亮度
-     *
-     * @param brightness
-     */
+     //改变App当前Window亮度
     public void changeAppBrightness(int brightness)
     {
         Window window = this.getWindow();

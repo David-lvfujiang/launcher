@@ -13,8 +13,8 @@ public class SettingsAndlinkDeviceInfo {
     public String productToken;
     public String andlinkToken;
     public String firmwareVersion;
-    public String autoAP;
-    public String softAPMode;
+    public String autoAp;
+    public String softApMode;
     public String softwareVersion;
     public DeviceExtInfo deviceExtInfo;
 

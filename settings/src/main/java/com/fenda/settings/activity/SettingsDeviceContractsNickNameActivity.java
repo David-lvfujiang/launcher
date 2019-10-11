@@ -12,10 +12,12 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
 import com.fenda.common.bean.UserInfoBean;
+import com.fenda.common.constant.Constant;
 import com.fenda.common.db.ContentProviderManager;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.ImageUtil;
 import com.fenda.common.util.LogUtil;
+import com.fenda.common.util.SPUtils;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.common.view.CircleImageView;
 import com.fenda.protocol.tcp.TCPConfig;
@@ -53,10 +55,8 @@ public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<Set
     private CircleImageView civUserIcon;
 
     private String mDisNickName;
-    private String mIntentUserName;
     private String mIntentUserName2;
     private String mIntentIcon;
-    private String mIntentIconTmp;
 
     private Uri mUri = Uri.parse(ContentProviderManager.BASE_URI + "/user");
 
@@ -84,6 +84,9 @@ public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<Set
 
     @Override
     public void initData() {
+        String mIntentIconTmp;
+        String mIntentUserName;
+
         //4). 得到intent对象
         Intent intent = getIntent();
         //5). 通过intent读取额外数据
@@ -92,16 +95,26 @@ public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<Set
         String cancelNickNameIntent = intent.getStringExtra("cancelSetNickName");
         String cancelNickNameIntentIcon = intent.getStringExtra("cancelSetNickNameIcon");
         String changedNickNameIntent = intent.getStringExtra("ChangedEditNickName");
+
         LogUtil.d(TAG, "intentUserName = " + mIntentUserName);
         LogUtil.d(TAG, "changedNickNameIntent = " + changedNickNameIntent);
         LogUtil.d(TAG, "disNickName = " + mDisNickName);
         LogUtil.d(TAG, "cancelNickNameIntent = " + cancelNickNameIntent);
+        LogUtil.d(TAG, "cancelNickNameIntentIcon = " + cancelNickNameIntentIcon);
+        LogUtil.d(TAG, "mIntentIcon = " + mIntentIcon);
 
-        if(mIntentIcon ==null){
-            mIntentIconTmp = cancelNickNameIntentIcon;
-        } else {
-            mIntentIconTmp = mIntentIcon;
+//        if(mIntentIcon == null){
+//            mIntentIconTmp = cancelNickNameIntentIcon;
+//        } else {
+//            mIntentIconTmp = mIntentIcon;
+//        }
+        if(mIntentIcon != null){
+            SPUtils.put(getApplicationContext(), Constant.Settings.CONTRACTS_ICON, mIntentIcon);
         }
+
+        mIntentIconTmp = (String) SPUtils.get(getApplicationContext(), Constant.Settings.CONTRACTS_ICON, "");
+        LogUtil.d(TAG, "mIntentIconTmp = " + mIntentIconTmp);
+
         if(mIntentUserName == null){
             tvDisNickName.setText(changedNickNameIntent);
             mIntentUserName2 = changedNickNameIntent;
@@ -109,7 +122,7 @@ public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<Set
                 tvDisNickName.setText(cancelNickNameIntent);
                 mIntentUserName2 = cancelNickNameIntent;
 
-                if(cancelNickNameIntent.indexOf("管理员") == -1){
+                if(!cancelNickNameIntent.contains("管理员")){
                     //非管理员用户
                     tvDelectThisUser.setVisibility(View.VISIBLE);
                 } else {
@@ -117,7 +130,7 @@ public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<Set
                     tvAdminUnbind.setVisibility(View.VISIBLE);
                 }
             } else {
-                if(changedNickNameIntent.indexOf("管理员") == -1){
+                if(!changedNickNameIntent.contains("管理员")){
                     //非管理员用户
                     tvDelectThisUser.setVisibility(View.VISIBLE);
                 } else {
@@ -128,7 +141,7 @@ public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<Set
         } else {
             tvDisNickName.setText(mIntentUserName);
             mIntentUserName2 = mIntentUserName;
-            if((mIntentUserName.indexOf("管理员")) == -1){
+            if(!mIntentUserName.contains("管理员")){
                 //非管理员用户
                 tvDelectThisUser.setVisibility(View.VISIBLE);
             } else {
@@ -164,8 +177,8 @@ public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<Set
         tvDelectThisUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String delecteUserName = null;
-                if((mIntentUserName2.indexOf("管理员")) == -1) {
+                String delecteUserName;
+                if(!mIntentUserName2.contains("管理员")) {
                     //非管理员用户
                     delecteUserName = mIntentUserName2;
                 } else {

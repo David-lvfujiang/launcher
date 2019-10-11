@@ -6,9 +6,9 @@ import android.content.Context;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.BaseApplication;
+import com.fenda.common.bean.LeaveMessageBean;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.LogUtil;
-import com.fenda.common.bean.LeaveMessageBean;
 import com.fenda.protocol.tcp.bus.EventBusUtils;
 
 import io.rong.imkit.RongIM;

@@ -17,13 +17,6 @@ public class SettingsWifiBean {
     public SettingsWifiBean() {
     }
 
-    public SettingsWifiBean(ScanResult result, int status, String name, String itemStatus) {
-        this.result = result;
-        this.status = status;
-        this.name = name;
-        this.itemStatus = itemStatus;
-    }
-
 
     public String getName() {
         return name;

@@ -39,7 +39,6 @@ public class SettingsDeviceContractsActivity extends BaseMvpActivity {
     private TextView tvCancel;
     private ImageView ivAddContacts;
 
-    private MyContractAdapter mMyContractAdapter;
     private List<UserInfoBean> mContractList;
     private Uri mUri = Uri.parse(ContentProviderManager.BASE_URI + "/user");
     @Override
@@ -54,6 +53,8 @@ public class SettingsDeviceContractsActivity extends BaseMvpActivity {
 
     @Override
     public void initView() {
+        MyContractAdapter mMyContractAdapter;
+
         rvContrants = findViewById(R.id.bind_contacts_listview);
         tvCancel = findViewById(R.id.bind_contacts_back_iv);
         ivAddContacts = findViewById(R.id.add_contacts_tv);

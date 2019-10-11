@@ -1,3 +1,4 @@
+
 package com.fenda.common.bean;
 
 /**

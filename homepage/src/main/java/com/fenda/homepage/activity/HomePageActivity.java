@@ -4,24 +4,22 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
-import android.app.ActivityOptions;
+import android.app.admin.DevicePolicyManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
-import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Handler;
 import android.net.ConnectivityManager;
 import android.net.LinkProperties;
 import android.net.Network;
 import android.net.NetworkCapabilities;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.support.annotation.RequiresApi;
@@ -42,16 +40,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextClock;
 import android.widget.TextView;
 
-import com.alibaba.android.arouter.facade.Postcard;
 import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
-import com.alibaba.android.arouter.facade.callback.NavCallback;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
 import com.fenda.common.basebean.player.FDMusic;
 import com.fenda.common.basebean.player.MusicPlayBean;
+import com.fenda.common.bean.LeaveMessageBean;
 import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.bean.WeatherWithHomeBean;
 import com.fenda.common.constant.Constant;
@@ -69,7 +66,6 @@ import com.fenda.common.util.ImageUtil;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.LogUtils;
 import com.fenda.common.util.SPUtils;
-import com.fenda.common.util.SystemPropertiesProxyUtil;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.common.view.MyNestedScrollView;
 import com.fenda.homepage.Adapter.GridAdapter;
@@ -94,15 +90,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
-import io.netty.util.internal.SystemPropertyUtil;
 
 @Route(path = RouterPath.HomePage.HOMEPAGE_MAIN)
 public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener {
@@ -216,6 +203,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     private float downY;
     private int moveX;
     private int moveY;
+    private String mNewUserName;
 
     private TimerTask mTask;
     private Timer mTimer;
@@ -296,7 +284,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         IntentFilter btIntentFilter = new IntentFilter();
         btIntentFilter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
         btIntentFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-        btIntentFilter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         registerReceiver(mBtReceiver, btIntentFilter);
 
         showPageIndex = 0;
@@ -475,6 +462,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         //普通成员退出家庭通知
         else if (message.getCode() == TCPConfig.MessageType.USER_EXIT_FAMILY) {
             LogUtil.d("bind onReceiveEvent = " + message);
+            mMsgType=TCPConfig.MessageType.USER_EXIT_FAMILY;
             ContentProviderManager.getInstance(mContext, Constant.Common.URI).clear();
             mPresenter.getFamilyContacts();
         } else if (message.getCode() == TCPConfig.MessageType.USER_REPAIR_HEAD) {
@@ -484,10 +472,25 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 RepairPersonHeadBean bean = GsonUtil.GsonToBean(msg, RepairPersonHeadBean.class);
                 if (bean != null) {
                     ContentProviderManager.getInstance(mContext, Constant.Common.URI).updateUserHeadByUserID(bean.getIcon(), bean.getUserId());
+                    ICallProvider callService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
+                    if (callService!=null){
+                        callService.syncFamilyContacts();
+                    }
                 }
 
             }
-        }else if (message.getCode() == Constant.Common.INIT_VOICE_SUCCESS){
+        }else if (message.getCode() == TCPConfig.MessageType.NEW_USER_ADD) { //新人加入家庭通知
+            mMsgType=TCPConfig.MessageType.NEW_USER_ADD;
+            BaseTcpMessage dataMsg = message.getData();
+            String msgContent = dataMsg.getMsg();
+
+            mNewUserName = msgContent.substring(msgContent.indexOf("【") + 1, msgContent.indexOf("】"));
+            LogUtil.d(TAG, "新人加入家庭通知" + mNewUserName);
+            ContentProviderManager.getInstance(mContext, Constant.Common.URI).clear();
+            mPresenter.getFamilyContacts();
+
+        }
+        else if (message.getCode() == Constant.Common.INIT_VOICE_SUCCESS){
             // @todo  勿删 语音初始化成功后会回调这里,在语音成功之前调用会导致应用崩溃
             LogUtil.e("===== INIT_VOICE_SUCCESS =====");
             if (initVoiceProvider == null){
@@ -543,8 +546,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     }
 
 
-
-
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void isNetWodrkConnect() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -573,6 +574,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                             }
                             // 清除本地联系人数据时重新请求网络数据并保存到本地数据库
                             if (ContentProviderManager.getInstance(mContext, Constant.Common.URI).isEmpty()) {
+                                mMsgType=0;
                                 mPresenter.getFamilyContacts();
                             }
                         } else{
@@ -587,6 +589,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                         }
                         // 清除本地联系人数据时重新请求网络数据并保存到本地数据库
                         if (ContentProviderManager.getInstance(mContext, Constant.Common.URI).isEmpty()) {
+                            mMsgType=0;
                             mPresenter.getFamilyContacts();
                         }
                     }
@@ -664,9 +667,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     default:
                         break;
                 }
-            }else if (action.equals(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)){
-                //
-                LogUtil.e("ACTION_CLOSE_SYSTEM_DIALOGS = HOME键监听");
             }
         }
     };
@@ -713,7 +713,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         int resId = v.getId();
         if (resId == R.id.tv_main_phone) {
             //通讯录
-            ARouter.getInstance().build(RouterPath.Call.MAIN_ACTIVITY).navigation(HomePageActivity.this);
+            ARouter.getInstance().build(RouterPath.Call.MAIN_ACTIVITY).navigation();
         } else if (resId == R.id.tv_main_cmcc) {
             //通讯录
             //            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
@@ -724,7 +724,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             if (saveWeahterValue != null && saveWeahterValue.length() > 1){
                 mIWeatherProvider.weatherFromVoiceControl(saveWeahterValue);
             } else {
-                ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN).navigation(HomePageActivity.this);
+                ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN).navigation();
             }
             initVoiceProvider.nowWeather();
 
@@ -752,7 +752,14 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     @Override
     public void getFamilyContactsSuccess(BaseResponse<List<UserInfoBean>> response) {
         ContentProviderManager.getInstance(mContext, Constant.Common.URI).insertUsers(response.getData());
-        LogUtil.d(TAG, "主页获取联系人列表成功");
+        //有新人加入时跳转至设置昵称界面
+        if (mMsgType==TCPConfig.MessageType.NEW_USER_ADD){
+            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsContractsNickNameEditActivity).withString("newAddUserName",mNewUserName).navigation();
+        }
+        ICallProvider callService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
+        if (callService!=null){
+            callService.syncFamilyContacts();
+        }
     }
 
     @Override
@@ -790,31 +797,31 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             openNewsFlag = false;
             ARouter.getInstance().build(RouterPath.NEWS.NEWS_ACTIVITY)
                     .withObject("newsListData", newsListData)
-                    .navigation(HomePageActivity.this);
+                    .navigation();
         }
     }
 
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onMsgEvent(LeaveMessageBean msgBean) {
-//        final int msgNum = msgBean.getLeaveMessageNumber();
-//        if (msgNum == 0) {
-//            mMsgTv.setVisibility(View.INVISIBLE);
-//            LogUtils.e("onMsgEvent: " + msgNum);
-//        } else {
-//            LogUtils.e("onMsgEvent: " + msgNum);
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    //新建一个Message对象，存储需要发送的消息
-//                    Message message = new Message();
-//                    message.what = CHANGE_Msg;
-//                    message.obj = msgNum + "";
-//                    //然后将消息发送出去
-//                    mHandlerMsg.sendMessage(message);
-//                }
-//            }).start();
-//        }
-//    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMsgEvent(LeaveMessageBean msgBean) {
+        final int msgNum = msgBean.getLeaveMessageNumber();
+        if (msgNum == 0) {
+            mMsgTv.setVisibility(View.INVISIBLE);
+            LogUtils.e("onMsgEvent: " + msgNum);
+        } else {
+            LogUtils.e("onMsgEvent: " + msgNum);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    //新建一个Message对象，存储需要发送的消息
+                    Message message = new Message();
+                    message.what = CHANGE_Msg;
+                    message.obj = msgNum + "";
+                    //然后将消息发送出去
+                    mHandlerMsg.sendMessage(message);
+                }
+            }).start();
+        }
+    }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -1152,8 +1159,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     startActivity(intent);
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.REMIND)) {
                     //                    ToastUtils.show("提醒");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
+                    if (initVoiceProvider != null){
+                        initVoiceProvider.requestAlarm();
+                    }
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.STORY)) {
                     //                    ToastUtils.show("故事");
                     intent.putExtra("applyId", applyId);

@@ -115,5 +115,4 @@ public class LeaveMessageService implements IAppLeaveMessageProvider, RongIMClie
         RongIM.getInstance().startConversationList(BaseApplication.getBaseInstance());
     }
 
-
 }

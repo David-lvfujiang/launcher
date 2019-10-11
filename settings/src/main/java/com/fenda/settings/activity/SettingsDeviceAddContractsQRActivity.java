@@ -165,18 +165,8 @@ public class SettingsDeviceAddContractsQRActivity extends BaseMvpActivity<Settin
                 }
             });
             deviceDialog.show();
-        } else if (message.getCode() == TCPConfig.MessageType.NEW_USER_ADD) { //新人加入家庭通知
-            LogUtil.d(TAG, "新人加入家庭通知 " + message);
-
-            BaseTcpMessage dataMsg = message.getData();
-            String msgContent = dataMsg.getMsg();
-
-            String result = msgContent.substring(msgContent.indexOf("【") + 1, msgContent.indexOf("】"));
-            LogUtil.d(TAG, "新人加入家庭通知 msg 22= " + result);
-
-            Intent setNickNameIntent = new Intent(SettingsDeviceAddContractsQRActivity.this, SettingsContractsNickNameEditActivity.class);
-            setNickNameIntent.putExtra("newAddUserName", result);
-            startActivity(setNickNameIntent);
+        }
+        else if (message.getCode() == TCPConfig.MessageType.NEW_USER_ADD) { //新人加入家庭通知
             finish();
         }
 
