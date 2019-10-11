@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fenda.common.base.BaseActivity;
-import com.fenda.common.basebean.leavemessage.LeaveMessageBean;
+import com.fenda.common.bean.LeaveMessageBean;
 import com.fenda.common.util.LogUtil;
 import com.fenda.protocol.tcp.bus.EventBusUtils;
 
