@@ -86,6 +86,7 @@ public class EncyclopediaQuestiionActivity extends BaseActivity implements View.
         }
     }
 
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onNewIntent(Intent intent) {

@@ -45,35 +45,21 @@ public class CalendarPresenter implements ICalendarProvider {
     private final String QUERY_YEAR = "查询年份";
     private final String QUERY_CONSTELLATION_TIME = "查询星座时间";
     private final String LAST_FESTIVAL_DATE = "查询节日节气";
-    private ArrayList<String> intentArray = new ArrayList<String>();
 
     @Override
     public void processCalendarMsg(String msg) {
-        ArrayList<String> intentNameList = getIntentName(msg);
-        for (String intentName : intentNameList) {
-            processIntent(intentName, msg);
-        }
+        processIntent( getIntentName(msg), msg);
     }
 
     /**
-     * 获取所有意图
+     * 获取意图
      * @param msg
      * @return
      */
-    public ArrayList getIntentName(String msg) {
+    public String getIntentName(String msg) {
         JsonObject jsonObject = new JsonParser().parse(msg).getAsJsonObject();
-        JsonArray jsonArray = jsonObject.getAsJsonObject("nlu").getAsJsonObject("semantics").getAsJsonObject("request").getAsJsonArray("slots");
-        for (int i = 0; i < jsonArray.size(); i++) {
-            JsonObject object = (JsonObject) jsonArray.get(i);
-            for (String name : object.keySet()) {
-                if ("value".equals(name)) {
-                    JsonElement intentName = object.get(name);
-                    LogUtil.e(intentName.getAsString());
-                    intentArray.add(intentName.getAsString());
-                }
-            }
-        }
-        return intentArray;
+        String intentName = jsonObject.getAsJsonObject("dm").get("intentName").getAsString();
+        return intentName;
     }
 
     /**
@@ -120,6 +106,7 @@ public class CalendarPresenter implements ICalendarProvider {
                 Intent intent = new Intent();
                 intent.setClass(BaseApplication.getBaseInstance(), CalendarQueryDateActivity.class);
                 intent.putExtra("nowTime", nowTime);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 BaseApplication.getBaseInstance().startActivity(intent);
                 break;
             }
