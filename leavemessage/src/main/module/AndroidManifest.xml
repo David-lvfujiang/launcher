@@ -20,13 +20,14 @@
                 </intent-filter>
         </activity>
 
-
         <activity
             android:name=".LeavemessageDialogActivity"
             android:launchMode="singleTask"
-            android:theme="@style/MyTranslucentTheme" /> <!-- 会话界面 -->
+            android:theme="@style/MyTranslucentTheme" />
+        <!-- 会话界面 -->
         <activity
             android:name=".LeaveMessageConversationActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

@@ -3,39 +3,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@color/colorPrimary"
-        >
-
-        <ImageView
-            android:id="@+id/leave_message_back_img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@mipmap/leave_message_back_icon" />
-
+        android:layout_height="70dp">
         <TextView
             android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_toRightOf="@+id/leave_message_back_img"
+            android:textSize="30sp"
             android:gravity="center"
+            android:background="@color/colorPrimary"
             android:text="你的城市"
-            android:textSize="40sp" />
+            />
     </RelativeLayout>
     <FrameLayout
         android:id="@+id/fragment"
-        android:fitsSystemWindows="true"
-        android:layout_marginTop="-25dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     <fragment
         android:id="@+id/conversation"
         android:name="io.rong.imkit.fragment.ConversationFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="-10dp" />
+        android:layout_height="match_parent" />
     </FrameLayout>
 </LinearLayout>
