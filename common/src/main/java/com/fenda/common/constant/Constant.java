@@ -120,6 +120,8 @@ public interface Constant {
         String SCREEN_ON = "screen_on";
         String OPEN_BLUE_TOOTH = "mOpenBluetooth";
         String VOICE_CONTROL="mVoiceControl";
+        String OPEN_MUTE="open_mute";
+        String CLOSE_MUTE="close_mute";
 
         int INIT_VOICE_SUCCESS = Integer.MAX_VALUE;
         //回到首页
