@@ -43,18 +43,17 @@
         <com.fenda.encyclopedia.view.EncyclopediaAutoScrollView
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:paddingTop="@dimen/demension_dp20"
+            android:layout_marginTop="@dimen/demension_dp20"
             android:layout_height="420dp">
 
             <TextView
                 android:id="@+id/content_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/demension_dp20"
-                android:gravity="left|right"
+                android:gravity="center"
                 android:letterSpacing="0.05"
                 android:lineSpacingExtra="2dp"
-                android:paddingBottom="@dimen/demension_dp50"
+                android:layout_gravity="center"
                 android:text="Hello World!"
                 android:textColor="@color/white"
                 android:textSize="50sp" />
@@ -73,7 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="50dp"
             android:text="@string/encyclopedia_other_problem"
             android:textColor="@color/white"
             android:textSize="25sp" />

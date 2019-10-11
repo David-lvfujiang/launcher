@@ -111,6 +111,8 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':common')
+    implementation project(path: ':encyclopedia')
+
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     annotationProcessor deps.arouter_compiler
 
