@@ -1,5 +1,7 @@
 
+
 ext.deps = [:]
+
 
 def versions = [:]
 versions.android_gradle_plugin = "3.4.0"
@@ -16,8 +18,8 @@ versions.event_bus = "3.1.1"
 versions.photo_view = "2.0.0"
 versions.gson = "2.8.2"
 //Arouter
-versions.arouter_compiler = "1.1.4"
-versions.arouter_api = "1.3.1"
+versions.arouter_compiler = "1.2.2"
+versions.arouter_api = "1.5.0"
 //netty
 versions.netty = "4.0.56.Final"
 //zxing
@@ -50,6 +52,11 @@ versions.logger = "2.2.0"
 
 versions.fastjson = "1.1.54.android"
 
+versions.common = "1.0.0"
+versions.common_local = "1.0.0"
+versions.protocol = "1.0.1"
+versions.rong = "1.0.0"
+
 
 
 def deps = [:]
@@ -78,6 +85,8 @@ deps.retrofit = retrofit
 def zxing = [:]
 zxing.core = "com.google.zxing:core:$versions.zxing"
 deps.zxing = zxing
+
+
 
 
 
@@ -116,9 +125,13 @@ deps.test_runner = "com.android.support.test:runner:$versions.test_runner"
 deps.test_espresso_core = "com.android.support.test.espresso:espresso-core:$versions.test_espresso_core"
 deps.logger = "com.orhanobut:logger:$versions.logger"
 deps.fastjson = "com.alibaba:fastjson:$versions.fastjson"
-
-
-
+deps.fenda_common = "com.fenda:common:$versions.common"
+deps.fenda_common_local = "com.fenda:common:$versions.common_local"
+deps.fenda_protocol = "com.fenda:protocol:$versions.protocol"
+deps.rong_imkit = "io.rong:imkit:$versions.rong"
+deps.rong_imlib = "io.rong:imlib:$versions.rong"
+deps.rong_callLib = "io.rong:callLib:$versions.rong"
+deps.rong_callkit = "io.rong:callkit:$versions.rong"
 
 
 
@@ -129,9 +142,113 @@ BUILD_VERSIONS.MIN_SDK = 21
 BUILD_VERSIONS.TARGET_SDK = 28
 BUILD_VERSIONS.COMPILE_SDK = 28
 BUILD_VERSIONS.BUILD_TOOLS = "29.0.1"
-BUILD_VERSIONS.VERSION_CODE = 1
-BUILD_VERSIONS.VERSION_NAME = "1.0.4"
+BUILD_VERSIONS.VERSION_CODE = 6
+BUILD_VERSIONS.VERSION_NAME = "1.0.6"
+
 ext.BUILD_VERSIONS = BUILD_VERSIONS
+
+def maven = [:]
+maven.localMaven = "../../localMaven/repository"
+maven.remoteMaven = "http://192.168.100.127:8084/nexus/repository/maven-releases/"
+maven.userName = "admin"
+maven.password = "fenda_nexus123"
+
+
+
+maven.fenda_groupId = "com.fenda"
+maven.sibichi_groupId = "com.sibichi"
+maven.rong_groupId = "io.rong"
+maven.packaging = "aar"
+
+
+ext.maven = maven
+
+def rong = [:]
+
+rong.imkit = "imkit"
+rong.imkit_name = "Imkit"
+rong.imlib = "imlib"
+rong.imlib_name = "Imlib"
+rong.callkit = "callkit"
+rong.callkit_name = "Callkit"
+rong.callLib = "callLib"
+rong.callLib_name = "CallLib"
+rong.version = "$versions.rong"
+
+ext.rong = rong
+
+def fenda = [:]
+
+//common基类
+fenda.common_artifactId = "common"
+fenda.common_name = "Common"
+fenda.common_version = "$versions.common"
+fenda.common_local_version = "$versions.common_local"
+//协议
+fenda.protocol_version = "$versions.protocol"
+fenda.protocol_artifactId = "protocol"
+fenda.protocol_name = "Protocol"
+
+//andlink协议
+fenda.andlink_artifactId = "andlink"
+fenda.andlink_name = "Andlink"
+fenda.andlink_version = "1.0.1"
+//计算器
+fenda.calculator_artifactId = "calculator"
+fenda.calculator_name = "Calculator"
+fenda.calculator_version = "1.0.2"
+//日历
+fenda.calendar_artifactId = "calendar"
+fenda.calendar_name = "Calendar"
+fenda.calendar_version = "1.0.6"
+//视频通话
+fenda.call_artifactId = "call"
+fenda.call_name = "Call"
+fenda.call_version = "1.0.3"
+//股票
+fenda.encyclopdia_artifactId = "encyclopedia"
+fenda.encyclopdia_name = "Encyclopedia"
+fenda.encyclopdia_version = "1.0.2"
+//相册
+fenda.gallery_artifactId = "gallery"
+fenda.gallery_name = "Gallery"
+fenda.gallery_version = "1.0.2"
+
+//首页
+fenda.homepage_artifactId = "homepage"
+fenda.homepage_name = "Homepage"
+fenda.homepage_version = "1.0.5"
+//留言
+fenda.leavemessage_artifactId = "leavemessage"
+fenda.leavemessage_name = "Leavemessage"
+fenda.leavemessage_version = "1.0.2"
+//新闻
+fenda.news_artifactId = "news"
+fenda.news_name = "News"
+fenda.news_version = "1.0.4"
+//播放器
+fenda.player_artifactId = "player"
+fenda.player_name = "Player"
+fenda.player_version = "1.0.3"
+//提醒
+fenda.remind_artifactId = "remind"
+fenda.remind_name = "Remind"
+fenda.remind_version = "1.0.3"
+//设置
+fenda.settings_artifactId = "settings"
+fenda.settings_name = "Settings"
+fenda.settings_version = "1.0.2"
+//语音
+fenda.voice_artifactId = "voice"
+fenda.voice_name = "Voice"
+fenda.voice_version = "1.0.5"
+//天气
+fenda.weather_artifactId = "weather"
+fenda.weather_name = "Weather"
+fenda.weather_version = "1.0.3"
+
+ext.fenda = fenda
+
 
 
 def addRepos(RepositoryHandler handler) {

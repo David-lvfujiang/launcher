@@ -21,10 +21,19 @@ buildscript {
 
 allprojects {
     repositories {
-        //私有服务器仓库地址
-        maven {
-            url 'http://192.168.100.127:8084/nexus/repository/maven-releases/'
+        if (isLocalMaven.toBoolean()){
+            //私有服务器仓库地址
+            maven {
+                url 'file:H:\\workSpace\\localMaven\\repository'
+            }
+        }else{
+            //私有服务器仓库地址
+            maven {
+                url 'http://192.168.100.127:8084/nexus/repository/maven-releases/'
+            }
         }
+
+
         google()
         jcenter()
     }

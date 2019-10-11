@@ -45,14 +45,16 @@ public class CalendarPresenter implements ICalendarProvider {
     private final String QUERY_YEAR = "查询年份";
     private final String QUERY_CONSTELLATION_TIME = "查询星座时间";
     private final String LAST_FESTIVAL_DATE = "查询节日节气";
+    private ArrayList<String> intentArray = new ArrayList<String>();
 
     @Override
     public void processCalendarMsg(String msg) {
-        processIntent( getIntentName(msg), msg);
+        String intentName = getIntentName(msg);
+        processIntent(intentName, msg);
     }
 
     /**
-     * 获取意图
+     * 获取所有意图
      * @param msg
      * @return
      */
@@ -114,7 +116,7 @@ public class CalendarPresenter implements ICalendarProvider {
                 processContentTextMsg(msg);
                 break;
             case QUERY_HISTORY:
-                processContentTextMsg(msg);
+//                processContentTextMsg(msg);
                 break;
             case QUERY_YEAR:
                 LogUtil.e("查询年份");

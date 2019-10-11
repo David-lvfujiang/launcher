@@ -1,8 +1,10 @@
 if (isModule.toBoolean()) {
     apply plugin: 'com.android.library'
+    apply from : 'maven_config.gradle'
 }else {
     apply plugin: 'com.android.application'
 }
+
 
 android {
     compileSdkVersion BUILD_VERSIONS.COMPILE_SDK
@@ -31,7 +33,7 @@ android {
 
             annotationProcessorOptions {
 
-                arguments = [moduleName: project.getName()]
+                arguments = [AROUTER_MODULE_NAME: project.getName()]
 
             }
         }
@@ -63,7 +65,10 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     annotationProcessor deps.arouter_compiler
- //   implementation project(path: ':common')
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+//    if (isLocalMaven.toBoolean()){
+//        implementation deps.fenda_common_local
+//    }else {
+//        implementation deps.fenda_common
+//    }
     implementation project(path: ':common')
 }

@@ -2,6 +2,7 @@ package com.fenda.ai.provider;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 
 import com.aispeech.dui.dds.DDS;
 import com.aispeech.dui.dds.agent.DMCallback;
@@ -13,9 +14,11 @@ import com.aispeech.dui.plugin.music.MusicPlugin;
 import com.aispeech.dui.plugin.remind.Event;
 import com.aispeech.dui.plugin.remind.RemindPlugin;
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.ai.VoiceConstant;
 import com.fenda.ai.skill.Util;
 import com.fenda.common.BaseApplication;
+import com.fenda.common.provider.IAlarmProvider;
 import com.fenda.common.provider.IVoiceRequestProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.LogUtil;
@@ -24,6 +27,7 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -35,6 +39,7 @@ import java.util.Random;
 @Route(path = RouterPath.VOICE.REQUEST_PROVIDER)
 public class RequestService implements IVoiceRequestProvider {
     private Context mContext;
+    private IAlarmProvider alarmProvider;
 
     @Override
     public void init(Context context) {
@@ -196,7 +201,6 @@ public class RequestService implements IVoiceRequestProvider {
         try {
 
             BaseApplication.getBaseInstance().setRequestNews(true);
-            Thread.sleep(600);
             SkillIntent skillIntent = new SkillIntent("2019031900001180",
                     "新闻", "播报新闻",
                     new JSONObject().put("text", "播放新闻").toString());
@@ -208,7 +212,48 @@ public class RequestService implements IVoiceRequestProvider {
 
     @Override
     public void requestAlarm() {
+        RemindPlugin.get().queryRemindEvent(new RemindPlugin.QueryCallback() {
+            @Override
+            public void onSuccess(List<Event> list) {
+                LogUtil.e("onSuccess = "+list.toString());
+                List<Event> remindList = new ArrayList<>();
+                if (list != null){
+                    for (Event event : list) {
+                        if (TextUtils.isEmpty(event.getEvent())){
+                            remindList.add(event);
+                        }
+                    }
+                }
+                //提醒
+                Gson gson = new Gson();
+                String json = gson.toJson(remindList);
+                LogUtil.i("RemindPlugin onQueryRemind 闹钟 = "+remindList.toString());
+                if (alarmProvider == null){
+                    alarmProvider = ARouter.getInstance().navigation(IAlarmProvider.class);
+                }
+                if (alarmProvider != null){
+                    alarmProvider.queryAlarm(json);
+                }
 
+
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                LogUtil.e("onError = "+s);
+                List<Event> remindList = new ArrayList<>();
+                //提醒
+                Gson gson = new Gson();
+                String json = gson.toJson(remindList);
+                if (alarmProvider == null){
+                    alarmProvider = ARouter.getInstance().navigation(IAlarmProvider.class);
+                }
+                if (alarmProvider != null){
+                    alarmProvider.queryAlarm(json);
+                }
+
+            }
+        });
     }
 
 

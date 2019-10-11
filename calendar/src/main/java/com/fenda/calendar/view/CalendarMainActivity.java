@@ -65,7 +65,6 @@ public class CalendarMainActivity extends BaseActivity {
             } catch (Exception e) {
             }
         }
-        ARouter.getInstance().inject(this);
         mTvWeekDay = findViewById(R.id.week_tv);
         mTvYear = findViewById(R.id.year_tv);
         mTvMonth = findViewById(R.id.month_tv);

@@ -25,13 +25,16 @@
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
         tools:ignore="ProtectedPermissions" />
+
+
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions"/>
 
     <application>
-        <activity
-            android:name=".activity.SettingsActivity"
-            android:launchMode="singleTop" />
+
+        <activity android:name=".activity.SettingsActivity"
+            android:launchMode="singleTop"
+            />
         <activity android:name=".activity.SettingsVolumeActivity"/>
         <activity android:name=".activity.SetttingsBrightnessActivity"/>
         <activity android:name=".activity.SettingsWifiActivity"/>
@@ -61,7 +64,8 @@
         <receiver android:name="cn.richinfo.mt.receiver.MTBroadCastReceiver">
             <intent-filter>
                 <action android:name="cn.richinfo.mutm.action.HEARTBEAT" />
-                <action android:name="android.richinfo.net.conn.CONNECTIVITY_CHANGE" />
+                <action
+                    android:name="android.richinfo.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
 

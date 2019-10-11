@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.admin.DevicePolicyManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -31,6 +33,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
@@ -46,6 +49,7 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
+import com.fenda.common.baseapp.AppManager;
 import com.fenda.common.basebean.player.FDMusic;
 import com.fenda.common.basebean.player.MusicPlayBean;
 import com.fenda.common.bean.LeaveMessageBean;
@@ -90,6 +94,9 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 @Route(path = RouterPath.HomePage.HOMEPAGE_MAIN)
 public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener {
@@ -139,13 +146,14 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     private int current = 0;
     private int number = 0;
     private static final int CHANGE_Msg = 1;
+    private boolean isExitHome;
 
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             LogUtil.e("进入了Oncreate的接收到了handler信息");
             initSubmenuView();
-            ImageUtil.loadGIFImage(R.mipmap.cm_pull,imgGIF,R.mipmap.a123456);
+            ImageUtil.loadGIFImage(R.mipmap.cm_pull,imgGIF,R.mipmap.cm_pull);
             mAdminReceiver = new ComponentName(mContext, ScreenOffAdminReceiver.class);
             mPowerManager = (PowerManager) getSystemService(POWER_SERVICE);
             mPolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
@@ -175,7 +183,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 mAiTipMicTv.setText(R.string.cm_main_page_title_0);
                 mAiTipTitleTv.setText(R.string.cm_main_page_describe_0);
 
-                mCyclicRollHandler.postDelayed(this, HomeUtil.PAGE_SHOW_TIME);
             } else {
                 mTipInfoRv.smoothScrollToPosition(showPageIndex + 1);
             }
@@ -203,6 +210,10 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     private float downY;
     private int moveX;
     private int moveY;
+    private String mNewUserName;
+
+    private ScheduledThreadPoolExecutor executorService;
+    private int mMsgType;
 
 
     @Override
@@ -257,6 +268,24 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         }).start();
     }
 
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        if (intent != null){
+            boolean HOME_PAGE = intent.getBooleanExtra("HOME_PAGE",false);
+            LogUtil.e("HOME_PAGE = "+HOME_PAGE);
+            if (HOME_PAGE){
+                returnDefault();
+            }
+            finishAllActivity();
+        }
+
+
+
+    }
+
     private void initRecycleView() {
 
         IntentFilter btIntentFilter = new IntentFilter();
@@ -282,12 +311,12 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
                     //Dragging
-                    mCyclicRollHandler.removeCallbacks(cycleRollRunabler);
+//                    mCyclicRollHandler.removeCallbacks(cycleRollRunabler);
                 } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     int review_position = layoutManager.findFirstVisibleItemPosition();
                     Log.e("fd", "onScrollStateChanged review_position " + review_position + " showPageIndex " + showPageIndex);
 
-                    mCyclicRollHandler.postDelayed(cycleRollRunabler, HomeUtil.PAGE_SHOW_TIME);
+//                    mCyclicRollHandler.postDelayed(cycleRollRunabler, HomeUtil.PAGE_SHOW_TIME);
 
                     if (review_position == showPageIndex) {
                         return;
@@ -347,10 +376,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     @Override
     public void initData() {
 
-        Intent mIntent = getIntent();
 
-        mGetBindMultiIntent = mIntent.getStringExtra("BIND_INTENT");
-        mGetBindEventIntent = mIntent.getStringExtra("BIND_EVENT_INTENT");
 
 
         if (initProvider != null) {
@@ -395,6 +421,26 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         }
     }
 
+
+    private void startCycleRollRunabler(){
+
+        if (executorService == null){
+            executorService = new ScheduledThreadPoolExecutor(1);
+            executorService.scheduleWithFixedDelay(new Runnable() {
+                @Override
+                public void run() {
+                    mHandler.post(cycleRollRunabler);
+
+                }
+            }, HomeUtil.PAGE_SHOW_TIME, HomeUtil.PAGE_SHOW_TIME, TimeUnit.MILLISECONDS);
+        }
+
+
+
+
+
+    }
+
     @Override
     protected void initPresenter() {
         mPresenter.setVM(this, mModel);
@@ -406,16 +452,20 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         if (message.getCode() == TCPConfig.MessageType.FAMILY_DISSOLVE) {
             LogUtil.d("家庭解散通知1 " + message);
             ContentProviderManager.getInstance(mContext, Constant.Common.URI).clear();
-            ICallProvider callService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
-            if (callService!=null){
-                callService.syncFamilyContacts();
-            }
             AppUtils.saveBindedDevice(getApplicationContext(), false);
+//            ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
+//            String activityName = am.getRunningTasks(1).get(0).topActivity.getClassName();
+//
+            LogUtil.e("applyId 家庭解散通知1 栈顶activityName = ");
+
+            isExitHome = true;
+
             ARouter.getInstance().build(RouterPath.SETTINGS.SettingsBindDeviceActivity).navigation();
         }
         //普通成员退出家庭通知
         else if (message.getCode() == TCPConfig.MessageType.USER_EXIT_FAMILY) {
             LogUtil.d("bind onReceiveEvent = " + message);
+            mMsgType = TCPConfig.MessageType.USER_EXIT_FAMILY;
             ContentProviderManager.getInstance(mContext, Constant.Common.URI).clear();
             mPresenter.getFamilyContacts();
         } else if (message.getCode() == TCPConfig.MessageType.USER_REPAIR_HEAD) {
@@ -433,6 +483,12 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
             }
         }else if (message.getCode() == TCPConfig.MessageType.NEW_USER_ADD) { //新人加入家庭通知
+            mMsgType=TCPConfig.MessageType.NEW_USER_ADD;
+            BaseTcpMessage dataMsg = message.getData();
+            String msgContent = dataMsg.getMsg();
+
+            mNewUserName = msgContent.substring(msgContent.indexOf("【") + 1, msgContent.indexOf("】"));
+            LogUtil.d(TAG, "新人加入家庭通知" + mNewUserName);
             ContentProviderManager.getInstance(mContext, Constant.Common.URI).clear();
             mPresenter.getFamilyContacts();
 
@@ -452,16 +508,46 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
             }
             //避免重复调用
-            if (initVoiceProvider != null){
-                initVoiceProvider.requestWeather();
-                initVoiceProvider.requestNews(20);
+            if (initVoiceProvider != null && !BaseApplication.getBaseInstance().isVoiceInit()){
+                BaseApplication.getBaseInstance().setVoiceInit(true);
+                if ( !BaseApplication.getBaseInstance().isRequestWeather()){
+                    initVoiceProvider.requestWeather();
+                }
+                if (!BaseApplication.getBaseInstance().isRequestNews()){
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //暂停5S执行，不然无法获取新闻
+                            try {
+                                Thread.sleep(5000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+
+                            initVoiceProvider.requestNews(10);
+
+                        }
+                    }).start();
+                }
+
             }
 
 
         }else if (message.getCode() == Constant.Common.GO_HOME){
             //回到首页时 把列表页面回到默认位置
+            finishAllActivity();
             returnDefault();
 
+        }
+    }
+
+    private void finishAllActivity(){
+        Stack<Activity> activities = AppManager.getAppManager().getActivityStack();
+        for (int i = 0, size = activities.size(); i < size; i++) {
+            Activity mActivity = activities.get(i);
+            if (null != mActivity && !(mActivity == this)) {
+                AppManager.getAppManager().finishActivity(mActivity);
+            }
         }
     }
 
@@ -503,6 +589,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                             }
                             // 清除本地联系人数据时重新请求网络数据并保存到本地数据库
                             if (ContentProviderManager.getInstance(mContext, Constant.Common.URI).isEmpty()) {
+                                mMsgType=0;
                                 mPresenter.getFamilyContacts();
                             }
                         } else{
@@ -517,6 +604,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                         }
                         // 清除本地联系人数据时重新请求网络数据并保存到本地数据库
                         if (ContentProviderManager.getInstance(mContext, Constant.Common.URI).isEmpty()) {
+                            mMsgType = 0;
                             mPresenter.getFamilyContacts();
                         }
                     }
@@ -601,13 +689,36 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     @Override
     protected void onResume() {
         super.onResume();
-        mCyclicRollHandler.postDelayed(cycleRollRunabler, HomeUtil.PAGE_SHOW_TIME);
+        isExitHome = false;
+        Intent intent = getIntent();
+        if (intent != null){
+            mGetBindMultiIntent = intent.getStringExtra("BIND_INTENT");
+            mGetBindEventIntent = intent.getStringExtra("BIND_EVENT_INTENT");
+
+        }
+        LogUtil.e("进入了onResume");
+        if (initVoiceProvider != null && !BaseApplication.getBaseInstance().isRequestWeather()){
+            initVoiceProvider.openVoice();
+        }
+        startCycleRollRunabler();
+//        mCyclicRollHandler.postDelayed(cycleRollRunabler, HomeUtil.PAGE_SHOW_TIME);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        mCyclicRollHandler.removeCallbacks(cycleRollRunabler);
+//        mCyclicRollHandler.removeCallbacks(cycleRollRunabler);
+        if (executorService != null){
+            executorService.setRemoveOnCancelPolicy(true);
+            executorService.shutdown();
+            executorService = null;
+
+        }
+        if (isExitHome){
+            returnDefault();
+        }
+
+        LogUtil.e("Homepage onStop方法执行");
 
     }
 
@@ -622,7 +733,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             //通讯录
             //            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
         } else if (resId == R.id.iv_header_weather || resId == R.id.tv_header_temp) {
-
 
             String saveWeahterValue = (String) SPUtils.get(getApplicationContext(), Constant.Weather.SP_NOW_WEATHER, "");
             if (saveWeahterValue != null && saveWeahterValue.length() > 1){
@@ -656,6 +766,10 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     @Override
     public void getFamilyContactsSuccess(BaseResponse<List<UserInfoBean>> response) {
         ContentProviderManager.getInstance(mContext, Constant.Common.URI).insertUsers(response.getData());
+        //有新人加入时跳转至设置昵称界面
+        if (mMsgType==TCPConfig.MessageType.NEW_USER_ADD){
+            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsContractsNickNameEditActivity).withString("newAddUserName",mNewUserName).navigation();
+        }
         ICallProvider callService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
         if (callService!=null){
             callService.syncFamilyContacts();
@@ -963,28 +1077,32 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 LogUtil.e("applyId = "+applyId);
                 Intent intent = new Intent(HomePageActivity.this, PromptActivity.class);
                 if(applyId.equals(com.fenda.homepage.data.Constant.SETTINGS)){
+//                    ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
+//                    String activityName = am.getRunningTasks(1).get(0).topActivity.getClassName();
 
-                    ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
+                    LogUtil.e("applyId 栈顶activityName = ");
 
-                    LogUtil.e("applyId 打开设置页面 = "+RouterPath.SETTINGS.SettingsActivity);
+                    ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation();
+
+
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.CALCULATOR)){
                     //                    ToastUtils.show("计算器");
-                    ARouter.getInstance().build(RouterPath.Calculator.CALCULATOR_ACTIVITY).navigation();
+                    ARouter.getInstance().build(RouterPath.Calculator.CALCULATOR_ACTIVITY).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation();
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.WEATHER)) {
                     //                    ToastUtils.show("天气");
                     String saveWeahterValue = (String) SPUtils.get(getApplicationContext(), Constant.Weather.SP_NOW_WEATHER, "");
                     if (saveWeahterValue != null && saveWeahterValue.length() > 1){
                         mIWeatherProvider.weatherFromVoiceControl(saveWeahterValue);
                     } else {
-                        ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN).navigation();
+                        ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation();
                     }
                     initVoiceProvider.nowWeather();
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.CALENDAR)) {
                     //                    ToastUtils.show("日历");
-                    ARouter.getInstance().build(RouterPath.Calendar.Perpetual_CALENDAR_ACTIVITY).navigation();
+                    ARouter.getInstance().build(RouterPath.Calendar.Perpetual_CALENDAR_ACTIVITY).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation();
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.PHOTO)) {
                     //                    ToastUtils.show("相册");
-                    ARouter.getInstance().build(RouterPath.Gallery.GALLERY_CATOGORY).navigation();
+                    ARouter.getInstance().build(RouterPath.Gallery.GALLERY_CATOGORY).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation();
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.TIME)) {
                     ToastUtils.show("闹钟");
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.FM)) {
@@ -1141,5 +1259,10 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         }
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
 
+        LogUtil.e("进入了Oncreate  : hasFocus = "+hasFocus);
+    }
 }

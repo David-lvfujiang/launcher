@@ -1,5 +1,7 @@
 package com.fenda.calendar.view;
 
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
@@ -18,6 +20,7 @@ import com.fenda.common.base.BaseActivity;
 import com.fenda.common.router.RouterPath;
 
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +37,26 @@ public class PerpetualCalendarActivity extends BaseActivity implements
 
     private boolean isChoiceModelSingle = false;
     private List<CalendarDate> mListDate = new ArrayList<>();
+    private MyHandler handler = new MyHandler(this);
+
+    public static class MyHandler extends Handler {
+        private final WeakReference<PerpetualCalendarActivity> mActivity;
+
+        private MyHandler(PerpetualCalendarActivity activity){
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            PerpetualCalendarActivity activity = mActivity.get();
+            if (activity != null){
+                activity.initDataView();
+            }
+
+        }
+
+
+    }
 
     @Override
     public int onBindLayout() {
@@ -43,6 +66,16 @@ public class PerpetualCalendarActivity extends BaseActivity implements
     @Override
     public void initView() {
 //        tvDate = findViewById(R.id.tv_perpetual_calendar_year_month);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Message msg = handler.obtainMessage();
+                handler.sendMessage(msg);
+            }
+        },300);
+    }
+
+    private void initDataView() {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         // Fragment fragment = new CalendarViewPagerFragment();
