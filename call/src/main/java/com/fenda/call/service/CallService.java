@@ -25,6 +25,7 @@ import io.rong.imkit.RongIM;
  */
 @Route(path = RouterPath.Call.CALL_SERVICE)
 public class CallService implements ICallProvider {
+    public static final String SYNC_CONTACTS="sync_contacts";
     @Override
     public void init(Context context) {
 
@@ -80,5 +81,10 @@ public class CallService implements ICallProvider {
             RongCallClient.getInstance().acceptCall(session.getCallId());
         }
 
+    }
+
+    @Override
+    public void syncFamilyContacts() {
+        EventBusUtils.post(SYNC_CONTACTS);
     }
 }

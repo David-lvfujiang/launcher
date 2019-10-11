@@ -106,7 +106,10 @@ public class RecorderAdapter extends RecyclerView.Adapter {
     public int getItemCount() {
         return mDatas.size();
     }
-
+    public void setNewData(List<CallRecoder> datas){
+        this.mDatas=datas;
+        notifyDataSetChanged();
+    }
     class MyRecorderHolder extends RecyclerView.ViewHolder {
         TextView tvTime;
         TextView tvName;

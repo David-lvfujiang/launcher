@@ -5,6 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.fenda.common.bean.UserInfoBean;
+import com.fenda.common.constant.Constant;
+import com.fenda.common.db.ContentProviderManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -148,12 +152,18 @@ public class SqliteManager {
         Cursor cursor = sqLiteDatabase.query(table, null, null, null, null, null, "_id desc");
         while (cursor.moveToNext()) {
             CallRecoder recoder = new CallRecoder();
-            recoder.setPhone(cursor.getString(cursor.getColumnIndex("phone")));
-            recoder.setName(cursor.getString(cursor.getColumnIndex("name")));
-            recoder.setIcon(cursor.getString(cursor.getColumnIndex("icon")));
-            recoder.setTime(cursor.getLong(cursor.getColumnIndex("time")));
-            recoder.setCallType(cursor.getInt(cursor.getColumnIndex("callType")));
-            list.add(recoder);
+            String userId = cursor.getString(cursor.getColumnIndex("userId"));
+            if (ContentProviderManager.getInstance(context, Constant.Common.URI).isExist(userId)) {
+                UserInfoBean userInfoBean = ContentProviderManager.getInstance(context, Constant.Common.URI).queryUserByUserId(userId);
+                if (userInfoBean != null) {
+                    recoder.setName(userInfoBean.getUserName());
+                    recoder.setIcon(userInfoBean.getIcon());
+                    recoder.setPhone(cursor.getString(cursor.getColumnIndex("phone")));
+                    recoder.setTime(cursor.getLong(cursor.getColumnIndex("time")));
+                    recoder.setCallType(cursor.getInt(cursor.getColumnIndex("callType")));
+                    list.add(recoder);
+                }
+            }
         }
         releaseConnection();
         return list;

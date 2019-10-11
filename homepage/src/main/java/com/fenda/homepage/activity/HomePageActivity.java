@@ -4,22 +4,22 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.app.admin.DevicePolicyManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
-import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Handler;
 import android.net.ConnectivityManager;
 import android.net.LinkProperties;
 import android.net.Network;
 import android.net.NetworkCapabilities;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.support.annotation.RequiresApi;
@@ -66,7 +66,6 @@ import com.fenda.common.util.ImageUtil;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.LogUtils;
 import com.fenda.common.util.SPUtils;
-import com.fenda.common.util.SystemPropertiesProxyUtil;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.common.view.MyNestedScrollView;
 import com.fenda.homepage.Adapter.GridAdapter;
@@ -91,8 +90,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-
-import io.netty.util.internal.SystemPropertyUtil;
 
 @Route(path = RouterPath.HomePage.HOMEPAGE_MAIN)
 public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener {
@@ -409,6 +406,10 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         if (message.getCode() == TCPConfig.MessageType.FAMILY_DISSOLVE) {
             LogUtil.d("家庭解散通知1 " + message);
             ContentProviderManager.getInstance(mContext, Constant.Common.URI).clear();
+            ICallProvider callService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
+            if (callService!=null){
+                callService.syncFamilyContacts();
+            }
             AppUtils.saveBindedDevice(getApplicationContext(), false);
             ARouter.getInstance().build(RouterPath.SETTINGS.SettingsBindDeviceActivity).navigation();
         }
@@ -424,10 +425,19 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 RepairPersonHeadBean bean = GsonUtil.GsonToBean(msg, RepairPersonHeadBean.class);
                 if (bean != null) {
                     ContentProviderManager.getInstance(mContext, Constant.Common.URI).updateUserHeadByUserID(bean.getIcon(), bean.getUserId());
+                    ICallProvider callService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
+                    if (callService!=null){
+                        callService.syncFamilyContacts();
+                    }
                 }
 
             }
-        }else if (message.getCode() == Constant.Common.INIT_VOICE_SUCCESS){
+        }else if (message.getCode() == TCPConfig.MessageType.NEW_USER_ADD) { //新人加入家庭通知
+            ContentProviderManager.getInstance(mContext, Constant.Common.URI).clear();
+            mPresenter.getFamilyContacts();
+
+        }
+        else if (message.getCode() == Constant.Common.INIT_VOICE_SUCCESS){
             // @todo  勿删 语音初始化成功后会回调这里,在语音成功之前调用会导致应用崩溃
             LogUtil.e("===== INIT_VOICE_SUCCESS =====");
             if (initVoiceProvider == null){
@@ -646,7 +656,10 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     @Override
     public void getFamilyContactsSuccess(BaseResponse<List<UserInfoBean>> response) {
         ContentProviderManager.getInstance(mContext, Constant.Common.URI).insertUsers(response.getData());
-        LogUtil.d(TAG, "主页获取联系人列表成功");
+        ICallProvider callService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
+        if (callService!=null){
+            callService.syncFamilyContacts();
+        }
     }
 
     @Override
