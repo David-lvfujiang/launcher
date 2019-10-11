@@ -8,7 +8,6 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.alibaba.fastjson.JSONObject;
 import com.fenda.calendar.model.Calendar;
-import com.fenda.calendar.model.GuideBean;
 import com.fenda.calendar.model.QueryLastDayBean;
 import com.fenda.calendar.view.CalendarQueryDateActivity;
 import com.fenda.common.BaseApplication;
@@ -17,11 +16,13 @@ import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.LogUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.util.ArrayList;
+
 import static com.fenda.common.router.RouterPath.Calendar.CALENDAR_QUERY_LASTDAY_ACTIVITY;
-import static com.fenda.common.router.RouterPath.Calendar.HOLIDAY_ACTIVITY;
 
 
 /**
@@ -32,74 +33,116 @@ import static com.fenda.common.router.RouterPath.Calendar.HOLIDAY_ACTIVITY;
 @Route(path = RouterPath.Calendar.CALENDAR_PROVIDER)
 public class CalendarPresenter implements ICalendarProvider {
     Context context;
-    private final String QUERY_LAST_DAY = "剩余天数";
+    private final String QUERY_LAST_DAY = "查询天数";
     private final String QUERY_NEW_GUIDE = "新手引导";
     private final String QUERY_AGE = "查询年龄";
-    private final String QUERY_ZODIAC = "生肖";
+    private final String QUERY_ZODIAC = "查询生肖";
     private final String QUERY_WEEK = "查询星期";
-    private final String QUERY_DATE = "日期";
+    private final String QUERY_DATE = "查询日期";
     private final String QUERY_TIME = "查询时间";
     private final String QUERY_CONSTELLATION = "查询星座";
     private final String QUERY_HISTORY = "查询历史事件";
     private final String QUERY_YEAR = "查询年份";
     private final String QUERY_CONSTELLATION_TIME = "查询星座时间";
     private final String LAST_FESTIVAL_DATE = "查询节日节气";
-
+    private ArrayList<String> intentArray = new ArrayList<String>();
 
     @Override
     public void processCalendarMsg(String msg) {
+        ArrayList<String> intentNameList = getIntentName(msg);
+        for (String intentName : intentNameList) {
+            processIntent(intentName, msg);
+        }
+    }
+
+    /**
+     * 获取所有意图
+     * @param msg
+     * @return
+     */
+    public ArrayList getIntentName(String msg) {
         JsonObject jsonObject = new JsonParser().parse(msg).getAsJsonObject();
         JsonArray jsonArray = jsonObject.getAsJsonObject("nlu").getAsJsonObject("semantics").getAsJsonObject("request").getAsJsonArray("slots");
-        JsonObject intentJson1 = (JsonObject) jsonArray.get(0);
-        String intentName1 = intentJson1.get("value").getAsString();
-        JsonObject intentJson2 = (JsonObject) jsonArray.get(1);
-        String intentName2 = intentJson2.get("value").getAsString();
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JsonObject object = (JsonObject) jsonArray.get(i);
+            for (String name : object.keySet()) {
+                if ("value".equals(name)) {
+                    JsonElement intentName = object.get(name);
+                    LogUtil.e(intentName.getAsString());
+                    intentArray.add(intentName.getAsString());
+                }
+            }
+        }
+        return intentArray;
+    }
 
-        if (QUERY_LAST_DAY.equals(intentName1) || QUERY_LAST_DAY.equals(intentName2)) {
-            LogUtil.e("剩余天数");
-            QueryLastDayBean bean = new Gson().fromJson(msg, QueryLastDayBean.class);
-            String year = bean.getDm().getWidget().getExtra().getYear();
-            String date = bean.getDm().getWidget().getExtra().getText();
-            String lastDate = String.valueOf(bean.getDm().getWidget().getExtra().getDaysInterval());
-            ARouter.getInstance().build(CALENDAR_QUERY_LASTDAY_ACTIVITY).withString("year", year).withString("date", date).withString("lastDate", lastDate).navigation();
-            LogUtil.e(year + "年，" + date + "剩余" + lastDate + "天");
-
-        } else if (QUERY_NEW_GUIDE.equals(intentName1) || QUERY_NEW_GUIDE.equals(intentName2)) {
-            LogUtil.e("新手引导");
-            processContentTextMsg(msg);
-        } else if (QUERY_AGE.equals(intentName1) || QUERY_AGE.equals(intentName2)) {
-            LogUtil.e("查询年龄");
-            processContentTextMsg(msg);
-        } else if (QUERY_ZODIAC.equals(intentName1) || QUERY_ZODIAC.equals(intentName2)) {
-            LogUtil.e("生肖");
-            processContentTextMsg(msg);
-        } else if (QUERY_WEEK.equals(intentName1) || QUERY_WEEK.equals(intentName2)) {
-            LogUtil.e("查询星期");
-            getCalendarMsg(msg);
-        } else if (QUERY_DATE.equals(intentName1) || QUERY_DATE.equals(intentName2)) {
-            LogUtil.e("日期");
-            getCalendarMsg(msg);
-        } else if (QUERY_TIME.equals(intentName1) || QUERY_TIME.equals(intentName2)) {
-            LogUtil.e("查询时间");
-            QueryLastDayBean bean = new Gson().fromJson(msg, QueryLastDayBean.class);
-            String nowTime = bean.getDm().getWidget().getText();
-            Intent intent = new Intent();
-            intent.setClass(BaseApplication.getBaseInstance(), CalendarQueryDateActivity.class);
-            intent.putExtra("nowTime", nowTime);
-            BaseApplication.getBaseInstance().startActivity(intent);
-        } else if (QUERY_CONSTELLATION.equals(intentName1) || QUERY_CONSTELLATION.equals(intentName2)) {
-            processContentTextMsg(msg);
-        } else if (QUERY_HISTORY.equals(intentName1) || QUERY_HISTORY.equals(intentName2)) {
-            processContentTextMsg(msg);
-        } else if (QUERY_YEAR.equals(intentName1) || QUERY_YEAR.equals(intentName2)) {
-            LogUtil.e("查询年份");
-            processContentTextMsg(msg);
-        } else if (QUERY_CONSTELLATION_TIME.equals(intentName1) || QUERY_CONSTELLATION_TIME.equals(intentName2)) {
-            LogUtil.e("查询星座时间");
-            processContentTextMsg(msg);
-        } else if (LAST_FESTIVAL_DATE.equals(intentName1) || LAST_FESTIVAL_DATE.equals(intentName2)) {
-            LogUtil.e("查询节日节气");
-            processContentTextMsg(msg);
+    /**
+     * 处理意图
+     * @param name
+     * @param msg
+     */
+    public void processIntent(String name, String msg) {
+        switch (name) {
+            case QUERY_LAST_DAY: {
+                LogUtil.e("查询天数");
+                JsonObject jsonObject = new JsonParser().parse(msg).getAsJsonObject();
+                String year = jsonObject.getAsJsonObject("dm").getAsJsonObject("widget").getAsJsonObject("extra").get("year").toString();
+                String date = jsonObject.getAsJsonObject("dm").getAsJsonObject("widget").getAsJsonObject("extra").get("text").toString();
+                String lastDate = jsonObject.getAsJsonObject("dm").getAsJsonObject("widget").getAsJsonObject("extra").get("daysInterval").toString();
+                ARouter.getInstance().build(CALENDAR_QUERY_LASTDAY_ACTIVITY).withString("year", year).withString("date", date).withString("lastDate", lastDate).navigation();
+                LogUtil.e(year + "年，" + date + "剩余" + lastDate + "天");
+                break;
+            }
+            case QUERY_NEW_GUIDE:
+                LogUtil.e("新手引导");
+                processContentTextMsg(msg);
+                break;
+            case QUERY_AGE:
+                LogUtil.e("查询年龄");
+                processContentTextMsg(msg);
+                break;
+            case QUERY_ZODIAC:
+                LogUtil.e("查询生肖");
+                processContentTextMsg(msg);
+                break;
+            case QUERY_WEEK:
+                LogUtil.e("查询星期");
+                getCalendarMsg(msg);
+                break;
+            case QUERY_DATE:
+                LogUtil.e("查询日期");
+                getCalendarMsg(msg);
+                break;
+            case QUERY_TIME: {
+                LogUtil.e("查询时间");
+                QueryLastDayBean bean = new Gson().fromJson(msg, QueryLastDayBean.class);
+                String nowTime = bean.getDm().getWidget().getText();
+                Intent intent = new Intent();
+                intent.setClass(BaseApplication.getBaseInstance(), CalendarQueryDateActivity.class);
+                intent.putExtra("nowTime", nowTime);
+                BaseApplication.getBaseInstance().startActivity(intent);
+                break;
+            }
+            case QUERY_CONSTELLATION:
+                processContentTextMsg(msg);
+                break;
+            case QUERY_HISTORY:
+                processContentTextMsg(msg);
+                break;
+            case QUERY_YEAR:
+                LogUtil.e("查询年份");
+                processContentTextMsg(msg);
+                break;
+            case QUERY_CONSTELLATION_TIME:
+                LogUtil.e("查询星座时间");
+                processContentTextMsg(msg);
+                break;
+            case LAST_FESTIVAL_DATE:
+                LogUtil.e("查询节日节气");
+                processContentTextMsg(msg);
+                break;
+            default:
+                break;
         }
     }
 
@@ -109,9 +152,9 @@ public class CalendarPresenter implements ICalendarProvider {
      * @param msg
      */
     public void processContentTextMsg(String msg) {
-        GuideBean bean = new Gson().fromJson(msg, GuideBean.class);
-        String content = bean.getDm().getNlg();
-        String title = bean.getDm().getInput();
+        JsonObject jsonObject = new JsonParser().parse(msg).getAsJsonObject();
+        String content = jsonObject.getAsJsonObject("dm").get("nlg").toString();
+        String title = jsonObject.getAsJsonObject("dm").get("input").toString();
         ARouter.getInstance().build(RouterPath.Encyclopedia.ENCYCLOPEDIA_QUESTIION_ACTIVITY).withString("content", content).withString("title", title).navigation();
     }
 
