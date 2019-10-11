@@ -531,6 +531,8 @@
 
 
         </LinearLayout>
+        
+
     </com.fenda.common.view.MyNestedScrollView>
 
 </RelativeLayout>
