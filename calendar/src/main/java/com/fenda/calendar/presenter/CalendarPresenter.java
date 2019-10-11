@@ -86,9 +86,9 @@ public class CalendarPresenter implements ICalendarProvider {
             case QUERY_LAST_DAY: {
                 LogUtil.e("查询天数");
                 JsonObject jsonObject = new JsonParser().parse(msg).getAsJsonObject();
-                String year = jsonObject.getAsJsonObject("dm").getAsJsonObject("widget").getAsJsonObject("extra").get("year").toString();
-                String date = jsonObject.getAsJsonObject("dm").getAsJsonObject("widget").getAsJsonObject("extra").get("text").toString();
-                String lastDate = jsonObject.getAsJsonObject("dm").getAsJsonObject("widget").getAsJsonObject("extra").get("daysInterval").toString();
+                String year = jsonObject.getAsJsonObject("dm").getAsJsonObject("widget").getAsJsonObject("extra").get("year").getAsString();
+                String date = jsonObject.getAsJsonObject("dm").getAsJsonObject("widget").getAsJsonObject("extra").get("text").getAsString();
+                String lastDate = jsonObject.getAsJsonObject("dm").getAsJsonObject("widget").getAsJsonObject("extra").get("daysInterval").getAsString();
                 ARouter.getInstance().build(CALENDAR_QUERY_LASTDAY_ACTIVITY).withString("year", year).withString("date", date).withString("lastDate", lastDate).navigation();
                 LogUtil.e(year + "年，" + date + "剩余" + lastDate + "天");
                 break;
@@ -115,8 +115,8 @@ public class CalendarPresenter implements ICalendarProvider {
                 break;
             case QUERY_TIME: {
                 LogUtil.e("查询时间");
-                QueryLastDayBean bean = new Gson().fromJson(msg, QueryLastDayBean.class);
-                String nowTime = bean.getDm().getWidget().getText();
+                JsonObject jsonObject = new JsonParser().parse(msg).getAsJsonObject();
+                String nowTime = jsonObject.getAsJsonObject("dm").getAsJsonObject("widget").get("text").getAsString();
                 Intent intent = new Intent();
                 intent.setClass(BaseApplication.getBaseInstance(), CalendarQueryDateActivity.class);
                 intent.putExtra("nowTime", nowTime);
@@ -153,8 +153,8 @@ public class CalendarPresenter implements ICalendarProvider {
      */
     public void processContentTextMsg(String msg) {
         JsonObject jsonObject = new JsonParser().parse(msg).getAsJsonObject();
-        String content = jsonObject.getAsJsonObject("dm").get("nlg").toString();
-        String title = jsonObject.getAsJsonObject("dm").get("input").toString();
+        String content = jsonObject.getAsJsonObject("dm").get("nlg").getAsString();
+        String title = jsonObject.getAsJsonObject("dm").get("input").getAsString();
         ARouter.getInstance().build(RouterPath.Encyclopedia.ENCYCLOPEDIA_QUESTIION_ACTIVITY).withString("content", content).withString("title", title).navigation();
     }
 
