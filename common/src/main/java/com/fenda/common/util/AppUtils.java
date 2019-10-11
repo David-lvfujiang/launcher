@@ -1,7 +1,6 @@
 package com.fenda.common.util;
 
 import android.app.ActivityManager;
-import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,8 +16,9 @@ public class AppUtils {
 
     private static final String FILE_NAME = "fd_sp_data";
     private static final String KEY_SP_BIND_DEVICE = "key_sp_binddevice";
-    private static final String KEY_SP_REGISTER_DEVICE= "key_sp_registerdeviceid";
-    private static final String KEY_SP_WIFI_CHECKED= "key_sp_wifichecked";
+    private static final String KEY_SP_REGISTER_DEVICE = "key_sp_registerdeviceid";
+    private static final String KEY_SP_WIFI_CHECKED = "key_sp_wifichecked";
+    private static final String KEY_SP_IS_RUN_SCREEN_SAVER = "key_sp_isrunscreensaver";
 
 
     public static void jump2SmartCallApp(final Context context) {
@@ -102,6 +102,28 @@ public class AppUtils {
                 Context.MODE_PRIVATE);
         sp.edit().putBoolean(KEY_SP_BIND_DEVICE, isBind).apply();
     }
+
+
+
+
+
+    public static Boolean isRunScreenSaver(Context context){
+
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME,
+                Context.MODE_PRIVATE);
+        return sp.getBoolean(KEY_SP_IS_RUN_SCREEN_SAVER, false);
+    }
+
+    public static void saveRunScreenSaver(Context context, boolean isScreenSaver){
+
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME,
+                Context.MODE_PRIVATE);
+        sp.edit().putBoolean(KEY_SP_IS_RUN_SCREEN_SAVER, isScreenSaver).apply();
+    }
+
+
+
+
 
     public static Boolean isWifiChecked(Context context){
 

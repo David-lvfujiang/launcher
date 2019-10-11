@@ -55,7 +55,7 @@ public class SettingsWifiActivity extends BaseMvpActivity{
 
     private Switch wifiSwitch;
     private RecyclerView rvWifiList;
-    private TextView tvBack;
+    private ImageView tvBack;
     private ImageView ivScanWifiGif;
     private TextView tvScanWifiTv;
     private ImageView ivImageView;
@@ -607,7 +607,8 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                 }else {
                     LogUtil.d(TAG, "需要wifi门户验证");
                     //TODO...
-                    String apksUrl = "https://www.baidu.com/";
+                    ToastUtils.show("请先进行网络认证！");
+                    String apksUrl = "http://i.eastmoney.com/2188113638420790";
                     Intent aboutIntent = new Intent(SettingsWifiActivity.this, SettingsLoadWebviewActivity.class);
                     aboutIntent.putExtra("APK_URL", apksUrl);
                     startActivity(aboutIntent);
