@@ -32,9 +32,7 @@
 
     <application>
 
-        <activity android:name=".activity.SettingsActivity"
-            android:launchMode="singleTop"
-            />
+        <activity android:name=".activity.SettingsActivity" />
         <activity android:name=".activity.SettingsVolumeActivity"/>
         <activity android:name=".activity.SetttingsBrightnessActivity"/>
         <activity android:name=".activity.SettingsWifiActivity"/>

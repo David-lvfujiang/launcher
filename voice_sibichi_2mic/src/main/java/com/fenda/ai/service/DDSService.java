@@ -37,6 +37,7 @@ import com.fenda.ai.observer.DuiCommandObserver;
 import com.fenda.ai.observer.DuiMessageObserver;
 import com.fenda.ai.observer.DuiNativeApiObserver;
 import com.fenda.ai.observer.DuiUpdateObserver;
+import com.fenda.ai.provider.RequestService;
 import com.fenda.ai.skill.Util;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.baserx.RxSchedulers;
@@ -310,32 +311,28 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 try {
                     LogUtil.e("onDMResult =====  "+jsonObject.toString());
                     JSONObject dmJson = jsonObject.optJSONObject("dm");
+                    String intentName = dmJson.optString("intentName");
                     if (BaseApplication.getBaseInstance().isCall()){
-                        String initentName = dmJson.optString("intentName");
                         String input = dmJson.optString("input");
-                        if (!"挂断电话".equals(initentName) && !"接听".equals(initentName) && !"静音".equals(input) && !"取消静音".equals(input)) {
+                        if (!"挂断电话".equals(intentName) && !"接听".equals(intentName) && !"静音".equals(input) && !"取消静音".equals(input)) {
                             dmJson.put("nlg", "");
                             dmJson.put("shouldEndSession", false);
                             jsonObject.put("ignore", true);
                         }
-                    }else if (BaseApplication.getBaseInstance().isRequestWeather() ){
+                    }else if ("查询天气".equals(intentName) && BaseApplication.getBaseInstance().isRequestWeather() ){
                         JSONObject widgetObject = dmJson.optJSONObject("widget");
-                        JSONObject webhookResp = widgetObject.optJSONObject("webhookResp");
-                        JSONObject extra = webhookResp.optJSONObject("extra");
-                        JSONArray forecastArray = extra.optJSONArray("forecast");
-                        JSONObject mainWeather = forecastArray.optJSONObject(0);
+
                         if (weatherProvider == null) {
                             weatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
                         }
                         if (weatherProvider != null) {
-                            weatherProvider.weatherFromVoiceControlToMainPage(mainWeather.toString());
+                            weatherProvider.weatherFromVoiceControlToMainPage(widgetObject.toString());
                         }
                         BaseApplication.getBaseInstance().setRequestWeather(false);
                         dmJson.put("nlg","");
                         dmJson.put("shouldEndSession",false);
                         jsonObject.put("ignore", true);
-
-                    }else if (BaseApplication.getBaseInstance().isRequestNews()){
+                    }else if ("播报新闻".equals(intentName) && BaseApplication.getBaseInstance().isRequestNews()){
                         JSONObject widgetJson  = dmJson.optJSONObject("widget");
                         IRecommendProvider recommendProvider = ARouter.getInstance().navigation(IRecommendProvider.class);
                         if (recommendProvider != null){
@@ -644,8 +641,8 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                JSONObject dm = jo.optJSONObject("dm");
-                String task = dm.optString("task");
+                String task = jo.optString("skill");
+//                String task = dm.optString("task");
                 if ("日历".equals(task)) {
 
                     Observable.create(new ObservableOnSubscribe<String>() {
@@ -695,6 +692,11 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                                     provider.processQuestionTextMsg(state);
                                 }
                             });
+                }else if ( task.equals("成语")){
+                    if (provider == null) {
+                        provider = ARouter.getInstance().navigation(IEncyclopediaProvider.class);
+                    }
+                    provider.processIdiomTextMsg(state);
                 }
                 break;
             case VoiceConstant.SIBICHI.CONTEXT_WIDGET_TEXT:

@@ -2,8 +2,12 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
 
     <corners android:radius="10dp"/>
-    <size android:width="10dp" android:height="10dp"/>
+    <size android:width="16dp" android:height="16dp"/>
     <solid android:color="@color/player_white"/>
+    <padding android:top="@dimen/demension_dp8"
+            android:bottom="@dimen/demension_dp8"
+            android:left="@dimen/demension_dp8"
+            android:right="@dimen/demension_dp8"/>
 
 
 

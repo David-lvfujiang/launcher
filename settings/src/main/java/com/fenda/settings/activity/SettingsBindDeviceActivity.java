@@ -161,7 +161,8 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
             AppUtils.saveBindedDevice(getApplicationContext(), true);
             ARouter.getInstance().build(RouterPath.HomePage.HOMEPAGE_MAIN)
                     .withString("BIND_EVENT_INTENT", mBindIntent1)
-                    .navigation();
+                    .withBoolean("HOME_PAGE",true)
+                    .navigation(this);
             finish();
         }
     }

@@ -21,6 +21,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.ParseException;
@@ -346,8 +347,12 @@ public class WeatherHelper implements IWeatherProvider {
            // WeatherBean bean = new Gson().fromJson(todayWeatherContent, WeatherBean.class);
 
             JSONObject object = new JSONObject(todayWeatherContent);
-            String highTemp = object.optString("highTemp");
-            String weather = object.optString("weather");
+            JSONObject webhookResp = object.optJSONObject("webhookResp");
+            JSONObject extra = webhookResp.optJSONObject("extra");
+            JSONArray forecastArray = extra.optJSONArray("forecast");
+            JSONObject mainWeather = forecastArray.optJSONObject(0);
+            String highTemp = mainWeather.optString("highTemp");
+            String weather = mainWeather.optString("weather");
 
 
 

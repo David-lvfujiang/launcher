@@ -18,7 +18,7 @@ android {
 
             annotationProcessorOptions {
 
-                arguments = [moduleName: project.getName()]
+                arguments = [AROUTER_MODULE_NAME: project.getName()]
 
             }
         }
@@ -81,7 +81,6 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(path: ':common')
 //    implementation (name: 'player-release', ext: 'aar')
 //    api (name: 'lib-dds-1.1.11.1-release', ext: 'aar')
 //    api (name: 'skill_music-release', ext: 'aar')
@@ -102,41 +101,101 @@ dependencies {
 
     //api (name: 'leavemessage-release', ext: 'aar')
     //api (name: 'call-release', ext: 'aar')
-    api (name: 'gallery-_dev-release', ext: 'aar')
-    api (name: 'homepage-_dev-release', ext: 'aar')
+//    api (name: 'gallery-_dev-release', ext: 'aar')
+//    api (name: 'homepage-_dev-release', ext: 'aar')
 //    api (name: 'news-release', ext: 'aar')
 // api (name: 'weather-release', ext: 'aar')
 //    api (name: 'calendar-_dev-release', ext: 'aar')
-    api (name: 'settings-_dev-release', ext: 'aar')
+//    api (name: 'settings-_dev-release', ext: 'aar')
 //    api (name: 'encyclopedia-_dev-release', ext: 'aar')
 //    api (name: 'player-release', ext: 'aar')
 
 
-    implementation 'com.fenda.ai:ai_sibichi:1.0.2'
-    implementation 'com.fenda.call:call:1.0.2'
-    implementation 'com.fenda.calendar:calendar:1.0.3'
-    implementation 'com.fenda.calculator:calculator:1.0.1'
-    implementation 'com.fenda.encyclopedia:encyclopedia:1.0.1'
-    implementation 'com.fenda.news:news:1.0.4'
-    implementation 'com.fenda.player:player:1.0.2@aar'
-    implementation 'com.fenda.remind:remind:1.0.1'
-    implementation 'com.fenda.weather:weather:1.0.2'
-    implementation 'com.fenda.leavemessage:leavemessage:1.0.3'
+
+    if (isLocalMaven.toBoolean()){
+        //本地测试
+
+    implementation 'com.fenda:voice:1.0.24'
+    implementation 'com.fenda:call:1.0.3'
+    implementation 'com.fenda:calendar:1.0.1'
+    implementation 'com.fenda:calculator:1.0.2'
+    implementation 'com.fenda:encyclopdia:1.0.1'
+    implementation 'com.fenda:news:1.0.1'
+    implementation 'com.fenda:player:1.0.5@aar'
+    implementation 'com.fenda:remind:1.0.1'
+    implementation 'com.fenda:weather:1.0.4'
+    implementation 'com.fenda:leavemessage:1.0.3'
+    implementation 'com.fenda:homepage_devRelease:1.0.37'
+    implementation 'com.fenda:gallery_devRelease:1.0.1'
+    implementation 'com.fenda:settings_devRelease:1.0.5'
+
+    }else {
+        //正式打包发布
+        implementation 'com.fenda:voice:1.0.4@aar'
+        implementation 'com.fenda:remind:1.0.2'
+        implementation 'com.fenda:homepage_prodRelease:1.0.1'
+        implementation 'com.fenda:settings_prodRelease:1.0.2'
+        implementation 'com.fenda:gallery_prodRelease:1.0.1'
+        implementation 'com.fenda:weather:1.0.3'
+        implementation 'com.fenda.player:player:1.0.3@aar'
+        implementation 'com.fenda.leavemessage:leavemessage:1.0.3'
+        implementation 'com.fenda.encyclopedia:encyclopedia:1.0.2'
+        implementation 'com.fenda.news:news:1.0.3'
+        implementation 'com.fenda.calculator:calculator:1.0.1'
+        implementation 'com.fenda.calendar:calendar:1.0.3'
+        implementation 'com.fenda.call:call:1.0.2'
+    }
+
+
+
+
+
+//    implementation 'com.fenda:voice:1.0.11'
+//    implementation 'com.fenda:call:1.0.1'
+//    implementation 'com.fenda:calendar:1.0.0'
+//    implementation 'com.fenda:calculator:1.0.0'
+//    implementation 'com.fenda:encyclopdia:1.0.0'
+//    implementation 'com.fenda:news:1.0.0'
+//    implementation 'com.fenda:player:1.0.2@aar'
+//    implementation 'com.fenda:remind:1.0.0'
+//
+//    implementation 'com.fenda:weather:1.0.2'
+//    implementation 'com.fenda:leavemessage:1.0.1'
+//    implementation 'com.fenda:homepage_devRelease:1.0.2'
+
+//    implementation 'com.fenda:gallery_devRelease:1.0.0'
+//    implementation 'com.fenda:settings_devRelease:1.0.0'
+//
+//
+//    implementation 'com.fenda.ai:ai_sibichi:1.0.2'
+//    implementation 'com.fenda.call:call:1.0.2'
+//    implementation 'com.fenda.calendar:calendar:1.0.2'
+//    implementation 'com.fenda.calculator:calculator:1.0.0'
+//    implementation 'com.fenda.encyclopedia:encyclopedia:1.0.1'
+//    implementation 'com.fenda.news:news:1.0.2'
+//    implementation 'com.fenda.player:player:1.0.2@aar'
+//    implementation 'com.fenda.remind:remind:1.0.1'
+//    implementation 'com.fenda.weather:weather:1.0.2'
+//    implementation 'com.fenda.leavemessage:leavemessage:1.0.2'
+
+
+
+
+    implementation project(path: ':common')
+    implementation project(path: ':CallLib')
+    implementation project(path: ':CallKit')
+    implementation project(path: ':IMKit')
+    implementation project(path: ':IMLib')
+
+    implementation 'com.sibichi:dds:1.11.1@aar'
+    implementation 'com.sibichi:iqiyi:1.0.1@aar'
+    implementation 'com.sibichi:mediacatrl:1.0.1@aar'
+    implementation 'com.sibichi:music:1.0.1@aar'
+    implementation 'com.sibichi:remind:1.0.1@aar'
+    implementation 'com.sibichi:setting:1.0.2@aar'
+    implementation 'com.sibichi:tvctrl:1.0.1@aar'
 
     annotationProcessor deps.arouter_compiler
-//    implementation project(path: ':CallLib')
-//    implementation project(path: ':CallKit')
-//    implementation project(path: ':IMKit')
-//    implementation project(path: ':IMLib')
-    androidTestImplementation 'junit:junit:4.12'
-
-
-    //注释掉原有bugly的仓库
-//    //compile 'com.tencent.bugly:crashreport:latest.release'//其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.3.4
-//    implementation 'com.tencent.bugly:crashreport_upgrade:1.3.6'
-//    // 指定tinker依赖版本（注：应用升级1.3.5版本起，不再内置tinker）
-//    implementation 'com.tencent.tinker:tinker-android-lib:1.9.9'
-//    implementation 'com.tencent.bugly:nativecrashreport:latest.release' //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
 
 //    implementation 'com.sibichi.skill:iqiyi:1.0.1@aar'
 //    implementation 'com.sibichi.skill_mediactrl:mediacatrl:1.0.1@aar'

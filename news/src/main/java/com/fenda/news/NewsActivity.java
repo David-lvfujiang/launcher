@@ -69,8 +69,8 @@ public class NewsActivity extends BaseActivity {
     @Override
     public void initView() {
         mMusicPlayBean = getIntent().getParcelableExtra(NewsPlay.keyNews);
-        if (mMusicPlayBean!=null&&newsListData==null){
-        newsListData = mMusicPlayBean.getFdMusics();
+        if (mMusicPlayBean!=null && newsListData==null){
+            newsListData = mMusicPlayBean.getFdMusics();
         }
         linNewsBg = findViewById(R.id.lin_news_bg);
         tvNewsBack = findViewById(R.id.tv_news_back);

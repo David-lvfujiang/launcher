@@ -36,6 +36,7 @@ import com.fenda.ai.skill.TVControl;
 import com.fenda.ai.skill.Util;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.constant.Constant;
+import com.fenda.common.provider.IAlarmProvider;
 import com.fenda.common.provider.IRemindProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.LogUtil;
@@ -68,6 +69,7 @@ public class MyDDSInitListener implements DDSInitListener {
     private CountDownTimer remindTimer;
 
     private IRemindProvider provider;
+    private IAlarmProvider alarmProvider;
     public MyDDSInitListener(Context mContext) {
         this.mContext = mContext;
     }
@@ -172,6 +174,7 @@ public class MyDDSInitListener implements DDSInitListener {
 
 
 
+
         RemindPlugin.get().setOnRemindChangeListener(new RemindPlugin.OnRemindChangeListener() {
             @Override
             public void onCreateRemind(List<Event> list) {
@@ -196,12 +199,13 @@ public class MyDDSInitListener implements DDSInitListener {
 
             @Override
             public void onQueryRemind(List<Event> list) {
-                Gson gson = new Gson();
-                String json = gson.toJson(list);
-                LogUtil.i("RemindPlugin onQueryRemind = "+list.toString());
-                if (provider != null){
-                    provider.queryAlarm(json);
-                }
+                    Gson gson = new Gson();
+                    String json = gson.toJson(list);
+                    LogUtil.i("RemindPlugin onQueryRemind = "+list.toString());
+                    if (provider != null){
+                        provider.queryAlarm(json);
+                    }
+
 
             }
         });
