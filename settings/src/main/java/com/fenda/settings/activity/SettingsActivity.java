@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.SystemClock;
@@ -36,7 +35,6 @@ import com.fenda.settings.utils.SettingsBluetoothUtil;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -82,6 +80,8 @@ public class SettingsActivity extends BaseActivity {
         if (mSettingsBluetoothAdapter == null) {
             mSettingsBluetoothAdapter = new SettingsBluetoothAdapter(SettingsActivity.this, mSettingsBluetoothDeviceBean);
         }
+        mWifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
@@ -180,7 +180,7 @@ public class SettingsActivity extends BaseActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action.equals(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED)) {
+            if (BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED.equals(action)) {
                 BluetoothDevice mConnectionBluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 int state = intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE, 0);
                 LogUtil.d(TAG, "BT CONNECT staute " + mConnectionBluetoothDevice.getName() + state);
@@ -195,9 +195,9 @@ public class SettingsActivity extends BaseActivity {
                     SPUtils.put(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME, mBtName);
                     LogUtil.d(TAG, "STATE_CONNECTED getName = " + mConnectionBluetoothDevice.getName() + ", STATE_CONNECTED getAddress = " + mConnectionBluetoothDevice.getAddress());
                 }
-            } else if (action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
+            } else if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                List<SettingsBluetoothDeviceBean> listDevices = mSettingsBluetoothAdapter.getListDevices();
+//                List<SettingsBluetoothDeviceBean> listDevices = mSettingsBluetoothAdapter.getListDevices();
                 switch (device.getBondState()) {
                     case BluetoothDevice.BOND_BONDING:
                         LogUtil.d(TAG, "正在配对......");
@@ -205,13 +205,13 @@ public class SettingsActivity extends BaseActivity {
                     case BluetoothDevice.BOND_BONDED:
                         LogUtil.d(TAG, "完成配对");
                         SPUtils.put(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME, device.getName());
-                        SPUtils.put(getApplicationContext(), String.valueOf(Constant.Settings.BT_CONNECTED_ADDRESS), device.getAddress());
+                        SPUtils.put(getApplicationContext(), Constant.Settings.BT_CONNECTED_ADDRESS, device.getAddress());
                         break;
                     case BluetoothDevice.BOND_NONE:
                         LogUtil.d(TAG, "取消配对");
                         ToastUtils.show("成功取消配对");
                         SPUtils.remove(getApplicationContext(), Constant.Settings.BT_CONNECTED_NAME);
-                        SPUtils.remove(getApplicationContext(), String.valueOf(Constant.Settings.BT_CONNECTED_ADDRESS));
+                        SPUtils.remove(getApplicationContext(), Constant.Settings.BT_CONNECTED_ADDRESS);
                         break;
                     default:
                         break;
@@ -227,7 +227,7 @@ public class SettingsActivity extends BaseActivity {
         public void onReceive(Context context, Intent intent) {
             if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
                 NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-                ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+//                ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
                 Log.i(TAG, "--NetworkInfo--" + info.toString());
                 if (NetworkInfo.State.DISCONNECTED == info.getState()) { //wifi没连接上
                     mArrayListData.remove(0);
@@ -239,7 +239,6 @@ public class SettingsActivity extends BaseActivity {
                 } else if (NetworkInfo.State.CONNECTED == info.getState()) { //wifi连接上了
                     Log.i(TAG, "wifi连接上了");
                     mArrayListData.remove(0);
-                    mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
                     mConnectedWifiSsid = mWifiManager.getConnectionInfo().getSSID();
                     mConnectedWifiSsid = mConnectedWifiSsid.substring(1, mConnectedWifiSsid.length() - 1);
                     LogUtil.d(TAG, "back wifi name = " + mConnectedWifiSsid);

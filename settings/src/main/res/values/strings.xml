@@ -119,6 +119,8 @@
     <string name="settings_andlink_download">扫码下载和家亲APP</string>
     <string name="settings_andlink_bind">打开和家亲APP，在设备->添加智能设备中，再次扫描进行绑定</string>
     <string name="settings_andlink_unbind">解绑设备</string>
+    <string name="settings_andlink_init">初始化SDK</string>
+    <string name="settings_andlink_register">注册</string>
 
     <!--SettingsChangeBtNameAcivity start -->
     <string name="settings_bt_name">蓝牙名称</string>

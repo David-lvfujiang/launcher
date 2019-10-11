@@ -1,20 +1,17 @@
 package com.fenda.settings.activity;
 
 import android.content.Intent;
-import android.os.SystemClock;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.SPUtils;
-import com.fenda.common.util.ToastUtils;
 import com.fenda.settings.R;
 
 import java.util.ArrayList;
@@ -60,10 +57,10 @@ public class SettingsScreenActivity extends BaseMvpActivity {
         mSeclectedTimeRadioBtn = (String) SPUtils.get(getApplicationContext(), Constant.Settings.SCREEN_TIME, "");
         mSeclectedStyleRadioBtn = (String) SPUtils.get(getApplicationContext(), Constant.Settings.SCREEN_STYLE, "");
 
-        if(mSeclectedTimeRadioBtn == ""){
-            mSeclectedTimeRadioBtn = getString(R.string.settings_standby_3_1);
+        if("".equals(mSeclectedStyleRadioBtn)){
+                mSeclectedTimeRadioBtn = getString(R.string.settings_standby_3_1);
         }
-        if (mSeclectedStyleRadioBtn == ""){
+        if("".equals(mSeclectedStyleRadioBtn)){
             mSeclectedStyleRadioBtn = getString(R.string.settings_screen_style_time_num);
         }
         LogUtil.d(TAG,  "mSeclectedTimeRadioBtn = " + mSeclectedTimeRadioBtn);

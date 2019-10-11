@@ -70,23 +70,24 @@ public class SettingsLoadWebviewActivity extends BaseMvpActivity {
         Intent intent = getIntent();
         //5). 通过intent读取额外数据
         String loadUrl = intent.getStringExtra("APK_URL");
+        //加载url
+        wvDisUrlContent.loadUrl(loadUrl);
 
-        wvDisUrlContent.loadUrl(loadUrl);//加载url
-
-        wvDisUrlContent.addJavascriptInterface(this,"android");//添加js监听 这样html就能调用客户端
+        //添加js监听 这样html就能调用客户端
+        wvDisUrlContent.addJavascriptInterface(this,"android");
         wvDisUrlContent.setWebChromeClient(webChromeClient);
         wvDisUrlContent.setWebViewClient(webViewClient);
 
         WebSettings webSettings=wvDisUrlContent.getSettings();
-        webSettings.setJavaScriptEnabled(true);//允许使用js
+        //允许使用js
+        webSettings.setJavaScriptEnabled(true);
 
-        /**
-         * LOAD_CACHE_ONLY: 不使用网络，只读取本地缓存数据
-         * LOAD_DEFAULT: （默认）根据cache-control决定是否从网络上取数据。
-         * LOAD_NO_CACHE: 不使用缓存，只从网络获取数据.
-         * LOAD_CACHE_ELSE_NETWORK，只要本地有，无论是否过期，或者no-cache，都使用缓存中的数据。
-         */
-        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);//不使用缓存，只从网络获取数据.
+         //LOAD_CACHE_ONLY: 不使用网络，只读取本地缓存数据
+         //LOAD_DEFAULT: （默认）根据cache-control决定是否从网络上取数据。
+         //LOAD_NO_CACHE: 不使用缓存，只从网络获取数据.
+         //LOAD_CACHE_ELSE_NETWORK，只要本地有，无论是否过期，或者no-cache，都使用缓存中的数据。
+        //不使用缓存，只从网络获取数据.
+        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
 
         //支持屏幕缩放
         webSettings.setSupportZoom(true);
@@ -171,18 +172,16 @@ public class SettingsLoadWebviewActivity extends BaseMvpActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Log.i("ansen","是否有上一个页面:"+wvDisUrlContent.canGoBack());
-        if (wvDisUrlContent.canGoBack() && keyCode == KeyEvent.KEYCODE_BACK){//点击返回按钮的时候判断有没有上一页
-            wvDisUrlContent.goBack(); // goBack()表示返回webView的上一页面
+        //点击返回按钮的时候判断有没有上一页
+        if (wvDisUrlContent.canGoBack() && keyCode == KeyEvent.KEYCODE_BACK){
+            // goBack()表示返回webView的上一页面
+            wvDisUrlContent.goBack();
             return true;
         }
         return super.onKeyDown(keyCode,event);
     }
 
-    /**
-     * JS调用android的方法
-     * @param str
-     * @return
-     */
+    //JS调用android的方法
     @JavascriptInterface //仍然必不可少
     public void  getClient(String str){
         Log.i("ansen","html调用客户端:"+str);

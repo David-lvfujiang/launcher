@@ -124,7 +124,6 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
         if (mIVoiceRequestProvider != null) {
             mIVoiceRequestProvider.closeVoice();
         }
-//        sendMicDisableBroad();
     }
 
     @Override

@@ -10,9 +10,6 @@ public class SetttingsRepairContactNicknameBean {
     private String nickName;
     private String userId;
 
-    public SetttingsRepairContactNicknameBean() {
-    }
-
     public SetttingsRepairContactNicknameBean(String deviceId, String nickName, String userId) {
         this.deviceId = deviceId;
         this.nickName = nickName;

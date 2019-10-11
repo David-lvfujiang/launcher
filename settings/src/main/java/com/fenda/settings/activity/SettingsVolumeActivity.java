@@ -28,7 +28,6 @@ public class SettingsVolumeActivity extends BaseMvpActivity {
     private ImageView ivVolumeIcon;
     private SeekBar volumeBar;
 
-    private int mMaxVolume;
     private int mCurrentVolume;
     private boolean mRegistered;
 
@@ -47,6 +46,7 @@ public class SettingsVolumeActivity extends BaseMvpActivity {
 
     @Override
     public void initView() {
+        int mMaxVolume;
         ivBack = findViewById(R.id.volume_back_iv);
         volumeBar = findViewById(R.id.volume_seekbar);
         ivVolumeIcon = findViewById(R.id.volume_icon);

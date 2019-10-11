@@ -112,13 +112,38 @@
         android:id="@+id/andlink_unbind"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="524dp"
-        android:layout_marginTop="404dp"
+        android:layout_marginLeft="528dp"
+        android:layout_marginTop="464dp"
         android:text="@string/settings_andlink_unbind"
         android:textColor="@color/black"
         android:textSize="29dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <Button
+        android:id="@+id/andlink_init"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="528dp"
+        android:layout_marginTop="388dp"
+        android:text="@string/settings_andlink_init"
+        android:textColor="@color/black"
+        android:textSize="29dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/andlink_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="716dp"
+        android:layout_marginTop="388dp"
+        android:text="@string/settings_andlink_register"
+        android:textColor="@color/black"
+        android:textSize="29dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </android.support.constraint.ConstraintLayout>

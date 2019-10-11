@@ -13,7 +13,7 @@ public class SettingsApplication extends BaseApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-//        MTSdk.init(this, null, null, null, null);
+//        MTSdk.init(this, "864226033993999", null, null, "M100000534");
 
         //待机界面
 //        ScreenSaverManager.init(this);

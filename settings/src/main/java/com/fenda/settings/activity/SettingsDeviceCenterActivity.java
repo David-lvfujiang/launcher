@@ -91,7 +91,7 @@ public class SettingsDeviceCenterActivity extends BaseMvpActivity<SettingsPresen
 
         lvBindInfo.setAdapter(adapter);
 
-        mPresenter.getContactsList();
+//        mPresenter.getContactsList();
     }
 
     @Override
@@ -192,8 +192,8 @@ public class SettingsDeviceCenterActivity extends BaseMvpActivity<SettingsPresen
 
     @Override
     public void getContactsListSuccess(BaseResponse<List<UserInfoBean>> response) {
-        LogUtil.d(TAG, "getContactsListSuccess = " + response.getData());
-        ContentProviderManager.getInstance(SettingsDeviceCenterActivity.this, mUri).insertUsers(response.getData());
+//        LogUtil.d(TAG, "getContactsListSuccess = " + response.getData());
+//        ContentProviderManager.getInstance(SettingsDeviceCenterActivity.this, mUri).insertUsers(response.getData());
     }
 
     @Override

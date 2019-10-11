@@ -29,8 +29,6 @@ public class SettingsScreenIntoStandbyActivity extends BaseMvpActivity {
 
     private  RadioButton rbText;
 
-    private String mIntentSeclectTime;
-
     @Override
     protected void initPresenter() {
 
@@ -53,6 +51,8 @@ public class SettingsScreenIntoStandbyActivity extends BaseMvpActivity {
 
     @Override
     public void initData() {
+        String mIntentSeclectTime;
+
         Intent mIntent = getIntent();
         mIntentSeclectTime = mIntent.getStringExtra("SECLECT_TIME_RADIOBTN");
         LogUtil.d(TAG,  "mSeclectTime = " + mIntentSeclectTime);
