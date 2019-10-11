@@ -139,7 +139,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     private int current = 0;
     private int number = 0;
     private static final int CHANGE_Msg = 1;
-
+    private  int mMsgType=0;
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -203,6 +203,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     private float downY;
     private int moveX;
     private int moveY;
+    private String mNewUserName;
 
 
     @Override
@@ -416,6 +417,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         //普通成员退出家庭通知
         else if (message.getCode() == TCPConfig.MessageType.USER_EXIT_FAMILY) {
             LogUtil.d("bind onReceiveEvent = " + message);
+            mMsgType=TCPConfig.MessageType.USER_EXIT_FAMILY;
             ContentProviderManager.getInstance(mContext, Constant.Common.URI).clear();
             mPresenter.getFamilyContacts();
         } else if (message.getCode() == TCPConfig.MessageType.USER_REPAIR_HEAD) {
@@ -433,6 +435,12 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
             }
         }else if (message.getCode() == TCPConfig.MessageType.NEW_USER_ADD) { //新人加入家庭通知
+            mMsgType=TCPConfig.MessageType.NEW_USER_ADD;
+            BaseTcpMessage dataMsg = message.getData();
+            String msgContent = dataMsg.getMsg();
+
+            mNewUserName = msgContent.substring(msgContent.indexOf("【") + 1, msgContent.indexOf("】"));
+            LogUtil.d(TAG, "新人加入家庭通知" + mNewUserName);
             ContentProviderManager.getInstance(mContext, Constant.Common.URI).clear();
             mPresenter.getFamilyContacts();
 
@@ -503,6 +511,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                             }
                             // 清除本地联系人数据时重新请求网络数据并保存到本地数据库
                             if (ContentProviderManager.getInstance(mContext, Constant.Common.URI).isEmpty()) {
+                                mMsgType=0;
                                 mPresenter.getFamilyContacts();
                             }
                         } else{
@@ -517,6 +526,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                         }
                         // 清除本地联系人数据时重新请求网络数据并保存到本地数据库
                         if (ContentProviderManager.getInstance(mContext, Constant.Common.URI).isEmpty()) {
+                            mMsgType=0;
                             mPresenter.getFamilyContacts();
                         }
                     }
@@ -656,6 +666,10 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     @Override
     public void getFamilyContactsSuccess(BaseResponse<List<UserInfoBean>> response) {
         ContentProviderManager.getInstance(mContext, Constant.Common.URI).insertUsers(response.getData());
+        //有新人加入时跳转至设置昵称界面
+        if (mMsgType==TCPConfig.MessageType.NEW_USER_ADD){
+            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsContractsNickNameEditActivity).withString("newAddUserName",mNewUserName).navigation();
+        }
         ICallProvider callService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
         if (callService!=null){
             callService.syncFamilyContacts();
