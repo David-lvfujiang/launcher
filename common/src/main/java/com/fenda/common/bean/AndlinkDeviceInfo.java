@@ -1,20 +1,20 @@
-package com.fenda.settings.bean;
+package com.fenda.common.bean;
 
 import java.util.List;
 
 /**
  * Created by  Android Studio.
  * Author :   aviva.jiangjing
- * Date:   2019/9/19 10:45
+ * Date:   2019/10/8 10:14
  */
-public class SettingsAndlinkDeviceInfo {
+public class AndlinkDeviceInfo {
     public String deviceMac;
     public String deviceType;
     public String productToken;
     public String andlinkToken;
     public String firmwareVersion;
-    public String autoAp;
-    public String softApMode;
+    public String autoAP;
+    public String softAPMode;
     public String softwareVersion;
     public DeviceExtInfo deviceExtInfo;
 

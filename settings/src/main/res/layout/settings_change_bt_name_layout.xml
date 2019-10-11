@@ -61,6 +61,7 @@
         android:background="#09ffffff"
         android:textColor="@color/page_dot_selected"
         android:textSize="30dp"
+        android:singleLine="true"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -27,7 +27,6 @@ public class SettingsScreenStyleActivity extends BaseMvpActivity {
     private RadioButton rbTimeSimulate;
 
     private  RadioButton rbStyleText;
-    private String mIntentSeclectSytle;
 
     @Override
     protected void initPresenter() {
@@ -50,6 +49,7 @@ public class SettingsScreenStyleActivity extends BaseMvpActivity {
 
     @Override
     public void initData() {
+        String mIntentSeclectSytle;
         Intent mIntent = getIntent();
         mIntentSeclectSytle = mIntent.getStringExtra("SECLECT_STYLE_RADIOBTN");
         LogUtil.d(TAG,  "mSeclectTime = " + mIntentSeclectSytle);

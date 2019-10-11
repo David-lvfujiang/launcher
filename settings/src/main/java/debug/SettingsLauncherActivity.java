@@ -66,6 +66,7 @@ public class SettingsLauncherActivity extends BaseMvpActivity<SettingsPresenter,
     public void initData() {
         if (SettingsDebugSPUtils.isRegisterDevice(getApplicationContext()) ){
             LogUtil.d(TAG, "device have registered~");
+            initAndlink();
             btnStartSet.setVisibility(View.VISIBLE);
             String userId = (String) SettingsDebugSPUtils.get(BaseApplication.getInstance(), SettingsContant.USER_ID, "");
 
@@ -115,15 +116,16 @@ public class SettingsLauncherActivity extends BaseMvpActivity<SettingsPresenter,
         tDevcieInfo.productToken = "JUyy3SiJ3yx6hImp";
         tDevcieInfo.andlinkToken = "RMm2sEhc9v23H8cc";
         tDevcieInfo.firmwareVersion = "f1.0";
-        tDevcieInfo.autoAP = "0";
-        tDevcieInfo.softAPMode = "";
+        tDevcieInfo.autoAp = "0";
+        tDevcieInfo.softApMode = "";
         tDevcieInfo.softwareVersion = "1.0.0";
         tDevcieInfo.deviceExtInfo = deviceExtInfo;
 
         tGson = new Gson();
 
         AndSdkImpl.getInstance().init(getApplication(), tGson.toJson(tDevcieInfo));
-//        String info = AndSdkImpl.getInstance().getDeviceInfo();
+        String info = AndSdkImpl.getInstance().getDeviceInfo();
+        LogUtil.d(TAG, "Andlink getDeviceInfo = " + info);
 
     }
 
@@ -172,6 +174,7 @@ public class SettingsLauncherActivity extends BaseMvpActivity<SettingsPresenter,
     @Override
     public void registerDeviceSuccess(BaseResponse<SettingsRegisterDeviceResponse> response) {
         LogUtil.d(TAG, "设备注册成功");
+        initAndlink();
         SettingsDebugSPUtils.saveRegisterDevice(getApplicationContext(), true);
         String userId1 = response.getData().getId();
         LogUtil.d(TAG, "userId1 = " + userId1);

@@ -27,15 +27,12 @@ public class SettingsWifiInputPswActivity extends BaseMvpActivity {
 
     private TextView tvCancelbtn;
     private TextView tvSurebtn;
-    private TextView tvConnectName;
     private EditText etPsw;
 
     protected SettingsWifiUtil mSettingsWifiUtil;
 
     private String mInputWifiPsw;
     private String mConnectSsid;
-    private int mPswMinLength = 8;
-    private int mPswMaxLength = 64;
 
     @Override
     protected void initPresenter() {
@@ -49,6 +46,8 @@ public class SettingsWifiInputPswActivity extends BaseMvpActivity {
 
     @Override
     public void initView() {
+        TextView tvConnectName;
+
         tvCancelbtn = findViewById(R.id.connect_wifi_cancel);
         tvSurebtn = findViewById(R.id.connect_wifi_sure);
         tvConnectName = findViewById(R.id.connect_wifi_name);
@@ -94,6 +93,9 @@ public class SettingsWifiInputPswActivity extends BaseMvpActivity {
 
         @Override
         public void afterTextChanged(Editable s) {
+            int mPswMinLength = 8;
+            int mPswMaxLength = 64;
+
             if(etPsw.length() >= mPswMinLength && etPsw.length() < mPswMaxLength){
                 tvSurebtn.setVisibility(View.VISIBLE);
                 tvSurebtn.setClickable(true);
