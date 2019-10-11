@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.admin.DevicePolicyManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -31,6 +33,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
@@ -46,6 +49,7 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
+import com.fenda.common.baseapp.AppManager;
 import com.fenda.common.basebean.player.FDMusic;
 import com.fenda.common.basebean.player.MusicPlayBean;
 import com.fenda.common.bean.LeaveMessageBean;
@@ -90,6 +94,9 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 @Route(path = RouterPath.HomePage.HOMEPAGE_MAIN)
 public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener {
@@ -205,9 +212,8 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     private int moveY;
     private String mNewUserName;
 
-    private TimerTask mTask;
-    private Timer mTimer;
     private ScheduledThreadPoolExecutor executorService;
+    private int mMsgType;
 
 
     @Override
@@ -273,6 +279,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             if (HOME_PAGE){
                 returnDefault();
             }
+            finishAllActivity();
         }
 
 
@@ -453,16 +460,12 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
             isExitHome = true;
 
-            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsBindDeviceActivity).navigation(this, new NavCallback() {
-                @Override
-                public void onArrival(Postcard postcard) {
-                }
-            });
+            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsBindDeviceActivity).navigation();
         }
         //普通成员退出家庭通知
         else if (message.getCode() == TCPConfig.MessageType.USER_EXIT_FAMILY) {
             LogUtil.d("bind onReceiveEvent = " + message);
-            mMsgType=TCPConfig.MessageType.USER_EXIT_FAMILY;
+            mMsgType = TCPConfig.MessageType.USER_EXIT_FAMILY;
             ContentProviderManager.getInstance(mContext, Constant.Common.URI).clear();
             mPresenter.getFamilyContacts();
         } else if (message.getCode() == TCPConfig.MessageType.USER_REPAIR_HEAD) {
@@ -505,11 +508,12 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
             }
             //避免重复调用
-            if (initVoiceProvider != null ){
-                if (BaseApplication.getBaseInstance().isRequestWeather()){
+            if (initVoiceProvider != null && !BaseApplication.getBaseInstance().isVoiceInit()){
+                BaseApplication.getBaseInstance().setVoiceInit(true);
+                if ( !BaseApplication.getBaseInstance().isRequestWeather()){
                     initVoiceProvider.requestWeather();
                 }
-                if (BaseApplication.getBaseInstance().isRequestNews()){
+                if (!BaseApplication.getBaseInstance().isRequestNews()){
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -531,8 +535,19 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
         }else if (message.getCode() == Constant.Common.GO_HOME){
             //回到首页时 把列表页面回到默认位置
+            finishAllActivity();
             returnDefault();
 
+        }
+    }
+
+    private void finishAllActivity(){
+        Stack<Activity> activities = AppManager.getAppManager().getActivityStack();
+        for (int i = 0, size = activities.size(); i < size; i++) {
+            Activity mActivity = activities.get(i);
+            if (null != mActivity && !(mActivity == this)) {
+                AppManager.getAppManager().finishActivity(mActivity);
+            }
         }
     }
 
@@ -589,7 +604,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                         }
                         // 清除本地联系人数据时重新请求网络数据并保存到本地数据库
                         if (ContentProviderManager.getInstance(mContext, Constant.Common.URI).isEmpty()) {
-                            mMsgType=0;
+                            mMsgType = 0;
                             mPresenter.getFamilyContacts();
                         }
                     }
@@ -718,7 +733,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             //通讯录
             //            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
         } else if (resId == R.id.iv_header_weather || resId == R.id.tv_header_temp) {
-
 
             String saveWeahterValue = (String) SPUtils.get(getApplicationContext(), Constant.Weather.SP_NOW_WEATHER, "");
             if (saveWeahterValue != null && saveWeahterValue.length() > 1){
@@ -1068,32 +1082,27 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
                     LogUtil.e("applyId 栈顶activityName = ");
 
-                    ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation(HomePageActivity.this, new NavCallback() {
-                        @Override
-                        public void onArrival(Postcard postcard) {
-                            LogUtil.e("栈顶activityName = "+postcard.toString());
-                        }
-                    });
+                    ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation();
 
 
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.CALCULATOR)){
                     //                    ToastUtils.show("计算器");
-                    ARouter.getInstance().build(RouterPath.Calculator.CALCULATOR_ACTIVITY).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation(HomePageActivity.this);
+                    ARouter.getInstance().build(RouterPath.Calculator.CALCULATOR_ACTIVITY).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation();
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.WEATHER)) {
                     //                    ToastUtils.show("天气");
                     String saveWeahterValue = (String) SPUtils.get(getApplicationContext(), Constant.Weather.SP_NOW_WEATHER, "");
                     if (saveWeahterValue != null && saveWeahterValue.length() > 1){
                         mIWeatherProvider.weatherFromVoiceControl(saveWeahterValue);
                     } else {
-                        ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation(HomePageActivity.this);
+                        ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation();
                     }
                     initVoiceProvider.nowWeather();
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.CALENDAR)) {
                     //                    ToastUtils.show("日历");
-                    ARouter.getInstance().build(RouterPath.Calendar.Perpetual_CALENDAR_ACTIVITY).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation(HomePageActivity.this);
+                    ARouter.getInstance().build(RouterPath.Calendar.Perpetual_CALENDAR_ACTIVITY).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation();
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.PHOTO)) {
                     //                    ToastUtils.show("相册");
-                    ARouter.getInstance().build(RouterPath.Gallery.GALLERY_CATOGORY).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation(HomePageActivity.this);
+                    ARouter.getInstance().build(RouterPath.Gallery.GALLERY_CATOGORY).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation();
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.TIME)) {
                     ToastUtils.show("闹钟");
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.FM)) {
@@ -1250,5 +1259,10 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         }
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
 
+        LogUtil.e("进入了Oncreate  : hasFocus = "+hasFocus);
+    }
 }

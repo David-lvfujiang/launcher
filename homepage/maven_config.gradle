@@ -31,9 +31,9 @@ afterEvaluate {
                     }
                     pom('homepage').project {
                         groupId  maven.fenda_groupId
-                        artifactId project.archivesBaseName + variant.name
+                        artifactId fenda.homepage_artifactId
                         if (isLocalMaven.toBoolean()){
-                            version "1.0.37"
+                            version "1.0.42"
                         }else {
                             version fenda.homepage_version
                         }

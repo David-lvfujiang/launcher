@@ -81,6 +81,13 @@ public class AppManager {
         finishActivity(activity);
     }
 
+
+   public Stack<Activity> getActivityStack(){
+        return activityStack;
+   }
+
+
+
     /**
      * 结束指定的Activity
      */

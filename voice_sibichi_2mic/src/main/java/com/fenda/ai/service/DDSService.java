@@ -657,7 +657,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                                     if (calendarProvider == null) {
                                         calendarProvider = ARouter.getInstance().navigation(ICalendarProvider.class);
                                     }
-                                    calendarProvider.getCalendarMsg(state);
+                                    calendarProvider.processCalendarMsg(state);
                                 }
                             });
                 } else if (task.equals("股票")) {

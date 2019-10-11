@@ -31,9 +31,9 @@ afterEvaluate {
                     }
                     pom('settings').project {
                         groupId  maven.fenda_groupId
-                        artifactId project.archivesBaseName + variant.name
+                        artifactId fenda.settings_artifactId
                         if (isLocalMaven.toBoolean()){
-                            version "1.0.5"
+                            version "1.0.6"
                         }else {
                             version fenda.settings_version
                         }

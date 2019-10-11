@@ -31,7 +31,7 @@ afterEvaluate {
                     }
                     pom('gallery').project {
                         groupId  maven.fenda_groupId
-                        artifactId project.archivesBaseName + variant.name
+                        artifactId fenda.gallery_artifactId
                         if (isLocalMaven.toBoolean()){
                             version "1.0.1"
                         }else {

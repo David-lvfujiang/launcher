@@ -49,10 +49,8 @@ public class CalendarPresenter implements ICalendarProvider {
 
     @Override
     public void processCalendarMsg(String msg) {
-        ArrayList<String> intentNameList = getIntentName(msg);
-        for (String intentName : intentNameList) {
-            processIntent(intentName, msg);
-        }
+        String intentName = getIntentName(msg);
+        processIntent(intentName, msg);
     }
 
     /**
@@ -60,20 +58,10 @@ public class CalendarPresenter implements ICalendarProvider {
      * @param msg
      * @return
      */
-    public ArrayList getIntentName(String msg) {
+    public String getIntentName(String msg) {
         JsonObject jsonObject = new JsonParser().parse(msg).getAsJsonObject();
-        JsonArray jsonArray = jsonObject.getAsJsonObject("nlu").getAsJsonObject("semantics").getAsJsonObject("request").getAsJsonArray("slots");
-        for (int i = 0; i < jsonArray.size(); i++) {
-            JsonObject object = (JsonObject) jsonArray.get(i);
-            for (String name : object.keySet()) {
-                if ("value".equals(name)) {
-                    JsonElement intentName = object.get(name);
-                    LogUtil.e(intentName.getAsString());
-                    intentArray.add(intentName.getAsString());
-                }
-            }
-        }
-        return intentArray;
+        String intentName = jsonObject.getAsJsonObject("dm").get("intentName").getAsString();
+        return intentName;
     }
 
     /**
@@ -120,6 +108,7 @@ public class CalendarPresenter implements ICalendarProvider {
                 Intent intent = new Intent();
                 intent.setClass(BaseApplication.getBaseInstance(), CalendarQueryDateActivity.class);
                 intent.putExtra("nowTime", nowTime);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 BaseApplication.getBaseInstance().startActivity(intent);
                 break;
             }
@@ -127,7 +116,7 @@ public class CalendarPresenter implements ICalendarProvider {
                 processContentTextMsg(msg);
                 break;
             case QUERY_HISTORY:
-                processContentTextMsg(msg);
+//                processContentTextMsg(msg);
                 break;
             case QUERY_YEAR:
                 LogUtil.e("查询年份");
