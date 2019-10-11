@@ -14,7 +14,6 @@ import com.fenda.common.util.LogUtil;
 import com.fenda.common.basebean.leavemessage.LeaveMessageBean;
 import com.fenda.protocol.tcp.bus.EventBusUtils;
 
-import io.rong.imkit.MainActivity;
 import io.rong.imkit.RongIM;
 import io.rong.imkit.manager.IUnReadMessageObserver;
 import io.rong.imlib.model.Conversation;
@@ -49,7 +48,6 @@ public class LeavemessageDialogActivity extends BaseActivity implements View.OnC
 
     @Override
     public void initView() {
-        RongIM.getInstance().addUnReadMessageCountChangedObserver(observer, Conversation.ConversationType.PRIVATE);
         mBtCancel = findViewById(R.id.leave_message_btn_cancel);
         mBtlook = findViewById(R.id.leave_message_btn_look);
         mTvMessageContent = findViewById(R.id.leave_message_tv);
@@ -60,14 +58,13 @@ public class LeavemessageDialogActivity extends BaseActivity implements View.OnC
     @Override
     public void initData() {
         mTvMessageContent.setText(userName + "给您留言了");
-
+        RongIM.getInstance().addUnReadMessageCountChangedObserver(observer, Conversation.ConversationType.PRIVATE);
     }
 
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.leave_message_btn_look) {
             RongIM.getInstance().startConversation(this, Conversation.ConversationType.PRIVATE, userId, userName);
-
             finish();
         }
         if (view.getId() == R.id.leave_message_btn_cancel) {

@@ -18,6 +18,7 @@ import com.fenda.common.util.ImageUtil;
 import java.util.List;
 
 import io.rong.callkit.RongCallKit;
+
 /**
  * @author kevin.wangzhiqiang
  * @Date 2019/9/2 10:21
@@ -48,7 +49,7 @@ public class ContactListAdapter extends RecyclerView.Adapter {
         final String userId = bean.getMobile();
         int userType = bean.getUserType();
         holder.tvName.setText(bean.getUserName());
-        ImageUtil.loadImg(mContext,holder.ivHead, bean.getIcon());
+        ImageUtil.loadImg(mContext, holder.ivHead, bean.getIcon());
         if (userType == 1) {
             holder.tvRole.setVisibility(View.VISIBLE);
             holder.tvPermissions.setVisibility(View.VISIBLE);
@@ -83,6 +84,10 @@ public class ContactListAdapter extends RecyclerView.Adapter {
         return mDatas.size();
     }
 
+    public void setNewData(List<UserInfoBean> datas) {
+        this.mDatas = datas;
+        notifyDataSetChanged();
+    }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
 

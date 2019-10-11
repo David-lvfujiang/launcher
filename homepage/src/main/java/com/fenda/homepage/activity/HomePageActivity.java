@@ -4,22 +4,22 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.app.admin.DevicePolicyManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
-import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Handler;
 import android.net.ConnectivityManager;
 import android.net.LinkProperties;
 import android.net.Network;
 import android.net.NetworkCapabilities;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.support.annotation.RequiresApi;
@@ -48,6 +48,7 @@ import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
 import com.fenda.common.basebean.player.FDMusic;
 import com.fenda.common.basebean.player.MusicPlayBean;
+import com.fenda.common.bean.LeaveMessageBean;
 import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.bean.WeatherWithHomeBean;
 import com.fenda.common.constant.Constant;
@@ -65,7 +66,6 @@ import com.fenda.common.util.ImageUtil;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.LogUtils;
 import com.fenda.common.util.SPUtils;
-import com.fenda.common.util.SystemPropertiesProxyUtil;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.common.view.MyNestedScrollView;
 import com.fenda.homepage.Adapter.GridAdapter;
@@ -80,8 +80,6 @@ import com.fenda.homepage.model.MainModel;
 import com.fenda.homepage.observer.MyContentObserver;
 import com.fenda.homepage.presenter.MainPresenter;
 import com.fenda.homepage.receiver.ScreenOffAdminReceiver;
-import com.fenda.leavemessage.LeaveMessageService;
-import com.fenda.leavemessage.model.LeaveMessageBean;
 import com.fenda.protocol.tcp.TCPConfig;
 import com.fenda.protocol.tcp.bean.BaseTcpMessage;
 import com.fenda.protocol.tcp.bean.EventMessage;
@@ -92,8 +90,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-
-import io.netty.util.internal.SystemPropertyUtil;
 
 @Route(path = RouterPath.HomePage.HOMEPAGE_MAIN)
 public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener {
@@ -144,12 +140,12 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     private int number = 0;
     private static final int CHANGE_Msg = 1;
 
-    private Handler mHandler = new Handler() {
+    private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             LogUtil.e("进入了Oncreate的接收到了handler信息");
             initSubmenuView();
-            ImageUtil.loadGIFImage(R.mipmap.cm_pull, imgGIF, R.mipmap.a123456);
+            ImageUtil.loadGIFImage(R.mipmap.cm_pull,imgGIF,R.mipmap.a123456);
             mAdminReceiver = new ComponentName(mContext, ScreenOffAdminReceiver.class);
             mPowerManager = (PowerManager) getSystemService(POWER_SERVICE);
             mPolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
@@ -217,6 +213,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
     @Override
     public void initView() {
+        BaseApplication.getBaseInstance().setRequestWeather(false);
         mHeaderTimeTv = findViewById(R.id.tv_header_time);
         mTipInfoRv = findViewById(R.id.rv_Tipinfo);
         mHeaderWeatherIv = findViewById(R.id.iv_header_weather);
@@ -228,7 +225,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         imgGIF = findViewById(R.id.img_gif);
         mMsgTv = findViewById(R.id.tv_home_nsg_dot_red);
 
-        //
         findViewById(R.id.tv_main_phone).setOnClickListener(this);
         findViewById(R.id.tv_main_cmcc).setOnClickListener(this);
         findViewById(R.id.tv_main_qqmusic).setOnClickListener(this);
@@ -240,12 +236,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         initRecycleView();
         initSleepView();
 
-        String num = SystemPropertiesProxyUtil.getString(this, "persist.key.num");
-        LogUtil.e("persist.key.num = " + num);
+
 
         LogUtil.e("进入了Oncreate的initView");
-
-
     }
 
     private void initSleepView() {
@@ -317,7 +310,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                                 if (initVoiceProvider == null) {
                                     initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
                                 }
-                                if (initVoiceProvider != null) {
+                                if (initVoiceProvider != null){
                                     initVoiceProvider.requestNews(20);
                                 }
                             }
@@ -366,7 +359,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         }
 
 
-        if (mIWeatherProvider == null) {
+        if (mIWeatherProvider == null){
             mIWeatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
         }
 
@@ -413,6 +406,10 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         if (message.getCode() == TCPConfig.MessageType.FAMILY_DISSOLVE) {
             LogUtil.d("家庭解散通知1 " + message);
             ContentProviderManager.getInstance(mContext, Constant.Common.URI).clear();
+            ICallProvider callService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
+            if (callService!=null){
+                callService.syncFamilyContacts();
+            }
             AppUtils.saveBindedDevice(getApplicationContext(), false);
             ARouter.getInstance().build(RouterPath.SETTINGS.SettingsBindDeviceActivity).navigation();
         }
@@ -428,32 +425,40 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 RepairPersonHeadBean bean = GsonUtil.GsonToBean(msg, RepairPersonHeadBean.class);
                 if (bean != null) {
                     ContentProviderManager.getInstance(mContext, Constant.Common.URI).updateUserHeadByUserID(bean.getIcon(), bean.getUserId());
+                    ICallProvider callService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
+                    if (callService!=null){
+                        callService.syncFamilyContacts();
+                    }
                 }
 
             }
-        } else if (message.getCode() == Constant.Common.INIT_VOICE_SUCCESS) {
+        }else if (message.getCode() == TCPConfig.MessageType.NEW_USER_ADD) { //新人加入家庭通知
+            ContentProviderManager.getInstance(mContext, Constant.Common.URI).clear();
+            mPresenter.getFamilyContacts();
+
+        }
+        else if (message.getCode() == Constant.Common.INIT_VOICE_SUCCESS){
             // @todo  勿删 语音初始化成功后会回调这里,在语音成功之前调用会导致应用崩溃
             LogUtil.e("===== INIT_VOICE_SUCCESS =====");
-            if (initVoiceProvider == null) {
+            if (initVoiceProvider == null){
                 initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
             }
-            if (initVoiceProvider != null) {
+            if (initVoiceProvider != null){
                 initVoiceProvider.openVoice();
             }
-            if (manager == null) {
+            if (manager == null){
                 manager = ContentProviderManager.getInstance(this, Uri.parse(ContentProviderManager.BASE_URI + "/user"));
-                getContentResolver().registerContentObserver(Uri.parse(ContentProviderManager.BASE_URI), true, new MyContentObserver(new Handler(), manager));
+                getContentResolver().registerContentObserver(Uri.parse(ContentProviderManager.BASE_URI),true,new MyContentObserver(new Handler(),manager));
 
             }
-            weather();
             //避免重复调用
-            if (initVoiceProvider != null) {
+            if (initVoiceProvider != null){
                 initVoiceProvider.requestWeather();
                 initVoiceProvider.requestNews(20);
             }
 
 
-        } else if (message.getCode() == Constant.Common.GO_HOME) {
+        }else if (message.getCode() == Constant.Common.GO_HOME){
             //回到首页时 把列表页面回到默认位置
             returnDefault();
 
@@ -462,7 +467,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
     private synchronized void weather() {
         //避免重复调用
-        if (initVoiceProvider != null && !isWeather) {
+        if (initVoiceProvider != null && !isWeather){
             isWeather = true;
             initVoiceProvider.requestWeather();
         }
@@ -488,9 +493,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 public void onAvailable(Network network) {
                     super.onAvailable(network);
                     LogUtil.d(TAG, "wifi onAvailable: " + network);
-                    if (mGetBindEventIntent == null) {
-                        if (mGetBindMultiIntent == null) {
-                            LogUtil.d(TAG, "null 正常进入主界面");
+                    if(mGetBindEventIntent == null){
+                        if(mGetBindMultiIntent == null){
+                            LogUtil.d(TAG,  "null 正常进入主界面");
                             ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
                             if (settingService != null) {
                                 LogUtil.d(TAG, "init device status");
@@ -500,11 +505,11 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                             if (ContentProviderManager.getInstance(mContext, Constant.Common.URI).isEmpty()) {
                                 mPresenter.getFamilyContacts();
                             }
-                        } else {
-                            LogUtil.d(TAG, "特殊方式进入主界面");
+                        } else{
+                            LogUtil.d(TAG,  "特殊方式进入主界面");
                         }
-                    } else {
-                        LogUtil.d(TAG, "绑定成功进入主界面");
+                    } else{
+                        LogUtil.d(TAG,  "绑定成功进入主界面");
                         ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
                         if (settingService != null) {
                             LogUtil.d(TAG, "init device status");
@@ -620,7 +625,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
 
             String saveWeahterValue = (String) SPUtils.get(getApplicationContext(), Constant.Weather.SP_NOW_WEATHER, "");
-            if (saveWeahterValue != null && saveWeahterValue.length() > 1) {
+            if (saveWeahterValue != null && saveWeahterValue.length() > 1){
                 mIWeatherProvider.weatherFromVoiceControl(saveWeahterValue);
             } else {
                 ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN).navigation();
@@ -628,11 +633,11 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             initVoiceProvider.nowWeather();
 
         } else if (resId == R.id.tv_main_qqmusic) {
-            if (initVoiceProvider != null) {
+            if (initVoiceProvider != null){
                 initVoiceProvider.openQQMusic();
             }
         } else if (resId == R.id.tv_main_iqiyi) {
-            if (initVoiceProvider != null) {
+            if (initVoiceProvider != null){
                 initVoiceProvider.openAqiyi();
             }
         } else if (resId == R.id.iv_header_love) {
@@ -651,6 +656,10 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     @Override
     public void getFamilyContactsSuccess(BaseResponse<List<UserInfoBean>> response) {
         ContentProviderManager.getInstance(mContext, Constant.Common.URI).insertUsers(response.getData());
+        ICallProvider callService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
+        if (callService!=null){
+            callService.syncFamilyContacts();
+        }
     }
 
     @Override
@@ -684,7 +693,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         newsRecommend = bean.getFdMusics();
         List<FDMusic> newsListData;
         newsListData = bean.getFdMusics();
-        if (newsListData != null && openNewsFlag) {
+        if (newsListData !=null&& openNewsFlag) {
             openNewsFlag = false;
             ARouter.getInstance().build(RouterPath.NEWS.NEWS_ACTIVITY)
                     .withObject("newsListData", newsListData)
@@ -759,19 +768,19 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mSubmenuListRv = findViewById(R.id.rv_submenu_list);
         submenuDropLeft = findViewById(R.id.iv_submenu_drop_left);
         submenuDropRight = findViewById(R.id.iv_submenu_drop_right);
-        nestScroll = findViewById(R.id.nest_scroll);
+        nestScroll      = findViewById(R.id.nest_scroll);
         ll_submenu_back = findViewById(R.id.content);
         relaBeDev = findViewById(R.id.rela_be_dev);
         submenuDropLeft.setOnClickListener(this);
         submenuDropRight.setOnClickListener(this);
-        if (relaBeDev.getVisibility() == View.GONE) {
+        if (relaBeDev.getVisibility() == View.GONE){
             relaBeDev.setVisibility(View.VISIBLE);
         }
         mTipInfoRv.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 int action = event.getAction();
-                switch (action) {
+                switch (action){
                     case MotionEvent.ACTION_DOWN:
                         downX = event.getX();
                         downY = event.getY();
@@ -779,7 +788,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     case MotionEvent.ACTION_MOVE:
                         moveX = (int) (event.getX() - downX);
                         moveY = (int) (event.getY() - downY);
-                        if (moveY < Constant.Common.MIX_MOVE) {
+                        if (moveY < Constant.Common.MIX_MOVE ){
                             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) nestScroll.getLayoutParams();
                             lp.topMargin = moveY;
                             nestScroll.setLayoutParams(lp);
@@ -788,11 +797,11 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                         break;
                     case MotionEvent.ACTION_UP:
 
-                        if (moveY < Constant.Common.MIX_MOVE) {
-                            int maxMove = BaseApplication.getBaseInstance().getScreenHeight() / 6;
-                            if (Math.abs(moveY) > maxMove) {
+                        if (moveY < Constant.Common.MIX_MOVE){
+                            int maxMove = BaseApplication.getBaseInstance().getScreenHeight()/6;
+                            if (Math.abs(moveY) > maxMove ){
                                 pullUp();
-                            } else {
+                            }else {
                                 pullUpReturn();
                             }
                         }
@@ -817,10 +826,10 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
             @Override
             public void upTouchListener(NestedScrollView view, int moveY) {
-                int maxMove = BaseApplication.getBaseInstance().getScreenHeight() / 6;
+                int maxMove = BaseApplication.getBaseInstance().getScreenHeight()/6;
                 if (moveY > maxMove) {
                     pullDown(moveY);
-                } else {
+                }else {
                     pullDownReturn(moveY);
                 }
             }
@@ -834,7 +843,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
      * 上拉
      */
     private void pullUp() {
-        ValueAnimator animator = ValueAnimator.ofInt(moveY, -BaseApplication.getBaseInstance().getScreenHeight());
+        ValueAnimator animator = ValueAnimator.ofInt(moveY,-BaseApplication.getBaseInstance().getScreenHeight());
         animator.setInterpolator(new OvershootInterpolator());
         animator.setDuration(800);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -849,8 +858,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         });
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationStart(Animator animation, boolean isReverse) {
-            }
+            public void onAnimationStart(Animator animation, boolean isReverse) {}
 
             @Override
             public void onAnimationEnd(Animator animation, boolean isReverse) {
@@ -863,7 +871,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
      * 上拉返回
      */
     private void pullUpReturn() {
-        ValueAnimator animator = ValueAnimator.ofInt(moveY, 0);
+        ValueAnimator animator = ValueAnimator.ofInt(moveY,0);
         animator.setInterpolator(new OvershootInterpolator());
         animator.setDuration(800);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -880,11 +888,10 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
     /**
      * 下拉
-     *
      * @param moveY
      */
     private void pullDown(int moveY) {
-        ValueAnimator animator = ValueAnimator.ofInt(moveY, BaseApplication.getBaseInstance().getScreenHeight() + 10);
+        ValueAnimator animator = ValueAnimator.ofInt(moveY, BaseApplication.getBaseInstance().getScreenHeight()+10);
         animator.setInterpolator(new LinearInterpolator());
         animator.setDuration(300);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -913,17 +920,16 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
     /**
      * 下拉返回
-     *
      * @param moveY
      */
     private void pullDownReturn(int moveY) {
-        ValueAnimator animator = ValueAnimator.ofInt(moveY, 0);
+        ValueAnimator animator = ValueAnimator.ofInt(moveY,0);
         animator.setInterpolator(new OvershootInterpolator());
         animator.setDuration(300);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                Log.e("TAG", "isRunning = " + animation.isRunning());
+                Log.e("TAG","isRunning = "+animation.isRunning());
                 int value = (int) animation.getAnimatedValue();
                 FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) ll_submenu_back.getLayoutParams();
                 lp.topMargin = value;
@@ -954,16 +960,20 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mGridAdapter.setOnItemClickListener(new GridAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, String applyId) {
+                LogUtil.e("applyId = "+applyId);
                 Intent intent = new Intent(HomePageActivity.this, PromptActivity.class);
-                if (applyId.equals(com.fenda.homepage.data.Constant.SETTINGS)) {
+                if(applyId.equals(com.fenda.homepage.data.Constant.SETTINGS)){
+
                     ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.CALCULATOR)) {
+
+                    LogUtil.e("applyId 打开设置页面 = "+RouterPath.SETTINGS.SettingsActivity);
+                } else if (applyId.equals(com.fenda.homepage.data.Constant.CALCULATOR)){
                     //                    ToastUtils.show("计算器");
                     ARouter.getInstance().build(RouterPath.Calculator.CALCULATOR_ACTIVITY).navigation();
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.WEATHER)) {
                     //                    ToastUtils.show("天气");
                     String saveWeahterValue = (String) SPUtils.get(getApplicationContext(), Constant.Weather.SP_NOW_WEATHER, "");
-                    if (saveWeahterValue != null && saveWeahterValue.length() > 1) {
+                    if (saveWeahterValue != null && saveWeahterValue.length() > 1){
                         mIWeatherProvider.weatherFromVoiceControl(saveWeahterValue);
                     } else {
                         ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN).navigation();
@@ -992,17 +1002,17 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     startActivity(intent);
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.QQ_MUSIC)) {
                     //                    ToastUtils.show("QQ音乐");
-                    if (initVoiceProvider != null) {
+                    if (initVoiceProvider != null){
                         initVoiceProvider.openQQMusic();
                     }
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.IQIYI)) {
                     //                    ToastUtils.show("爱奇艺");
-                    if (initVoiceProvider != null) {
+                    if (initVoiceProvider != null){
                         initVoiceProvider.openAqiyi();
                     }
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.NEWS)) {
                     //                    ToastUtils.show("新闻");
-                    if (initVoiceProvider != null) {
+                    if (initVoiceProvider != null){
                         openNewsFlag = true;
                         initVoiceProvider.requestNews(20);
                     }
@@ -1040,8 +1050,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     startActivity(intent);
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.REMIND)) {
                     //                    ToastUtils.show("提醒");
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
+                    if (initVoiceProvider != null){
+                        initVoiceProvider.requestAlarm();
+                    }
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.STORY)) {
                     //                    ToastUtils.show("故事");
                     intent.putExtra("applyId", applyId);
@@ -1103,28 +1114,28 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             Method setScanMode = BluetoothAdapter.class.getMethod("setScanMode", int.class, int.class);
             setScanMode.setAccessible(true);
             setDiscoverableTimeout.invoke(adapter, 1);
-            setScanMode.invoke(adapter, BluetoothAdapter.SCAN_MODE_CONNECTABLE, 1);
+            setScanMode.invoke(adapter, BluetoothAdapter.SCAN_MODE_CONNECTABLE,1);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
-    public void onPullOnclick(View v) {
+    public void onPullOnclick(View v){
         ToastUtils.show("努力开发中，敬请期待。。。");
     }
 
 
     public void setDiscoverableTimeout(int timeout) {
-        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        BluetoothAdapter adapter=BluetoothAdapter.getDefaultAdapter();
         try {
             Method setDiscoverableTimeout = BluetoothAdapter.class.getMethod("setDiscoverableTimeout", int.class);
             setDiscoverableTimeout.setAccessible(true);
-            Method setScanMode = BluetoothAdapter.class.getMethod("setScanMode", int.class, int.class);
+            Method setScanMode =BluetoothAdapter.class.getMethod("setScanMode", int.class,int.class);
             setScanMode.setAccessible(true);
 
             setDiscoverableTimeout.invoke(adapter, timeout);
-            setScanMode.invoke(adapter, BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE, timeout);
+            setScanMode.invoke(adapter, BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE,timeout);
         } catch (Exception e) {
             e.printStackTrace();
         }

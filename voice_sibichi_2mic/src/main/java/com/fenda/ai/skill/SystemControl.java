@@ -79,7 +79,17 @@ public class SystemControl extends SystemCtrl {
                 ARouter.getInstance().build(RouterPath.Calendar.Perpetual_CALENDAR_ACTIVITY).navigation();
             }
             return SettingPlugin.ERR_OK;
-        } else {
+        } else if (("计算器").equals(s)) {
+            if (!AppManager.getAppManager().isForeground("CalculatorActivity") || !AppTaskUtil.isLauncherForeground()) {
+                try {
+                    AppManager.getAppManager().finishActivity(Class.forName("com.fenda.calculator.CalculatorActivity"));
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                ARouter.getInstance().build(RouterPath.Calculator.CALCULATOR_ACTIVITY).navigation();
+            }
+            return SettingPlugin.ERR_OK;
+        }else {
             return super.openApp(s);
         }
     }
@@ -177,14 +187,14 @@ public class SystemControl extends SystemCtrl {
                 .subscribe(new Consumer<String>() {
                     @Override
                     public void accept(String s) throws Exception {
-                        if (!AppManager.getAppManager().isForeground("SettingsActivity") || !AppTaskUtil.isLauncherForeground()) {
-                            try {
-                                AppManager.getAppManager().finishActivity(Class.forName("com.fenda.settings.activity.SettingsActivity"));
-                            } catch (ClassNotFoundException e) {
-                                e.printStackTrace();
-                            }
-                            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
-                        }
+//                        if (!AppManager.getAppManager().isForeground("SettingsActivity") || !AppTaskUtil.isLauncherForeground()) {
+//                            try {
+//                                AppManager.getAppManager().finishActivity(Class.forName("com.fenda.settings.activity.SettingsActivity"));
+//                            } catch (ClassNotFoundException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+                        ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
                     }
                 });
         return SettingPlugin.ERR_OK;

@@ -21,6 +21,9 @@ import io.reactivex.Observable;
 public class MainModel implements MainContract.Model {
     @Override
     public Observable<BaseResponse<List<UserInfoBean>>> getFamilyContacts() {
-        return RetrofitHelper.getInstance(BaseApplication.getInstance().getString(R.string.BASE_SERVER_URL)).getServer(MainApiService.class).getFamilyContacts().compose(RxSchedulers.<BaseResponse<List<UserInfoBean>>>io_main());
+        return RetrofitHelper.getInstance(BaseApplication.getInstance().getString(R.string.BASE_SERVER_URL))
+                .getServer(MainApiService.class)
+                .getFamilyContacts()
+                .compose(RxSchedulers.<BaseResponse<List<UserInfoBean>>>io_main());
     }
 }

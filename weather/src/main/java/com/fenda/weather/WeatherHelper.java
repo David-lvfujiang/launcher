@@ -21,6 +21,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONObject;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -334,21 +336,25 @@ public class WeatherHelper implements IWeatherProvider {
         Log.e("Weather", "todayWeatherContent " + todayWeatherContent);
 
   //      String userId = (String) SPUtils.get(BaseApplication.getInstance(), Constant.Settings.USER_ID,"");
-        SPUtils.put(BaseApplication.getInstance(), Constant.Weather.SP_NOW_WEATHER, todayWeatherContent);
+        SPUtils.put(BaseApplication.getBaseInstance(), Constant.Weather.SP_NOW_WEATHER, todayWeatherContent);
         try{
 
-            JsonObject jsonObject = new JsonParser().parse(todayWeatherContent).getAsJsonObject();
-            JsonElement weatherMessage = jsonObject.get("webhookResp");
-            WeatherBean bean = new Gson().fromJson(weatherMessage, WeatherBean.class);
+//            JsonObject jsonObject = new JsonParser().parse(todayWeatherContent).getAsJsonObject();
+
+//            JsonElement weatherMessage = jsonObject.get("webhookResp");
+//            WeatherBean bean = new Gson().fromJson(weatherMessage, WeatherBean.class);
            // WeatherBean bean = new Gson().fromJson(todayWeatherContent, WeatherBean.class);
 
-            WeatherBean.DataBena weatherData = bean.getExtra().getFuture().get(0);
+            JSONObject object = new JSONObject(todayWeatherContent);
+            String highTemp = object.optString("highTemp");
+            String weather = object.optString("weather");
 
-            int tWeatherCode = WeatherHelper.codeFromWeahterName(weatherData.getWeather());
-            String tWeatherTemperature = weatherData.getTemperature();
 
 
-            EventBusUtils.post(new WeatherWithHomeBean(tWeatherTemperature.substring(tWeatherTemperature.indexOf("~") + 1, tWeatherTemperature.indexOf("℃")).trim(), WeatherHelper.iconIdWithCode(tWeatherCode, true)));
+            int tWeatherCode = WeatherHelper.codeFromWeahterName(weather);
+
+
+            EventBusUtils.post(new WeatherWithHomeBean(highTemp, WeatherHelper.iconIdWithCode(tWeatherCode, true)));
 
         } catch (Exception e) {
             e.printStackTrace();

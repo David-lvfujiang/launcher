@@ -77,20 +77,12 @@ public class MediaModel {
                     .subscribe(new Consumer<String>() {
                         @Override
                         public void accept(String s) throws Exception {
-                            if (BaseApplication.getBaseInstance().isRequestNews()){
-                                IRecommendProvider recommendProvider = ARouter.getInstance().navigation(IRecommendProvider.class);
-                                if (recommendProvider != null){
-                                    recommendProvider.requestRecommend(dataJsonObject);
-                                }
-                                DDS.getInstance().getAgent().stopDialog();
-                                BaseApplication.getBaseInstance().setRequestNews(false);
-                            }else {
+
                                 if (provider == null){
                                     provider = ARouter.getInstance().navigation(INewsProvider.class);
                                 }
                                 provider.news(dataJsonObject);
                             }
-                        }
                     });
 
             return;

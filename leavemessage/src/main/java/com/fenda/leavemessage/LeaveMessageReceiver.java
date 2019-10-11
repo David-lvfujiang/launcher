@@ -3,6 +3,7 @@ package com.fenda.leavemessage;
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.util.Log;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.BaseApplication;
@@ -34,7 +35,7 @@ public class LeaveMessageReceiver extends PushMessageReceiver {
                     @Override
                     public void onCountChanged(int i) {
                         LogUtil.e("数量变化：" + i);
-                        LeaveMessageBean leaveMessageBean = new LeaveMessageBean(i);
+                        LeaveMessageBean leaveMessageBean =   new LeaveMessageBean(i);
                         EventBusUtils.post(leaveMessageBean);
                     }
                 }, Conversation.ConversationType.PRIVATE);
@@ -45,7 +46,6 @@ public class LeaveMessageReceiver extends PushMessageReceiver {
     public boolean onNotificationMessageClicked(Context context, PushType pushType, PushNotificationMessage pushNotificationMessage) {
         return false;
     }
-
     /**
      * 弹出弹窗
      *

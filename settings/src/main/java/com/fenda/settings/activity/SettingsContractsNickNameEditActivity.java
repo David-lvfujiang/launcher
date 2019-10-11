@@ -11,11 +11,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
 import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.db.ContentProviderManager;
+import com.fenda.common.provider.ICallProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.GsonUtil;
 import com.fenda.common.util.LogUtil;
@@ -58,6 +60,7 @@ public class SettingsContractsNickNameEditActivity extends BaseMvpActivity<Setti
     private String mUserNameId;
 
     private Uri mUri = Uri.parse(ContentProviderManager.BASE_URI + "/user");
+
 
     @Override
     protected void initPresenter() {
@@ -168,6 +171,10 @@ public class SettingsContractsNickNameEditActivity extends BaseMvpActivity<Setti
                 SetttingsRepairContactNicknameBean bean = GsonUtil.GsonToBean(msg, SetttingsRepairContactNicknameBean.class);
                 if (bean != null) {
                     ContentProviderManager.getInstance(SettingsContractsNickNameEditActivity.this, mUri).updateNickNameByUserID(bean.getNickName(), bean.getUserId());
+                    ICallProvider callService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
+                    if (callService!=null){
+                        callService.syncFamilyContacts();
+                    }
                 }
             }
         } else if(message.getCode() == TCPConfig.MessageType.USER_EXIT_FAMILY){

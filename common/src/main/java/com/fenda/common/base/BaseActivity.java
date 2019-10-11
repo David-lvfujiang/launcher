@@ -78,7 +78,7 @@ public abstract class BaseActivity extends RxAppCompatActivity {
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_UP) {
-            ScreenSaverManager.eliminateEvent();//设置手指离开屏幕的时间
+//            ScreenSaverManager.eliminateEvent();//设置手指离开屏幕的时间
         }
         return super.dispatchTouchEvent(ev);
     }

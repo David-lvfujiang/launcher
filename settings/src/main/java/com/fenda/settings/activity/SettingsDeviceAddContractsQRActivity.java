@@ -3,7 +3,6 @@ package com.fenda.settings.activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,9 +17,6 @@ import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.QRcodeUtil;
 import com.fenda.common.util.SPUtils;
-import com.fenda.common.util.ToastUtils;
-import com.fenda.protocol.http.RetrofitHelper;
-import com.fenda.protocol.http.RxSchedulers;
 import com.fenda.protocol.tcp.CThreadPoolExecutor;
 import com.fenda.protocol.tcp.TCPConfig;
 import com.fenda.protocol.tcp.bean.BaseTcpMessage;
@@ -28,10 +24,8 @@ import com.fenda.protocol.tcp.bean.EventMessage;
 import com.fenda.protocol.tcp.bean.Head;
 import com.fenda.protocol.util.DeviceIdUtil;
 import com.fenda.settings.R;
-import com.fenda.settings.constant.SettingsContant;
 import com.fenda.settings.contract.SettingsContract;
 import com.fenda.settings.dialog.SettingsBindContactsDialog;
-import com.fenda.settings.http.SettingsApiService;
 import com.fenda.settings.model.SettingsModel;
 import com.fenda.settings.model.request.SettingsAgreeUserAddRequest;
 import com.fenda.settings.model.response.SettingsQueryDeviceInfoResponse;
@@ -43,8 +37,6 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.List;
-
-import io.reactivex.functions.Consumer;
 
 import static com.fenda.common.util.QRcodeUtil.getFileRoot;
 
@@ -85,12 +77,12 @@ public class SettingsDeviceAddContractsQRActivity extends BaseMvpActivity<Settin
 
         String vcode2 = (String) SPUtils.get(getApplicationContext(), Constant.Settings.VCODE, "");
 
-        String vcode1=getString(R.string.settings_add_qr_bind_vcode) + vcode2;
-        LogUtil.d(TAG, "get vcode from SPUtils = "  + vcode1);
+        String vcode1 = getString(R.string.settings_add_qr_bind_vcode) + vcode2;
+        LogUtil.d(TAG, "get vcode from SPUtils = " + vcode1);
 
         tvDisVcode.setText(vcode1);
 
-        final String contentEt= "http://www.fenda.com/?sn=" + DeviceIdUtil.getDeviceId();
+        final String contentEt = "http://www.fenda.com/?sn=" + DeviceIdUtil.getDeviceId();
 
         final String filePath = getFileRoot(SettingsDeviceAddContractsQRActivity.this) + File.separator
                 + "qr_" + System.currentTimeMillis() + ".jpg";
@@ -98,14 +90,12 @@ public class SettingsDeviceAddContractsQRActivity extends BaseMvpActivity<Settin
         CThreadPoolExecutor.runInBackground(new Runnable() {
             @Override
             public void run() {
-                boolean success = QRcodeUtil.createQRImage(contentEt,1000, 1000, null, filePath);
+                boolean success = QRcodeUtil.createQRImage(contentEt, 1000, 1000, null, filePath);
 
                 if (success) {
-                    runOnUiThread(new Runnable()
-                    {
+                    runOnUiThread(new Runnable() {
                         @Override
-                        public void run()
-                        {
+                        public void run() {
                             ivDisQrcode.setImageBitmap(BitmapFactory.decodeFile(filePath));
                         }
                     });
@@ -177,38 +167,21 @@ public class SettingsDeviceAddContractsQRActivity extends BaseMvpActivity<Settin
             deviceDialog.show();
         } else if (message.getCode() == TCPConfig.MessageType.NEW_USER_ADD) { //新人加入家庭通知
             LogUtil.d(TAG, "新人加入家庭通知 " + message);
-            ContentProviderManager.getInstance(SettingsDeviceAddContractsQRActivity.this, mUri).clear();
 
-            RetrofitHelper.getInstance(SettingsContant.TEST_BASE_URL).getServer(SettingsApiService.class).getContactsList()
-                    .compose(RxSchedulers.<BaseResponse<List<UserInfoBean>>>applySchedulers())
-                    .subscribe(new Consumer<BaseResponse<List<UserInfoBean>>>() {
-                        @Override
-                        public void accept(BaseResponse<List<UserInfoBean>> response) throws Exception {
-                            if (response.getCode() == 200) {
-                                ContentProviderManager.getInstance(SettingsDeviceAddContractsQRActivity.this, mUri).insertUsers(response.getData());
+            BaseTcpMessage dataMsg = message.getData();
+            String msgContent = dataMsg.getMsg();
 
-                                BaseTcpMessage dataMsg = message.getData();
-                                String msgContent = dataMsg.getMsg();
+            String result = msgContent.substring(msgContent.indexOf("【") + 1, msgContent.indexOf("】"));
+            LogUtil.d(TAG, "新人加入家庭通知 msg 22= " + result);
 
-                                String result = msgContent.substring(msgContent.indexOf("【")+1, msgContent.indexOf("】"));
-                                LogUtil.d(TAG, "新人加入家庭通知 msg 22= " + result);
-
-                                Intent setNickNameIntent = new Intent(SettingsDeviceAddContractsQRActivity.this, SettingsContractsNickNameEditActivity.class);
-                                setNickNameIntent.putExtra("newAddUserName", result);
-                                startActivity(setNickNameIntent);
-                                finish();
-                            } else {
-                                ToastUtils.show(response.getMessage());
-                            }
-                        }
-                    }, new Consumer<Throwable>() {
-                        @Override
-                        public void accept(Throwable throwable) throws Exception {
-                            // 异常处理
-                        }
-                    });
+            Intent setNickNameIntent = new Intent(SettingsDeviceAddContractsQRActivity.this, SettingsContractsNickNameEditActivity.class);
+            setNickNameIntent.putExtra("newAddUserName", result);
+            startActivity(setNickNameIntent);
+            finish();
         }
+
     }
+
     @Override
     public void showErrorTip(String msg) {
 

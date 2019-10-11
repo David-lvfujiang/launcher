@@ -867,10 +867,12 @@ public class SingleCallActivity extends BaseCallActivity implements Handler.Call
     private void saveCallRecorder2DB(RongCallSession callSession) {
         UserInfoBean userInfo = ContentProviderManager.getInstance(this, mUri).queryUserById(targetId);
         if (userInfo != null) {
+            String userId=userInfo.getUserId();
             String name = userInfo.getUserName();
             String phone = userInfo.getMobile();
             String icon = userInfo.getIcon();
             ContentValues contentValues = new ContentValues();
+            contentValues.put("userId",userId);
             contentValues.put("name", name);
             contentValues.put("phone", phone);
             contentValues.put("icon", icon);

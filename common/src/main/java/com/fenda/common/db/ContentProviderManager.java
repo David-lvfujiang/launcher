@@ -79,6 +79,7 @@ public class ContentProviderManager {
         }
         return result;
     }
+
     /**
      * 联系人表是否为空
      */
@@ -94,6 +95,7 @@ public class ContentProviderManager {
         }
         return result;
     }
+
     public List<UserInfoBean> queryUser(String selection, String[] selectionArgs) {
         Cursor cursor = mContentResolver.query(mUri, null, selection, selectionArgs, null);
         List<UserInfoBean> beanList = new ArrayList<>();
@@ -115,7 +117,27 @@ public class ContentProviderManager {
         }
         return beanList;
     }
+    // 查询指定userId的用户
+    public UserInfoBean queryUserByUserId(String userId) {
+        Cursor cursor = mContentResolver.query(mUri, null, "userId=?", new String[]{userId}, null);
+        UserInfoBean result = null;
+        if (cursor != null) {
+            if (cursor.moveToNext()) {
+                int id = cursor.getInt(cursor.getColumnIndex("_id"));
+                String userIdResult = cursor.getString(cursor.getColumnIndex("userId"));
+                String name = cursor.getString(cursor.getColumnIndex("name"));
+                String icon = cursor.getString(cursor.getColumnIndex("icon"));
+                String phone = cursor.getString(cursor.getColumnIndex("phone"));
+                String email = cursor.getString(cursor.getColumnIndex("email"));
+                int userType = cursor.getInt(cursor.getColumnIndex("user_type"));
+                String registerTime = cursor.getString(cursor.getColumnIndex("register_time"));
+                String updateTime = cursor.getString(cursor.getColumnIndex("update_time"));
+                result = new UserInfoBean(id, userIdResult, name, phone, userType, icon, email, registerTime, updateTime);
+            }
 
+        }
+        return result;
+    }
 
     public int updateUser(UserInfoBean bean) {
         ContentValues values = new ContentValues();
@@ -146,7 +168,7 @@ public class ContentProviderManager {
     /**
      * 修改指定UserId昵称
      *
-     * @param nickName   昵称
+     * @param nickName 昵称
      * @param userId
      * @return
      */

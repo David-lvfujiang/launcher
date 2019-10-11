@@ -1,19 +1,14 @@
 package com.fenda.news;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.text.TextUtils;
-
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.basebean.player.FDMusic;
-import com.fenda.common.basebean.player.MusicPlayBean;
-import com.fenda.common.constant.Constant;
 import com.fenda.common.provider.INewsProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.Md5Utils;
-import com.fenda.protocol.tcp.bus.EventBusUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,6 +30,7 @@ public class NewsPlay implements INewsProvider {
 
     /**
      * 获取新闻数据
+     *
      * @param contentArray
      * @return
      */
@@ -55,10 +51,10 @@ public class NewsPlay implements INewsProvider {
                 if (TextUtils.isEmpty(mediaid)) {
                     mediaid = Md5Utils.md5(linkUrl);
                 }
-                if(linkUrl.equals("")) {
+                if (linkUrl.equals("")) {
                     return null;
                 }
-                fdmusic = new FDMusic(title,linkUrl,imageUrl,subTitle);
+                fdmusic = new FDMusic(title, linkUrl, imageUrl, subTitle);
                 fdmusic.setMusicTime(humanTime);
                 fdmusic.setMusicArtist(source);
                 playlist.add(fdmusic);
@@ -86,19 +82,23 @@ public class NewsPlay implements INewsProvider {
             return;
         }
         playlist.addAll(getNewsMusics(contentArray));
-        final MusicPlayBean bean = new MusicPlayBean();
-        bean.setFdMusics(playlist);
-        bean.setMsgName("新闻");
-        bean.setMsgType(Constant.Player.NEW_CONSULT);
-        bean.setAidlMsgType(Constant.Player.keyBroadcastMusicList);
-        Intent mIntent = new Intent(mContext, NewsActivity.class);
-        Bundle mBundle = new Bundle();
-        mBundle.putParcelable(NewsPlay.keyNews,bean);
-        mIntent.putExtras(mBundle);
-        mContext.startActivity(mIntent);
-//        EventBusUtils.post(bean);
+        ARouter.getInstance().build(RouterPath.NEWS.NEWS_ACTIVITY)
+                .withObject("newsListData", playlist)
+                .navigation();
+        //        final MusicPlayBean bean = new MusicPlayBean();
+        //        bean.setFdMusics(playlist);
+        //        bean.setMsgName("新闻");
+        //        bean.setMsgType(Constant.Player.NEW_CONSULT);
+        //        bean.setAidlMsgType(Constant.Player.keyBroadcastMusicList);
+        //        Intent mIntent = new Intent(mContext, NewsActivity.class);
+        //        Bundle mBundle = new Bundle();
+        //        mBundle.putParcelable(NewsPlay.keyNews,bean);
+        //        mIntent.putExtras(mBundle);
+        //        mContext.startActivity(mIntent);
+        //        EventBusUtils.post(bean);
 
     }
+
     @Override
     public void init(Context context) {
         //        this.mContext = context;

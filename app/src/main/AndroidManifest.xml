@@ -22,6 +22,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.READ_LOGS"
+        tools:ignore="ProtectedPermissions" />
     <uses-permission
         android:name="android.permission.WRITE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
@@ -45,21 +47,20 @@
         tools:ignore="ProtectedPermissions" />
 
     <!--<application-->
-    <!--android:name=".LauncherApplication"-->
+    <!--android:tools="com.fenda.launcher.SampleApplication"-->
     <!--android:allowBackup="true"-->
     <!--android:icon="@mipmap/ic_launcher"-->
     <!--android:label="@string/app_name"-->
     <!--android:roundIcon="@mipmap/ic_launcher_round"-->
     <!--android:supportsRtl="true"-->
-    <!--android:theme="@style/LauncherTheme">-->
-    <!--<activity android:name=".MainActivity"-->
     <!--android:theme="@style/NoTitleFullscreen"-->
-    <!--&gt;-->
-    <!--<intent-filter>-->
-    <!--<action android:name="android.intent.action.MAIN" />-->
+        <!--tools:replace="com.fenda.launcher.SampleApplication">-->
+    <!--<activity android:name=".MainActivity">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.MAIN" />-->
 
-    <!--<category android:name="android.intent.category.LAUNCHER" />-->
-    <!--</intent-filter>-->
+        <!--<category android:name="android.intent.category.LAUNCHER" />-->
+        <!--</intent-filter>-->
     <!--</activity>-->
 
     <!--<provider-->
@@ -67,7 +68,9 @@
     <!--android:authorities="com.fenda.ai"-->
     <!--android:enabled="true"-->
     <!--android:exported="true"-->
-    <!--android:grantUriPermissions="true"></provider>-->
+    <!--android:grantUriPermissions="true">-->
+
+    <!--</provider>-->
     <!--</application>-->
 
 </manifest>
