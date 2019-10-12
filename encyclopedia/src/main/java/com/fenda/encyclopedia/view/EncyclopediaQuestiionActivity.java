@@ -1,5 +1,6 @@
 package com.fenda.encyclopedia.view;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
@@ -63,7 +64,7 @@ public class EncyclopediaQuestiionActivity extends BaseActivity implements View.
         mAutoScrollView.setmSmartScrollChangedListener(this);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @TargetApi(Build.VERSION_CODES.N)
     @Override
     public void initData() {
         //支持Html格式
@@ -86,11 +87,16 @@ public class EncyclopediaQuestiionActivity extends BaseActivity implements View.
         }
     }
 
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    /**
+     * singleTask启动模式回调
+     *
+     * @param intent
+     */
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        content = intent.getStringExtra("content");
+        title = intent.getStringExtra("title");
         initData();
     }
 
