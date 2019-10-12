@@ -22,7 +22,7 @@ buildscript {
 allprojects {
     repositories {
         if (isLocalMaven.toBoolean()){
-            //私有服务器仓库地址
+            //私有服务器仓库地址 把这个修改成自己的仓库地址
             maven {
                 url 'file:H:\\workSpace\\localMaven\\repository'
             }

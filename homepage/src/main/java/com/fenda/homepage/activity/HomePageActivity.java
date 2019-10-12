@@ -545,10 +545,11 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         Stack<Activity> activities = AppManager.getAppManager().getActivityStack();
         for (int i = 0, size = activities.size(); i < size; i++) {
             Activity mActivity = activities.get(i);
-            if (null != mActivity && !(mActivity == this)) {
-                AppManager.getAppManager().finishActivity(mActivity);
+            if (null != mActivity && mActivity != this) {
+                mActivity.finish();
             }
         }
+        AppManager.getAppManager().clearActivityStack();
     }
 
     private synchronized void weather() {

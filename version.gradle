@@ -148,6 +148,7 @@ BUILD_VERSIONS.VERSION_NAME = "1.0.6"
 ext.BUILD_VERSIONS = BUILD_VERSIONS
 
 def maven = [:]
+//这个表示本地maven仓库的目录
 maven.localMaven = "../../localMaven/repository"
 maven.remoteMaven = "http://192.168.100.127:8084/nexus/repository/maven-releases/"
 maven.userName = "admin"
