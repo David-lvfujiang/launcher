@@ -154,15 +154,18 @@ public class EncyclopediaQuestiionActivity extends BaseActivity implements View.
      */
     @Override
     public void onScrolledToTop() {
-        LogUtil.e("布局高度"+mRlContent.getHeight());
-        if (mAutoScrollView.getHeight() < mRlContent.getHeight()/3) {
-            LogUtil.e("高度为三分之一"+mAutoScrollView.getHeight());
+        int mAutoScrollViewHeight = mAutoScrollView.getHeight();
+        int mRlContentHeight = mRlContent.getHeight();
+        LogUtil.e("布局高度" + mRlContentHeight);
+        LogUtil.e("内容高度" + mAutoScrollViewHeight);
+        if (mAutoScrollViewHeight < mRlContentHeight / 3) {
+            LogUtil.e("高度为三分之一");
             handler.sendEmptyMessageDelayed(AUDIO_CONVERSE_CLOSE, 8000);
-        } else if (mAutoScrollView.getHeight() < (mRlContent.getHeight()/3)*2) {
-            LogUtil.e("高度为三分之二"+mAutoScrollView.getHeight());
+        } else if (mAutoScrollViewHeight < (mRlContentHeight / 3) * 2) {
+            LogUtil.e("高度为三分之二");
             handler.sendEmptyMessageDelayed(AUDIO_CONVERSE_CLOSE, 15000);
         } else {
-            LogUtil.e("高度为三分之三"+mAutoScrollView.getHeight());
+            LogUtil.e("高度为三分之三");
             handler.sendEmptyMessageDelayed(AUDIO_CONVERSE_CLOSE, 20000);
         }
     }
