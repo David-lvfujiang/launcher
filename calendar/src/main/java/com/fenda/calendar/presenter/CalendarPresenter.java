@@ -55,6 +55,7 @@ public class CalendarPresenter implements ICalendarProvider {
 
     /**
      * 获取所有意图
+     *
      * @param msg
      * @return
      */
@@ -66,6 +67,7 @@ public class CalendarPresenter implements ICalendarProvider {
 
     /**
      * 处理意图
+     *
      * @param name
      * @param msg
      */
@@ -73,12 +75,7 @@ public class CalendarPresenter implements ICalendarProvider {
         switch (name) {
             case QUERY_LAST_DAY: {
                 LogUtil.e("查询天数");
-                JsonObject jsonObject = new JsonParser().parse(msg).getAsJsonObject();
-                String year = jsonObject.getAsJsonObject("dm").getAsJsonObject("widget").getAsJsonObject("extra").get("year").getAsString();
-                String date = jsonObject.getAsJsonObject("dm").getAsJsonObject("widget").getAsJsonObject("extra").get("text").getAsString();
-                String lastDate = jsonObject.getAsJsonObject("dm").getAsJsonObject("widget").getAsJsonObject("extra").get("daysInterval").getAsString();
-                ARouter.getInstance().build(CALENDAR_QUERY_LASTDAY_ACTIVITY).withString("year", year).withString("date", date).withString("lastDate", lastDate).navigation();
-                LogUtil.e(year + "年，" + date + "剩余" + lastDate + "天");
+                processContentTextMsg(msg);
                 break;
             }
             case QUERY_NEW_GUIDE:
@@ -95,11 +92,11 @@ public class CalendarPresenter implements ICalendarProvider {
                 break;
             case QUERY_WEEK:
                 LogUtil.e("查询星期");
-                getCalendarMsg(msg);
+                processDateMsg(msg);
                 break;
             case QUERY_DATE:
                 LogUtil.e("查询日期");
-                getCalendarMsg(msg);
+                processDateMsg(msg);
                 break;
             case QUERY_TIME: {
                 LogUtil.e("查询时间");
@@ -113,10 +110,12 @@ public class CalendarPresenter implements ICalendarProvider {
                 break;
             }
             case QUERY_CONSTELLATION:
+                LogUtil.e("查询星座");
                 processContentTextMsg(msg);
                 break;
             case QUERY_HISTORY:
-//                processContentTextMsg(msg);
+                LogUtil.e("查询历史事件");
+                processContentTextMsg(msg);
                 break;
             case QUERY_YEAR:
                 LogUtil.e("查询年份");
@@ -152,8 +151,8 @@ public class CalendarPresenter implements ICalendarProvider {
      *
      * @param msg
      */
-    @Override
-    public void getCalendarMsg(String msg) {
+    
+    public void processDateMsg(String msg) {
         try {
             JSONObject jsonObject = JSONObject.parseObject(msg);//json对象转字符串
             JSONObject object = jsonObject.getJSONObject("dm").getJSONObject("widget").getJSONObject("extra");

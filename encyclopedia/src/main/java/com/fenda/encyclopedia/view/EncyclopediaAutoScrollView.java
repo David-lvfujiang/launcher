@@ -147,7 +147,7 @@ public class EncyclopediaAutoScrollView extends ScrollView {
         //获取textView的高度
         int childViewHight = view.getBottom();
         childViewHight -= (getMeasuredHeight() + getScrollY());
-        if (childViewHight == 20) {
+        if (childViewHight == 0) {
             if (this.mSmartScrollChangedListener != null) {
                 //内容超过ScrollView，并且自动滑动到底部回调
                 mSmartScrollChangedListener.onScrolledToBottom();
