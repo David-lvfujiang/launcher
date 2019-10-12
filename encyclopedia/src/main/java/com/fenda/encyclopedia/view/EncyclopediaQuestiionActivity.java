@@ -10,6 +10,7 @@ import android.text.Html;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Autowired;
@@ -30,6 +31,7 @@ public class EncyclopediaQuestiionActivity extends BaseActivity implements View.
     private static Context instance;
     private TextView mTvContent, mTvTitle;
     private ImageView mImgReturnBack;
+    private RelativeLayout mRlContent;
     private EncyclopediaAutoScrollView mAutoScrollView;
     @Autowired
     String content;
@@ -55,6 +57,7 @@ public class EncyclopediaQuestiionActivity extends BaseActivity implements View.
 
     @Override
     public void initView() {
+        mRlContent = findViewById(R.id.content_rlayout);
         mTvTitle = findViewById(R.id.title_text);
         mTvContent = findViewById(R.id.content_text);
         mAutoScrollView = findViewById(R.id.scrollView);
@@ -73,7 +76,7 @@ public class EncyclopediaQuestiionActivity extends BaseActivity implements View.
         //开始滚动时间
         mAutoScrollView.setFistTimeScroll(5000);
         //滚动的速率
-        mAutoScrollView.setScrollRate(100);
+        mAutoScrollView.setScrollRate(70);
         //是否循环滑动
         mAutoScrollView.setScrollLoop(false);
         mImgReturnBack.setOnClickListener(this);
@@ -134,26 +137,34 @@ public class EncyclopediaQuestiionActivity extends BaseActivity implements View.
     }
 
     /**
-     * 自动滑动到底部后回调方法
+     * 内容超出ScrollView自动滑动到底部后回调方法
      */
     @Override
     public void onScrolledToBottom() {
         LogUtil.e("滑到底部");
         LogUtil.e(mAutoScrollView.getAutoToScroll() + "");
-        //自动滚动到底部10秒后关闭activity
+        //自动滚动到底部13秒后关闭activity
         if (mAutoScrollView.getAutoToScroll() == true) {
-            handler.sendEmptyMessageDelayed(AUDIO_CONVERSE_CLOSE, 10000);
+            handler.sendEmptyMessageDelayed(AUDIO_CONVERSE_CLOSE, 13000);
         }
     }
 
     /**
-     * 内容不超过ScrollView时自动回调
+     * 内容不需要滚动时自动回调
      */
     @Override
     public void onScrolledToTop() {
-        //12秒后自动关闭activity
-        LogUtil.e("在顶部");
-        handler.sendEmptyMessageDelayed(AUDIO_CONVERSE_CLOSE, 15000);
+        LogUtil.e("布局高度"+mRlContent.getHeight());
+        if (mAutoScrollView.getHeight() < mRlContent.getHeight()/3) {
+            LogUtil.e("高度为三分之一"+mAutoScrollView.getHeight());
+            handler.sendEmptyMessageDelayed(AUDIO_CONVERSE_CLOSE, 8000);
+        } else if (mAutoScrollView.getHeight() < (mRlContent.getHeight()/3)*2) {
+            LogUtil.e("高度为三分之二"+mAutoScrollView.getHeight());
+            handler.sendEmptyMessageDelayed(AUDIO_CONVERSE_CLOSE, 15000);
+        } else {
+            LogUtil.e("高度为三分之三"+mAutoScrollView.getHeight());
+            handler.sendEmptyMessageDelayed(AUDIO_CONVERSE_CLOSE, 20000);
+        }
     }
 
 }

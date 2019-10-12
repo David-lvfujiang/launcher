@@ -10,7 +10,7 @@ import com.fenda.common.base.BaseActivity;
 
 public class CalendarQueryDateActivity extends BaseActivity {
     TextView mTvTime;
-    String nowTime="";
+    String nowTime = "";
     private final int AUDIO_CONVERSE_CLOSE = 0;
     private Handler handler = new Handler() {
         @Override
@@ -24,6 +24,7 @@ public class CalendarQueryDateActivity extends BaseActivity {
             }
         }
     };
+
     @Override
     public int onBindLayout() {
         return R.layout.activity_calendar_query_date;
@@ -40,12 +41,12 @@ public class CalendarQueryDateActivity extends BaseActivity {
         // 5秒后关闭界面
         handler.sendEmptyMessageDelayed(AUDIO_CONVERSE_CLOSE, 5000);
     }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
         nowTime = intent.getStringExtra("nowTime");
         initData();
-
     }
 }

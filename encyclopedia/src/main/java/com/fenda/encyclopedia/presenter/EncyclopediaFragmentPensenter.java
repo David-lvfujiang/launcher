@@ -87,7 +87,7 @@ public class EncyclopediaFragmentPensenter implements IEncyclopediaProvider {
         //标题
         String title = jsonObject.getJSONObject("dm").get("input").toString();
         //文字内容
-        String content = jsonObject.getJSONObject("dm").getJSONObject("widget").get("subTitle").toString();
+        String content = jsonObject.getJSONObject("dm").get("nlg").toString();
         ARouter.getInstance().build(RouterPath.Encyclopedia.ENCYCLOPEDIA_QUESTIION_ACTIVITY).withString("content", content).withString("title", title).navigation();
     }
 
@@ -102,7 +102,7 @@ public class EncyclopediaFragmentPensenter implements IEncyclopediaProvider {
         //标题
         String title = jsonObject.getJSONObject("dm").get("input").toString();
         //文字内容
-        String content = jsonObject.getJSONObject("dm").getJSONObject("widget").get("subTitle").toString();
+        String content = jsonObject.getJSONObject("dm").get("nlg").toString();
         ARouter.getInstance().build(RouterPath.Encyclopedia.ENCYCLOPEDIA_QUESTIION_ACTIVITY).withString("content", content).withString("title", title).navigation();
     }
 
