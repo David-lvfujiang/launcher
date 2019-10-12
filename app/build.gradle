@@ -125,9 +125,9 @@ dependencies {
     implementation 'com.fenda:remind:1.0.1'
     implementation 'com.fenda:weather:1.0.4'
     implementation 'com.fenda:leavemessage:1.0.3'
-    implementation 'com.fenda:homepage_devRelease:1.0.42'
-    implementation 'com.fenda:gallery_devRelease:1.0.1'
-    implementation 'com.fenda:settings_devRelease:1.0.6'
+    implementation 'com.fenda:homepage:1.0.42'
+    implementation 'com.fenda:gallery:1.0.1'
+    implementation 'com.fenda:settings:1.0.6'
 
     }else {
         //正式打包发布
