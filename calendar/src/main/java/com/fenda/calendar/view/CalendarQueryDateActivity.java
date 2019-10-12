@@ -36,8 +36,6 @@ public class CalendarQueryDateActivity extends BaseActivity {
 
     @Override
     public void initData() {
-        Intent intent = getIntent();
-        nowTime = intent.getStringExtra("nowTime");
         mTvTime.setText(nowTime);
         // 5秒后关闭界面
         handler.sendEmptyMessageDelayed(AUDIO_CONVERSE_CLOSE, 5000);
@@ -46,6 +44,7 @@ public class CalendarQueryDateActivity extends BaseActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
+        nowTime = intent.getStringExtra("nowTime");
         initData();
 
     }

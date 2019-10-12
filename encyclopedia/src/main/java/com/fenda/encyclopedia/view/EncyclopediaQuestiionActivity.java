@@ -1,16 +1,17 @@
 package com.fenda.encyclopedia.view;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.RequiresApi;
 import android.text.Html;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.common.base.BaseActivity;
@@ -26,6 +27,7 @@ import com.fenda.encyclopedia.R;
 @Route(path = RouterPath.Encyclopedia.ENCYCLOPEDIA_QUESTIION_ACTIVITY)
 public class EncyclopediaQuestiionActivity extends BaseActivity implements View.OnClickListener, View.OnTouchListener, EncyclopediaAutoScrollView.ISmartScrollChangedListener {
     private final int AUDIO_CONVERSE_CLOSE = 0;
+    private static Context instance;
     private TextView mTvContent, mTvTitle;
     private ImageView mImgReturnBack;
     private EncyclopediaAutoScrollView mAutoScrollView;
@@ -57,11 +59,7 @@ public class EncyclopediaQuestiionActivity extends BaseActivity implements View.
         mTvContent = findViewById(R.id.content_text);
         mAutoScrollView = findViewById(R.id.scrollView);
         mImgReturnBack = findViewById(R.id.title_return_img);
-        mImgReturnBack.setOnClickListener(this);
-        //设置滑动监听
-        mAutoScrollView.setOnTouchListener(this);
-        //设置滚动条在底部、顶部监听
-        mAutoScrollView.setmSmartScrollChangedListener(this);
+
     }
 
     @TargetApi(Build.VERSION_CODES.N)
@@ -78,6 +76,11 @@ public class EncyclopediaQuestiionActivity extends BaseActivity implements View.
         mAutoScrollView.setScrollRate(100);
         //是否循环滑动
         mAutoScrollView.setScrollLoop(false);
+        mImgReturnBack.setOnClickListener(this);
+        //设置滑动监听
+        mAutoScrollView.setOnTouchListener(this);
+        //设置滚动条在底部、顶部监听
+        mAutoScrollView.setmSmartScrollChangedListener(this);
     }
 
     @Override
@@ -97,6 +100,10 @@ public class EncyclopediaQuestiionActivity extends BaseActivity implements View.
         super.onNewIntent(intent);
         content = intent.getStringExtra("content");
         title = intent.getStringExtra("title");
+        //清除handler
+        handler.removeMessages(AUDIO_CONVERSE_CLOSE);
+        //重绘滚动条
+        mAutoScrollView.invalidate();
         initData();
     }
 
@@ -145,6 +152,7 @@ public class EncyclopediaQuestiionActivity extends BaseActivity implements View.
     @Override
     public void onScrolledToTop() {
         //12秒后自动关闭activity
+        LogUtil.e("在顶部");
         handler.sendEmptyMessageDelayed(AUDIO_CONVERSE_CLOSE, 15000);
     }
 
