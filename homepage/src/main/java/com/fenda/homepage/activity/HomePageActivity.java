@@ -451,8 +451,12 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         //家庭解散通知
         if (message.getCode() == TCPConfig.MessageType.FAMILY_DISSOLVE) {
             LogUtil.d("家庭解散通知1 " + message);
+            LogUtil.d("家庭解散通知1 " +  message.getData().getMsg());
             ContentProviderManager.getInstance(mContext, Constant.Common.URI).clear();
             AppUtils.saveBindedDevice(getApplicationContext(), false);
+            IAppLeaveMessageProvider leaveMessageProvider = (IAppLeaveMessageProvider) ARouter.getInstance().build(RouterPath.Leavemessage.LEAVEMESSAGE_SERVICE).navigation();
+            leaveMessageProvider.removeRongIMAllMessage();
+
 //            ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
 //            String activityName = am.getRunningTasks(1).get(0).topActivity.getClassName();
 //
@@ -465,6 +469,21 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         //普通成员退出家庭通知
         else if (message.getCode() == TCPConfig.MessageType.USER_EXIT_FAMILY) {
             LogUtil.d("bind onReceiveEvent = " + message);
+            LogUtil.d("普通成员退出家庭通知" +  message.getData().getHead().getUserId());
+            String messageContent = message.getData().getMsg();
+            String userName = messageContent.substring(messageContent.indexOf("【") + 1, messageContent.indexOf("】"));
+            LogUtil.e(userName);
+            ContentProviderManager manager = ContentProviderManager.getInstance(BaseApplication.getBaseInstance(), Uri.parse(ContentProviderManager.BASE_URI + "/user"));
+            List<UserInfoBean> beanList = manager.queryUser("name = ? ", new String[]{userName});
+            if (beanList != null && beanList.size() > 0) {
+                String userMobile = beanList.get(0).getMobile();
+                LogUtil.i("phone = " + userMobile);
+                IAppLeaveMessageProvider leaveMessageProvider = (IAppLeaveMessageProvider) ARouter.getInstance().build(RouterPath.Leavemessage.LEAVEMESSAGE_SERVICE).navigation();
+                leaveMessageProvider.removeRongIMMessage(userMobile);
+            } else {
+                LogUtil.i("找不到用户");
+            }
+
             mMsgType = TCPConfig.MessageType.USER_EXIT_FAMILY;
             ContentProviderManager.getInstance(mContext, Constant.Common.URI).clear();
             mPresenter.getFamilyContacts();

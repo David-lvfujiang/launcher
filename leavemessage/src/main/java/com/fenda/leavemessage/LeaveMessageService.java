@@ -8,15 +8,17 @@ import android.util.Log;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.BaseApplication;
+import com.fenda.common.bean.LeaveMessageBean;
 import com.fenda.common.provider.IAppLeaveMessageProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.LogUtil;
+import com.fenda.protocol.tcp.bus.EventBusUtils;
 
 import io.rong.imkit.RongIM;
+import io.rong.imkit.manager.IUnReadMessageObserver;
 import io.rong.imlib.RongIMClient;
+import io.rong.imlib.model.Conversation;
 import io.rong.imlib.model.Message;
-import io.rong.imlib.model.MessageContent;
-import io.rong.imlib.model.UserInfo;
 
 import static android.content.Context.ACTIVITY_SERVICE;
 
@@ -28,6 +30,14 @@ import static android.content.Context.ACTIVITY_SERVICE;
 @Route(path = RouterPath.Leavemessage.LEAVEMESSAGE_SERVICE)
 public class LeaveMessageService implements IAppLeaveMessageProvider, RongIMClient.OnReceiveMessageListener {
     String userId;
+    private IUnReadMessageObserver observer = new IUnReadMessageObserver() {
+        @Override
+        public void onCountChanged(int i) {
+            LogUtil.e("数量变化s：" + i);
+            LeaveMessageBean leaveMessageBean = new LeaveMessageBean(i);
+            EventBusUtils.post(leaveMessageBean);
+        }
+    };
 
     @Override
     public void initRongIMlistener() {
@@ -64,6 +74,7 @@ public class LeaveMessageService implements IAppLeaveMessageProvider, RongIMClie
 
     @Override
     public void init(Context context) {
+
     }
 
     /**
@@ -110,9 +121,56 @@ public class LeaveMessageService implements IAppLeaveMessageProvider, RongIMClie
         }
     }
 
+    /**
+     * 打开聊天列表的方法
+     * 在首页点击留言图标时调用
+     */
     @Override
     public void openConversationListActivity() {
         RongIM.getInstance().startConversationList(BaseApplication.getBaseInstance());
     }
 
+    /**
+     * 删除聊天item的方法
+     * 设备解绑的时候调用，删除聊天列表的item
+     *
+     * @param userPhoneNumber 用户手机号码
+     */
+    @Override
+    public void removeRongIMMessage(String userPhoneNumber) {
+        RongIM.getInstance().removeConversation(Conversation.ConversationType.PRIVATE, userPhoneNumber, new RongIMClient.ResultCallback<Boolean>() {
+            @Override
+            public void onSuccess(Boolean aBoolean) {
+                LogUtil.e("删除成功");
+                RongIM.getInstance().addUnReadMessageCountChangedObserver(observer, Conversation.ConversationType.PRIVATE);
+                RongIM.getInstance().removeUnReadMessageCountChangedObserver(observer);
+            }
+
+            @Override
+            public void onError(RongIMClient.ErrorCode errorCode) {
+                LogUtil.e("删除失败");
+            }
+        });
+    }
+
+    /**
+     * 删除所有聊天item的方法
+     */
+    @Override
+    public void removeRongIMAllMessage() {
+        RongIM.getInstance().clearConversations(new RongIMClient.ResultCallback() {
+            @Override
+            public void onSuccess(Object o) {
+                LogUtil.e("删除成功");
+                RongIM.getInstance().addUnReadMessageCountChangedObserver(observer, Conversation.ConversationType.PRIVATE);
+                RongIM.getInstance().removeUnReadMessageCountChangedObserver(observer);
+
+            }
+
+            @Override
+            public void onError(RongIMClient.ErrorCode errorCode) {
+
+            }
+        }, Conversation.ConversationType.PRIVATE);
+    }
 }

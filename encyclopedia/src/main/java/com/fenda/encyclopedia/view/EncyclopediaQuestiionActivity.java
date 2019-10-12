@@ -82,7 +82,7 @@ public class EncyclopediaQuestiionActivity extends BaseActivity implements View.
         mImgReturnBack.setOnClickListener(this);
         //设置滑动监听
         mAutoScrollView.setOnTouchListener(this);
-        //设置滚动条在底部、顶部监听
+        //设置滚动条滚动到底部、不需要滚动监听，不同情况页面自动关闭时间不同
         mAutoScrollView.setmSmartScrollChangedListener(this);
     }
 
@@ -137,7 +137,8 @@ public class EncyclopediaQuestiionActivity extends BaseActivity implements View.
     }
 
     /**
-     * 内容超出ScrollView自动滑动到底部后回调方法
+     * 滚动条滚动到底部回调方法
+     * 内容超出ScrollView并且自动滑动到底部后回调此方法
      */
     @Override
     public void onScrolledToBottom() {
@@ -150,7 +151,7 @@ public class EncyclopediaQuestiionActivity extends BaseActivity implements View.
     }
 
     /**
-     * 内容不需要滚动时自动回调
+     * 内容不需要滚动时自动回调此方法
      */
     @Override
     public void onScrolledToTop() {

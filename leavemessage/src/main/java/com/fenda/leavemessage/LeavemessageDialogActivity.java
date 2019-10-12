@@ -59,12 +59,12 @@ public class LeavemessageDialogActivity extends BaseActivity implements View.OnC
     public void initData() {
         mTvMessageContent.setText(userName + "给您留言了");
         RongIM.getInstance().addUnReadMessageCountChangedObserver(observer, Conversation.ConversationType.PRIVATE);
+        RongIM.getInstance().removeUnReadMessageCountChangedObserver(observer);
     }
 
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.leave_message_btn_look) {
-            RongIM.getInstance().startConversation(this, Conversation.ConversationType.PRIVATE, userId, userName);
             finish();
         }
         if (view.getId() == R.id.leave_message_btn_cancel) {
@@ -80,11 +80,5 @@ public class LeavemessageDialogActivity extends BaseActivity implements View.OnC
         initData();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //移除监听
-        RongIM.getInstance().removeUnReadMessageCountChangedObserver(observer);
 
-    }
 }
