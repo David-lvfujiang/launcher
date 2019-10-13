@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.chinamobile.smartgateway.andsdk.device.serviceimpl.AndSdkImpl;
 import com.fenda.common.base.BaseMvpActivity;
+import com.fenda.common.bean.AndlinkDeviceInfo;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.QRcodeUtil;
 import com.fenda.protocol.tcp.CThreadPoolExecutor;
@@ -19,11 +20,13 @@ import com.fenda.protocol.tcp.bean.EventMessage;
 import com.fenda.protocol.util.DeviceIdUtil;
 import com.fenda.settings.R;
 import com.fenda.settings.constant.SettingsContant;
+import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import static com.fenda.common.util.QRcodeUtil.getFileRoot;
 
@@ -37,11 +40,14 @@ public class SettingsAndLinkQRCodeActivity extends BaseMvpActivity{
 
     private ImageView ivQrcode;
     private Button tvUnbind;
+    private Button tvInit;
 
     private TextView tvBack;
     private TextView tvDisEnv;
 
     private String baseEvn = SettingsContant.TEST_BASE_URL;
+    private static String devMac = "D0C5D364BEE5";
+
 
     @Override
     protected void initPresenter() {
@@ -58,7 +64,7 @@ public class SettingsAndLinkQRCodeActivity extends BaseMvpActivity{
         ivQrcode = findViewById(R.id.andlink_enlarge_QR);
         tvBack = findViewById(R.id.andlink_back);
         tvUnbind = findViewById(R.id.andlink_unbind);
-
+        tvInit = findViewById(R.id.andlink_init);
 
     }
 
@@ -116,6 +122,42 @@ public class SettingsAndLinkQRCodeActivity extends BaseMvpActivity{
             public void onClick(View view) {
                 LogUtil.d(TAG, "unbind btn clicked!");
                 AndSdkImpl.getInstance().reset(1);
+            }
+        });
+
+        tvInit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AndlinkDeviceInfo.ChipModel tChipModel = new AndlinkDeviceInfo.ChipModel();
+                tChipModel.type = "WiFi";
+                tChipModel.factory = "rockchip";
+                tChipModel.model = "rk3326";
+
+                ArrayList tChips = new ArrayList();
+                tChips.add(tChipModel);
+
+                AndlinkDeviceInfo.DeviceExtInfo deviceExtInfo = new AndlinkDeviceInfo.DeviceExtInfo();
+                deviceExtInfo.cmei = "864226033993999";
+                deviceExtInfo.authMode = "0";
+                deviceExtInfo.manuDate = "2019-07";
+                deviceExtInfo.OS = "Android";
+                deviceExtInfo.netCheckMode = "";
+                deviceExtInfo.chips = tChips;
+
+                AndlinkDeviceInfo tDevcieInfo = new AndlinkDeviceInfo();
+                tDevcieInfo.deviceMac = devMac;
+                tDevcieInfo.deviceType = "500929";
+                tDevcieInfo.productToken = "JUyy3SiJ3yx6hImp";
+                tDevcieInfo.andlinkToken = "RMm2sEhc9v23H8cc";
+                tDevcieInfo.firmwareVersion = "f1.0";
+                tDevcieInfo.autoAP = "0";
+                tDevcieInfo.softAPMode = "";
+                tDevcieInfo.softwareVersion = "1.0.0";
+                tDevcieInfo.deviceExtInfo = deviceExtInfo;
+
+                Gson tGson = new Gson();
+
+                AndSdkImpl.getInstance().init(getApplication(), tGson.toJson(tDevcieInfo));
             }
         });
     }

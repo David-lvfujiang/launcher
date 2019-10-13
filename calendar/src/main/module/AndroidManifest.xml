@@ -6,6 +6,8 @@
         <activity android:name=".view.CalendarMainActivity" android:launchMode="singleTask"></activity>
         <activity android:name=".view.HolidayMainActivity" android:launchMode="singleTask"></activity>
         <activity android:name=".view.PerpetualCalendarActivity" android:launchMode="singleTask"></activity>
+        <activity android:name=".view.CalendarQueryLastDayActivity" android:launchMode="singleTask" />
+        <activity android:name=".view.CalendarQueryDateActivity" android:launchMode="singleTask"/>
     </application>
 
 </manifest>

@@ -11,6 +11,7 @@
         android:id="@+id/title_layout"
         android:layout_width="match_parent"
         android:layout_height="80dp"
+        android:layout_marginTop="@dimen/demension_dp20"
         tools:ignore="MissingConstraints">
 
         <ImageView
@@ -35,27 +36,25 @@
     <RelativeLayout
         android:id="@+id/content_rlayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="420dp"
         android:layout_marginLeft="50dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="100dp"
         android:layout_marginRight="50dp">
 
         <com.fenda.encyclopedia.view.EncyclopediaAutoScrollView
+            android:layout_centerInParent="true"
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:paddingTop="@dimen/demension_dp20"
-            android:layout_height="420dp">
-
+            android:layout_marginTop="@dimen/demension_dp20"
+            android:layout_height="wrap_content">
             <TextView
                 android:id="@+id/content_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/demension_dp20"
-                android:gravity="left|right"
+                android:gravity="center"
                 android:letterSpacing="0.05"
                 android:lineSpacingExtra="2dp"
-                android:paddingBottom="@dimen/demension_dp50"
-                android:text="Hello World!"
+                android:text="玫瑰（学名：RosarugosaThunb.）：原产地中国原产地中国。属蔷薇目原产地中国。属蔷薇目原产地中国原产地中国原产地中国。属蔷薇目原产地中国。属蔷薇目原产地中国。属蔷薇目原产地中国。属蔷薇目，蔷薇科落叶灌木原产地中国。属蔷薇目，蔷薇科落叶灌木，枝杆多针刺，奇数羽状复叶，小叶5-9片，椭圆形，有边刺"
                 android:textColor="@color/white"
                 android:textSize="50sp" />
 
@@ -73,7 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="50dp"
             android:text="@string/encyclopedia_other_problem"
             android:textColor="@color/white"
             android:textSize="25sp" />

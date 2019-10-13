@@ -1,5 +1,7 @@
 package com.fenda.common.router;
 
+import android.app.Activity;
+
 /**
  * @author mirrer.wangzhonglin
  * @Date 2019/8/27 16:01
@@ -47,6 +49,8 @@ public interface RouterPath {
         String CALENDAR_PROVIDER = "/calendar/CalendarPresenTer";
         String HOLIDAY_ACTIVITY = "/calendar/HolidayActivity";
         String Perpetual_CALENDAR_ACTIVITY = "/calendar/PerpetualCalendarActivity";
+        String CALENDAR_QUERY_LASTDAY_ACTIVITY = "/calendar/CalendarQueryLastDayActivity";
+
     }
     public interface Encyclopedia {
         String ENCYCLOPEDIA_PROVIDER = "/encyclopedia/EncyclopediaFragmentPensenter";

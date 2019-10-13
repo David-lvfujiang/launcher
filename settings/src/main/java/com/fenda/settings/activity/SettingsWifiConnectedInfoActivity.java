@@ -39,14 +39,10 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
     private SettingsWifiUtil  mSettingsWifiUtil;
     private WifiManager mWifiManager;
     private String mConnectedSsid;
-    private ArrayList<HashMap<String,String>> mListitem;
-    private SimpleAdapter mSimpleAdapter;
     private int mWifiSafeFlag;
     private String mWifiSafe;
     private String mWifiIp;
-    private int mWifiSpeed;
     private String mWifiSpeed1;
-    private String mWifiSpeedUnit;
 
     @Override
     protected void initPresenter() {
@@ -60,6 +56,9 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
 
     @Override
     public void initView() {
+        String mWifiSpeedUnit;
+        int mWifiSpeed;
+
         lvConnectedWifiConfig = findViewById(R.id.wifi_config_listview);
         tvWifiName = findViewById(R.id.wifi_config_name_tv);
         ivBack = findViewById(R.id.wifi_config_back_iv);
@@ -82,8 +81,8 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
 
         for (WifiConfiguration wifiConfiguration : wifiConfigList) {
             //配置过的SSID
-            String configSSid = wifiConfiguration.SSID;
-            configSSid = configSSid.replace("\"", "");
+            String configSsid = wifiConfiguration.SSID;
+            configSsid = configSsid.replace("\"", "");
 
             //当前连接SSID
             String currentSSid =info.getSSID();
@@ -91,7 +90,7 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
             LogUtil.d(TAG, "currentSSid = " + currentSSid);
 
             //比较networkId，防止配置网络保存相同的SSID
-            if (currentSSid.equals(configSSid)&&info.getNetworkId()==wifiConfiguration.networkId) {
+            if (currentSSid.equals(configSsid)&&info.getNetworkId()==wifiConfiguration.networkId) {
                 LogUtil.d(TAG, "当前网络安全性：" + getSecurity(wifiConfiguration));
                 mWifiSafeFlag = getSecurity(wifiConfiguration);
             }
@@ -100,6 +99,9 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
 
     @Override
     public void initData() {
+        SimpleAdapter mSimpleAdapter;
+        ArrayList<HashMap<String,String>> mListitem;
+
         Intent intent = getIntent();
         mConnectedSsid = intent.getStringExtra("CONNECTED_MESSAGE");
         tvWifiName.setText(mConnectedSsid);
@@ -111,12 +113,8 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
 
         if(mWifiSafeFlag == 0){
             mWifiSafe = "无";
-        } else if(mWifiSafeFlag == 1){
-
         } else if(mWifiSafeFlag == 2){
             mWifiSafe = "WPA/WPA2 PSK";
-        } else if(mWifiSafeFlag == 3){
-
         }
 
         list1 = new String[]{"" , mWifiIp, mWifiSafe, mWifiSpeed1};
@@ -153,7 +151,7 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
                 LogUtil.d(TAG, "取消网络保存connectedSSID = " + mConnectedSsid);
                 List<WifiConfiguration> wifiConfigurationList = mWifiManager.getConfiguredNetworks();
                 LogUtil.d(TAG, "wifiConfigurationList = " + wifiConfigurationList);
-                int netId1 = 0;
+                int netId1;
 
                 netId1 = mSettingsWifiUtil.getNetworkId(mConnectedSsid);
                 LogUtil.d(TAG, "取消网络保存id = " + netId1);

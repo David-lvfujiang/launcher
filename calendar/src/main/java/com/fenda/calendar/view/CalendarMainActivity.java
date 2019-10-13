@@ -29,10 +29,10 @@ import java.lang.reflect.Field;
 public class CalendarMainActivity extends BaseActivity {
     @Autowired
     Calendar calendar;
-    private final int AUDIO_CONVERSE_CLOSE = 0;
     private TextView mTvWeekDay, mTvYear, mTvMonth, mTvNlDay;
     private ImageView mImgMonth, mImgDay;
     private int[] datas = {R.mipmap.calendar_zero_icon, R.mipmap.calendar_one_icon, R.mipmap.calendar_two_icon, R.mipmap.calendar_three_icon, R.mipmap.calendar_four_icon, R.mipmap.calendar_five_icon, R.mipmap.calendar_six_icon, R.mipmap.calendar_seven_icon, R.mipmap.calendar_eight_icon, R.mipmap.calendar_nine_icon};
+    private final int AUDIO_CONVERSE_CLOSE = 0;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -65,7 +65,6 @@ public class CalendarMainActivity extends BaseActivity {
             } catch (Exception e) {
             }
         }
-        ARouter.getInstance().inject(this);
         mTvWeekDay = findViewById(R.id.week_tv);
         mTvYear = findViewById(R.id.year_tv);
         mTvMonth = findViewById(R.id.month_tv);

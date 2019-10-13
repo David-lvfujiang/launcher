@@ -19,6 +19,14 @@
         <item name="android:windowFullscreen">false</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowExitTransition">@transition/explode</item>
+        <item name="android:windowEnterTransition">@transition/slide</item>
+        <item name="android:windowReenterTransition">@transition/explode</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/fade</item>
+        <item name="android:windowSharedElementExitTransition">@transition/fade</item>
+        <item name="android:windowSharedElementReenterTransition">@transition/fade</item>
+        <item name="android:windowSharedElementReturnTransition">@transition/fade</item>
+
     </style>
     <style name="LauncherTheme1" parent="NoTitleFullscreen">
         <item name="android:windowTranslucentNavigation">true</item>

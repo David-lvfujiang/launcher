@@ -1,0 +1,90 @@
+apply plugin: 'maven'
+afterEvaluate {
+    def findBundleTask = {String name->
+        def task = tasks.findByName("bundle${name}Aar")
+        if(null == task){
+            task = tasks.findByName("bundle${name}")
+        }
+        return task
+    }
+    android.libraryVariants.each{variant->
+        String variantName = variant.name.capitalize()
+        def upload = tasks.create("uploadArchives${variant.name.capitalize()}", Upload){
+
+            configuration = configurations.archives
+            repositories {
+                mavenDeployer {
+//                    repository(url: uri(rootProject.buildDir.absolutePath + "/Repo/"))
+                    if (isLocalMaven.toBoolean()){
+                        //指定本地maven仓库
+                        repository(url: uri(maven.localMaven))
+                    }else {
+                        //指定远程maven仓库url
+                        repository(url: maven.remoteMaven) {
+                            //nexus登录默认用户名和密码
+                            authentication(userName: maven.userName, password: maven.password)
+                        }
+                    }
+                    addFilter('news') {artifact, file ->
+                        println file.name
+                        true
+                    }
+                    pom('news').project {
+                        groupId  maven.fenda_groupId
+                        artifactId fenda.news_artifactId
+                        if (isLocalMaven.toBoolean()){
+                            version "1.0.2"
+                        }else {
+                            version fenda.news_version
+                        }
+                        name fenda.news_name
+                        packaging maven.packaging
+                    }
+                    pom('news').withXml{
+                        def root = asNode()
+                        def depsNode = root["dependencies"][0] ?: root.appendNode("dependencies")
+                        def addDep = {
+                            if (it.group == null) return
+                            def dependencyNode = depsNode.appendNode('dependency')
+                            dependencyNode.appendNode('groupId', it.group)
+                            dependencyNode.appendNode('artifactId', it.name)
+                            dependencyNode.appendNode('version', it.version)
+                            if (it.hasProperty('optional') && it.optional) {
+                                dependencyNode.appendNode('optional', 'true')
+                            }
+
+                            if(it instanceof ModuleDependency){
+                                it.artifacts.each {artifact ->
+                                    if(!artifact.classifier.isEmpty()){
+                                        dependencyNode.appendNode('classifier', artifact.classifier)
+                                    }
+                                    if(!artifact.type.isEmpty()){
+                                        dependencyNode.appendNode('type', artifact.type)
+                                    }
+                                }
+                            }
+                        }
+                        // Add deps that everyone has
+                        configurations.api.allDependencies.each addDep
+                        configurations.implementation.allDependencies.each addDep
+                        // Add flavor specific deps
+                        if (!variant.flavorName.isEmpty()) {
+                            configurations["${variant.name}Implementation"].allDependencies.each addDep
+                            def flavorName = variant.flavorName
+                            configurations["${flavorName}Implementation"].allDependencies.each addDep
+                            configurations["${variant.name}Api"].allDependencies.each addDep
+                            configurations["${flavorName}Api"].allDependencies.each addDep
+                        }
+                    }
+                }
+            }
+        }
+        upload.group = 'upload'
+        upload.dependsOn(findBundleTask(variantName))
+        upload.doFirst {
+            artifacts{
+                archives findBundleTask(variantName)
+            }
+        }
+    }
+}

@@ -67,18 +67,14 @@ public class SettingsWifiActivity extends BaseMvpActivity{
     private List<SettingsWifiBean> mScanWifiListBean;
     private MyWifiAdapter mMyWifiAdapter;
     private SettingsWifiBean mSettingsWifiBean;
-    private WifiInfo mWifiInfo;
 
     private final static int  OPEN_WIFI = 1;
     private final static int  CLOSE_WIFI = 0;
 
     private String mConnectedSsid;
     protected String mListItemClickedSsid;
-    private int mBroadcastStatus;
     public int level;
     private String mPswSureSsid;
-    private int status = 0;
-    private Network mNetwork;
 
 
     @Override
@@ -247,28 +243,6 @@ public class SettingsWifiActivity extends BaseMvpActivity{
     public void showErrorTip(String msg) {
 
     }
-
-    private void changeWifiItemStatus(String name,String status) {
-        int index = 0;
-        for (int i = 0; i < mMyWifiAdapter.getListDevices().size(); i++) {
-            String itemName = mMyWifiAdapter.getListDevices().get(i).getName();
-            LogUtil.d(TAG, "mMyWifiAdapter.getListDevices() getName = " + mMyWifiAdapter.getListDevices().get(i).getName());
-
-            if (name != null) {
-                if (name.equals(itemName)) {
-                    mMyWifiAdapter.getListDevices().get(i).setItemStatus(name, status);
-                    index = i;
-                    break;
-                }
-            }
-        }
-
-        SettingsWifiBean bd = mMyWifiAdapter.getListDevices().get(index);
-        mMyWifiAdapter.getListDevices().remove(index);
-        mMyWifiAdapter.getListDevices().add(0, bd);
-        mMyWifiAdapter.notifyDataSetChanged();
-    }
-
     private class MyWifiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         LayoutInflater mLayoutInflater;
         List<SettingsWifiBean> mWifiBeanList;
@@ -282,10 +256,6 @@ public class SettingsWifiActivity extends BaseMvpActivity{
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = mLayoutInflater.inflate(R.layout.settings_wifi_listitem_layout, parent,false);
             return new ViewHolder(view);
-        }
-
-        public List<SettingsWifiBean> getListDevices() {
-            return mWifiBeanList;
         }
 
         @RequiresApi(api = Build.VERSION_CODES.M)
@@ -364,8 +334,7 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                     config.SSID = "\"" + mListItemClickedSsid + "\"";
                     config.hiddenSSID=true;
 
-                    List<WifiConfiguration> wifiConfigurationList = mSettingsWifiUtil.getConfiguration();
-//                    LogUtil.d(TAG, "wifiConfigurationList = " + wifiConfigurationList);
+//                    List<WifiConfiguration> wifiConfigurationList = mSettingsWifiUtil.getConfiguration();
                     LogUtil.d(TAG, "connected wifi ssid = " + mConnectedSsid);
                     LogUtil.d(TAG, "clicked wifi ssid = " + mListItemClickedSsid);
 
@@ -409,7 +378,7 @@ public class SettingsWifiActivity extends BaseMvpActivity{
 //                                        LogUtil.d(TAG, "checkPackInfo fail");
 //
 //                                        Toast.makeText(getApplicationContext(), "没有安装" + "",Toast.LENGTH_LONG).show();
-//                                        // TODO  下载操作
+//
 //                                    }
 
 //                                    Toast.makeText(SettingsWifiActivity.this, "连接成功！",Toast.LENGTH_SHORT).show();
@@ -450,6 +419,9 @@ public class SettingsWifiActivity extends BaseMvpActivity{
     private BroadcastReceiver mWifiReceiver = new BroadcastReceiver () {
         @Override
         public void onReceive(Context context, Intent intent) {
+            WifiInfo mWifiInfo;
+            int mBroadcastStatus;
+
             if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {
                 int state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, 0);
                 switch (state) {
@@ -481,11 +453,15 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                     default:
                         break;
                 }
-            } else if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
+            } else if(ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
+                LogUtil.d(TAG, "Android.net.conn.CONNECTIVITY_CHANGE");
+                Intent mIntent = new Intent();
+                mIntent.setAction("Android.net.conn.CONNECTIVITY_CHANGE");
+                mIntent.setPackage(getPackageName());
+                sendBroadcast(mIntent);
+            }
+            else if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
                 NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-                ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo mNetworkInfo = manager.getActiveNetworkInfo();
-
                 if (NetworkInfo.State.DISCONNECTED == info.getState()) {
                     Log.i(TAG, "wifi没连接上");
                     mSettingsWifiBean.setStatus(4);
@@ -508,12 +484,12 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                     mMyWifiAdapter.notifyDataSetChanged();
                 }
             } else if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(intent.getAction())) {
+                LogUtil.d(TAG, "WifiManager.SCAN_RESULTS_AVAILABLE_ACTION");
             } else if (WifiManager.SUPPLICANT_STATE_CHANGED_ACTION.equals(intent.getAction())) {
                 int linkWifiResult = intent.getIntExtra(WifiManager.EXTRA_SUPPLICANT_ERROR, 123);
                 if (linkWifiResult == WifiManager.ERROR_AUTHENTICATING) {
                     Log.e(TAG, "mWifiReceiver : wifi密码错误");
                     mSettingsWifiBean.setStatus(2);
-                    status = 2;
                     if(mPswSureSsid != null){
                         String wifiSsid1 = mWifiManager.getConnectionInfo().getSSID();
                         String wifiSsid2 = wifiSsid1.substring(1, wifiSsid1.length() - 1);
@@ -595,7 +571,7 @@ public class SettingsWifiActivity extends BaseMvpActivity{
     }
 
 
-    /** wifi 认证 检测 **/
+    //** wifi 认证 检测 **/
     private void portalWifi() {
         SettingsCheckWifiLoginTask.checkWifi(new SettingsCheckWifiLoginTask.ICheckWifiCallBack() {
             @Override
@@ -603,10 +579,8 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                 //不需要wifi认证
                 if(!isLogin){
                     LogUtil.d(TAG, "不需要wifi门户验证");
-                    //TODO...
                 }else {
                     LogUtil.d(TAG, "需要wifi门户验证");
-                    //TODO...
                     ToastUtils.show("请先进行网络认证！");
                     String apksUrl = "http://i.eastmoney.com/2188113638420790";
                     Intent aboutIntent = new Intent(SettingsWifiActivity.this, SettingsLoadWebviewActivity.class);

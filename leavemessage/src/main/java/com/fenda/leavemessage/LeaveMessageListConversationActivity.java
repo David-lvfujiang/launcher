@@ -2,8 +2,6 @@ package com.fenda.leavemessage;
 
 import android.net.Uri;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -12,6 +10,11 @@ import com.fenda.common.base.BaseActivity;
 import io.rong.imkit.fragment.ConversationListFragment;
 import io.rong.imlib.model.Conversation;
 
+/**
+ * @Author: david.lvfujiang
+ * @Date: 2019/9/18
+ * @Describe: 聊天会话列表
+ */
 public class LeaveMessageListConversationActivity extends BaseActivity implements View.OnClickListener {
     private ImageView mImgReturnBack;
 
@@ -47,4 +50,5 @@ public class LeaveMessageListConversationActivity extends BaseActivity implement
             finish();
         }
     }
+
 }

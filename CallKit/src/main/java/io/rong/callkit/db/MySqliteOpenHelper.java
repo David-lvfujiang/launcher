@@ -25,7 +25,7 @@ public class MySqliteOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String userSql = "create table " + DB_TABE + " ( _id integer primary key autoincrement,phone varchar(30),icon varchar(100),name varchar(30),time integer,callType integer)";
+        String userSql = "create table " + DB_TABE + " ( _id integer primary key autoincrement,userId varchar(30),phone varchar(30),icon varchar(100),name varchar(30),time integer,callType integer)";
         String[] sqls = {userSql};
         for (String sql : sqls) {
             db.execSQL(sql);

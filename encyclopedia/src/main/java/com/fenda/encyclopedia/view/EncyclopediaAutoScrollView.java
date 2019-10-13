@@ -1,10 +1,14 @@
 package com.fenda.encyclopedia.view;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ScrollView;
+
+import com.fenda.common.util.LogUtil;
 
 /**
  * @author LiFuJiang
@@ -13,11 +17,11 @@ import android.widget.ScrollView;
  */
 public class EncyclopediaAutoScrollView extends ScrollView {
 
-    private boolean scrolledToTop = true;
-    private boolean scrolledToBottom = false;
     private int paddingTop = 0;
     private final int MSG_SCROLL = 10;
     private final int MSG_SCROLL_Loop = 11;
+    private ISmartScrollChangedListener mSmartScrollChangedListener;
+
     //是否能滑动
     private boolean scrollAble = true;
     //是否自动滚动
@@ -71,70 +75,21 @@ public class EncyclopediaAutoScrollView extends ScrollView {
 
     }
 
-
-    private ISmartScrollChangedListener mSmartScrollChangedListener;
+    public void setmSmartScrollChangedListener(ISmartScrollChangedListener mSmartScrollChangedListener) {
+        this.mSmartScrollChangedListener = mSmartScrollChangedListener;
+    }
 
     /**
      * 定义监听接口
      */
     public interface ISmartScrollChangedListener {
-        //滑动到底部
+        //在底部
         void onScrolledToBottom();
-        //滑动到顶部
+
+        //在顶部
         void onScrolledToTop();
 
     }
-
-
-    /**
-     * 设置滑动到顶部或底部的监听
-     *
-     * @param smartScrollChangedListener
-     */
-    public void setScanScrollChangedListener(ISmartScrollChangedListener smartScrollChangedListener) {
-        mSmartScrollChangedListener = smartScrollChangedListener;
-    }
-
-    /**
-     * ScrollView内的视图进行滑动时的回调方法，据说是API 9后都是调用这个方法，但是我测试过并不准确
-     */
-    @Override
-    protected void onOverScrolled(int scrollXaxis, int scrollYaxis, boolean clampedXaxis, boolean clampedYaxis) {
-        super.onOverScrolled(scrollXaxis, scrollYaxis, clampedXaxis, clampedYaxis);
-        if (scrollYaxis == 0) {
-            scrolledToTop = clampedYaxis;
-            scrolledToBottom = false;
-        } else {
-            scrolledToTop = false;
-            scrolledToBottom = clampedYaxis;//系统回调告诉你什么时候滑动到底部
-        }
-
-        notifyScrollChangedListeners();
-    }
-
-
-    /**
-     * 判断是否滑到底部
-     */
-    private void notifyScrollChangedListeners() {
-        if (scrolledToTop) {
-            if (mSmartScrollChangedListener != null) {
-                mSmartScrollChangedListener.onScrolledToTop();
-            }
-        } else if (scrolledToBottom) {
-            mHandler.removeMessages(MSG_SCROLL);
-            if (!scrollLoop) {
-                scrollAble = false;
-            }
-            if (scrollLoop) {
-                mHandler.sendEmptyMessageDelayed(MSG_SCROLL_Loop, fistTimeScroll);
-            }
-            if (mSmartScrollChangedListener != null) {
-                mSmartScrollChangedListener.onScrolledToBottom();
-            }
-        }
-    }
-
 
     /**
      * 设置是否可以滚动
@@ -143,6 +98,10 @@ public class EncyclopediaAutoScrollView extends ScrollView {
      */
     public void setAutoToScroll(boolean autoToScroll) {
         this.autoToScroll = autoToScroll;
+    }
+
+    public Boolean getAutoToScroll() {
+        return autoToScroll;
     }
 
     /**
@@ -174,4 +133,48 @@ public class EncyclopediaAutoScrollView extends ScrollView {
         this.scrollLoop = scrollLoop;
     }
 
+    /**
+     * 滚动回调
+     *
+     * @param l
+     * @param t
+     * @param oldl
+     * @param oldt
+     */
+    @Override
+    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+        View view = (View) getChildAt(getChildCount() - 1);
+        //获取textView的高度
+        int childViewHight = view.getBottom();
+        childViewHight -= (getMeasuredHeight() + getScrollY());
+        if (childViewHight == 0) {
+            if (this.mSmartScrollChangedListener != null) {
+                //内容超过ScrollView，并且自动滑动到底部回调
+                mSmartScrollChangedListener.onScrolledToBottom();
+            }
+        }
+    }
+
+    /**
+     * 重绘回调，每滚动一次调一次
+     *
+     * @param canvas
+     */
+    @Override
+    public void draw(Canvas canvas) {
+        super.draw(canvas);
+        View view = (View) getChildAt(getChildCount() - 1);
+        int childViewHight = view.getBottom();
+        LogUtil.e("" + childViewHight);
+        LogUtil.e("" + getMeasuredHeight());
+        if (childViewHight <= getMeasuredHeight()) {
+            if (this.mSmartScrollChangedListener != null) {
+                //内容不超过ScrollView回调
+                mSmartScrollChangedListener.onScrolledToTop();
+            }
+            //当textView高度大于ScrollView，并且误差在10dp内ScrollView不会自动滚动
+        } else if (childViewHight < getMeasuredHeight() + 10 && childViewHight > getMeasuredHeight()) {
+            this.autoToScroll = false;
+        }
+    }
 }

@@ -43,7 +43,6 @@
             android:text="@string/leave_message_look_button"
             android:textColor="#9fcdfd"
             android:textSize="@dimen/demension_dp30"
-
             />
     </RelativeLayout>
 </RelativeLayout>

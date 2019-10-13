@@ -99,7 +99,7 @@ public class ImageUtil {
                 .diskCacheStrategyOf(DiskCacheStrategy.ALL)
                 .placeholder(defaultImg)
                 .error(defaultImg);
-        Glide.with(imageView.getContext())
+        Glide.with(BaseApplication.getBaseInstance())
                 .asGif()
                 .load(resource)
                 .apply(options)

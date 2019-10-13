@@ -81,6 +81,19 @@ public class AppManager {
         finishActivity(activity);
     }
 
+
+   public Stack<Activity> getActivityStack(){
+        return activityStack;
+   }
+
+   public void clearActivityStack(){
+        if (activityStack != null){
+            activityStack.clear();
+        }
+   }
+
+
+
     /**
      * 结束指定的Activity
      */

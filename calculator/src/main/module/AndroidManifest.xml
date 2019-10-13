@@ -3,7 +3,7 @@
     package="com.fenda.calculator">
 
     <application>
-        <activity android:name=".CalculatorActivity" android:launchMode="singleTask"/>
+        <activity android:name=".CalculatorActivity" android:launchMode="singleTop"/>
     </application>
 
 </manifest>

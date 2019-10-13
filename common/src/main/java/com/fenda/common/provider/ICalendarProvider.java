@@ -9,6 +9,5 @@ import com.alibaba.android.arouter.facade.template.IProvider;
  */
 public interface ICalendarProvider extends IProvider {
 
-    public void getCalendarMsg(String json);
-    public void getHolidayMsg(String msg);
+    public void processCalendarMsg(String msg);
 }

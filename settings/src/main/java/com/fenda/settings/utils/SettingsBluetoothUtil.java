@@ -24,7 +24,8 @@ public class SettingsBluetoothUtil {
 
     private final SettingsBluetoothDeviceBean blueDevice;
     private Handler mOthHandler;
-    private BluetoothSocket blueSocket;       //蓝牙连接socket
+    //蓝牙连接socket
+    private BluetoothSocket blueSocket;
     //UUID: Audio Source (0000110a-0000-1000-8000-00805f9b34fb)
     //UUID: Audio Sink (0000110b-0000-1000-8000-00805f9b34fb)
     //UUID: Headset AG (00001112-0000-1000-8000-00805f9b34fb)
@@ -35,11 +36,7 @@ public class SettingsBluetoothUtil {
         this.blueDevice = blueDevice;
     }
 
-    /**
-     * 配对指定的蓝牙设备
-     * @param btDevice
-     * @return
-     */
+    //配对指定的蓝牙设备
     public  boolean createBond(BluetoothDevice btDevice){
         boolean result = false;
         try{
@@ -52,9 +49,6 @@ public class SettingsBluetoothUtil {
         return result;
     }
 
-    /**
-     * 配对
-     */
     public void doPair() {
         if(null == mOthHandler){
             HandlerThread handlerThread = new HandlerThread("other_thread");
@@ -79,10 +73,7 @@ public class SettingsBluetoothUtil {
         });
     }
 
-    /**
-     * 取消蓝牙配对
-     * @param device
-     */
+    // 取消蓝牙配对
     public static void unpairDevice(BluetoothDevice device) {
         try {
             LogUtil.d(TAG, "unpairDevice = " + device.getClass());
@@ -94,9 +85,7 @@ public class SettingsBluetoothUtil {
         }
     }
 
-    /**
-     * 取得BluetoothSocket
-     */
+     // 取得BluetoothSocket
     public void initSocket() {
         BluetoothSocket temp = null;
         try {

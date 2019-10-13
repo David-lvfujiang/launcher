@@ -159,9 +159,12 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
             mPresenter.getContactsList();
             LogUtil.d(TAG, "bind onReceiveEvent = " + message);
             AppUtils.saveBindedDevice(getApplicationContext(), true);
-            ARouter.getInstance().build(RouterPath.HomePage.HOMEPAGE_MAIN)
-                    .withString("BIND_EVENT_INTENT", mBindIntent1)
-                    .navigation();
+            Intent hintent = new Intent();
+            hintent.setAction("android.intent.action.MAIN");
+            hintent.addCategory("android.intent.category.HOME");
+            hintent.putExtra("HOME_PAGE",true);
+            hintent.putExtra("BIND_EVENT_INTENT", mBindIntent1);
+            startActivity(hintent);
             finish();
         }
     }

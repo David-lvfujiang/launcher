@@ -15,4 +15,6 @@ public interface ICallProvider extends IProvider {
 
     void acceptCall();
 
+    void syncFamilyContacts();
+
 }

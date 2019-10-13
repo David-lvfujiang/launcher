@@ -5,7 +5,11 @@ import android.support.v7.widget.RecyclerView;
 
 import com.fenda.call.R;
 import com.fenda.call.adapter.RecorderAdapter;
+import com.fenda.call.service.CallService;
 import com.fenda.common.base.BaseFragment;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,12 +51,18 @@ public class RecorderFragment extends BaseFragment {
         mRvRecordeList.setAdapter(mAdapter);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSyncEvent(String syncContact) {
+        if (syncContact.equals(CallService.SYNC_CONTACTS)) {
+            mDatas = mSqliteManager.query(MySqliteOpenHelper.DB_TABE);
+            mAdapter.setNewData(mDatas);
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
-        mDatas.clear();
-        List<CallRecoder> datas = mSqliteManager.query(MySqliteOpenHelper.DB_TABE);
-        mDatas.addAll(datas);
-        mAdapter.notifyDataSetChanged();
+        mDatas = mSqliteManager.query(MySqliteOpenHelper.DB_TABE);
+        mAdapter.setNewData(mDatas);
     }
 }

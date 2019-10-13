@@ -54,6 +54,7 @@ public abstract class BaseActivity extends RxAppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         boolean isFull = initStatusBar();
         if (!isFull) {
             setStatusBarFullTransparent();

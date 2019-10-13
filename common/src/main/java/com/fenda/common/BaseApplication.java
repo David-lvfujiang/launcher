@@ -4,11 +4,15 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.chinamobile.smartgateway.andsdk.device.serviceimpl.AndSdkImpl;
+import com.fenda.common.bean.AndlinkDeviceInfo;
 import com.fenda.common.util.DensityUtil;
 import com.fenda.protocol.AppApplicaiton;
+import com.google.gson.Gson;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -22,6 +26,8 @@ public class BaseApplication extends AppApplicaiton {
 
     private static BaseApplication instance;
     public static HashMap<String,Integer> QQMUSIC = new HashMap<>();
+    private static String devMac = "D0C5D364BEE5";
+
     /**
      * 媒体播放状态
      *
@@ -67,12 +73,46 @@ public class BaseApplication extends AppApplicaiton {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        if (!BuildConfig.LOG_DEBUG){
+            ARouter.openLog();
+            ARouter.openDebug();
+        }
 
-        ARouter.openLog();
-        ARouter.openDebug();
+
 
         ARouter.init(this);
         Bugly.init(this, "a6a9c0f9cc", false);
+//        AndlinkDeviceInfo.ChipModel tChipModel = new AndlinkDeviceInfo.ChipModel();
+//        tChipModel.type = "WiFi";
+//        tChipModel.factory = "rockchip";
+//        tChipModel.model = "rk3326";
+//
+//        ArrayList tChips = new ArrayList();
+//        tChips.add(tChipModel);
+//
+//        AndlinkDeviceInfo.DeviceExtInfo deviceExtInfo = new AndlinkDeviceInfo.DeviceExtInfo();
+//        deviceExtInfo.cmei = "864226033993999";
+//        deviceExtInfo.authMode = "0";
+//        deviceExtInfo.manuDate = "2019-07";
+//        deviceExtInfo.OS = "Android";
+//        deviceExtInfo.netCheckMode = "";
+//        deviceExtInfo.chips = tChips;
+//
+//        AndlinkDeviceInfo tDevcieInfo = new AndlinkDeviceInfo();
+//        tDevcieInfo.deviceMac = devMac;
+//        tDevcieInfo.deviceType = "500929";
+//        tDevcieInfo.productToken = "JUyy3SiJ3yx6hImp";
+//        tDevcieInfo.andlinkToken = "RMm2sEhc9v23H8cc";
+//        tDevcieInfo.firmwareVersion = "f1.0";
+//        tDevcieInfo.autoAP = "0";
+//        tDevcieInfo.softAPMode = "";
+//        tDevcieInfo.softwareVersion = "1.0.0";
+//        tDevcieInfo.deviceExtInfo = deviceExtInfo;
+
+//        Gson tGson = new Gson();
+
+//        AndSdkImpl.getInstance().init(this, tGson.toJson(tDevcieInfo));
+//        MTSdk.init(this, "864226033993999", null, null, "M100000534");
 
 
         //日志框架初始化
