@@ -192,9 +192,13 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             switch (msg.what) {
                 case CHANGE_Msg:
                     //完成主界面更新,拿到数据
-                    String data = (String) msg.obj;
+                    int data = (int) msg.obj;
                     mMsgTv.setVisibility(View.VISIBLE);
-                    mMsgTv.setText(data);
+                    if (data<100){
+                        mMsgTv.setText(""+data);
+                    }else {
+                        mMsgTv.setText("99+");
+                    }
                     break;
                 default:
                     break;
@@ -702,7 +706,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     //新建一个Message对象，存储需要发送的消息
                     Message message = new Message();
                     message.what = CHANGE_Msg;
-                    message.obj = msgNum + "";
+                    message.obj = msgNum;
                     //然后将消息发送出去
                     mHandlerMsg.sendMessage(message);
                 }
