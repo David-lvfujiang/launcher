@@ -124,7 +124,7 @@
 
     <!--SettingsChangeBtNameAcivity start -->
     <string name="settings_bt_name">蓝牙名称</string>
-    <string name="settings_change_bt_name_fail">蓝牙名称修改失败！</string>
+    <string name="settings_change_bt_name_fail">蓝牙名称修改失败！请检查蓝牙是否已经开启</string>
 
     <!--SettingsScreenActivity start -->
     <string name="settings_screen">屏幕保护</string>
