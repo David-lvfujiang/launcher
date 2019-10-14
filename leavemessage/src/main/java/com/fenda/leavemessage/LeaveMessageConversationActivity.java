@@ -1,8 +1,10 @@
 package com.fenda.leavemessage;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -34,14 +36,24 @@ public class LeaveMessageConversationActivity extends BaseActivity implements Vi
     public int onBindLayout() {
         return R.layout.activity_leave_message_conversation;
     }
+
     @Override
     public void initView() {
         mTvTitle = findViewById(R.id.tv_title);
         mBackImageView = findViewById(R.id.leave_message_back_img);
         mBackImageView.setOnClickListener(this);
     }
+
     @Override
     public void initData() {
+        //获取音频服务
+//        AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+//        //设置声音模式
+//        audioManager.setMode(AudioManager.STREAM_MUSIC);
+//        //关闭麦克风
+//        audioManager.setMicrophoneMute(false);
+//        // 打开扬声器
+//        audioManager.setSpeakerphoneOn(true);
         LeaveMessageBean leaveMessageBean = new LeaveMessageBean(0);
         EventBusUtils.post(leaveMessageBean);
         LogUtil.e("数量变化" + 0);
@@ -66,6 +78,10 @@ public class LeaveMessageConversationActivity extends BaseActivity implements Vi
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        //会话界面 对方id
+        targetId = intent.getData().getQueryParameter("targetId");
+        //对方 昵称
+        title = intent.getData().getQueryParameter("title");
         initData();
     }
 
