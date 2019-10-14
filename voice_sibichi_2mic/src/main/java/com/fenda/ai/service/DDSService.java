@@ -621,13 +621,6 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 break;
             case VoiceConstant.SIBICHI.CONTEXT_OUTPUT_TEXT:
 //                String txt = "";
-                try {
-                    JSONObject jo = new JSONObject(state);
-                    String skillName = jo.optString("skillName", "");
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
 
                 break;
             case VoiceConstant.SIBICHI.ASR_SPEECH_RESULT:

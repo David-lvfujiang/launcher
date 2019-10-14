@@ -9,24 +9,7 @@
     android:orientation="vertical"
     >
 
-    <TextView
-        android:id="@+id/tv_navbar_blck"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:text="@string/player_play_list"
-        android:textColor="@color/player_white"
-        android:textSize="30sp"
-        android:gravity="center_vertical"
-        android:layout_width="wrap_content"
-        android:drawableLeft="@mipmap/life_back"
-        android:drawablePadding="20px"
-        android:paddingLeft="55px"
-        android:layout_height="wrap_content"
-        android:paddingRight="55px"
-        android:paddingTop="27px"
-        android:paddingBottom="13px"
-
-        />
+  <include layout="@layout/title_layout"/>
 
 
     <android.support.v7.widget.RecyclerView
