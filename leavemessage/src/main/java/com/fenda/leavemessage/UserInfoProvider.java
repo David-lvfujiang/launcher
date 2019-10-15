@@ -2,13 +2,9 @@ package com.fenda.leavemessage;
 
 import android.net.Uri;
 
-import com.fenda.common.BaseApplication;
 import com.fenda.common.bean.UserInfoBean;
-import com.fenda.common.db.ContentProviderManager;
 import com.fenda.common.util.LogUtil;
 import com.fenda.leavemessage.util.LeaveMessageGetUserUtil;
-
-import java.util.List;
 
 import io.rong.imkit.RongIM;
 import io.rong.imlib.model.UserInfo;
@@ -29,7 +25,7 @@ public class UserInfoProvider implements RongIM.UserInfoProvider {
     public UserInfo getUserInfo(String s) {
         String userName = "";
         String mobile = "";
-        String icon = "http://b-ssl.duitang.com/uploads/item/201711/10/20171110225150_ym2jw.jpeg";
+        String userHeadPicture = "http://b-ssl.duitang.com/uploads/item/201711/10/20171110225150_ym2jw.jpeg";
 
         mobile = s;
         //根据id查询用户信息
@@ -37,15 +33,16 @@ public class UserInfoProvider implements RongIM.UserInfoProvider {
         if (userInfo != null) {
             LogUtil.i("用户 = " + userInfo.toString());
             userName = userInfo.getUserName();
-            if (userInfo.getIcon() != null && !"".equals(userInfo.getIcon()) && !"null".equals(userInfo.getIcon().trim())) {
-                LogUtil.i("头像 = " + userInfo.getIcon());
-                icon = userInfo.getIcon();
+            String icon = userInfo.getIcon();
+            if (icon != null && !"".equals(icon) && !"null".equals(icon.trim())) {
+                LogUtil.i("头像 = " + icon);
+                userHeadPicture = icon;
             }
         } else {
             LogUtil.i("找不到用户");
         }
         //创建融云的userInfo
-        UserInfo userInfoRM = new UserInfo(s, userName, Uri.parse(icon));
+        UserInfo userInfoRM = new UserInfo(mobile, userName, Uri.parse(userHeadPicture));
         //刷新缓存
         // RongIM.getInstance().refreshUserInfoCache(userInfo);
         return userInfoRM;
