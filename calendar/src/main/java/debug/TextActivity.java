@@ -1,5 +1,6 @@
 package debug;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -8,17 +9,20 @@ import android.widget.Button;
 
 import com.fenda.calendar.R;
 import com.fenda.calendar.presenter.CalendarPresenter;
+import com.fenda.calendar.view.PerpetualCalendarActivity;
 
 
 public class TextActivity extends AppCompatActivity implements View.OnClickListener {
-    Button button;
+    Button button ,btnPerptual;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_text);
         button = findViewById(R.id.button);
+        btnPerptual = findViewById(R.id.perptual);
         button.setOnClickListener(this);
+        btnPerptual.setOnClickListener(this);
     }
 
     @Override
@@ -50,6 +54,9 @@ public class TextActivity extends AppCompatActivity implements View.OnClickListe
             String date = "{\"recordId\":\"e55dd0e49fcb4188949c8c09c4e07156\",\"skillId\":\"2019031800001161\",\"requestId\":\"e55dd0e49fcb4188949c8c09c4e07156\",\"nlu\":{\"skillId\":\"2019031800001161\",\"res\":\"tasks\",\"input\":\"六月一号是阴历几号\",\"loadtime\":10.03515625,\"inittime\":10.9169921875,\"skill\":\"日历\",\"skillVersion\":\"38\",\"source\":\"aidui\",\"systime\":61.7900390625,\"semantics\":{\"request\":{\"slots\":[{\"pos\":[0,3],\"rawvalue\":\"六月一号\",\"name\":\"阳历日期\",\"rawpinyin\":\"liu yue yi hao\",\"value\":\"20190601\"},{\"name\":\"intent\",\"value\":\"查询日期\"},{\"name\":\"查询对象\",\"value\":\"阴历日期\"}],\"task\":\"日历\",\"confidence\":1,\"slotcount\":3}},\"version\":\"2019.1.15.20:40:58\",\"timestamp\":1570776011},\"dm\":{\"input\":\"六月一号是阴历几号\",\"shouldEndSession\":true,\"task\":\"日历\",\"widget\":{\"widgetName\":\"default\",\"duiWidget\":\"text\",\"extra\":{\"constellation_end\":\"6月21日\",\"nlyear\":\"己亥\",\"cinstellation\":\"双子座\",\"year\":2019,\"daysInterval\":132,\"festival\":\"儿童节\",\"zodiac\":\"猪\",\"weekday\":\"星期六\",\"nlmonth\":\"四月\",\"negative\":true,\"constellation_begin\":\"5月21日\",\"month\":6,\"day\":1,\"nlday\":\"二十八\"},\"name\":\"default\",\"text\":\"四月二十八\",\"type\":\"text\"},\"intentName\":\"查询日期\",\"runSequence\":\"nlgFirst\",\"nlg\":\"六月一号是己亥年阴历四月二十八\",\"intentId\":\"5d8ae7040d32eb000d70f89c\",\"speak\":{\"text\":\"六月一号是己亥年阴历四月二十八\",\"type\":\"text\"},\"command\":{\"api\":\"\"},\"taskId\":\"5d8ae7040d32eb000d70f883\",\"status\":1},\"contextId\":\"4b209e8643144d14b2d64917f2bf252c\",\"sessionId\":\"4b209e8643144d14b2d64917f2bf252c\"}";
             CalendarPresenter presenter = new CalendarPresenter();
             presenter.processCalendarMsg(jsonDay);
+        } else if (view.getId() == R.id.perptual) {
+            Intent intent =new Intent(TextActivity.this, PerpetualCalendarActivity.class);
+            startActivity(intent);
         }
     }
 }

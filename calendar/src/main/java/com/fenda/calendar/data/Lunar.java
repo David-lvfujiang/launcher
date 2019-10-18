@@ -17,7 +17,13 @@ public class Lunar {
     final static String chineseNumber[] =
             {"一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"};
 
-    public static String getChinaDayString(int day) {
+    /**
+     * 显示农历日期
+     *
+     * @param day
+     * @return
+     */
+    public  String getChinaDayString(int day) {
         String chineseTen[] =
                 {"初", "十", "廿", "卅"};
         int n = day % 10 == 0 ? 9 : day % 10 - 1;
@@ -30,6 +36,31 @@ public class Lunar {
             return chineseTen[day / 10] + chineseNumber[n];
         }
     }
+
+    /**
+     * 显示农历月份
+     *
+     * @param month
+     * @return
+     */
+    public String getLunarMonthString(int month) {
+        String LunarMonthString[] = {"春节", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"};
+        return LunarMonthString[month-1];
+    }
+
+    /**
+     * 判断是否为每月的第一天
+     * @param day
+     * @return
+     */
+    public boolean isFristDay(int day){
+        if (day == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     @Override
     public String toString() {

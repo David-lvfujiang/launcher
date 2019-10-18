@@ -1,47 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@mipmap/calendar_bg">
+    android:background="@mipmap/calendar_bg"
+    android:orientation="vertical">
 
-
-    <ImageView
-        android:id="@+id/calculator_iv_back"
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:layout_marginTop="32dp"
-        android:paddingLeft="@dimen/demension_dp50"
-        android:paddingRight="@dimen/demension_dp50"
-        android:src="@mipmap/calendar_back"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="85dp"
-        android:layout_height="32dp"
-        android:text="万年历"
-        android:textColor="#fff"
-        android:textSize="28sp"
-        app:layout_constraintBottom_toBottomOf="@+id/calculator_iv_back"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/calculator_iv_back" />
-
-
+    <include layout="@layout/title_layout"/>
     <FrameLayout
         android:id="@+id/fl_content"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     </FrameLayout>
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

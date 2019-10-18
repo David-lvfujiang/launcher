@@ -65,6 +65,7 @@ public class PerpetualCalendarActivity extends BaseActivity implements
 
     @Override
     public void initView() {
+        initTitle("万年历");
 //        tvDate = findViewById(R.id.tv_perpetual_calendar_year_month);
         handler.postDelayed(new Runnable() {
             @Override
@@ -87,12 +88,12 @@ public class PerpetualCalendarActivity extends BaseActivity implements
 
     @Override
     public void initData() {
-        findViewById(R.id.calculator_iv_back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+//        findViewById(R.id.calculator_iv_back).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                finish();
+//            }
+//        });
     }
 
     @Override

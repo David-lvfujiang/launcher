@@ -20,7 +20,7 @@ import com.tencent.bugly.beta.Beta;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import cn.richinfo.mt.MTSdk;
+//import cn.richinfo.mt.MTSdk;
 
 
 /**
@@ -118,7 +118,7 @@ public class BaseApplication extends AppApplicaiton {
 
         HandleSDKServerMeaasge.getInstance().setCallback(new AndlinkCallBack());
         AndSdkImpl.getInstance().init(this, tGson.toJson(tDevcieInfo));
-        MTSdk.init(this, "864226033993999", null, null, "M100000534");
+//        MTSdk.init(this, "864226033993999", null, null, "M100000534");
 
         //日志框架初始化
 //        Logger.addLogAdapter(new AndroidLogAdapter(){

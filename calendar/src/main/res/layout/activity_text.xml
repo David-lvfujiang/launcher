@@ -43,4 +43,12 @@
         android:layout_centerInParent="true"
         android:text="星座运势"
         />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/perptual"
+        android:layout_below="@+id/constellation_bt"
+        android:layout_centerInParent="true"
+        android:text="万年历" />
 </RelativeLayout>

@@ -7,22 +7,7 @@
     android:layerType="software"
     android:id="@+id/lin_news_bg">
 
-    <TextView
-        android:id="@+id/tv_news_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingEnd="50dp"
-        android:paddingTop="35dp"
-        android:text="@string/news_title"
-        android:gravity="center_vertical"
-        android:textSize="28sp"
-        android:textColor="#FFF"
-        android:drawableStart="@mipmap/news_set_back"
-        android:drawablePadding="15dp"
-        android:paddingStart="30dp"
-        />
-
-
+    <include layout="@layout/title_layout"/>
     <android.support.v4.view.ViewPager
         android:layout_marginTop="80dp"
         android:id="@+id/view_page"

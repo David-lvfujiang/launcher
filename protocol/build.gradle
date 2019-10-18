@@ -47,5 +47,5 @@ dependencies {
     api files('libs/californium-core-2.0.0-M3.jar')
     api files('libs/element-connector-2.0.0-M3.jar')
     api files('libs/AndSdk_v1.0_jdk7_1.0-190703-2.jar')
-    api files('libs/terminal_sdk_v2.0.3_debug_jdk1.8.jar')
+//    api files('libs/terminal_sdk_v2.0.3_debug_jdk1.8.jar')
 }
