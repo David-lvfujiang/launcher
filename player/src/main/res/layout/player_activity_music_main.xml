@@ -24,23 +24,7 @@
         android:orientation="vertical"
         >
 
-    <TextView
-        android:id="@+id/tv_navbar_back"
-        android:drawableLeft="@mipmap/life_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="20px"
-        android:paddingBottom="20px"
-        android:paddingLeft="40px"
-        android:paddingRight="40px"
-        android:text="相声"
-        android:textColor="@color/player_white"
-        android:gravity="center_vertical"
-        android:drawablePadding="20px"
-        android:textSize="38px"
-
-
-
+    <include layout="@layout/title_layout"
         />
 
 

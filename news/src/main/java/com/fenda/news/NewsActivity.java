@@ -119,6 +119,17 @@ public class NewsActivity extends BaseActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        List<FDMusic> tMusicList = getIntent().getParcelableExtra(NewsPlay.keyNews);
+        newsListData.clear();
+        if (newsListData != null && tMusicList != null){
+            newsListData.addAll(tMusicList);
+        }
+        if (mViewPagerCardAdapter != null){
+            mViewPagerCardAdapter.notifyDataSetChanged();
+        }
+        randomBg();
+        mCurrentItem = 0;
+        play();
 
     }
 

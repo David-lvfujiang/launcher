@@ -7,11 +7,14 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewStub;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.R;
@@ -51,6 +54,9 @@ public abstract class BaseActivity extends RxAppCompatActivity {
     private ViewStub mViewNoData;
     private ViewStub mViewError;
     private boolean isConfigChange = false;
+
+    private TextView tvBack;
+    private LinearLayout linTitle;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +108,64 @@ public abstract class BaseActivity extends RxAppCompatActivity {
             //getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
     }
+
+    /**
+     *初始化顶部Title
+     * @param title
+     */
+    protected void initTitle(String title){
+        if (tvBack == null){
+            tvBack = findViewById(R.id.tv_back);
+            if (tvBack != null ){
+                if (TextUtils.isEmpty(title)){
+                    title = "";
+                }
+                tvBack.setText(title);
+                tvBack.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        finishActivity();
+                    }
+                });
+            }
+        }else {
+            if (!TextUtils.isEmpty(title)){
+                tvBack.setText(title);
+            }
+        }
+    }
+    /**
+     * 设置Title背景颜色
+     * @param color
+     */
+    protected void setTitleBackgroundColor(int color){
+        if (linTitle == null){
+            linTitle = findViewById(R.id.lin_title);
+        }
+        if (linTitle != null){
+            linTitle.setBackgroundColor(color);
+        }
+    }
+
+    /**
+     * 设置返回键的图片
+     * @param res
+     */
+    protected void setBackImage(int res){
+        if (tvBack != null){
+            tvBack.setCompoundDrawablesWithIntrinsicBounds(res,0,0,0);
+        }
+    }
+
+
+    /**
+     * 关闭页面，如果需要在关闭页面时做特殊处理
+     * 请重写这个方法
+     */
+    protected void finishActivity(){
+        this.finish();
+    }
+
 
     /**
      * 全屏显示 设置这个状态可能无法下拉状态栏

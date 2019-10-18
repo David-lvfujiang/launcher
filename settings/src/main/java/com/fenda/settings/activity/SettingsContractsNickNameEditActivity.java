@@ -238,6 +238,7 @@ public class SettingsContractsNickNameEditActivity extends BaseMvpActivity<Setti
         startActivity(mIntent);
         finish();
 
+        LogUtil.d(TAG, "intent to contracts success!");
     }
 
     @Override

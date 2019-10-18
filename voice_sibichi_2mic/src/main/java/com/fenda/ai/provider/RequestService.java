@@ -70,9 +70,9 @@ public class RequestService implements IVoiceRequestProvider {
     @Override
     public void nowWeather() {
         try {
-            SkillIntent skillIntent = new SkillIntent(VoiceConstant.SIBICHI.ID,
-                    VoiceConstant.SIBICHI.TASK, VoiceConstant.SIBICHI.WEATHER_INTENT_NAME,
-                    new JSONObject().put(VoiceConstant.SIBICHI.TALK_KEY, VoiceConstant.SIBICHI.WEATHER_TALK_VALUE).toString());
+            SkillIntent skillIntent = new SkillIntent("2019042500000544",
+                    VoiceConstant.SIBICHI.TASK, "查询天气",
+                    new JSONObject().put("text", "现在的天气").toString());
             DDS.getInstance().getAgent().triggerIntent(skillIntent);
         } catch (Exception e) {
             e.printStackTrace();

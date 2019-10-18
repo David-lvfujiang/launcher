@@ -63,6 +63,7 @@
         android:textSize="30dp"
         android:singleLine="true"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:maxLength="20"/>
 
 </android.support.constraint.ConstraintLayout>

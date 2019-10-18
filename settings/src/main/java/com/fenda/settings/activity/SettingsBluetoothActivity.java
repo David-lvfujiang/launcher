@@ -142,6 +142,7 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
     @Override
     public void initData() {
         mLocalBtName = mBluetoothAdapter.getName();
+        LogUtil.d(TAG, "mLocalBtName = " + mLocalBtName + " ;mBluetoothAdapter = " + mBluetoothAdapter);
         tvBtName.setText("本机蓝牙名称：" + mLocalBtName);
 
         isBtOpen = mBluetoothAdapter.isEnabled();
@@ -271,7 +272,7 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
                         LogUtil.d(TAG, "mConnectDeviceAddress = " + mConnectDeviceAddress);
 
 
-                        if(mConnectDeviceName.equals("")){
+                        if(!mConnectDeviceName.equals("")){
                             ToastUtils.show("请先断开当前连接，再重试！");
                             return;
 //                            BluetoothDevice blue111 = getConnectedBtMac();

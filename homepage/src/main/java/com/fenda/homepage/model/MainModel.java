@@ -7,6 +7,7 @@ import com.fenda.common.bean.UserInfoBean;
 import com.fenda.homepage.R;
 import com.fenda.homepage.contract.MainContract;
 import com.fenda.homepage.http.MainApiService;
+import com.fenda.homepage.model.request.AgreeUserAddRequest;
 import com.fenda.protocol.http.RetrofitHelper;
 
 import java.util.List;
@@ -26,4 +27,14 @@ public class MainModel implements MainContract.Model {
                 .getFamilyContacts()
                 .compose(RxSchedulers.<BaseResponse<List<UserInfoBean>>>io_main());
     }
+
+
+    @Override
+    public Observable<BaseResponse> agreeUserAddDevice(AgreeUserAddRequest agreeUserAddRequest, boolean confirmType) {
+        return RetrofitHelper.getInstance(BaseApplication.getInstance().getString(R.string.BASE_SERVER_URL))
+                .getServer(MainApiService.class)
+                .confirmDeviceBind(agreeUserAddRequest, confirmType)
+                .compose(RxSchedulers.<BaseResponse>io_main());
+    }
+
 }

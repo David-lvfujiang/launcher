@@ -48,7 +48,8 @@
     <application>
 
 
-        <service android:name=".service.DDSService" />
+        <service android:name=".service.DDSService"
+            />
         <service
             android:name="com.fenda.common.service.AccessibilityMonitorService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
