@@ -33,7 +33,7 @@ afterEvaluate {
                         groupId  maven.fenda_groupId
                         artifactId fenda.player_artifactId
                         if (isLocalMaven.toBoolean()){
-                            version "1.0.5"
+                            version local.player_version
                         }else {
                             version fenda.player_version
                         }

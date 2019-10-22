@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -59,19 +60,20 @@ public class CallVerticalScrollView extends ScrollView implements ICallScrollVie
     public int getScreenWidth() {
         return getResources().getDisplayMetrics().widthPixels;
     }
-
+    @Override
     public void setChildPortraitSize(int size) {
         portraitSize = size;
     }
-
+    @Override
     public void enableShowState(boolean enable) {
         enableTitle = enable;
     }
 
+    @Override
     public void addChild(String childId, UserInfo userInfo) {
         addChild(childId, userInfo, null);
     }
-
+    @Override
     public void addChild(String childId, UserInfo userInfo, String state) {
         int containerCount = linearLayout.getChildCount();
         LinearLayout lastContainer = null;

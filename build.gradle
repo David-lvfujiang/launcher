@@ -3,6 +3,7 @@
 buildscript {
     repositories {
         apply from: 'version.gradle'
+        apply from: 'localVersion.gradle'
 //        addRepos(this)
         google()
         jcenter()
@@ -24,12 +25,12 @@ allprojects {
         if (isLocalMaven.toBoolean()){
             //私有服务器仓库地址 把这个修改成自己的仓库地址
             maven {
-                url 'file:G:\\Android\\localMaven\\repository'
+                url local.mavenAddress
             }
         }else{
             //私有服务器仓库地址
             maven {
-                url 'http://192.168.100.127:8084/nexus/repository/maven-releases/'
+                url maven.remoteMaven
             }
         }
 

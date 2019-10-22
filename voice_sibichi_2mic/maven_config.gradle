@@ -34,7 +34,7 @@ afterEvaluate {
                         artifactId fenda.voice_artifactId
                         if (isLocalMaven.toBoolean()){
                             //本地版本号
-                            version "1.0.24"
+                            version local.voice_version
                         }else {
                             //远程版本号，在项目跟目录的version.gradle的文件中
                             version fenda.voice_version

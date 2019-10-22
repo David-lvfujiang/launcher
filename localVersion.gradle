@@ -1,0 +1,42 @@
+ext.local = [:]
+
+def local = [:]
+//本地maven地址
+local.mavenAddress = 'file:H:\\workSpace\\localMaven\\repository'
+//andlink协议
+local.andlink_version = "1.0.0"
+//计算器
+local.calculator_version = "1.0.2"
+//日历
+local.calendar_version = "1.0.3"
+//视频通话
+local.call_version = "1.0.3"
+//股票
+local.encyclopdia_version = "1.0.1"
+//相册
+local.gallery_version = "1.0.1"
+//首页
+local.homepage_version = "1.0.51"
+//留言
+local.leavemessage_version = "1.0.3"
+//新闻
+local.news_version = "1.0.4"
+//播放器
+local.player_version = "1.0.5@aar"
+//提醒
+local.remind_version = "1.0.1"
+//设置
+local.settings_version = "1.0.6"
+//语音
+local.voice_version = "1.0.28"
+//天气
+local.weather_version = "1.0.4"
+
+ext.local = local
+
+
+
+
+
+
+
