@@ -33,7 +33,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.OvershootInterpolator;
@@ -229,6 +228,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
     @Override
     public void initView() {
+        BaseApplication.getBaseInstance().setRequestWeather(false);
         mHeaderTimeTv = findViewById(R.id.tv_header_time);
         mTipInfoRv = findViewById(R.id.rv_Tipinfo);
         mHeaderWeatherIv = findViewById(R.id.iv_header_weather);
@@ -556,6 +556,14 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         AppManager.getAppManager().clearActivityStack();
     }
 
+    private synchronized void weather() {
+        //避免重复调用
+        if (initVoiceProvider != null && !isWeather){
+            isWeather = true;
+            initVoiceProvider.requestWeather();
+        }
+
+    }
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -851,30 +859,24 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
      */
     @SuppressLint("InvalidWakeLockTag")
     public void screenOn() {
-        if (mPowerManager != null){
-            boolean screenOn = mPowerManager.isInteractive();
-            if (!screenOn) {
-                mWakeLock = mPowerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "tag");
-                mWakeLock.acquire();
-                mWakeLock.release();
-            }
+        boolean screenOn = mPowerManager.isInteractive();
+        if (!screenOn) {
+            mWakeLock = mPowerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "tag");
+            mWakeLock.acquire();
+            mWakeLock.release();
         }
-
     }
 
     /**
      * 熄屏
      */
     public void screenOff() {
-        if (mPolicyManager != null){
-            boolean admin = mPolicyManager.isAdminActive(mAdminReceiver);
-            if (admin) {
-                mPolicyManager.lockNow();
-            } else {
-                ToastUtils.show("没有设备管理员权限");
-            }
+        boolean admin = mPolicyManager.isAdminActive(mAdminReceiver);
+        if (admin) {
+            mPolicyManager.lockNow();
+        } else {
+            ToastUtils.show("没有设备管理员权限");
         }
-
     }
 
 
@@ -882,14 +884,12 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
      * 二级菜单
      */
     public void initSubmenuView() {
-        ViewStub stub = findViewById(R.id.stub);
-        View submenuView = stub.inflate();
-        mSubmenuListRv = submenuView.findViewById(R.id.rv_submenu_list);
-        submenuDropLeft = submenuView.findViewById(R.id.iv_submenu_drop_left);
-        submenuDropRight = submenuView.findViewById(R.id.iv_submenu_drop_right);
-        nestScroll      = submenuView.findViewById(R.id.nest_scroll);
-        ll_submenu_back = submenuView.findViewById(R.id.content);
-        relaBeDev = submenuView.findViewById(R.id.rela_be_dev);
+        mSubmenuListRv = findViewById(R.id.rv_submenu_list);
+        submenuDropLeft = findViewById(R.id.iv_submenu_drop_left);
+        submenuDropRight = findViewById(R.id.iv_submenu_drop_right);
+        nestScroll      = findViewById(R.id.nest_scroll);
+        ll_submenu_back = findViewById(R.id.content);
+        relaBeDev = findViewById(R.id.rela_be_dev);
         submenuDropLeft.setOnClickListener(this);
         submenuDropRight.setOnClickListener(this);
         if (relaBeDev.getVisibility() == View.GONE){

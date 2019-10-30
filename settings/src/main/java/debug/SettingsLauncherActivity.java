@@ -66,7 +66,7 @@ public class SettingsLauncherActivity extends BaseMvpActivity<SettingsPresenter,
     public void initData() {
         if (SettingsDebugSPUtils.isRegisterDevice(getApplicationContext()) ){
             LogUtil.d(TAG, "device have registered~");
-            initAndlink();
+//            initAndlink();
             btnStartSet.setVisibility(View.VISIBLE);
             String userId = (String) SettingsDebugSPUtils.get(BaseApplication.getInstance(), SettingsContant.USER_ID, "");
 
@@ -161,7 +161,7 @@ public class SettingsLauncherActivity extends BaseMvpActivity<SettingsPresenter,
         ClientBootstrap bootstrap = ClientBootstrap.getInstance();
         bootstrap.init(getApplicationContext(), userId, SettingsContant.TCP_IP, SettingsContant.TCP_PORT, 0);
 
-        initAndlink();
+//        initAndlink();
 
         btnStartSet.setVisibility(View.VISIBLE);
     }
@@ -174,7 +174,7 @@ public class SettingsLauncherActivity extends BaseMvpActivity<SettingsPresenter,
     @Override
     public void registerDeviceSuccess(BaseResponse<SettingsRegisterDeviceResponse> response) {
         LogUtil.d(TAG, "设备注册成功");
-        initAndlink();
+//        initAndlink();
         SettingsDebugSPUtils.saveRegisterDevice(getApplicationContext(), true);
         String userId1 = response.getData().getId();
         LogUtil.d(TAG, "userId1 = " + userId1);
@@ -184,7 +184,7 @@ public class SettingsLauncherActivity extends BaseMvpActivity<SettingsPresenter,
         LogUtils.v(TAG, "userId = " + userId);
         ClientBootstrap bootstrap = ClientBootstrap.getInstance();
         bootstrap.init(getApplicationContext(), userId, SettingsContant.TCP_IP, SettingsContant.TCP_PORT, 0);
-        initAndlink();
+//        initAndlink();
         btnStartSet.setVisibility(View.VISIBLE);
     }
 
