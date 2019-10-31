@@ -95,9 +95,9 @@ public class SettingsActivity extends BaseActivity {
     @Override
     public void initData() {
         String[] listItemName = new String[]{getString(R.string.settings_set_names_list_wifi), getString(R.string.settings_set_names_list_bluetooth),
-                getString(R.string.settings_set_names_list_screen), getString(R.string.settings_set_names_list_endlink), getString(R.string.settings_set_names_list_light), getString(R.string.settings_set_names_list_volume),
+                getString(R.string.settings_set_names_list_screen), getString(R.string.settings_set_names_list_light), getString(R.string.settings_set_names_list_volume),
                 getString(R.string.settings_set_names_list_deviceinfo), getString(R.string.settings_set_names_list_about)};
-        String[] listItemStatus = new String[]{getString(R.string.settings_set_status_wifi_noconnect), "", "", "", "", "", "", ""};
+        String[] listItemStatus = new String[]{getString(R.string.settings_set_status_wifi_noconnect), "","", "", "", "", ""};
 
         mArrayListData = new ArrayList<>();
         for (int i = 0; i < listItemName.length; i++) {
@@ -166,12 +166,10 @@ public class SettingsActivity extends BaseActivity {
                 } else if (("音量").equals(setClickedListName)) {
                     Intent lightIntent = new Intent(SettingsActivity.this, SettingsVolumeActivity.class);
                     startActivity(lightIntent);
-                } else if (("Andlink").equals(setClickedListName)) {
-                    Intent andlinkIntent = new Intent(SettingsActivity.this, SettingsAndLinkQRCodeActivity.class);
-                    startActivity(andlinkIntent);
-                } else {
-                    ToastUtils.show("开发中...");
                 }
+//                else if (("Andlink").equals(setClickedListName)) {
+//                    Intent andlinkIntent = new Intent(SettingsActivity.this, SettingsAndLinkQRCodeActivity.class);
+//                    startActivity(andlinkIntent);
             }
         });
     }

@@ -87,9 +87,7 @@ public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<Set
         String mIntentIconTmp;
         String mIntentUserName;
 
-        //4). 得到intent对象
         Intent intent = getIntent();
-        //5). 通过intent读取额外数据
         mIntentUserName = intent.getStringExtra("ContractName");
         mIntentIcon = intent.getStringExtra("ContractIcon");
         String cancelNickNameIntent = intent.getStringExtra("cancelSetNickName");

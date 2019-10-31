@@ -33,6 +33,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.OvershootInterpolator;
@@ -884,12 +885,14 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
      * 二级菜单
      */
     public void initSubmenuView() {
-        mSubmenuListRv = findViewById(R.id.rv_submenu_list);
-        submenuDropLeft = findViewById(R.id.iv_submenu_drop_left);
-        submenuDropRight = findViewById(R.id.iv_submenu_drop_right);
-        nestScroll      = findViewById(R.id.nest_scroll);
-        ll_submenu_back = findViewById(R.id.content);
-        relaBeDev = findViewById(R.id.rela_be_dev);
+        ViewStub stub = findViewById(R.id.stub);
+        View submenuView = stub.inflate();
+        mSubmenuListRv = submenuView.findViewById(R.id.rv_submenu_list);
+        submenuDropLeft = submenuView.findViewById(R.id.iv_submenu_drop_left);
+        submenuDropRight = submenuView.findViewById(R.id.iv_submenu_drop_right);
+        nestScroll      = submenuView.findViewById(R.id.nest_scroll);
+        ll_submenu_back = submenuView.findViewById(R.id.content);
+        relaBeDev = submenuView.findViewById(R.id.rela_be_dev);
         submenuDropLeft.setOnClickListener(this);
         submenuDropRight.setOnClickListener(this);
         if (relaBeDev.getVisibility() == View.GONE){

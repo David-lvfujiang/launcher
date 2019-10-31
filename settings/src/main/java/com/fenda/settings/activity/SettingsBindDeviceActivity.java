@@ -78,6 +78,7 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
         return R.layout.settings_bind_device_layout;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @Override
     public boolean initStatusBar() {
         final View decorView = getWindow().getDecorView();
