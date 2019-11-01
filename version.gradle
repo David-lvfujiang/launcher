@@ -201,6 +201,11 @@ fenda.calculator_version = "1.0.2"
 fenda.calendar_artifactId = "calendar"
 fenda.calendar_name = "Calendar"
 fenda.calendar_version = "1.0.6"
+
+
+fenda.capture_artifactId = "capture"
+fenda.capture_name = "Capture"
+fenda.capture_version = "1.0.1"
 //视频通话
 fenda.call_artifactId = "call"
 fenda.call_name = "Call"

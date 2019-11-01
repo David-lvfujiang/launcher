@@ -24,7 +24,7 @@ allprojects {
         if (isLocalMaven.toBoolean()){
             //私有服务器仓库地址
             maven {
-                url 'file:H:\\workSpace\\localMaven\\repository'
+                url 'file:H:\\work\\mywork\\localMaven\\repository'
             }
         }else{
             //私有服务器仓库地址

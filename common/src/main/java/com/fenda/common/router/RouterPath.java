@@ -11,24 +11,24 @@ public interface RouterPath {
     /**
      * 都用这种方式 Voice表示自己的组件名称
      */
-    interface PLAYER{
+    interface PLAYER {
         String MUSIC = "/player/MusicActivity";
         String MUSIC_LIST = "/player/FDMusicListActivity";
-        String MUSIC_PROVIDER ="/player/PlayerProviderImpl";
+        String MUSIC_PROVIDER = "/player/PlayerProviderImpl";
 
     }
 
     /**
      * 提醒
      */
-    interface REMIND{
+    interface REMIND {
         String ALARM = "/remind/AlarmActivity";
         String ALARM_LIST = "/remind/AlarmListActivity";
         String ALARM_SERVICE = "/remind/AlarmService";
         String ALARM_RUERY = "/remind/AlarmQuery";
     }
 
-    interface COMMON{
+    interface COMMON {
         String JSON_SERVICE = "/common/JsonServiceImpl";
     }
 
@@ -39,30 +39,39 @@ public interface RouterPath {
         String GALLERY_DETAIL = "/gallery/PhotoDetailActivity";
     }
 
-    public interface Call {
+    interface Call {
         String CALL_SERVICE = "/call/CallService";
         String MAIN_ACTIVITY = "/call/MainActivity";
     }
 
-    public interface Calendar {
+    interface Calendar {
         String CALENDAR_ACTIVITY = "/calendar/CalendarActivity";
         String CALENDAR_PROVIDER = "/calendar/CalendarPresenTer";
         String HOLIDAY_ACTIVITY = "/calendar/HolidayActivity";
         String Perpetual_CALENDAR_ACTIVITY = "/calendar/PerpetualCalendarActivity";
         String CALENDAR_QUERY_LASTDAY_ACTIVITY = "/calendar/CalendarQueryLastDayActivity";
-
     }
-    public interface Encyclopedia {
+
+    interface Capture {
+        String CAPTURE_ACTIVITY = "/capture/CaptureActivity";
+        String CAPTURE_PROVIDER = "/capture/CaptureService";
+        String CAPTURE_SERVICE = "/capture/CaptureService";
+        String CAPTURE_MYPROVIDER = "/capture/MyCaptureProvider";
+    }
+
+    interface Encyclopedia {
         String ENCYCLOPEDIA_PROVIDER = "/encyclopedia/EncyclopediaFragmentPensenter";
         String ENCYCLOPEDIA_SHARES_ACTIVITY = "/encyclopedia/EncyclopediaSharesActivity";
         String ENCYCLOPEDIA_QUESTIION_ACTIVITY = "/encyclopedia/EncyclopediaQuestiionActivity";
     }
-    public interface Leavemessage {
+
+    interface Leavemessage {
         String LEAVEMESSAGE_SERVICE = "/leavemessage/LeaveMessageService";
         String LEAVEMESSAGE_DIALOG_ACTIVITY = "/leavemessage/LeavemessageDialogActivity";
 
 
     }
+
     interface SETTINGS {
         String SettingsService = "/settings/SettingsService";
 
@@ -87,13 +96,13 @@ public interface RouterPath {
 
     }
 
-    interface VOICE{
+    interface VOICE {
         String INIT_PROVIDER = "/voice/initService";
         String REQUEST_PROVIDER = "/voice/requestService";
 
     }
 
-    interface NEWS{
+    interface NEWS {
         String NEWS_PLAY = "/news/NewsPlay";
         String NEWS_ACTIVITY = "/news/NewsActivity";
     }
@@ -107,9 +116,11 @@ public interface RouterPath {
         String WEATHER_MAIN = "/weather/WeatherActivity";
         String WEATHER_SERVICE = "/weather/WeatherService";
     }
+
     interface Recommend {
         String RECOMMEND = "/recommend/recommend";
     }
+
     interface Calculator {
         String CALCULATOR_ACTIVITY = "/calculator/calculator";
     }
