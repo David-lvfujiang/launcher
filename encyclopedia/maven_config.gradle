@@ -33,7 +33,7 @@ afterEvaluate {
                         groupId  maven.fenda_groupId
                         artifactId fenda.encyclopdia_artifactId
                         if (isLocalMaven.toBoolean()){
-                            version local.encyclopdia_version
+                            version local.encyclopedia_version
                         }else {
                             version fenda.encyclopdia_version
                         }

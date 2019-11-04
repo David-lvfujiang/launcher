@@ -33,7 +33,7 @@ afterEvaluate {
                         groupId  maven.fenda_groupId
                         artifactId fenda.capture_artifactId
                         if (isLocalMaven.toBoolean()){
-                            version "1.0.3"
+                            version local.capture_version
                         }else {
                             version fenda.capture_version
                         }

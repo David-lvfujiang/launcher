@@ -76,7 +76,7 @@ public class EncyclopediaQuestiionActivity extends BaseActivity implements View.
         //开始滚动时间
         mAutoScrollView.setFistTimeScroll(5000);
         //滚动的速率
-        mAutoScrollView.setScrollRate(70);
+        mAutoScrollView.setScrollRate(90);
         //是否循环滑动
         mAutoScrollView.setScrollLoop(false);
         mImgReturnBack.setOnClickListener(this);
