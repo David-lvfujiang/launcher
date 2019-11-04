@@ -83,7 +83,7 @@ public class LyricFragment extends BaseFragment implements View.OnTouchListener 
         //开始滚动时间
         mAutoScrollView.setFistTimeScroll(9000);
         //滚动的速率
-        mAutoScrollView.setScrollRate(180);
+        mAutoScrollView.setScrollRate(240);
         //是否循环滑动
         mAutoScrollView.setScrollLoop(false);
         LogUtils.e("滚动 ");
