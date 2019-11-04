@@ -135,8 +135,9 @@
         android:layout_marginBottom="15dp"
         android:drawableLeft="@mipmap/cm_ico_microphone"
         android:drawablePadding="10dp"
-        android:text="咪咕咪咕, 我要了解更多"
+        android:text="你好小乐, 我要了解更多"
         android:textColor="@color/color_ffffff"
+        android:gravity="center_vertical"
         android:textSize="20sp" />
 
     <TextClock

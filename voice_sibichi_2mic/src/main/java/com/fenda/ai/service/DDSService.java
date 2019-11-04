@@ -551,7 +551,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
         config.addConfig(DDSConfig.K_USE_UPDATE_DUICORE, "false");
         // 是否使用内置的资源更新通知栏
         config.addConfig(DDSConfig.K_USE_UPDATE_NOTIFICATION, "false");
-        config.addConfig(DDSConfig.K_MIC_TYPE, "5");
+        config.addConfig(DDSConfig.K_MIC_TYPE, "2");
         config.addConfig(DDSConfig.K_AEC_MODE, "external");
 //        config.addConfig(DDSConfig.K_AUDIO_FOCUS_MODE, "external"); //TTS
         // 用于唤醒音频调试, 开启后在 "/sdcard/Android/data/包名/cache" 目录下会生成唤醒音频
