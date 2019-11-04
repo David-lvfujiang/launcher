@@ -6,11 +6,9 @@ import android.util.Log;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.capture.constant.CaptureContant;
 import com.fenda.capture.http.CaptureApiService;
-import com.fenda.capture.request.CaptureMessageRequest;
 import com.fenda.common.base.BaseResponse;
 import com.fenda.common.provider.ICaptureUserActionProvider;
 import com.fenda.common.router.RouterPath;
-import com.fenda.common.util.ToastUtils;
 import com.fenda.protocol.http.RetrofitHelper;
 import com.fenda.protocol.http.RxSchedulers;
 
@@ -21,7 +19,7 @@ import io.reactivex.functions.Consumer;
  * @Date: 2019/10/31
  * @Describe:
  */
-@Route(path = "/capture/MyCaptureProvider")
+@Route(path = RouterPath.Capture.CAPTURE_MYPROVIDER)
 public class CapturePresenter implements ICaptureUserActionProvider {
     @Override
     public void captureUserAction(String functionType,String location,String usageMode) {

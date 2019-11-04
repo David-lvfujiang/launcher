@@ -32,6 +32,7 @@ public class EncyclopediaAutoScrollView extends ScrollView {
     private int fistTimeScroll = 5000;
     //多少毫秒滚动一个像素点
     private int scrollRate = 500;
+
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -57,7 +58,9 @@ public class EncyclopediaAutoScrollView extends ScrollView {
 
         }
     };
-
+    public void init() {
+        paddingTop = 0;
+    }
     public EncyclopediaAutoScrollView(Context context) {
         this(context, null);
     }

@@ -8,7 +8,7 @@ local.mavenAddress = 'file:H:\\work\\mywork\\localMaven\\repository'
 
 
 
-local.capture_version = "1.0.3"
+local.capture_version = "1.0.4"
 
 local.andlink_version = "1.0.0"
 //计算器

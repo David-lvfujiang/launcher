@@ -78,7 +78,6 @@ repositories {
 }
 
 
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 //    implementation (name: 'player-release', ext: 'aar')
@@ -111,25 +110,25 @@ dependencies {
 //    api (name: 'player-release', ext: 'aar')
 
 
-
-    if (isLocalMaven.toBoolean()){
+    if (isLocalMaven.toBoolean()) {
         //本地测试
 
-    implementation "com.fenda:voice:$local.voice_version"
-    implementation "com.fenda:call:$local.call_version"
-    implementation "com.fenda:calendar:$local.calendar_version"
-    implementation "com.fenda:calculator:$local.calculator_version"
-    implementation "com.fenda:encyclopdia:$local.encyclopdia_version"
-    implementation "com.fenda:news:$local.news_version"
-    implementation "com.fenda:player:$local.player_version"
-    implementation "com.fenda:remind:$local.remind_version"
-    implementation "com.fenda:weather:$local.weather_version"
-    implementation "com.fenda:leavemessage:$local.leavemessage_version"
-    implementation "com.fenda:homepage:$local.homepage_version"
-    implementation "com.fenda:gallery:$local.gallery_version"
-    implementation "com.fenda:settings:$local.settings_version"
+        implementation "com.fenda:voice:$local.voice_version"
+        implementation "com.fenda:call:$local.call_version"
+        implementation "com.fenda:calendar:$local.calendar_version"
+        implementation "com.fenda:calculator:$local.calculator_version"
+        implementation "com.fenda:encyclopedia:$local.encyclopedia_version"
+        implementation "com.fenda:news:$local.news_version"
+        implementation "com.fenda:player:$local.player_version"
+        implementation "com.fenda:remind:$local.remind_version"
+        implementation "com.fenda:weather:$local.weather_version"
+        implementation "com.fenda:leavemessage:$local.leavemessage_version"
+        implementation "com.fenda:homepage:$local.homepage_version"
+        implementation "com.fenda:gallery:$local.gallery_version"
+        implementation "com.fenda:settings:$local.settings_version"
+       implementation "com.fenda:capture:$local.capture_version"
 
-    }else {
+    } else {
         //正式打包发布
         implementation 'com.fenda:voice:1.0.6@aar'
         implementation 'com.fenda:remind:1.0.3'
@@ -145,9 +144,6 @@ dependencies {
         implementation 'com.fenda:calendar:1.0.6'
         implementation 'com.fenda:call:1.0.3'
     }
-
-
-
 
 
 //    implementation 'com.fenda:voice:1.0.11'
@@ -179,8 +175,6 @@ dependencies {
 //    implementation 'com.fenda.leavemessage:leavemessage:1.0.2'
 
 
-
-
     implementation project(path: ':common')
     implementation project(path: ':CallLib')
     implementation project(path: ':CallKit')
@@ -191,7 +185,7 @@ dependencies {
     implementation 'com.sibichi:iqiyi:1.0.1@aar'
     implementation 'com.sibichi:mediacatrl:1.0.1@aar'
     implementation 'com.sibichi:music:1.0.1@aar'
-    implementation 'com.sibichi:remind:1.0.2@aar'
+    implementation 'com.sibichi:remind:1.0.1@aar'
     implementation 'com.sibichi:setting:1.0.2@aar'
     implementation 'com.sibichi:tvctrl:1.0.1@aar'
 

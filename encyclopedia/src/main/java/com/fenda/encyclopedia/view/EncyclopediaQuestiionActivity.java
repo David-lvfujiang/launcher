@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Autowired;
@@ -71,12 +72,16 @@ public class EncyclopediaQuestiionActivity extends BaseActivity implements View.
         //支持Html格式
         mTvContent.setText(Html.fromHtml(content.trim(), 0));
         mTvTitle.setText(title);
+        //滚动条重初始化
+        mAutoScrollView.init();
+        //滚到顶部
+        mAutoScrollView.fullScroll(ScrollView.FOCUS_UP);
         //滚动条自动滚动
         mAutoScrollView.setAutoToScroll(true);
         //开始滚动时间
         mAutoScrollView.setFistTimeScroll(5000);
         //滚动的速率
-        mAutoScrollView.setScrollRate(90);
+        mAutoScrollView.setScrollRate(80);
         //是否循环滑动
         mAutoScrollView.setScrollLoop(false);
         mImgReturnBack.setOnClickListener(this);
