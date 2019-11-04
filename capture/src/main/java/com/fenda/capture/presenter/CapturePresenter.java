@@ -24,10 +24,9 @@ import io.reactivex.functions.Consumer;
 @Route(path = "/capture/MyCaptureProvider")
 public class CapturePresenter implements ICaptureUserActionProvider {
     @Override
-    public void captureUserAction(String name) {
-        Log.e("TAG1", "onHandleIntent: ");
-        CaptureMessageRequest captureRequest = new CaptureMessageRequest("天气","首页","0");
-        RetrofitHelper.getInstance(CaptureContant.TEST_BASE_URL).getServer(CaptureApiService.class).commitUserAction("天气","首页","0")
+    public void captureUserAction(String functionType,String location,String usageMode) {
+        Log.e("TAG1", "onHandleIntent: "+functionType+location+usageMode);
+        RetrofitHelper.getInstance(CaptureContant.TEST_BASE_URL).getServer(CaptureApiService.class).commitUserAction(functionType,location,usageMode)
                 .compose(RxSchedulers.<BaseResponse>applySchedulers())
                 .subscribe(new Consumer<BaseResponse>() {
                     @Override

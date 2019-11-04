@@ -11,14 +11,14 @@
         android:id="@+id/title_layout"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:layout_marginTop="@dimen/demension_dp20"
+        android:layout_marginTop="@dimen/demension_dp25"
         tools:ignore="MissingConstraints">
 
         <ImageView
             android:id="@+id/title_return_img"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="25dp"
             android:layout_marginTop="20dp"
             android:background="@mipmap/encyclopedia_return" />
 
@@ -26,7 +26,7 @@
             android:id="@+id/title_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="80dp"
+            android:layout_marginLeft="100dp"
             android:layout_marginTop="10dp"
             android:text="@string/encyclopedia_panda"
             android:textColor="#ffffff"

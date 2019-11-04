@@ -15,7 +15,7 @@ import retrofit2.http.POST;
  * @Describe:
  */
 public interface CaptureApiService {
-    //设备注册
+    //上传动作
     @POST("south-device/manage/DeviceFunctionCollect")
     @FormUrlEncoded
     Observable<BaseResponse> commitUserAction(@Field("functionType") String functionType,@Field("location") String location,@Field("usageMode") String usageMode);

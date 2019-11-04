@@ -8,5 +8,5 @@ import com.alibaba.android.arouter.facade.template.IProvider;
  * @Describe:
  */
 public interface ICaptureUserActionProvider extends IProvider {
-   public void captureUserAction(String name);
+   public void captureUserAction(String functionType,String location,String usageMode);
 }
