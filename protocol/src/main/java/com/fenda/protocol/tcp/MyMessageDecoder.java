@@ -11,6 +11,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ReplayingDecoder;
 
 public class MyMessageDecoder extends ReplayingDecoder<MyMessageDecoder.State> {
+    private Head mHead = new Head();
 
     public MyMessageDecoder() {
         super(State.HEADER_MAGIC);
@@ -19,7 +20,7 @@ public class MyMessageDecoder extends ReplayingDecoder<MyMessageDecoder.State> {
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf buf, List<Object> list) throws Exception {
 
-        Head mHead = new Head();
+
         switch (state()){
             case HEADER_MAGIC:
                 int magic = buf.readInt();
