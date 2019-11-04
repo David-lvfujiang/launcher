@@ -77,7 +77,11 @@ public class CalendarGridViewAdapter extends BaseAdapter {
             str = calendarDate.getSolar().solarFestivalName;
             festivalFlag= true;
         }else{
-            str = calendarDate.getLunar().getChinaDayString(mListData.get(position).getLunar().lunarDay);
+            if (calendarDate.getLunar().isFristDay(mListData.get(position).getLunar().lunarDay)){
+                str = calendarDate.getLunar().getLunarMonthString(mListData.get(position).getLunar().lunarMonth);
+            }else {
+                str = calendarDate.getLunar().getChinaDayString(mListData.get(position).getLunar().lunarDay);
+            }
             festivalFlag = false;
         }
         viewHolder.tv_lunar_day.setText(str);

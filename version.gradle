@@ -142,12 +142,13 @@ BUILD_VERSIONS.MIN_SDK = 21
 BUILD_VERSIONS.TARGET_SDK = 28
 BUILD_VERSIONS.COMPILE_SDK = 28
 BUILD_VERSIONS.BUILD_TOOLS = "29.0.1"
-BUILD_VERSIONS.VERSION_CODE = 6
-BUILD_VERSIONS.VERSION_NAME = "1.0.6"
+BUILD_VERSIONS.VERSION_CODE = 7
+BUILD_VERSIONS.VERSION_NAME = "1.0.7"
 
 ext.BUILD_VERSIONS = BUILD_VERSIONS
 
 def maven = [:]
+//这个表示本地maven仓库的目录
 maven.localMaven = "../../localMaven/repository"
 maven.remoteMaven = "http://192.168.100.127:8084/nexus/repository/maven-releases/"
 maven.userName = "admin"
@@ -222,7 +223,7 @@ fenda.gallery_version = "1.0.2"
 //首页
 fenda.homepage_artifactId = "homepage"
 fenda.homepage_name = "Homepage"
-fenda.homepage_version = "1.0.5"
+fenda.homepage_version = "1.0.6"
 //留言
 fenda.leavemessage_artifactId = "leavemessage"
 fenda.leavemessage_name = "Leavemessage"
@@ -230,7 +231,7 @@ fenda.leavemessage_version = "1.0.2"
 //新闻
 fenda.news_artifactId = "news"
 fenda.news_name = "News"
-fenda.news_version = "1.0.4"
+fenda.news_version = "1.0.5"
 //播放器
 fenda.player_artifactId = "player"
 fenda.player_name = "Player"
@@ -246,7 +247,7 @@ fenda.settings_version = "1.0.2"
 //语音
 fenda.voice_artifactId = "voice"
 fenda.voice_name = "Voice"
-fenda.voice_version = "1.0.5"
+fenda.voice_version = "1.0.6"
 //天气
 fenda.weather_artifactId = "weather"
 fenda.weather_name = "Weather"

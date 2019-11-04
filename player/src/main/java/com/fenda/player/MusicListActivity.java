@@ -27,9 +27,8 @@ import java.util.ArrayList;
   *
   */
 @Route(path = RouterPath.PLAYER.MUSIC_LIST)
-public class MusicListActivity extends BaseActivity implements View.OnClickListener  {
+public class MusicListActivity extends BaseActivity  {
 
-    private TextView tvBlak;
     private RecyclerView mRecycleListView;
     private FDMusicAdpater mMusicAdapter;
     private ArrayList<FDMusic> mMusicList = new ArrayList<>();
@@ -47,17 +46,11 @@ public class MusicListActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void initView() {
-
         mRecycleListView = findViewById(R.id.rlv_music_list);
-        tvBlak           = findViewById(R.id.tv_navbar_blck);
-        
-        
-        
-       
+        initTitle("播放列表");
     }
 
     private void addListener(){
-        tvBlak.setOnClickListener(this);
 
         mMusicAdapter.setOnItemClickListener(new FDMusicAdpater.OnItemClickListener() {
             @Override
@@ -128,13 +121,6 @@ public class MusicListActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.tv_navbar_blck){
-            finish();
-        }
-
-    }
 
 
 
@@ -162,4 +148,10 @@ public class MusicListActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
+    @Override
+    protected void finishActivity() {
+        //在这里实现保存数据或者其它特殊逻辑
+
+        super.finishActivity();
+    }
 }

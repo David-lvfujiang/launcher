@@ -49,7 +49,7 @@ public class NewsActivity extends BaseActivity {
     private WifiManager.WifiLock mWifiLock;
     private boolean isPause;
     private ViewPagerCardAdapter mViewPagerCardAdapter;
-    private TextView tvNewsBack;
+//    private TextView tvNewsBack;
     private ViewPager vpNewsList;
     private LinearLayout linNewsBg;
     private TextSwitchView tsNewsTips;
@@ -73,14 +73,14 @@ public class NewsActivity extends BaseActivity {
             newsListData = mMusicPlayBean.getFdMusics();
         }
         linNewsBg = findViewById(R.id.lin_news_bg);
-        tvNewsBack = findViewById(R.id.tv_news_back);
+//        tvNewsBack = findViewById(R.id.tv_news_back);
         tsNewsTips = findViewById(R.id.ts_news_tips);
-        tvNewsBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NewsActivity.this.finish();
-            }
-        });
+//        tvNewsBack.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                NewsActivity.this.finish();
+//            }
+//        });
         vpNewsList = findViewById(R.id.view_page);
         vpNewsList.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -112,6 +112,7 @@ public class NewsActivity extends BaseActivity {
         play();
         initMediaPlayer();
         randomBg();
+        initTitle("今日资讯");
         NewsPlay.isNewsAcitivytOpen = true;
         ARouter.getInstance().inject(this);
     }
@@ -119,6 +120,17 @@ public class NewsActivity extends BaseActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        List<FDMusic> tMusicList = getIntent().getParcelableExtra(NewsPlay.keyNews);
+        newsListData.clear();
+        if (newsListData != null && tMusicList != null){
+            newsListData.addAll(tMusicList);
+        }
+        if (mViewPagerCardAdapter != null){
+            mViewPagerCardAdapter.notifyDataSetChanged();
+        }
+        randomBg();
+        mCurrentItem = 0;
+        play();
 
     }
 

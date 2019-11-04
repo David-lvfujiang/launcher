@@ -33,7 +33,7 @@ afterEvaluate {
                         groupId  maven.fenda_groupId
                         artifactId fenda.settings_artifactId
                         if (isLocalMaven.toBoolean()){
-                            version "1.0.6"
+                            version local.settings_version
                         }else {
                             version fenda.settings_version
                         }

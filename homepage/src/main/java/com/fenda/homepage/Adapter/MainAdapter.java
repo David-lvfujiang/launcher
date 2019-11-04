@@ -18,6 +18,7 @@ import com.fenda.homepage.Util.HomeUtil;
 
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.HomeItemHolder> {
     private Context mContext;
+    private int bgImageValueArr[] = {R.mipmap.cm_bg_a1, R.mipmap.cm_bg_a2, R.mipmap.cm_bg_a3, R.mipmap.cm_bg_04, R.mipmap.cm_bg_05};
 //    private int bgImageValueArr[] = {R.mipmap.cm_bg_a1, R.mipmap.cm_bg_a2, R.mipmap.cm_bg_a3, R.mipmap.cm_bg_04, R.mipmap.cm_bg_05};
 //
 //
@@ -44,14 +45,14 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.HomeItemHolder
     }
     @Override
     public void onBindViewHolder(@NonNull HomeItemHolder viewHolder, int i) {
-        int bgImageValueArr[] = {R.mipmap.cm_bg_a1, R.mipmap.cm_bg_a2, R.mipmap.cm_bg_a3, R.mipmap.cm_bg_04, R.mipmap.cm_bg_05};
+
 //        viewHolder.homeItemBgIv.setBackground(new BitmapDrawable(afterBmp[i]));
         viewHolder.homeItemBgIv.setImageResource(bgImageValueArr[i]);
     }
 
     @Override
     public int getItemCount() {
-        return HomeUtil.PAGE_NUM_MAX;
+        return bgImageValueArr.length;
     }
 
     class HomeItemHolder extends RecyclerView.ViewHolder{

@@ -77,7 +77,6 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
     private LinearLayout linMusicControl;
     private ImageView imgMusicBg;
     private TextSwitcher tsHint;
-    private TextView tvBack;
     private ViewPager pagerPlay;
     private TextView tvMusicTime;
     private TextView tvMusicRunTime;
@@ -178,7 +177,6 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         linMusicControl = findViewById(R.id.lin_music_control);
         imgMusicBg      = findViewById(R.id.con_music);
         tsHint          = findViewById(R.id.tw_text_list);
-        tvBack          = findViewById(R.id.tv_navbar_back);
         pagerPlay        = findViewById(R.id.pager_play);
         tvMusicTime     = findViewById(R.id.tv_music_time);
         tvMusicRunTime  = findViewById(R.id.tv_music_run_time);
@@ -194,7 +192,6 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         mMusicNextBt.setOnClickListener(this);
         mMusicRepeatBt.setOnClickListener(this);
         mMusicListBt.setOnClickListener(this);
-        tvBack.setOnClickListener(this);
 
         addListener();
         mIntent = getIntent();
@@ -213,7 +210,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         contentType = bean.getMsgType();
         mMusicList.addAll(bean.getFdMusics());
         Log.e("qob", "MusicActivity List " + mMusicList);
-        tvBack.setText(title);
+        initTitle(title);
         getRandomIndex();
 
         setPlayStatus();
@@ -426,7 +423,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         contentType = bean.getMsgType();
         mMusicList.clear();
         mMusicList.addAll(tMusicList);
-        tvBack.setText(title);
+        initTitle(title);
         mProgressHandler.removeCallbacks(mProgressRunable);
         mMusicProgressSb.setProgress(0);
         FDMusic tMusic = mMusicList.get(current_item);
@@ -585,8 +582,6 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
             tIntent.putExtra(Constant.Player.keyCurrentPlayIndex, current_item);
             tIntent.putExtra(Constant.Player.keyContentType, contentType);
             startActivity(tIntent);
-        }else if (id == R.id.tv_navbar_back){
-            finish();
         }
 
 
@@ -889,7 +884,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
             contentType = bean.getMsgType();
             mMusicList.clear();
             mMusicList.addAll(tMusicList);
-            tvBack.setText(title);
+            initTitle(title);
             mProgressHandler.removeCallbacks(mProgressRunable);
             mMusicProgressSb.setProgress(0);
             FDMusic tMusic = mMusicList.get(current_item);

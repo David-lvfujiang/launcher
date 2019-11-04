@@ -8,6 +8,9 @@ package com.fenda.test.api;
 public class LoginRequest {
 
 
+
+
+
     private String mobile;
     private String password;
 

@@ -5,6 +5,7 @@ import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.mvp.BaseModel;
 import com.fenda.common.mvp.BasePresenter;
 import com.fenda.common.mvp.BaseView;
+import com.fenda.homepage.model.request.AgreeUserAddRequest;
 
 import java.util.List;
 
@@ -25,10 +26,15 @@ public interface MainContract {
 
     interface Model extends BaseModel {
         Observable<BaseResponse<List<UserInfoBean>>> getFamilyContacts();
+
+        Observable<BaseResponse> agreeUserAddDevice(AgreeUserAddRequest agreeUserAddRequest, boolean confirmType);
+
     }
 
     abstract class Presenter extends BasePresenter<View, Model> {
         public abstract void getFamilyContacts();
+
+        public abstract void agreeUserAddDevice(AgreeUserAddRequest agreeUserAddRequest, boolean confirmType);
 
     }
 }

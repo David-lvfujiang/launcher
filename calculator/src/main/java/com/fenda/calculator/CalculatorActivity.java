@@ -1,6 +1,7 @@
 package com.fenda.calculator;
 
 import android.annotation.SuppressLint;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -33,8 +34,11 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void initView() {
+        initTitle("计算器");
         tvIo = findViewById(R.id.input_outputView);
         tvExpressionOutput = findViewById(R.id.expressionOutputView);
+        tvIo.setMovementMethod(ScrollingMovementMethod.getInstance());
+        tvExpressionOutput.setMovementMethod(ScrollingMovementMethod.getInstance());
         //数字0-9
         findViewById(R.id.calculator_bt0).setOnClickListener(this);
         findViewById(R.id.calculator_bt1).setOnClickListener(this);
@@ -67,12 +71,25 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
         //clear键
         findViewById(R.id.calculator_bt_clr).setOnClickListener(this);
         //退出
-        findViewById(R.id.calculator_iv_back).setOnClickListener(this);
+//        findViewById(R.id.calculator_iv_back).setOnClickListener(this);
     }
 
     @Override
     public void initData() {
-
+    }
+    private void focusable(){
+        tvIo.post(new Runnable() {
+            @Override
+            public void run() {
+                int scrollAmount = tvIo.getLayout().getLineTop(tvIo.getLineCount())
+                        - tvIo.getHeight();
+                if (scrollAmount > 0) {
+                    tvIo.scrollTo(0, scrollAmount);
+                } else {
+                    tvIo.scrollTo(0, 0);
+                }
+            }
+        });
     }
 
     //负数标记
@@ -98,6 +115,7 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
             mStringBuilder = mStringBuilder.append("0");
             mExpression = mExpression.append("0");
             tvIo.setText(mExpression.toString());
+            focusable();
         } else if (id == R.id.calculator_bt1) {
             if (equals) { //当equals为true，输入数字，清空字符串，在把标志变为false
                 mStringBuilder = mStringBuilder.delete(0, mStringBuilder.length());
@@ -112,6 +130,7 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
                 mExpression = mExpression.append("1");
             }
             tvIo.setText(mExpression.toString());
+            focusable();
         } else if (id == R.id.calculator_bt2) {
             if (equals) {
                 mStringBuilder = mStringBuilder.delete(0, mStringBuilder.length());
@@ -127,6 +146,7 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
                 mExpression = mExpression.append("2");
             }
             tvIo.setText(mExpression.toString());
+            focusable();
         } else if (id == R.id.calculator_bt3) {
             if (equals) {
                 mStringBuilder = mStringBuilder.delete(0, mStringBuilder.length());
@@ -141,6 +161,7 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
                 mExpression = mExpression.append("3");
             }
             tvIo.setText(mExpression.toString());
+            focusable();
         } else if (id == R.id.calculator_bt4) {
             if (equals) {
                 mStringBuilder = mStringBuilder.delete(0, mStringBuilder.length());
@@ -155,6 +176,7 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
                 mExpression = mExpression.append("4");
             }
             tvIo.setText(mExpression.toString());
+            focusable();
         } else if (id == R.id.calculator_bt5) {
             if (equals) {
                 mStringBuilder = mStringBuilder.delete(0, mStringBuilder.length());
@@ -169,6 +191,7 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
                 mExpression = mExpression.append("5");
             }
             tvIo.setText(mExpression.toString());
+            focusable();
         } else if (id == R.id.calculator_bt6) {
             if (equals) {
                 mStringBuilder = mStringBuilder.delete(0, mStringBuilder.length());
@@ -183,6 +206,7 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
                 mExpression = mExpression.append("6");
             }
             tvIo.setText(mExpression.toString());
+            focusable();
         } else if (id == R.id.calculator_bt7) {
             if (equals) {
                 mStringBuilder = mStringBuilder.delete(0, mStringBuilder.length());
@@ -197,6 +221,7 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
                 mExpression = mExpression.append("7");
             }
             tvIo.setText(mExpression.toString());
+            focusable();
         } else if (id == R.id.calculator_bt8) {
             if (equals) {
                 mStringBuilder = mStringBuilder.delete(0, mStringBuilder.length());
@@ -211,6 +236,7 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
                 mExpression = mExpression.append("8");
             }
             tvIo.setText(mExpression.toString());
+            focusable();
         } else if (id == R.id.calculator_bt9) {
             if (equals) {
                 mStringBuilder = mStringBuilder.delete(0, mStringBuilder.length());
@@ -225,6 +251,7 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
                 mExpression = mExpression.append("9");
             }
             tvIo.setText(mExpression.toString());
+            focusable();
         } else if (id == R.id.calculator_bt_del) { //删除
             if (equals) {
                 equals = false;
@@ -234,6 +261,7 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
                 mExpression = mExpression.deleteCharAt(mExpression.length() - 1);
             }
             tvIo.setText(mExpression.toString());
+            focusable();
         } else if (id == R.id.calculator_bt_clr) { //清空
             if (equals) {
                 equals = false;
@@ -241,6 +269,7 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
             mStringBuilder = mStringBuilder.delete(0, mStringBuilder.length());
             mExpression = mExpression.delete(0, mExpression.length());
             tvIo.setText("0");
+            focusable();
             tvExpressionOutput.setText("");
         } else if (id == R.id.calculator_bt_lpar) { //左括号
             if (equals) {
@@ -264,6 +293,7 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
                 mExpression = mExpression.append("(");
             }
             tvIo.setText(mExpression.toString());
+            focusable();
         } else if (id == R.id.calculator_bt_rpar) { //右括号
             if (equals) {
                 equals = false;
@@ -294,6 +324,7 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
                 }
             }
             tvIo.setText(mExpression.toString());
+            focusable();
         } else if (id == R.id.calculator_bt_div) { //除号
             if (equals) {
                 equals = false;
@@ -325,6 +356,7 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
                 }
             }
             tvIo.setText(mExpression.toString());
+            focusable();
         } else if (id == R.id.calculator_bt_mul) { //乘号
             if (equals) {
                 equals = false;
@@ -351,6 +383,7 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
                 }
             }
             tvIo.setText(mExpression.toString());
+            focusable();
         } else if (id == R.id.calculator_bt_sub) { //减号
             if (equals) {
                 equals = false;
@@ -396,6 +429,7 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
                 count_negative++;
             }
             tvIo.setText(mExpression.toString());
+            focusable();
         } else if (id == R.id.calculator_bt_plus) { //加号
             if (equals) {
                 equals = false;
@@ -427,6 +461,7 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
                 }
             }
             tvIo.setText(mExpression.toString());
+            focusable();
         } else if (id == R.id.calculator_bt_dot) { //小数点
             if (equals) {
                 equals = false;
@@ -458,6 +493,7 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
                 }
             }
             tvIo.setText(mExpression.toString());
+            focusable();
         } else if (id == R.id.calculator_bt_equal) { //等号
             if (equals) {
                 equals = false;
@@ -491,6 +527,7 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
                         String str = InfixToSuffix.Cal(InfixToSuffix.Suffix(mStringBuilder));
                         int equals = 0;
                         tvIo.setText(str);
+                        focusable();
                         tvExpressionOutput.setText(mExpression.toString() + "=");
                         mStringBuilder = mStringBuilder.delete(0, mStringBuilder.length());
                         mExpression = mExpression.delete(0, mExpression.length());
@@ -506,13 +543,12 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
                         mExpression.append(str);
                     } catch (Exception e) {
                         tvIo.setText("Error");
+                        focusable();
                         mStringBuilder = mStringBuilder.delete(0, mStringBuilder.length());
                         mExpression = mExpression.delete(0, mExpression.length());
                     }
                 }
             }
-        } else if (id == R.id.calculator_iv_back){
-            finish();
         }
     }
 }

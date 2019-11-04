@@ -86,6 +86,12 @@ public class AppManager {
         return activityStack;
    }
 
+   public void clearActivityStack(){
+        if (activityStack != null){
+            activityStack.clear();
+        }
+   }
+
 
 
     /**

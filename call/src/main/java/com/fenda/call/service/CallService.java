@@ -45,6 +45,7 @@ public class CallService implements ICallProvider {
 
     }
 
+    @Override
     public void call(int callType, String callNumber) {
         if (ImConnectUtil.isConectIm(BaseApplication.getInstance())) {
             if (callType == 1) {

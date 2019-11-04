@@ -8,6 +8,7 @@ import com.fenda.common.BaseApplication;
 import com.fenda.common.basebean.player.FDMusic;
 import com.fenda.common.provider.INewsProvider;
 import com.fenda.common.router.RouterPath;
+import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.Md5Utils;
 
 import org.json.JSONArray;
@@ -25,8 +26,6 @@ import java.util.ArrayList;
 public class NewsPlay implements INewsProvider {
     public static boolean isNewsAcitivytOpen = false;
     public static final String keyNews = "news";
-    private ArrayList<FDMusic> playlist = new ArrayList<>();
-    private Context mContext = BaseApplication.getInstance();
 
     /**
      * 获取新闻数据
@@ -35,6 +34,7 @@ public class NewsPlay implements INewsProvider {
      * @return
      */
     private ArrayList<FDMusic> getNewsMusics(JSONArray contentArray) {
+        ArrayList<FDMusic> playlist = new ArrayList<>();
 
         FDMusic fdmusic;
         for (int i = 0; i < contentArray.length(); i++) {
@@ -81,7 +81,8 @@ public class NewsPlay implements INewsProvider {
             e.printStackTrace();
             return;
         }
-        playlist.addAll(getNewsMusics(contentArray));
+        ArrayList<FDMusic> playlist = getNewsMusics(contentArray);
+        LogUtil.e("playlist : size = "+playlist.size());
         ARouter.getInstance().build(RouterPath.NEWS.NEWS_ACTIVITY)
                 .withObject("newsListData", playlist)
                 .navigation();

@@ -3,4 +3,8 @@
 
     <string name="no_net">网络不可用,请检查你的网络</string>
     <string name="net_error">网络访问错误,请稍后再试</string>
+    <string name="add_user_sure">确定</string>
+    <string name="add_user_cancel">拒绝</string>
+    <string name="add_user_tips">是否同意加入家庭圈</string>
+
 </resources>

@@ -25,7 +25,6 @@ import java.util.ArrayList;
 @Route(path = RouterPath.Recommend.RECOMMEND)
 public class Recommend implements IRecommendProvider {
 
-    private ArrayList<FDMusic> playlist = new ArrayList<>();
 
     @Override
     public void requestRecommend(JSONObject dataJsonObject) {
@@ -43,7 +42,7 @@ public class Recommend implements IRecommendProvider {
             e.printStackTrace();
             return;
         }
-        playlist.addAll(getNewsMusics(contentArray));
+        ArrayList<FDMusic> playlist = getNewsMusics(contentArray);
         final MusicPlayBean bean = new MusicPlayBean();
         bean.setFdMusics(playlist);
         bean.setMsgName("新闻");
@@ -62,6 +61,7 @@ public class Recommend implements IRecommendProvider {
      * @return
      */
     private ArrayList<FDMusic> getNewsMusics(JSONArray contentArray) {
+        ArrayList<FDMusic> playlist = new ArrayList<>();
 
         FDMusic fdmusic;
         for (int i = 0; i < contentArray.length(); i++) {

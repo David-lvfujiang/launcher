@@ -33,7 +33,7 @@ afterEvaluate {
                         groupId  maven.fenda_groupId
                         artifactId fenda.andlink_artifactId
                         if (isLocalMaven.toBoolean()){
-                            version "1.0.0"
+                            version local.andlink_version
                         }else {
                             version fenda.andlink_version
                         }

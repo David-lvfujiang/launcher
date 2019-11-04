@@ -15,7 +15,8 @@
         android:src="@mipmap/settings_set_back"
         app:layout_constraintBottom_toBottomOf="@+id/set_tv"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/set_tv" />
+        app:layout_constraintTop_toTopOf="@+id/set_tv"
+        android:visibility="visible"/>
 
     <TextView
         android:id="@+id/set_tv"
@@ -28,7 +29,8 @@
         android:textSize="35dp"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="visible"/>
 
     <ImageView
         android:id="@+id/enter_bind_imageview"

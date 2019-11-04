@@ -33,6 +33,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.OvershootInterpolator;
@@ -196,9 +197,13 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             switch (msg.what) {
                 case CHANGE_Msg:
                     //完成主界面更新,拿到数据
-                    String data = (String) msg.obj;
+                    int data = (int) msg.obj;
                     mMsgTv.setVisibility(View.VISIBLE);
-                    mMsgTv.setText(data);
+                    if (data<100){
+                        mMsgTv.setText(""+data);
+                    }else {
+                        mMsgTv.setText("99+");
+                    }
                     break;
                 default:
                     break;
@@ -564,10 +569,11 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         Stack<Activity> activities = AppManager.getAppManager().getActivityStack();
         for (int i = 0, size = activities.size(); i < size; i++) {
             Activity mActivity = activities.get(i);
-            if (null != mActivity && !(mActivity == this)) {
-                AppManager.getAppManager().finishActivity(mActivity);
+            if (null != mActivity && mActivity != this) {
+                mActivity.finish();
             }
         }
+        AppManager.getAppManager().clearActivityStack();
     }
 
     private synchronized void weather() {
@@ -848,7 +854,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     //新建一个Message对象，存储需要发送的消息
                     Message message = new Message();
                     message.what = CHANGE_Msg;
-                    message.obj = msgNum + "";
+                    message.obj = msgNum;
                     //然后将消息发送出去
                     mHandlerMsg.sendMessage(message);
                 }
@@ -898,12 +904,14 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
      * 二级菜单
      */
     public void initSubmenuView() {
-        mSubmenuListRv = findViewById(R.id.rv_submenu_list);
-        submenuDropLeft = findViewById(R.id.iv_submenu_drop_left);
-        submenuDropRight = findViewById(R.id.iv_submenu_drop_right);
-        nestScroll      = findViewById(R.id.nest_scroll);
-        ll_submenu_back = findViewById(R.id.content);
-        relaBeDev = findViewById(R.id.rela_be_dev);
+        ViewStub stub = findViewById(R.id.stub);
+        View submenuView = stub.inflate();
+        mSubmenuListRv = submenuView.findViewById(R.id.rv_submenu_list);
+        submenuDropLeft = submenuView.findViewById(R.id.iv_submenu_drop_left);
+        submenuDropRight = submenuView.findViewById(R.id.iv_submenu_drop_right);
+        nestScroll      = submenuView.findViewById(R.id.nest_scroll);
+        ll_submenu_back = submenuView.findViewById(R.id.content);
+        relaBeDev = submenuView.findViewById(R.id.rela_be_dev);
         submenuDropLeft.setOnClickListener(this);
         submenuDropRight.setOnClickListener(this);
         if (relaBeDev.getVisibility() == View.GONE){
