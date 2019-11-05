@@ -18,7 +18,7 @@
             android:id="@+id/title_return_img"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:layout_marginLeft="25dp"
+            android:layout_marginLeft="30dp"
             android:layout_marginTop="20dp"
             android:background="@mipmap/encyclopedia_return" />
 
@@ -26,7 +26,8 @@
             android:id="@+id/title_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="100dp"
+            android:layout_marginLeft="@dimen/demension_dp15"
+            android:layout_toRightOf="@+id/title_return_img"
             android:layout_marginTop="10dp"
             android:text="@string/encyclopedia_panda"
             android:textColor="#ffffff"

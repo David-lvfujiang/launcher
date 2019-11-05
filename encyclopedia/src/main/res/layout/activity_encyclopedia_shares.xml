@@ -10,51 +10,56 @@
         android:id="@+id/title_layout"
         android:layout_width="match_parent"
         android:layout_height="80dp"
+        android:layout_marginTop="@dimen/demension_dp25"
         tools:ignore="MissingConstraints">
+
 
         <ImageView
             android:id="@+id/title_return_img"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/demension_dp45"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="15dp"
+            android:layout_height="@dimen/demension_dp50"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="20dp"
             android:background="@mipmap/encyclopedia_return" />
 
         <TextView
             android:id="@+id/title_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="80dp"
+            android:layout_marginLeft="@dimen/demension_dp15"
             android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/title_return_img"
+            android:text="@string/encyclopedia_panda"
             android:textColor="#ffffff"
-            android:textSize="40dp" />
+            android:textSize="50sp" />
     </RelativeLayout>
-<RelativeLayout
-    android:id="@+id/high_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/demension_dp80"
-    >
-    <TextView
-        android:id="@+id/high_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="60dp"
-        android:text="205.5"
-        android:textColor="#ffffff"
-        android:textSize="180dp" />
 
-    <RadioButton
-        android:id="@+id/encyclopedia_fall_radio"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginLeft="250dp"
-        android:layout_marginTop="250dp"
-        android:checked="true"
-        android:drawableTop="@drawable/encyclopedia_selector_change_icon"
-        android:visibility="gone" />
-</RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/high_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/demension_dp80">
+
+        <TextView
+            android:id="@+id/high_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="60dp"
+            android:text="205.5"
+            android:textColor="#ffffff"
+            android:textSize="180dp" />
+
+        <RadioButton
+            android:id="@+id/encyclopedia_fall_radio"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="250dp"
+            android:layout_marginTop="250dp"
+            android:checked="true"
+            android:drawableTop="@drawable/encyclopedia_selector_change_icon"
+            android:visibility="gone" />
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/text_rlayout"

@@ -77,7 +77,7 @@ public class EncyclopediaSharesActivity extends BaseActivity implements View.OnC
         mTvTitle.setText(shares.getName());
         mTvCurrent.setText(shares.getHigh());
         mTvDate.setText(shares.getDate());
-        handler.sendEmptyMessageDelayed(AUDIO_CONVERSE_CLOSE, 7000);
+        handler.sendEmptyMessageDelayed(AUDIO_CONVERSE_CLOSE, 10000);
 
     }
 
