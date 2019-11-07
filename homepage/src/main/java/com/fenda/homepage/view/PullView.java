@@ -1,4 +1,4 @@
-package com.fenda.homepage.model;
+package com.fenda.homepage.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -18,8 +18,12 @@ import com.fenda.homepage.R;
 public class PullView extends View {
 
     private Paint mPaint;
-    private int length = 30;
-    private int scrollIndex = 0;
+    //箭头的长度
+    private static final int LENGTH = 30;
+    //画笔的宽度
+    private static final int PAINT_SIZE = 6;
+    //滑动的大小
+    private int scrollSize = 0;
     private int height;
     private int width;
 
@@ -32,7 +36,7 @@ public class PullView extends View {
         mPaint = new Paint();
         mPaint.setColor(ContextCompat.getColor(context,R.color.white));
         mPaint.setAntiAlias(true);
-        mPaint.setStrokeWidth(6);
+        mPaint.setStrokeWidth(PAINT_SIZE);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
 
     }
@@ -52,23 +56,28 @@ public class PullView extends View {
         if (width == 0){
             width = getMeasuredWidth();
         }
-        int lineWidth = (width/2)-length;
+        int lineWidth = (width/2) - LENGTH;
         if (height == 0){
             height = getMeasuredHeight();
         }
-        int lineHeightStart = height/2;
-        int lineHeightStop = height/4 + scrollIndex;
-        canvas.drawLine(lineWidth,lineHeightStart,width/2,lineHeightStop,mPaint);
-        int lineWidthY = (width/2)+length;
+        int lineHeightStartY = height/2;
+        int lineWidthEndX = width/2;
+        //初始化箭头朝下,根据滑动的距离开始变化
+        int lineHeightStopY = (height - height/4) - scrollSize;
+        canvas.drawLine(lineWidth,lineHeightStartY,lineWidthEndX,lineHeightStopY,mPaint);
+        int lineWidthX = (width/2) + LENGTH;
 
-        canvas.drawLine(lineWidthY,lineHeightStart,width/2,lineHeightStop,mPaint);
+        canvas.drawLine(lineWidthX,lineHeightStartY,lineWidthEndX,lineHeightStopY,mPaint);
 
 
     }
 
-
-    public void setProgress(int progress){
-        scrollIndex = (height/2)*progress;
+    /**
+     * 设置滑动的比例
+     * @param progress
+     */
+    public void setProgress(float progress){
+        scrollSize = (int) ((height/2)*progress);
         invalidate();
     }
 }

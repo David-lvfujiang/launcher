@@ -1,13 +1,10 @@
-package com.fenda.homepage.model;
+package com.fenda.homepage.view;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.PointF;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -19,6 +16,7 @@ import android.widget.RelativeLayout;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.view.MyNestedScrollView;
+import com.fenda.homepage.BuildConfig;
 import com.fenda.homepage.activity.HomePageActivity;
 
 /**
@@ -94,7 +92,6 @@ public class MyRelativeLayout extends RelativeLayout {
                     float interMoveY  = VERTICAL.getDisplacement(ev, pointerIndex, mDownPos);
                     if (pageActivity.getLauncherState() == Constant.Common.HOME_PAGE){
                         if (interMoveY < (-MIX_SCROLL)){
-                            Log.i("LauncherRecycleView","进入上下滑动.....");
                             mShiftStart = BaseApplication.getBaseInstance().getScreenHeight();
                             //上滑
                             return true;
@@ -136,24 +133,22 @@ public class MyRelativeLayout extends RelativeLayout {
 
                 break;
             case MotionEvent.ACTION_MOVE:
-                int pointerIndex = event.findPointerIndex(mActivePointerId);
+                int pointerIndex = event.findPointerIndex(0);
                 moveY = VERTICAL.getDisplacement(event, pointerIndex, mDownPos);
                 computeVelocity(VERTICAL.getDisplacement(event, pointerIndex, mLastPos),
                         event.getEventTime());
-                Log.i("TAG","moveY = "+moveY);
                 pageActivity.stopCycleRollRunnable();
                 shift = Math.min(Math.max(0, mShiftStart + moveY), mShiftRange);
-                Log.i("TAG","shift = "+shift);
+                float progress = shift/mShiftRange;
+                pullView.setProgress(progress);
                 skillView.setTranslationY(shift);
-                Log.i("TAG","skillView.getTranslationY()  == "+skillView.getTranslationY());
 
-                mLastPos.set(event.getX(pointerIndex), event.getY(pointerIndex));
+                mLastPos.set(event.getX(), event.getY());
                 return true;
             case MotionEvent.ACTION_UP:
 
                 if (pageActivity.getLauncherState() == Constant.Common.HOME_PAGE){
                     if (skillView.getTranslationY() > SCROLL_Y){
-
                         animateToWorkspace();
                     }else {
                         animateToAllApps();
@@ -166,9 +161,6 @@ public class MyRelativeLayout extends RelativeLayout {
                         animateToWorkspace();
                     }
                 }
-
-                Log.i(TAG,"mAppsView.getTranslationY() = "+skillView.getTranslationY()+ " mShiftRange = "+SCROLL_Y);
-
 
                     break;
             default:
@@ -222,8 +214,7 @@ public class MyRelativeLayout extends RelativeLayout {
 
         @Override
         float getDisplacement(MotionEvent ev, int pointerIndex, PointF refPoint) {
-            Log.i("TAG","ev.getY(pointerIndex) = "+ev.getY(pointerIndex) +" pointerIndex = "+pointerIndex +"  refPoint.y = "+refPoint.y);
-            return ev.getY(pointerIndex) - refPoint.y;
+            return ev.getY() - refPoint.y;
         }
 
         @Override
@@ -233,9 +224,6 @@ public class MyRelativeLayout extends RelativeLayout {
     };
 
 
-//    private void calculateDuration(float velocity, float disp) {
-//        mAnimationDuration = calculateDuration(velocity, disp / mShiftRange);
-//    }
 
 
     public  long calculateDuration(float velocity, float progressNeeded) {
@@ -243,12 +231,16 @@ public class MyRelativeLayout extends RelativeLayout {
         float velocityDivisor = Math.max(2f, Math.abs(0.5f * velocity));
         float travelDistance = Math.max(0.2f, progressNeeded);
         long duration = (long) Math.max(100, ANIMATION_DURATION / velocityDivisor * travelDistance);
-         Log.d("TAG", String.format("calculateDuration=%d, v=%f, d=%f", duration, velocity, progressNeeded));
+        if (BuildConfig.DEBUG){
+            Log.d("TAG", String.format("calculateDuration=%d, v=%f, d=%f", duration, velocity, progressNeeded));
+        }
         return duration;
     }
 
 
-
+    /**
+     * 显示技能页面
+     */
     public void animateToAllApps() {
         mScrollInterpolator.setVelocityAtZero(Math.abs(mVelocity));
         mAnimationDuration = calculateDuration(mVelocity,Math.abs(skillView.getTranslationY()/mShiftRange));
@@ -260,6 +252,8 @@ public class MyRelativeLayout extends RelativeLayout {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float value = (Float) animation.getAnimatedValue();
+                float progress = value/mShiftRange;
+                pullView.setProgress(progress);
                 skillView.setTranslationY(value);
 
             }
@@ -273,9 +267,6 @@ public class MyRelativeLayout extends RelativeLayout {
             @Override
             public void onAnimationEnd(Animator animation, boolean isReverse) {
                 pageActivity.setLauncherState(Constant.Common.ALL_SKILL);
-//                pageActivity.startCycleRollRunnable();
-//                skillView.setScroll(false);
-
 
             }
         });
@@ -283,7 +274,9 @@ public class MyRelativeLayout extends RelativeLayout {
     }
 
 
-
+    /**
+     * 显示主界面
+     */
     public void animateToWorkspace() {
             mScrollInterpolator.setVelocityAtZero(Math.abs(mVelocity));
             mAnimationDuration = calculateDuration(mVelocity,Math.abs((mShiftRange - skillView.getTranslationY())/mShiftRange));
@@ -295,6 +288,8 @@ public class MyRelativeLayout extends RelativeLayout {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float value = (Float) animation.getAnimatedValue();
+                float progress = value/mShiftRange;
+                pullView.setProgress(progress);
                 skillView.setTranslationY(value);
             }
         });

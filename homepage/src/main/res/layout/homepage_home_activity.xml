@@ -1,4 +1,4 @@
-<com.fenda.homepage.model.MyRelativeLayout
+<com.fenda.homepage.view.MyRelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,13 +9,13 @@
 
 
 
-    <com.fenda.homepage.model.LauncherRecycleView
+    <com.fenda.homepage.view.LauncherRecycleView
         android:id="@+id/rv_Tipinfo"
         android:background="@color/color_B559CBD9"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
-    </com.fenda.homepage.model.LauncherRecycleView>
+    </com.fenda.homepage.view.LauncherRecycleView>
 
     <!--下部按钮 图片菜单条目 开始-->
 
@@ -268,4 +268,4 @@
 
     <!--</com.fenda.common.view.MyNestedScrollView>-->
 
-</com.fenda.homepage.model.MyRelativeLayout>
+</com.fenda.homepage.view.MyRelativeLayout>
