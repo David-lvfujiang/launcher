@@ -79,7 +79,15 @@ public class ContentProviderManager {
         }
         return result;
     }
-
+    public boolean isExistPhone(String phone) {
+        boolean result = false;
+        ContentResolver resolver = mContext.getContentResolver();
+        Cursor cursor = resolver.query(mUri, null, "phone = ? ", new String[]{phone}, null);
+        if (cursor != null && cursor.moveToNext()) {
+            result = true;
+        }
+        return result;
+    }
     /**
      * 联系人表是否为空
      */

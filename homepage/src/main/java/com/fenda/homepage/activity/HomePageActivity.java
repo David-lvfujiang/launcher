@@ -34,7 +34,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewStub;
-import android.view.ViewTreeObserver;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
@@ -452,6 +451,10 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             LogUtil.d("家庭解散通知1 " + message);
             LogUtil.d("家庭解散通知1 " + message.getData().getMsg());
             ContentProviderManager.getInstance(mContext, Constant.Common.URI).clear();
+            ICallProvider callService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
+            if (callService != null) {
+                callService.syncFamilyContacts();
+            }
             AppUtils.saveBindedDevice(getApplicationContext(), false);
             IAppLeaveMessageProvider leaveMessageProvider = (IAppLeaveMessageProvider) ARouter.getInstance().build(RouterPath.Leavemessage.LEAVEMESSAGE_SERVICE).navigation();
             leaveMessageProvider.removeRongIMAllMessage();
@@ -464,6 +467,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             isExitHome = true;
 
             ARouter.getInstance().build(RouterPath.SETTINGS.SettingsBindDeviceActivity).navigation();
+
         }
         //普通成员退出家庭通知
         else if (message.getCode() == TCPConfig.MessageType.USER_EXIT_FAMILY) {

@@ -2,9 +2,15 @@ package io.rong.callkit.util;
 
 import android.content.Context;
 
+import com.fenda.common.BaseApplication;
+import com.fenda.common.constant.Constant;
+import com.fenda.common.db.ContentProviderManager;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import io.rong.callkit.bean.CallRecoderBean;
+import io.rong.callkit.db.SqliteManager;
 import io.rong.callkit.gen.CallRecoderBeanDao;
 import io.rong.callkit.manager.DaoManager;
 
@@ -125,12 +131,22 @@ public class DbUtil {
     }
 
     /*
-     * 查询数据
+     * 查询已存在联系人通话记录数据
+     *
      *
      * */
-    ///////返回多条数据
-    public List<CallRecoderBean> listAllCallRecoder() {
 
-        return daoManager.getDaoSession().queryBuilder(CallRecoderBean.class).orderDesc(CallRecoderBeanDao.Properties._id).list();
+    public List<CallRecoderBean> listAllCallRecoderByPhone() {
+        List<CallRecoderBean> list = new ArrayList<>();
+        List<CallRecoderBean> tempList = daoManager.getDaoSession().queryBuilder(CallRecoderBean.class).orderDesc(CallRecoderBeanDao.Properties._id).list();
+        if (tempList != null && !tempList.isEmpty()) {
+            for (CallRecoderBean callRecoderBean : tempList) {
+                String phone = callRecoderBean.getPhone();
+                if (ContentProviderManager.getInstance(BaseApplication.getContext(), Constant.Common.URI).isExistPhone(phone)) {
+                    list.add(callRecoderBean);
+                }
+            }
+        }
+        return list;
     }
 }
