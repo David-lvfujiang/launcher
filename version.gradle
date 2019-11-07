@@ -143,8 +143,8 @@ BUILD_VERSIONS.MIN_SDK = 21
 BUILD_VERSIONS.TARGET_SDK = 28
 BUILD_VERSIONS.COMPILE_SDK = 28
 BUILD_VERSIONS.BUILD_TOOLS = "29.0.1"
-BUILD_VERSIONS.VERSION_CODE = 7
-BUILD_VERSIONS.VERSION_NAME = "1.0.7"
+BUILD_VERSIONS.VERSION_CODE = 8
+BUILD_VERSIONS.VERSION_NAME = "1.0.8"
 
 ext.BUILD_VERSIONS = BUILD_VERSIONS
 
@@ -202,7 +202,7 @@ fenda.calculator_version = "1.0.2"
 //日历
 fenda.calendar_artifactId = "calendar"
 fenda.calendar_name = "Calendar"
-fenda.calendar_version = "1.0.6"
+fenda.calendar_version = "1.0.8"
 
 
 fenda.capture_artifactId = "capture"
@@ -211,48 +211,48 @@ fenda.capture_version = "1.0.1"
 //视频通话
 fenda.call_artifactId = "call"
 fenda.call_name = "Call"
-fenda.call_version = "1.0.3"
+fenda.call_version = "1.0.4"
 //股票
 fenda.encyclopdia_artifactId = "encyclopedia"
 fenda.encyclopdia_name = "Encyclopedia"
-fenda.encyclopdia_version = "1.0.2"
+fenda.encyclopdia_version = "1.0.3"
 //相册
 fenda.gallery_artifactId = "gallery"
 fenda.gallery_name = "Gallery"
-fenda.gallery_version = "1.0.2"
+fenda.gallery_version = "1.0.3"
 
 //首页
 fenda.homepage_artifactId = "homepage"
 fenda.homepage_name = "Homepage"
-fenda.homepage_version = "1.0.6"
+fenda.homepage_version = "1.0.7"
 //留言
 fenda.leavemessage_artifactId = "leavemessage"
 fenda.leavemessage_name = "Leavemessage"
-fenda.leavemessage_version = "1.0.2"
+fenda.leavemessage_version = "1.0.3"
 //新闻
 fenda.news_artifactId = "news"
 fenda.news_name = "News"
-fenda.news_version = "1.0.5"
+fenda.news_version = "1.0.6"
 //播放器
 fenda.player_artifactId = "player"
 fenda.player_name = "Player"
-fenda.player_version = "1.0.3"
+fenda.player_version = "1.0.4"
 //提醒
 fenda.remind_artifactId = "remind"
 fenda.remind_name = "Remind"
-fenda.remind_version = "1.0.3"
+fenda.remind_version = "1.0.4"
 //设置
 fenda.settings_artifactId = "settings"
 fenda.settings_name = "Settings"
-fenda.settings_version = "1.0.2"
+fenda.settings_version = "1.0.3"
 //语音
 fenda.voice_artifactId = "voice"
 fenda.voice_name = "Voice"
-fenda.voice_version = "1.0.6"
+fenda.voice_version = "1.0.8"
 //天气
 fenda.weather_artifactId = "weather"
 fenda.weather_name = "Weather"
-fenda.weather_version = "1.0.3"
+fenda.weather_version = "1.0.4"
 
 ext.fenda = fenda
 

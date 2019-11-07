@@ -690,6 +690,22 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                         provider = ARouter.getInstance().navigation(IEncyclopediaProvider.class);
                     }
                     provider.processIdiomTextMsg(state);
+                }else if (task.equals("星座运势")){
+                    Observable.create(new ObservableOnSubscribe<String>() {
+                        @Override
+                        public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                            emitter.onNext("");
+                        }
+                    }).compose(RxSchedulers.<String>io_main())
+                            .subscribe(new Consumer<String>() {
+                                @Override
+                                public void accept(String s) throws Exception {
+                                    if (provider == null) {
+                                        provider = ARouter.getInstance().navigation(IEncyclopediaProvider.class);
+                                    }
+                                    provider.processConstellationTextMsg(state);
+                                }
+                            });
                 }
                 break;
             case VoiceConstant.SIBICHI.CONTEXT_WIDGET_TEXT:

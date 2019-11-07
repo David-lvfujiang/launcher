@@ -2,41 +2,37 @@ ext.local = [:]
 
 def local = [:]
 //本地maven地址
-local.mavenAddress = 'file:H:\\work\\mywork\\localMaven\\repository'
+local.mavenAddress = 'file:H:\\workSpace\\localMaven\\repository'
 //andlink协议
-
-
-
-
-local.capture_version = "1.0.4"
-
 local.andlink_version = "1.0.0"
 //计算器
-local.calculator_version = "1.0.2"
+local.calculator_version = "1.0.3"
 //日历
-local.calendar_version = "1.0.3"
+local.calendar_version = "1.0.4"
 //视频通话
-local.call_version = "1.0.3"
+local.call_version = "1.0.4"
 //股票
-local.encyclopedia_version = "1.0.1"
+local.encyclopedia_version = "1.0.3"
 //相册
-local.gallery_version = "1.0.1"
+local.gallery_version = "1.0.2"
 //首页
-local.homepage_version = "1.0.47"
+local.homepage_version = "1.0.52"
 //留言
-local.leavemessage_version = "1.0.3"
+local.leavemessage_version = "1.0.4"
 //新闻
-local.news_version = "1.0.2"
+local.news_version = "1.0.5"
 //播放器
-local.player_version = "1.0.5"
+local.player_version = "1.0.7"
 //提醒
-local.remind_version = "1.0.1"
+local.remind_version = "1.0.2"
 //设置
-local.settings_version = "1.0.6"
+local.settings_version = "1.0.7"
 //语音
-local.voice_version = "1.0.28"
+local.voice_version = "1.0.31"
 //天气
 local.weather_version = "1.0.5"
+
+local.capture_version = "1.0.1"
 
 ext.local = local
 
