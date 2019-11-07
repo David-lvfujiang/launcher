@@ -32,6 +32,7 @@ public class LeaveMessageService implements IAppLeaveMessageProvider, RongIMClie
     String userId;
     /**
      * 未读消息监听回调
+     *
      * @param i
      */
     private IUnReadMessageObserver observer = new IUnReadMessageObserver() {
@@ -54,7 +55,7 @@ public class LeaveMessageService implements IAppLeaveMessageProvider, RongIMClie
         //接收消息监听
         RongIM.setOnReceiveMessageListener(this);
         //设置内容提供者，提供用户头像、用户名
-        RongIM.setUserInfoProvider(new UserInfoProvider(),false);
+        RongIM.setUserInfoProvider(new UserInfoProvider(), false);
         //动态监听连接状态
         RongIM.setConnectionStatusListener(new RongIMClient.ConnectionStatusListener() {
             @Override
@@ -111,15 +112,19 @@ public class LeaveMessageService implements IAppLeaveMessageProvider, RongIMClie
      */
     public void openConversationActivity(String userId, String userName) {
         LogUtil.e("新消息");
-        ActivityManager activityManager = (ActivityManager) BaseApplication.getBaseInstance().getSystemService(ACTIVITY_SERVICE);
-        //获取当前的activity
-        ComponentName currentActivityName = activityManager.getRunningTasks(1).get(0).topActivity;
-        LogUtil.e(currentActivityName.getShortClassName());
-        LogUtil.e(LeaveMessageConversationActivity.class.getName());
-        //判断当前的activity是否是会话页面
-        if (LeaveMessageConversationActivity.class.getName().equals(currentActivityName.getShortClassName()) == false) {
-            //打开提示界面
-            ARouter.getInstance().build(RouterPath.Leavemessage.LEAVEMESSAGE_DIALOG_ACTIVITY).withString("userId", userId).withString("userName", userName).navigation();
+        try {
+            ActivityManager activityManager = (ActivityManager) BaseApplication.getBaseInstance().getSystemService(ACTIVITY_SERVICE);
+            //获取当前的activity
+            ComponentName currentActivityName = activityManager.getRunningTasks(1).get(0).topActivity;
+            LogUtil.e(currentActivityName.getShortClassName());
+            LogUtil.e(LeaveMessageConversationActivity.class.getName());
+            //判断当前的activity是否是会话页面
+            if (LeaveMessageConversationActivity.class.getName().equals(currentActivityName.getShortClassName()) == false) {
+                //打开提示界面
+                ARouter.getInstance().build(RouterPath.Leavemessage.LEAVEMESSAGE_DIALOG_ACTIVITY).withString("userId", userId).withString("userName", userName).navigation();
+            }
+        } catch (Exception e) {
+            LogUtil.e(e.toString());
         }
     }
 
@@ -129,6 +134,7 @@ public class LeaveMessageService implements IAppLeaveMessageProvider, RongIMClie
      */
     @Override
     public void openConversationListActivity() {
+
         RongIM.getInstance().startConversationList(BaseApplication.getBaseInstance());
     }
 
@@ -140,18 +146,23 @@ public class LeaveMessageService implements IAppLeaveMessageProvider, RongIMClie
      */
     @Override
     public void removeRongIMMessage(String userPhoneNumber) {
-        RongIM.getInstance().removeConversation(Conversation.ConversationType.PRIVATE, userPhoneNumber, new RongIMClient.ResultCallback<Boolean>() {
-            @Override
-            public void onSuccess(Boolean aBoolean) {
-                LogUtil.e("删除成功");
-                RongIM.getInstance().addUnReadMessageCountChangedObserver(observer, Conversation.ConversationType.PRIVATE);
-                RongIM.getInstance().removeUnReadMessageCountChangedObserver(observer);
-            }
-            @Override
-            public void onError(RongIMClient.ErrorCode errorCode) {
-                LogUtil.e("删除失败");
-            }
-        });
+        try {
+            RongIM.getInstance().removeConversation(Conversation.ConversationType.PRIVATE, userPhoneNumber, new RongIMClient.ResultCallback<Boolean>() {
+                @Override
+                public void onSuccess(Boolean aBoolean) {
+                    LogUtil.e("删除成功");
+                    RongIM.getInstance().addUnReadMessageCountChangedObserver(observer, Conversation.ConversationType.PRIVATE);
+                    RongIM.getInstance().removeUnReadMessageCountChangedObserver(observer);
+                }
+
+                @Override
+                public void onError(RongIMClient.ErrorCode errorCode) {
+                    LogUtil.e("删除失败");
+                }
+            });
+        } catch (Exception e) {
+            LogUtil.e(e.toString());
+        }
     }
 
     /**
@@ -159,17 +170,23 @@ public class LeaveMessageService implements IAppLeaveMessageProvider, RongIMClie
      */
     @Override
     public void removeRongIMAllMessage() {
-        RongIM.getInstance().clearConversations(new RongIMClient.ResultCallback() {
-            @Override
-            public void onSuccess(Object o) {
-                LogUtil.e("删除成功");
-                RongIM.getInstance().addUnReadMessageCountChangedObserver(observer, Conversation.ConversationType.PRIVATE);
-                RongIM.getInstance().removeUnReadMessageCountChangedObserver(observer);
-            }
-            @Override
-            public void onError(RongIMClient.ErrorCode errorCode) {
+        try {
+            RongIM.getInstance().clearConversations(new RongIMClient.ResultCallback() {
+                @Override
+                public void onSuccess(Object o) {
+                    LogUtil.e("删除成功");
+                    RongIM.getInstance().addUnReadMessageCountChangedObserver(observer, Conversation.ConversationType.PRIVATE);
+                    RongIM.getInstance().removeUnReadMessageCountChangedObserver(observer);
+                }
 
-            }
-        }, Conversation.ConversationType.PRIVATE);
+                @Override
+                public void onError(RongIMClient.ErrorCode errorCode) {
+
+                }
+            }, Conversation.ConversationType.PRIVATE);
+        } catch (Exception e) {
+            LogUtil.e(e.toString());
+        }
     }
+
 }

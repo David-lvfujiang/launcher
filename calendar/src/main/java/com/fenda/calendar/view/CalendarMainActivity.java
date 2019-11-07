@@ -119,6 +119,8 @@ public class CalendarMainActivity extends BaseActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        //清除handler
+        handler.removeMessages(AUDIO_CONVERSE_CLOSE);
         setIntent(intent);
         calendar = getIntent().getParcelableExtra("calendar");
         initData();

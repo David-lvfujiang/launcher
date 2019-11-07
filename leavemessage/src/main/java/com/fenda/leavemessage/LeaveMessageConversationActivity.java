@@ -47,13 +47,6 @@ public class LeaveMessageConversationActivity extends BaseActivity implements Vi
     @Override
     public void initData() {
         //获取音频服务
-//        AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
-//        //设置声音模式
-//        audioManager.setMode(AudioManager.STREAM_MUSIC);
-//        //关闭麦克风
-//        audioManager.setMicrophoneMute(false);
-//        // 打开扬声器
-//        audioManager.setSpeakerphoneOn(true);
         LeaveMessageBean leaveMessageBean = new LeaveMessageBean(0);
         EventBusUtils.post(leaveMessageBean);
         LogUtil.e("数量变化" + 0);

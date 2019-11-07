@@ -96,6 +96,8 @@ public class EncyclopediaSharesActivity extends BaseActivity implements View.OnC
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        //清除handler
+        handler.removeMessages(AUDIO_CONVERSE_CLOSE);
         shares = intent.getParcelableExtra("shares");
         initData();
     }

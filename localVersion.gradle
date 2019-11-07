@@ -22,7 +22,7 @@ local.encyclopedia_version = "1.0.1"
 //相册
 local.gallery_version = "1.0.1"
 //首页
-local.homepage_version = "1.0.46"
+local.homepage_version = "1.0.47"
 //留言
 local.leavemessage_version = "1.0.3"
 //新闻
@@ -34,9 +34,9 @@ local.remind_version = "1.0.1"
 //设置
 local.settings_version = "1.0.6"
 //语音
-local.voice_version = "1.0.27"
+local.voice_version = "1.0.28"
 //天气
-local.weather_version = "1.0.4"
+local.weather_version = "1.0.5"
 
 ext.local = local
 

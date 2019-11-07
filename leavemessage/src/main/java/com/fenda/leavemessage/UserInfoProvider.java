@@ -6,6 +6,7 @@ import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.util.LogUtil;
 import com.fenda.leavemessage.util.LeaveMessageGetUserUtil;
 
+import io.rong.imageloader.utils.L;
 import io.rong.imkit.RongIM;
 import io.rong.imlib.model.UserInfo;
 
@@ -29,17 +30,21 @@ public class UserInfoProvider implements RongIM.UserInfoProvider {
 
         mobile = s;
         //根据id查询用户信息
-        UserInfoBean userInfo = LeaveMessageGetUserUtil.getUserInfo(mobile);
-        if (userInfo != null) {
-            LogUtil.i("用户 = " + userInfo.toString());
-            userName = userInfo.getUserName();
-            String icon = userInfo.getIcon();
-            if (icon != null && !"".equals(icon) && !"null".equals(icon.trim())) {
-                LogUtil.i("头像 = " + icon);
-                userHeadPicture = icon;
+        try {
+            UserInfoBean userInfo = LeaveMessageGetUserUtil.getUserInfo(mobile);
+            if (userInfo != null) {
+                LogUtil.i("用户 = " + userInfo.toString());
+                userName = userInfo.getUserName();
+                String icon = userInfo.getIcon();
+                if (icon != null && !"".equals(icon) && !"null".equals(icon.trim())) {
+                    LogUtil.i("头像 = " + icon);
+                    userHeadPicture = icon;
+                }
+            } else {
+                LogUtil.i("找不到用户");
             }
-        } else {
-            LogUtil.i("找不到用户");
+        } catch (Exception e) {
+            LogUtil.e(e.toString());
         }
         //创建融云的userInfo
         UserInfo userInfoRM = new UserInfo(mobile, userName, Uri.parse(userHeadPicture));

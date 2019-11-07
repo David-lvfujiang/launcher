@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.fenda.common.base.BaseActivity;
+import com.fenda.common.util.LogUtil;
 
 import io.rong.imkit.fragment.ConversationListFragment;
 import io.rong.imlib.model.Conversation;
@@ -31,17 +32,22 @@ public class LeaveMessageListConversationActivity extends BaseActivity implement
 
     @Override
     public void initData() {
-        FragmentManager fragmentManage = getSupportFragmentManager();
-        ConversationListFragment fragement = (ConversationListFragment) fragmentManage.findFragmentById(R.id.conversationlist);
-        Uri uri = Uri.parse("rong://" + getApplicationInfo().packageName).buildUpon()
-                .appendPath("conversationlist")
-                .appendQueryParameter(Conversation.ConversationType.PRIVATE.getName(), "false")
-                .appendQueryParameter(Conversation.ConversationType.GROUP.getName(), "false")
-                .appendQueryParameter(Conversation.ConversationType.PUBLIC_SERVICE.getName(), "false")
-                .appendQueryParameter(Conversation.ConversationType.APP_PUBLIC_SERVICE.getName(), "false")
-                .appendQueryParameter(Conversation.ConversationType.SYSTEM.getName(), "true")
-                .build();
-        fragement.setUri(uri);
+        try {
+            FragmentManager fragmentManage = getSupportFragmentManager();
+            ConversationListFragment fragement = (ConversationListFragment) fragmentManage.findFragmentById(R.id.conversationlist);
+            Uri uri = Uri.parse("rong://" + getApplicationInfo().packageName).buildUpon()
+                    .appendPath("conversationlist")
+                    .appendQueryParameter(Conversation.ConversationType.PRIVATE.getName(), "false")
+                    .appendQueryParameter(Conversation.ConversationType.GROUP.getName(), "false")
+                    .appendQueryParameter(Conversation.ConversationType.PUBLIC_SERVICE.getName(), "false")
+                    .appendQueryParameter(Conversation.ConversationType.APP_PUBLIC_SERVICE.getName(), "false")
+                    .appendQueryParameter(Conversation.ConversationType.SYSTEM.getName(), "true")
+                    .build();
+            fragement.setUri(uri);
+        }
+        catch (Exception e){
+            LogUtil.e(e.toString());
+        }
     }
 
     @Override
