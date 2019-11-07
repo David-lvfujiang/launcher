@@ -47,4 +47,5 @@ public interface Constant {
     String MIGU_MOVIE = "migu_movie";
     String MIGU_READ = "migu_read";
     String MIGU_CITIC = "migu_citic";
+
 }

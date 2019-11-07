@@ -85,10 +85,5 @@ repositories {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     annotationProcessor deps.arouter_compiler
-//    if (isLocalMaven.toBoolean()){
-//        implementation deps.fenda_common_local
-//    }else {
-//        implementation deps.fenda_common
-//    }
     implementation project(path: ':common')
 }

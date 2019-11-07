@@ -1,7 +1,9 @@
 package com.fenda.common.constant;
 
 import android.net.Uri;
+import android.view.ViewConfiguration;
 
+import com.fenda.common.BaseApplication;
 import com.fenda.common.db.ContentProviderManager;
 
 /**
@@ -125,8 +127,10 @@ public interface Constant {
         int INIT_VOICE_SUCCESS = Integer.MAX_VALUE;
         //回到首页
         int GO_HOME = Integer.MAX_VALUE-1;
-        //最小滑动距离
-        int MIX_MOVE = -10;
+        //首页
+        int HOME_PAGE = 0;
+        //技能
+        int ALL_SKILL = 1;
 
     }
 

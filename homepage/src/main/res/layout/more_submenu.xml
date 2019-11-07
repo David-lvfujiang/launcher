@@ -1,65 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.fenda.common.view.MyNestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/nest_scroll"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:visibility="invisible"
+    android:background="@mipmap/submenu_bg"
+    >
 
 
-    <LinearLayout
-        android:id="@+id/content"
-        android:orientation="vertical"
+<!--        <LinearLayout-->
+<!--            android:id="@+id/ll_submenu_back"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="60dp"-->
+<!--            android:gravity="center"-->
+
+<!--            >-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/iv_submenu_drop_left"-->
+<!--                android:layout_width="35dp"-->
+<!--                android:layout_height="20dp"-->
+<!--                android:src="@mipmap/submenu_drop_left" />-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/iv_submenu_drop_right"-->
+<!--                android:layout_width="35dp"-->
+<!--                android:layout_height="20dp"-->
+<!--                android:src="@mipmap/submenu_drop_right" />-->
+
+<!--        </LinearLayout>-->
+
+    <com.fenda.homepage.model.PullView
+        android:id="@+id/pullView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@mipmap/submenu_bg"
-
-        >
-        <LinearLayout
-            android:id="@+id/ll_submenu_back"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:gravity="center"
-
-            >
-
-            <ImageView
-                android:id="@+id/iv_submenu_drop_left"
-                android:layout_width="35dp"
-                android:layout_height="20dp"
-                android:src="@mipmap/submenu_drop_left" />
-
-            <ImageView
-                android:id="@+id/iv_submenu_drop_right"
-                android:layout_width="35dp"
-                android:layout_height="20dp"
-                android:src="@mipmap/submenu_drop_right" />
-
-        </LinearLayout>
+        android:layout_height="60dp"/>
 
 
-
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_submenu_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/demension_dp10"
-            android:layout_marginStart="@dimen/demension_dp10" />
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/demension_dp55"
-            android:text="主人，下面这些功能我们正在快马加鞭地开发，敬请期待～"
-            android:textColor="#FFF"
-            android:textSize="28px"
-            android:paddingLeft="@dimen/demension_dp20"
-            />
+    <com.fenda.common.view.MyNestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <RelativeLayout
-            android:id="@+id/rela_be_dev"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
+            android:layout_height="match_parent"
             >
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_submenu_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/demension_dp10"
+                android:layout_marginStart="@dimen/demension_dp10"
+                />
+
+
+
+
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/demension_dp55"
+                android:text="主人，下面这些功能我们正在快马加鞭地开发，敬请期待～"
+                android:textColor="#FFF"
+                android:textSize="28px"
+                android:paddingLeft="@dimen/demension_dp20"
+                android:layout_below="@id/rv_submenu_list"
+                />
+
 
 
 
@@ -75,6 +84,7 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
                 android:onClick="onPullOnclick"
+                android:layout_below="@id/textView"
 
                 >
 
@@ -105,6 +115,7 @@
                 android:orientation="vertical"
                 android:onClick="onPullOnclick"
                 android:layout_toRightOf="@id/lin1"
+                android:layout_below="@id/textView"
 
                 >
 
@@ -135,6 +146,7 @@
                 android:orientation="vertical"
                 android:onClick="onPullOnclick"
                 android:layout_toRightOf="@id/lin2"
+                android:layout_below="@id/textView"
 
                 >
 
@@ -165,6 +177,7 @@
                 android:orientation="vertical"
                 android:onClick="onPullOnclick"
                 android:layout_toRightOf="@id/lin3"
+                android:layout_below="@id/textView"
 
                 >
 
@@ -280,9 +293,16 @@
 
         </RelativeLayout>
 
+    </com.fenda.common.view.MyNestedScrollView>
 
 
-    </LinearLayout>
 
 
-</com.fenda.common.view.MyNestedScrollView>
+
+
+
+
+
+
+
+</LinearLayout>

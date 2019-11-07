@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/demension_dp55"
+        android:text="主人，下面这些功能我们正在快马加鞭地开发，敬请期待～"
+        android:textColor="#FFF"
+        android:textSize="28px"
+        android:paddingLeft="@dimen/demension_dp20"
+        />
+
+
+
+
+        <LinearLayout
+            android:id="@+id/lin1"
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/submenu_layout_shape"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:onClick="onPullOnclick"
+            android:layout_below="@id/textView"
+
+            >
+
+            <ImageView
+                android:layout_width="112dp"
+                android:layout_height="112dp"
+                android:layout_marginTop="32dp"
+                android:src="@mipmap/submenu_ico_sleep" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="19dp"
+                android:text="小睡眠"
+                android:textColor="#fff"
+                android:textSize="28sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/lin2"
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/submenu_layout_shape"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:onClick="onPullOnclick"
+            android:layout_toRightOf="@id/lin1"
+            android:layout_below="@id/textView"
+
+            >
+
+            <ImageView
+                android:layout_width="112dp"
+                android:layout_height="112dp"
+                android:layout_marginTop="32dp"
+                android:src="@mipmap/submenu_ico_voice" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="19dp"
+                android:text="声音博物馆"
+                android:textColor="#fff"
+                android:textSize="28sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/lin3"
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/submenu_layout_shape"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:onClick="onPullOnclick"
+            android:layout_toRightOf="@id/lin2"
+            android:layout_below="@id/textView"
+
+            >
+
+            <ImageView
+                android:layout_width="112dp"
+                android:layout_height="112dp"
+                android:layout_marginTop="32dp"
+                android:src="@mipmap/submenu_ico_traffic_restrictions" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="19dp"
+                android:text="交通限行"
+                android:textColor="#fff"
+                android:textSize="28sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/lin4"
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/submenu_layout_shape"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:onClick="onPullOnclick"
+            android:layout_toRightOf="@id/lin3"
+            android:layout_below="@id/textView"
+
+            >
+
+            <ImageView
+                android:layout_width="112dp"
+                android:layout_height="112dp"
+                android:layout_marginTop="32dp"
+                android:src="@mipmap/submenu_ico_exchange_rate" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="19dp"
+                android:text="汇率"
+                android:textColor="#fff"
+                android:textSize="28sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/lin5"
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/submenu_layout_shape"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:onClick="onPullOnclick"
+            android:layout_below="@id/lin1"
+
+            >
+
+            <ImageView
+                android:layout_width="112dp"
+                android:layout_height="112dp"
+                android:layout_marginTop="32dp"
+                android:src="@mipmap/submenu_icon_food" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="19dp"
+                android:text="食物营养查询"
+                android:textColor="#fff"
+                android:textSize="28sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/lin6"
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/submenu_layout_shape"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:onClick="onPullOnclick"
+            android:layout_below="@id/lin1"
+            android:layout_toRightOf="@id/lin5"
+
+            >
+
+            <ImageView
+                android:layout_width="112dp"
+                android:layout_height="112dp"
+                android:layout_marginTop="32dp"
+                android:src="@mipmap/submenu_ico_xinlingjitang" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="19dp"
+                android:text="心灵鸡汤"
+                android:textColor="#fff"
+                android:textSize="28sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/lin7"
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/submenu_layout_shape"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:onClick="onPullOnclick"
+            android:layout_below="@id/lin1"
+            android:layout_toRightOf="@id/lin6"
+
+            >
+
+            <ImageView
+                android:layout_width="112dp"
+                android:layout_height="112dp"
+                android:layout_marginTop="32dp"
+                android:src="@mipmap/submenu_ico_express" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="19dp"
+                android:text="快递查询"
+                android:textColor="#fff"
+                android:textSize="28sp" />
+        </LinearLayout>
+
+
+
+
+
+</RelativeLayout>

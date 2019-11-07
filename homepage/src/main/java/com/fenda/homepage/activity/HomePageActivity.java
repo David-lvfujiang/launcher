@@ -2,6 +2,8 @@ package com.fenda.homepage.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -15,6 +17,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.LinkProperties;
 import android.net.Network;
@@ -24,7 +27,9 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.v4.graphics.ColorUtils;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -66,11 +71,13 @@ import com.fenda.common.provider.IVoiceRequestProvider;
 import com.fenda.common.provider.IWeatherProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.AppUtils;
+import com.fenda.common.util.DisplayUtil;
 import com.fenda.common.util.GsonUtil;
 import com.fenda.common.util.ImageUtil;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.LogUtils;
 import com.fenda.common.util.SPUtils;
+import com.fenda.common.util.ScreenUtils;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.common.view.MyNestedScrollView;
 import com.fenda.homepage.Adapter.GridAdapter;
@@ -81,7 +88,15 @@ import com.fenda.homepage.bean.ApplyBean;
 import com.fenda.homepage.bean.RepairPersonHeadBean;
 import com.fenda.homepage.contract.MainContract;
 import com.fenda.homepage.data.AllApplyData;
+import com.fenda.homepage.model.AllAppsTransitionController;
+import com.fenda.homepage.model.DragLayer;
+import com.fenda.homepage.model.LauncherAnimUtils;
+import com.fenda.homepage.model.LauncherRecycleView;
 import com.fenda.homepage.model.MainModel;
+import com.fenda.homepage.model.MyRecycleView;
+import com.fenda.homepage.model.MyRelativeLayout;
+import com.fenda.homepage.model.PullView;
+import com.fenda.homepage.model.SwipeDetector;
 import com.fenda.homepage.observer.MyContentObserver;
 import com.fenda.homepage.presenter.MainPresenter;
 import com.fenda.homepage.receiver.ScreenOffAdminReceiver;
@@ -104,12 +119,13 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     private final static String TAG = "HomePageActivity";
 
     TextClock mHeaderTimeTv;
-    RecyclerView mTipInfoRv;
+    LauncherRecycleView mTipInfoRv;
     ImageView mHeaderWeatherIv;
     TextView mHeaderWeatherTv;
     ImageView mAiTipIv;
     TextView mAiTipTitleTv;
     TextView mAiTipMicTv;
+    private MyRelativeLayout relaPre;
 
     private int showPageIndex;
     private Handler mCyclicRollHandler = new Handler();
@@ -136,9 +152,8 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     private ImageView submenuDropLeft;
     private ImageView submenuDropRight;
     private ContentProviderManager manager;
-    private MyNestedScrollView nestScroll;
-    private LinearLayout ll_submenu_back;
-    private RelativeLayout relaBeDev;
+    private LinearLayout nestScroll;
+//    private LinearLayout ll_submenu_back;
     private ImageView imgGIF;
     private TextView mMsgTv;
     private boolean isWeather;
@@ -149,7 +164,11 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     private static final int CHANGE_Msg = 1;
     private boolean isExitHome;
 
-    private Handler mHandler = new Handler() {
+
+    private MyNestedScrollView scrollView;
+
+
+    private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             LogUtil.e("进入了Oncreate的接收到了handler信息");
@@ -211,14 +230,13 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         }
     };
 
-    private float downX;
-    private float downY;
-    private int moveX;
-    private int moveY;
     private String mNewUserName;
 
     private ScheduledThreadPoolExecutor executorService;
     private int mMsgType;
+
+    private int LAUNCHER_STATUS = Constant.Common.HOME_PAGE;
+    private PullView pullView;
 
 
     @Override
@@ -227,6 +245,16 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         return R.layout.homepage_home_activity;
     }
 
+    public int getLauncherState(){
+
+        return LAUNCHER_STATUS;
+    }
+
+    public void setLauncherState(int state){
+        this.LAUNCHER_STATUS = state;
+    }
+
+
     @Override
     public void initView() {
         BaseApplication.getBaseInstance().setRequestWeather(false);
@@ -234,6 +262,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mTipInfoRv = findViewById(R.id.rv_Tipinfo);
         mHeaderWeatherIv = findViewById(R.id.iv_header_weather);
         mHeaderWeatherTv = findViewById(R.id.tv_header_temp);
+        relaPre         = findViewById(R.id.rela_pre);
 
         mAiTipIv = findViewById(R.id.iv_main_tip_icon);
         mAiTipTitleTv = findViewById(R.id.tv_main_item_content);
@@ -722,7 +751,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         if (initVoiceProvider != null && !BaseApplication.getBaseInstance().isRequestWeather()) {
             initVoiceProvider.openVoice();
         }
-        startCycleRollRunabler();
+//        startCycleRollRunnable();
 //        mCyclicRollHandler.postDelayed(cycleRollRunabler, HomeUtil.PAGE_SHOW_TIME);
     }
 
@@ -742,6 +771,14 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
         LogUtil.e("Homepage onStop方法执行");
 
+    }
+
+    public void stopCycleRollRunnable() {
+        if (executorService != null){
+            executorService.setRemoveOnCancelPolicy(true);
+            executorService.shutdown();
+            executorService = null;
+        }
     }
 
 
@@ -908,71 +945,71 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         submenuDropLeft = submenuView.findViewById(R.id.iv_submenu_drop_left);
         submenuDropRight = submenuView.findViewById(R.id.iv_submenu_drop_right);
         nestScroll = submenuView.findViewById(R.id.nest_scroll);
-        ll_submenu_back = submenuView.findViewById(R.id.content);
-        relaBeDev = submenuView.findViewById(R.id.rela_be_dev);
+//        ll_submenu_back = submenuView.findViewById(R.id.content);
+//        relaBeDev = submenuView.findViewById(R.id.rela_be_dev);
         submenuDropLeft.setOnClickListener(this);
         submenuDropRight.setOnClickListener(this);
-        if (relaBeDev.getVisibility() == View.GONE) {
-            relaBeDev.setVisibility(View.VISIBLE);
-        }
-        mTipInfoRv.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                int action = event.getAction();
-                switch (action) {
-                    case MotionEvent.ACTION_DOWN:
-                        downX = event.getX();
-                        downY = event.getY();
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        moveX = (int) (event.getX() - downX);
-                        moveY = (int) (event.getY() - downY);
-                        if (moveY < Constant.Common.MIX_MOVE) {
-                            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) nestScroll.getLayoutParams();
-                            lp.topMargin = moveY;
-                            nestScroll.setLayoutParams(lp);
-                            return true;
-                        }
-                        break;
-                    case MotionEvent.ACTION_UP:
+//        if (relaBeDev.getVisibility() == View.GONE) {
+//            relaBeDev.setVisibility(View.VISIBLE);
+//        }
+//        mTipInfoRv.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                int action = event.getAction();
+//                switch (action) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        downX = event.getX();
+//                        downY = event.getY();
+//                        break;
+//                    case MotionEvent.ACTION_MOVE:
+//                        moveX = (int) (event.getX() - downX);
+//                        moveY = (int) (event.getY() - downY);
+//                        if (moveY < Constant.Common.MIX_MOVE) {
+//                            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) nestScroll.getLayoutParams();
+//                            lp.topMargin = moveY;
+//                            nestScroll.setLayoutParams(lp);
+//                            return true;
+//                        }
+//                        break;
+//                    case MotionEvent.ACTION_UP:
+//
+//                        if (moveY < Constant.Common.MIX_MOVE) {
+//                            int maxMove = BaseApplication.getBaseInstance().getScreenHeight() / 6;
+//                            if (Math.abs(moveY) > maxMove) {
+//                                pullUp();
+//                            } else {
+//                                pullUpReturn();
+//                            }
+//                        }
+//                        moveY = 0;
+//                        downY = 0;
+//
+//                        break;
+//                }
+//
+//
+//                return false;
+//            }
+//        });
+//        nestScroll.setOnClickMoveTouchListener(new MyNestedScrollView.OnMoveTouchClickListener() {
+//            @Override
+//            public void moveTouchListener(NestedScrollView view, int moveY) {
+//                FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) ll_submenu_back.getLayoutParams();
+//                lp.topMargin = moveY;
+//                ll_submenu_back.setLayoutParams(lp);
+//
+//            }
 
-                        if (moveY < Constant.Common.MIX_MOVE) {
-                            int maxMove = BaseApplication.getBaseInstance().getScreenHeight() / 6;
-                            if (Math.abs(moveY) > maxMove) {
-                                pullUp();
-                            } else {
-                                pullUpReturn();
-                            }
-                        }
-                        moveY = 0;
-                        downY = 0;
-
-                        break;
-                }
-
-
-                return false;
-            }
-        });
-        nestScroll.setOnClickMoveTouchListener(new MyNestedScrollView.OnMoveTouchClickListener() {
-            @Override
-            public void moveTouchListener(NestedScrollView view, int moveY) {
-                FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) ll_submenu_back.getLayoutParams();
-                lp.topMargin = moveY;
-                ll_submenu_back.setLayoutParams(lp);
-
-            }
-
-            @Override
-            public void upTouchListener(NestedScrollView view, int moveY) {
-                int maxMove = BaseApplication.getBaseInstance().getScreenHeight() / 6;
-                if (moveY > maxMove) {
-                    pullDown(moveY);
-                } else {
-                    pullDownReturn(moveY);
-                }
-            }
-        });
+//            @Override
+//            public void upTouchListener(NestedScrollView view, int moveY) {
+//                int maxMove = BaseApplication.getBaseInstance().getScreenHeight() / 6;
+//                if (moveY > maxMove) {
+//                    pullDown(moveY);
+//                } else {
+//                    pullDownReturn(moveY);
+//                }
+//            }
+//        });
         initAdapter();
 
 
@@ -982,48 +1019,48 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
      * 上拉
      */
     private void pullUp() {
-        ValueAnimator animator = ValueAnimator.ofInt(moveY, -BaseApplication.getBaseInstance().getScreenHeight());
-        animator.setInterpolator(new OvershootInterpolator());
-        animator.setDuration(800);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int value = (int) animation.getAnimatedValue();
-                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) nestScroll.getLayoutParams();
-                lp.topMargin = value;
-                nestScroll.setLayoutParams(lp);
-
-            }
-        });
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation, boolean isReverse) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation, boolean isReverse) {
-            }
-        });
-        animator.start();
+//        ValueAnimator animator = ValueAnimator.ofInt(moveY, -BaseApplication.getBaseInstance().getScreenHeight());
+//        animator.setInterpolator(new OvershootInterpolator());
+//        animator.setDuration(800);
+//        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//            @Override
+//            public void onAnimationUpdate(ValueAnimator animation) {
+//                int value = (int) animation.getAnimatedValue();
+//                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) nestScroll.getLayoutParams();
+//                lp.topMargin = value;
+//                nestScroll.setLayoutParams(lp);
+//
+//            }
+//        });
+//        animator.addListener(new AnimatorListenerAdapter() {
+//            @Override
+//            public void onAnimationStart(Animator animation, boolean isReverse) {
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animator animation, boolean isReverse) {
+//            }
+//        });
+//        animator.start();
     }
 
     /**
      * 上拉返回
      */
     private void pullUpReturn() {
-        ValueAnimator animator = ValueAnimator.ofInt(moveY, 0);
-        animator.setInterpolator(new OvershootInterpolator());
-        animator.setDuration(800);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int value = (int) animation.getAnimatedValue();
-                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) nestScroll.getLayoutParams();
-                lp.topMargin = value;
-                nestScroll.setLayoutParams(lp);
-            }
-        });
-        animator.start();
+//        ValueAnimator animator = ValueAnimator.ofInt(moveY, 0);
+//        animator.setInterpolator(new OvershootInterpolator());
+//        animator.setDuration(800);
+//        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//            @Override
+//            public void onAnimationUpdate(ValueAnimator animation) {
+//                int value = (int) animation.getAnimatedValue();
+//                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) nestScroll.getLayoutParams();
+//                lp.topMargin = value;
+//                nestScroll.setLayoutParams(lp);
+//            }
+//        });
+//        animator.start();
     }
 
     /**
@@ -1039,9 +1076,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 int value = (int) animation.getAnimatedValue();
-                FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) ll_submenu_back.getLayoutParams();
-                lp.topMargin = value;
-                ll_submenu_back.setLayoutParams(lp);
+//                FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) ll_submenu_back.getLayoutParams();
+//                lp.topMargin = value;
+//                ll_submenu_back.setLayoutParams(lp);
 
             }
         });
@@ -1073,21 +1110,17 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             public void onAnimationUpdate(ValueAnimator animation) {
                 Log.e("TAG", "isRunning = " + animation.isRunning());
                 int value = (int) animation.getAnimatedValue();
-                FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) ll_submenu_back.getLayoutParams();
-                lp.topMargin = value;
-                ll_submenu_back.setLayoutParams(lp);
+//                FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) ll_submenu_back.getLayoutParams();
+//                lp.topMargin = value;
+//                ll_submenu_back.setLayoutParams(lp);
             }
         });
         animator.start();
     }
 
     private void returnDefault() {
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) nestScroll.getLayoutParams();
-        lp.topMargin = 0;
-        nestScroll.setLayoutParams(lp);
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) ll_submenu_back.getLayoutParams();
-        params.topMargin = 0;
-        ll_submenu_back.setLayoutParams(params);
+        nestScroll.setTranslationY(600);
+        setLauncherState(Constant.Common.HOME_PAGE);
     }
 
     private void initAdapter() {
@@ -1300,4 +1333,15 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
         LogUtil.e("进入了Oncreate  : hasFocus = " + hasFocus);
     }
+
+
+
+
+
+
+
+
+
+
+
 }

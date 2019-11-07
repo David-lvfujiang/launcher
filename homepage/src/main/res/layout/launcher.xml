@@ -1,21 +1,18 @@
-<com.fenda.homepage.model.MyRelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/workspace"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activity.HomePageActivity"
-    android:id="@+id/rela_pre"
-    >
+    android:layout_height="match_parent">
 
 
-
-    <com.fenda.homepage.model.LauncherRecycleView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_Tipinfo"
         android:background="@color/color_B559CBD9"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
-    </com.fenda.homepage.model.LauncherRecycleView>
+    </android.support.v7.widget.RecyclerView>
 
     <!--下部按钮 图片菜单条目 开始-->
 
@@ -137,9 +134,8 @@
         android:layout_marginBottom="15dp"
         android:drawableLeft="@mipmap/cm_ico_microphone"
         android:drawablePadding="10dp"
-        android:text="你好小乐, 我要了解更多"
+        android:text="咪咕咪咕, 我要了解更多"
         android:textColor="@color/color_ffffff"
-        android:gravity="center_vertical"
         android:textSize="20sp" />
 
     <TextClock
@@ -243,29 +239,4 @@
         android:layout_marginBottom="@dimen/demension_dp80"
         />
 
-
-
-    <ViewStub
-        android:id="@+id/stub"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout="@layout/more_submenu"
-        />
-
-    <!--<com.fenda.common.view.MyNestedScrollView-->
-        <!--android:id="@+id/nest_scroll"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_below="@id/rv_Tipinfo"-->
-
-        <!--&gt;-->
-
-        <!--&lt;!&ndash;android:layout_below="@id/rv_Tipinfo"&ndash;&gt;-->
-
-
-
-
-
-    <!--</com.fenda.common.view.MyNestedScrollView>-->
-
-</com.fenda.homepage.model.MyRelativeLayout>
+</RelativeLayout>
