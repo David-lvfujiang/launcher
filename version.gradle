@@ -56,7 +56,7 @@ versions.common = "1.0.0"
 versions.common_local = "1.0.0"
 versions.protocol = "1.0.1"
 versions.rong = "1.0.0"
-
+versions.greendao = "3.2.2"
 
 
 def deps = [:]
@@ -132,7 +132,8 @@ deps.rong_imkit = "io.rong:imkit:$versions.rong"
 deps.rong_imlib = "io.rong:imlib:$versions.rong"
 deps.rong_callLib = "io.rong:callLib:$versions.rong"
 deps.rong_callkit = "io.rong:callkit:$versions.rong"
-
+// greendao
+deps.greendao= "org.greenrobot:greendao:$versions.greendao"
 
 
 ext.deps = deps

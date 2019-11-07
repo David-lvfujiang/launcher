@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="callkit_textsize18sp">18sp</dimen>
+    <dimen name="callkit_textsize19sp">19sp</dimen>
     <dimen name="callkit_textsize24sp">24sp</dimen>
+    <dimen name="callkit_textsize28sp">28sp</dimen>
+    <dimen name="callkit_textsize36sp">36sp</dimen>
+    <dimen name="callkit_textsize50sp">50sp</dimen>
     <dimen name="userhead90dp">90dp</dimen>
     <dimen name="userhead188dp">188dp</dimen>
     <dimen name="callkit_userNameMarginTop17dp">17dp</dimen>
@@ -12,11 +16,21 @@
     <dimen name="callkit_dimen_size_16">16dp</dimen>
     <dimen name="callkit_dimen_size_22">22dp</dimen>
     <dimen name="callkit_dimen_size_26">26dp</dimen>
+    <dimen name="callkit_dimen_size_45">45dp</dimen>
+    <dimen name="callkit_dimen_size_46">46dp</dimen>
     <dimen name="callkit_dimen_size_48">48dp</dimen>
     <dimen name="userNameMarginTop17dp">17dp</dimen>
     <dimen name="asynimg_cornerRadius8dp">8dp</dimen>
+    <dimen name="callkit_dimen_size_79">79dp</dimen>
+    <dimen name="callkit_dimen_size_92">92dp</dimen>
+    <dimen name="callkit_dimen_size_100">100dp</dimen>
     <dimen name="callkit_dimen_size_102">102dp</dimen>
     <dimen name="callkit_dimen_size_108">108dp</dimen>
+    <dimen name="callkit_dimen_size_116">116dp</dimen>
+    <dimen name="callkit_dimen_size_120">120dp</dimen>
     <dimen name="callkit_dimen_size_146">146dp</dimen>
+    <dimen name="callkit_dimen_size_150">150dp</dimen>
+    <dimen name="callkit_dimen_size_200">200dp</dimen>
     <dimen name="callkit_dimen_size_219">219dp</dimen>
+    <dimen name="callkit_dimen_size_289">289dp</dimen>
 </resources>

@@ -70,7 +70,7 @@ public class BaseCallActivity extends BaseNoActionBarActivity implements IRongCa
 
     private MediaPlayer mMediaPlayer;
     private Vibrator mVibrator;
-    private long time = 0;
+    protected long time = 0;
     private Runnable updateTimeRunnable;
 
     private boolean shouldRestoreFloat;
@@ -226,7 +226,8 @@ public class BaseCallActivity extends BaseNoActionBarActivity implements IRongCa
             } else {
                 mMediaPlayer.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
             }
-            mMediaPlayer.prepareAsync();
+//            mMediaPlayer.prepareAsync();
+            mMediaPlayer.prepare();
             final AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             if (am != null) {
                 am.setSpeakerphoneOn(false);
@@ -311,7 +312,8 @@ public class BaseCallActivity extends BaseNoActionBarActivity implements IRongCa
             try {
                 uri = RingtoneManager.getValidRingtoneUri(this);
                 mMediaPlayer.setDataSource(this, uri);
-                mMediaPlayer.prepareAsync();
+//                mMediaPlayer.prepareAsync();
+                mMediaPlayer.prepare();
             } catch (IOException e1) {
                 e1.printStackTrace();
                 RLog.e(TAG, "Ringtone not found: " + uri);

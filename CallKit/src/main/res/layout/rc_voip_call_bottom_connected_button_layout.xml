@@ -13,7 +13,7 @@
 
         <ImageView
             android:id="@+id/rc_voip_call_mute_btn"
-            style="@style/callkit_voip_imagebutton_108_centerCrop"
+            style="@style/callkit_voip_imagebutton_100_centerCrop"
             android:layout_centerHorizontal="true"
             android:onClick="onMuteButtonClick"
             android:src="@drawable/rc_voip_mute_selector" />
@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/rc_voip_call_mute_btn"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/callkit_dimen_size_7"
+            android:layout_marginTop="@dimen/callkit_dimen_size_13"
             android:text="@string/rc_voip_mute" />
     </RelativeLayout>
 
@@ -36,10 +36,10 @@
 
         <ImageView
             android:id="@+id/rc_voip_call_hang_up"
-            style="@style/callkit_voip_imagebutton_108_centerCrop"
+            style="@style/callkit_voip_imagebutton_100_centerCrop"
             android:layout_centerHorizontal="true"
             android:onClick="onHangupBtnClick"
-            android:src="@drawable/rc_voip_hangup" />
+            android:src="@mipmap/rc_voip_hangup" />
 
         <TextView
             style="@style/rc_voip_text_style_style"
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/rc_voip_call_hang_up"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/callkit_dimen_size_7"
+            android:layout_marginTop="@dimen/callkit_dimen_size_13"
             android:text="@string/rc_voip_hangup" />
     </RelativeLayout>
 
@@ -59,9 +59,9 @@
 
         <ImageView
             android:id="@+id/rc_voip_audio_chat_btn"
-            style="@style/callkit_voip_imagebutton_108_centerCrop"
+            style="@style/callkit_voip_imagebutton_100_centerCrop"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/rc_voip_switch" />
+            android:src="@mipmap/rc_voip_switch_voice" />
 
         <TextView
             style="@style/rc_voip_text_style_style"
@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/rc_voip_audio_chat_btn"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/callkit_dimen_size_7"
+            android:layout_marginTop="@dimen/callkit_dimen_size_13"
             android:text="@string/rc_voip_switch_to_audio" />
     </RelativeLayout>
 
@@ -82,7 +82,7 @@
 
         <ImageView
             android:id="@+id/rc_voip_invite_btn"
-            style="@style/callkit_voip_imagebutton_108_centerCrop"
+            style="@style/callkit_voip_imagebutton_100_centerCrop"
             android:layout_centerHorizontal="true"
             android:onClick="onHandFreeButtonClick"
             android:src="@drawable/rc_voip_invite" />

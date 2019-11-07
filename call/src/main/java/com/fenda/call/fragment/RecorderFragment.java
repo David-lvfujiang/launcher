@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 
 import com.fenda.call.R;
 import com.fenda.call.adapter.RecorderAdapter;
-import com.fenda.call.service.CallService;
 import com.fenda.common.base.BaseFragment;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -14,9 +13,9 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.rong.callkit.bean.CallRecoder;
-import io.rong.callkit.db.MySqliteOpenHelper;
-import io.rong.callkit.db.SqliteManager;
+import io.rong.callkit.bean.CallRecoderBean;
+import io.rong.callkit.config.Constant;
+import io.rong.callkit.util.DbUtil;
 
 /**
  * @author kevin.wangzhiqiang
@@ -26,11 +25,9 @@ import io.rong.callkit.db.SqliteManager;
 public class RecorderFragment extends BaseFragment {
 
     private RecyclerView mRvRecordeList;
-    private List<CallRecoder> mDatas;
-
     private RecorderAdapter mAdapter;
-    private SqliteManager mSqliteManager;
-
+    private List<CallRecoderBean> mAllDatas;
+    private List<CallRecoderBean> mDatas;
 
     @Override
     public int onBindLayout() {
@@ -44,8 +41,8 @@ public class RecorderFragment extends BaseFragment {
 
     @Override
     public void initData() {
-        mDatas = new ArrayList<>();
-        mSqliteManager = new SqliteManager(getActivity());
+        mAllDatas = DbUtil.getInstance(mContext).listAllCallRecoder();
+        mDatas = sortData(mAllDatas);
         mAdapter = new RecorderAdapter(mContext, mDatas);
         mRvRecordeList.setLayoutManager(new LinearLayoutManager(mContext));
         mRvRecordeList.setAdapter(mAdapter);
@@ -53,16 +50,37 @@ public class RecorderFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSyncEvent(String syncContact) {
-        if (syncContact.equals(CallService.SYNC_CONTACTS)) {
-            mDatas = mSqliteManager.query(MySqliteOpenHelper.DB_TABE);
+        if (Constant.SYNCRECORDER.equals(syncContact)) {
+            mAllDatas = DbUtil.getInstance(mContext).listAllCallRecoder();
+            mDatas = sortData(mAllDatas);
             mAdapter.setNewData(mDatas);
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        mDatas = mSqliteManager.query(MySqliteOpenHelper.DB_TABE);
-        mAdapter.setNewData(mDatas);
+    private List<CallRecoderBean> sortData(List<CallRecoderBean> datas) {
+        List<CallRecoderBean> result = new ArrayList<>();
+        CallRecoderBean tempBean = new CallRecoderBean();
+        if (datas != null) {
+            for (int i = 0; i < datas.size(); i++) {
+                CallRecoderBean bean = datas.get(i);
+                if (i == 0) {
+                    tempBean = datas.get(i);
+                    bean.setCount(1);
+                    result.add(bean);
+
+                } else {
+                    if (tempBean.getCallStatus() == bean.getCallStatus() && tempBean.getPhone().equals(bean.getPhone())) {
+                        CallRecoderBean lastBean = result.get(result.size() - 1);
+                        int count = lastBean.getCount() + 1;
+                        lastBean.setCount(count);
+                    } else {
+                        tempBean = bean;
+                        bean.setCount(1);
+                        result.add(bean);
+                    }
+                }
+            }
+        }
+        return result;
     }
 }

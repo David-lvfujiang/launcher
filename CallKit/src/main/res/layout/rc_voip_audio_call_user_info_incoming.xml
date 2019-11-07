@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/iv_icoming_backgroud"
@@ -14,7 +14,7 @@
         android:id="@+id/iv_large_preview_Mask"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/rc_voip_bg"
+        android:background="@mipmap/rc_voip_bg"
         android:visibility="invisible" />
 
     <ImageView
@@ -27,53 +27,80 @@
         android:src="@drawable/rc_voip_minimize"
         android:visibility="gone" />
 
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/rc_voip_connecting_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/rc_voip_call_minimize"
-        android:layout_marginTop="@dimen/callkit_dimen_size_102">
+        android:layout_marginLeft="@dimen/callkit_dimen_size_116"
+        android:layout_marginTop="@dimen/callkit_dimen_size_92"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
 
         <io.rong.imkit.widget.AsyncImageView
-            android:id="@+id/rc_voip_user_portrait"
-            android:layout_width="@dimen/userhead188dp"
-            android:layout_height="@dimen/userhead188dp"
+            android:id="@+id/rc_voip_connecting_user_portrait"
+            android:layout_width="@dimen/callkit_dimen_size_120"
+            android:layout_height="@dimen/callkit_dimen_size_120"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
             app:RCShape="circle" />
 
-        <TextView
-            android:id="@+id/rc_voip_user_name"
-            style="@style/callkit_voip_text_style_18spWhite"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/rc_voip_user_portrait"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/userNameMarginTop17dp"
-            android:textSize="18sp" />
+            android:layout_marginLeft="@dimen/callkit_dimen_size_16"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/rc_voip_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/fd_text_pay"
+                android:textSize="@dimen/callkit_textsize50sp" />
+
+            <TextView
+                android:id="@+id/rc_voip_call_remind_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rc_voip_user_name"
+                android:textColor="@color/fd_text_pay"
+                android:textSize="@dimen/callkit_textsize28sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rc_voip_connected_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/callkit_dimen_size_120"
+        android:visibility="gone">
+
+        <io.rong.imkit.widget.AsyncImageView
+            android:id="@+id/rc_voip_connected_user_portrait"
+            android:layout_width="@dimen/callkit_dimen_size_120"
+            android:layout_height="@dimen/callkit_dimen_size_120"
+            android:layout_alignParentTop="true"
+            app:RCShape="circle" />
+
 
         <TextView
             android:id="@+id/tv_setupTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/rc_voip_user_name"
+            android:layout_below="@+id/rc_voip_connected_user_portrait"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="12dp"
-            android:textColor="#66FFFFFF"
-            android:textSize="14sp"
-            android:visibility="gone" />
+            android:layout_marginTop="@dimen/callkit_textsize19sp"
+            android:textColor="@color/fd_text_pay"
+            android:textSize="@dimen/callkit_textsize36sp"
+
+            />
 
         <!--记录rc_voip_call_remind_info
         单人视频.被叫  单人语音.主叫\被叫
         -->
-        <TextView
-            android:id="@+id/rc_voip_call_remind_info"
-            style="@style/callkit_voip_text_style_18spWhite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/rc_voip_user_name"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/callkit_dimen_size_12"
-            android:text="@string/rc_voip_call_waiting" />
+
         <!--单人视频——被叫-->
     </RelativeLayout>
 </RelativeLayout>

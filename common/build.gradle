@@ -125,6 +125,6 @@ dependencies {
     api deps.fastjson
 //    api deps.fenda_protocol
     api project(':protocol')
-
+    api deps.greendao
 }
 

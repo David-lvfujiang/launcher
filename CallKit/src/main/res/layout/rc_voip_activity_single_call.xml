@@ -2,22 +2,21 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/rc_voip_bg">
+    android:background="@mipmap/rc_voip_bg">
 
     <FrameLayout
         android:id="@+id/rc_voip_call_large_preview"
         android:layout_width="match_parent"
-        android:background="@color/rc_voip_transparent"
         android:layout_height="match_parent"
         android:visibility="gone"></FrameLayout>
 
     <FrameLayout
         android:id="@+id/rc_voip_call_small_preview"
-        android:layout_width="@dimen/callkit_dimen_size_219"
-        android:layout_height="@dimen/callkit_dimen_size_146"
+        android:layout_width="@dimen/callkit_dimen_size_200"
+        android:layout_height="@dimen/callkit_dimen_size_150"
         android:layout_gravity="left|top"
-        android:layout_marginLeft="@dimen/callkit_dimen_size_22"
-        android:layout_marginTop="@dimen/callkit_dimen_size_26"
+        android:layout_marginLeft="@dimen/callkit_dimen_size_79"
+        android:layout_marginTop="@dimen/callkit_dimen_size_46"
         android:visibility="gone"></FrameLayout>
 
     <RelativeLayout
@@ -29,9 +28,7 @@
             android:id="@+id/rc_voip_user_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:layout_below="@+id/rc_voip_call_minimize"
-            android:gravity="center"
             android:orientation="vertical">
 
         </LinearLayout>
@@ -51,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/callkit_dimen_size_16"></FrameLayout>
+            android:layout_marginBottom="@dimen/callkit_dimen_size_45"></FrameLayout>
 
     </RelativeLayout>
 </FrameLayout>

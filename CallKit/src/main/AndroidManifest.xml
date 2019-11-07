@@ -33,6 +33,7 @@
             android:name=".SingleCallActivity"
             android:exported="true"
             android:launchMode="singleTop"
+            android:theme="@style/NoTitleFullscreen"
             android:windowSoftInputMode="stateHidden|adjustResize">
             <intent-filter>
                 <action android:name="io.rong.intent.action.voip.SINGLEVIDEO" />

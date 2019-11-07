@@ -22,4 +22,9 @@
         <item name="android:layout_height">@dimen/callkit_dimen_size_108</item>
         <item name="android:scaleType">centerCrop</item>
     </style>
+    <style name="callkit_voip_imagebutton_100_centerCrop">
+        <item name="android:layout_width">@dimen/callkit_dimen_size_100</item>
+        <item name="android:layout_height">@dimen/callkit_dimen_size_100</item>
+        <item name="android:scaleType">centerCrop</item>
+    </style>
 </resources>

@@ -4,7 +4,7 @@
     <string name="callkit_voip_ok">确定</string>
     <string name="rc_voip_video">视频聊天</string>
     <string name="rc_voip_audio">语音聊天</string>
-    <string name="rc_voip_call_waiting">正在等待对方接受邀请...</string>
+    <string name="rc_voip_call_waiting">正在呼叫，等待对方接听...</string>
     <string name="rc_voip_call_connecting">连接中......</string>
     <string name="rc_voip_call_busy">忙线中</string>
     <string name="rc_voip_call_no_response">无响应</string>
@@ -19,8 +19,8 @@
     <string name="rc_voip_call_other">其它设备已处理</string>
     <string name="rc_voip_call_conn_user_blocked">用户被开发者后台封禁</string>
 
-    <string name="rc_voip_audio_call_inviting">正在邀请你进行语音聊天...</string>
-    <string name="rc_voip_video_call_inviting">正在邀请你进行视频聊天...</string>
+    <string name="rc_voip_audio_call_inviting">邀请您进行语音通话...</string>
+    <string name="rc_voip_video_call_inviting">邀请您进行视频通话...</string>
     <string name="rc_voip_video_ended">视频聊天已经结束</string>
     <string name="rc_voip_video_no_response">视频聊天未接听</string>
     <string name="rc_voip_audio_ended">语音聊天已经结束</string>

@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
-    android:orientation="horizontal"
->
+    android:orientation="horizontal">
     <!--接听和挂断-->
 
     <RelativeLayout
@@ -17,10 +16,10 @@
 
         <ImageView
             android:id="@+id/rc_voip_call_hang_up"
-            style="@style/callkit_voip_imagebutton_108_centerCrop"
+            style="@style/callkit_voip_imagebutton_100_centerCrop"
             android:layout_centerHorizontal="true"
             android:onClick="onHangupBtnClick"
-            android:src="@drawable/rc_voip_hangup"/>
+            android:src="@mipmap/rc_voip_hangup"/>
 
         <TextView
             style="@style/rc_voip_text_style_style"
@@ -28,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/rc_voip_call_hang_up"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/callkit_dimen_size_7"
+            android:layout_marginTop="@dimen/callkit_dimen_size_13"
             android:text="@string/rc_voip_hangup" />
     </RelativeLayout>
 
@@ -39,10 +38,10 @@
 
         <ImageView
             android:id="@+id/rc_voip_call_answer_btn"
-            style="@style/callkit_voip_imagebutton_108_centerCrop"
+            style="@style/callkit_voip_imagebutton_100_centerCrop"
             android:layout_centerHorizontal="true"
             android:onClick="onReceiveBtnClick"
-            android:src="@drawable/rc_voip_accept"/>
+            android:src="@mipmap/rc_voip_answer"/>
 
         <TextView
             style="@style/rc_voip_text_style_style"
@@ -50,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/rc_voip_call_answer_btn"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/callkit_dimen_size_7"
+            android:layout_marginTop="@dimen/callkit_dimen_size_13"
             android:text="@string/rc_voip_answer" />
     </RelativeLayout>
 

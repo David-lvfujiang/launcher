@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
 import com.fenda.call.R;
 import com.fenda.call.utils.ImConnectUtil;
 import com.fenda.common.util.DateUtils;
@@ -20,7 +19,8 @@ import com.fenda.common.view.CircleImageView;
 import java.util.List;
 
 import io.rong.callkit.RongCallKit;
-import io.rong.callkit.bean.CallRecoder;
+import io.rong.callkit.bean.CallRecoderBean;
+import io.rong.calllib.RongCallCommon;
 
 /**
  * @author kevin.wangzhiqiang
@@ -29,9 +29,9 @@ import io.rong.callkit.bean.CallRecoder;
  */
 public class RecorderAdapter extends RecyclerView.Adapter {
     private Context mContext;
-    private List<CallRecoder> mDatas;
+    private List<CallRecoderBean> mDatas;
 
-    public RecorderAdapter(Context context, List<CallRecoder> datas) {
+    public RecorderAdapter(Context context, List<CallRecoderBean> datas) {
         this.mContext = context;
         this.mDatas = datas;
     }
@@ -49,10 +49,25 @@ public class RecorderAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int position) {
         MyRecorderHolder holder = (MyRecorderHolder) viewHolder;
-        final CallRecoder bean = mDatas.get(position);
+        final CallRecoderBean bean = mDatas.get(position);
         final String userId = bean.getPhone();
-        holder.tvTime.setText(DateUtils.getNewChatTime(bean.getTime()));
-        holder.tvName.setText(bean.getName());
+        String name = bean.getName();
+        String phone=bean.getPhone();
+        holder.tvTime.setText(DateUtils.getNewChatTime(bean.getCallTime()));
+        int count=bean.getCount();
+        if (!TextUtils.isEmpty(name)) {
+            if (count==1) {
+                holder.tvName.setText(name);
+            }else{
+                holder.tvName.setText(name+"("+count+")");
+            }
+        } else if (!TextUtils.isEmpty(phone)){
+            if (count==1) {
+                holder.tvName.setText(phone);
+            }else{
+                holder.tvName.setText(phone+"("+count+")");
+            }
+        }
         String icon = bean.getIcon();
         if (TextUtils.isEmpty(icon)) {
             holder.civHead.setImageResource(R.mipmap.call_portrait_01);
@@ -66,36 +81,48 @@ public class RecorderAdapter extends RecyclerView.Adapter {
         } else {
             if (position == 0) {
                 holder.vTopLine.setVisibility(View.INVISIBLE);
+                holder.tvDot.setVisibility(View.VISIBLE);
+                holder.vBottomLine.setVisibility(View.VISIBLE);
             } else if (position == getItemCount() - 1) {
+                holder.tvDot.setVisibility(View.VISIBLE);
+                holder.vTopLine.setVisibility(View.VISIBLE);
                 holder.vBottomLine.setVisibility(View.INVISIBLE);
+            }else {
+                holder.tvDot.setVisibility(View.VISIBLE);
+                holder.vTopLine.setVisibility(View.VISIBLE);
+                holder.vBottomLine.setVisibility(View.VISIBLE);
             }
         }
-        final int status = bean.getCallType();
-        switch (status) {
-            case 0:
-                // 音频呼出
-                holder.ivStatus.setImageResource(R.mipmap.call_ico_callphone);
-                break;
-            case 1:
-                // 音频呼入
-                holder.ivStatus.setImageResource(R.mipmap.call_ico_call);
-                break;
-            case 2:
-                // 视频呼出
-                holder.ivStatus.setImageResource(R.mipmap.call_video_out);
-                break;
-            case 3:
-                // 视频呼入
-                holder.ivStatus.setImageResource(R.mipmap.call_video_incoming);
-                break;
-            default:
-                break;
+        int callStatus = bean.getCallStatus();
+
+        if (callStatus == 0) {
+            holder.tvName.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
+        } else {
+            holder.tvName.setTextColor(mContext.getResources().getColor(R.color.white));
+        }
+        final int callType = bean.getCallType();
+        int callMode = bean.getCallMode();
+        if (callType == RongCallCommon.CallMediaType.AUDIO.getValue() && callMode == 0) {
+            // 音频呼入
+            holder.ivStatus.setImageResource(R.mipmap.call_ico_call);
+
+        } else if (callType == RongCallCommon.CallMediaType.AUDIO.getValue() && callMode == 1) {
+            // 音频呼出
+            holder.ivStatus.setImageResource(R.mipmap.call_ico_callphone);
+
+        } else if (callType == RongCallCommon.CallMediaType.VIDEO.getValue() && callMode == 0) {
+            // 视频呼入
+            holder.ivStatus.setImageResource(R.mipmap.call_video_incoming);
+
+        } else if (callType == RongCallCommon.CallMediaType.VIDEO.getValue() && callMode == 1) {
+            // 视频呼出
+            holder.ivStatus.setImageResource(R.mipmap.call_video_out);
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (ImConnectUtil.isConectIm(mContext)) {
-                    RongCallKit.startSingleCall(mContext, userId, (status == 0 || status == 1) ? RongCallKit.CallMediaType.CALL_MEDIA_TYPE_AUDIO : RongCallKit.CallMediaType.CALL_MEDIA_TYPE_VIDEO);
+                    RongCallKit.startSingleCall(mContext, userId, (callType == RongCallCommon.CallMediaType.AUDIO.getValue()) ? RongCallKit.CallMediaType.CALL_MEDIA_TYPE_AUDIO : RongCallKit.CallMediaType.CALL_MEDIA_TYPE_VIDEO);
                 }
             }
         });
@@ -106,10 +133,12 @@ public class RecorderAdapter extends RecyclerView.Adapter {
     public int getItemCount() {
         return mDatas.size();
     }
-    public void setNewData(List<CallRecoder> datas){
-        this.mDatas=datas;
+
+    public void setNewData(List<CallRecoderBean> datas) {
+        this.mDatas = datas;
         notifyDataSetChanged();
     }
+
     class MyRecorderHolder extends RecyclerView.ViewHolder {
         TextView tvTime;
         TextView tvName;
