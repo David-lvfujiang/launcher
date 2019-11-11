@@ -124,9 +124,7 @@ public class LyricFragment extends BaseFragment implements View.OnTouchListener 
                     tv.setGravity(Gravity.CENTER);
                     linContent.addView(tv);
                 }
-
             }
-
         }
 
 

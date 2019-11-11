@@ -225,7 +225,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         playerFragment = PlayerFragment.getInstance(message);
 
         addFragment(tMusic);
-        play(tMusic);
+        play(tMusic,true);
 
     }
 
@@ -330,7 +330,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
             public void onClick(View v) {
                 if (isPause) {
                     FDMusic tMusic = mMusicList.get(current_item);
-                    play(tMusic);
+                    play(tMusic,true);
                 } else {
                     pause(false);
                 }
@@ -431,7 +431,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         Log.e("qob", "MyBroadcastReceiver List " + mMusicList);
         getRandomIndex();
         isPause = false;
-        play(tMusic);
+        play(tMusic,true);
 
 
 
@@ -559,7 +559,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         }else if (id == R.id.bt_music_play){
             if (isPause) {
                 FDMusic tMusic = mMusicList.get(current_item);
-                play(tMusic);
+                play(tMusic,true);
             } else {
                 pause(false);
             }
@@ -676,7 +676,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                         isPause = false;
                     }
                     FDMusic tMusic = mMusicList.get(current_item);
-                    play(tMusic);
+                    play(tMusic,true);
                 } else {
                     nextMusic();
                 }
@@ -715,14 +715,14 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
             current_item = mMusicList.size() - 1;
         }
         FDMusic tMusic = mMusicList.get(current_item);
-        play(tMusic);
+        play(tMusic,true);
 
     }
 
     /**
      * 播放
      */
-    private void play(FDMusic tMusic) {
+    private void play(FDMusic tMusic,boolean isSendPlay) {
 
         try {
             isEventPuase = false;
@@ -742,9 +742,12 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                 }else {
                     imgFmPlay.setImageResource(R.mipmap.player_icon_fm_play);
                 }
-                PlayerMessage message = new PlayerMessage();
-                message.setMsgType(2);
-                EventBusUtils.post(message);
+                if (isSendPlay){
+                    PlayerMessage message = new PlayerMessage();
+                    message.setMsgType(2);
+                    EventBusUtils.post(message);
+                }
+
 
             } else {
                 if (!NetUtil.isNetworkAvailable(this)){
@@ -845,7 +848,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
             current_item = 0;
         }
         FDMusic tMusic = mMusicList.get(current_item);
-        play(tMusic);
+        play(tMusic,true);
     }
 
     private int getMusicRandom() {
@@ -877,6 +880,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
     public void onResultEvent(MusicPlayBean bean) {
         LogUtil.i(bean.toString());
         String action = bean.getAidlMsgType();
+        LogUtil.d("action = "+action);
         if (action.equals(Constant.Player.keyBroadcastMusicList)){
             stop();
             List<FDMusic> tMusicList = bean.getFdMusics();
@@ -892,7 +896,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
             Log.e("qob", "MyBroadcastReceiver List " + mMusicList);
             current_item = 0;
             getRandomIndex();
-            play(tMusic);
+            play(tMusic,true);
         } else if (action.equals(Constant.Player.keyBroadcastSelectItem)) {
 
             mProgressHandler.removeCallbacks(mProgressRunable);
@@ -903,7 +907,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
 
             Log.e("qob", "MyBroadcastReceiver List " + current_item + " keyBroadcastSelectItem");
             FDMusic tMusic = mMusicList.get(current_item);
-            play(tMusic);
+            play(tMusic,true);
         }else if (action.equals(Constant.Player.closeVoiceBroadcast)){
             if (audioManagerSatatus != AudioManager.AUDIOFOCUS_GAIN){
                 try {
@@ -915,14 +919,14 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
             pause(false);
         }else if (action.equals(Constant.Player.VOICE_PLAY)){
             FDMusic tMusic = mMusicList.get(current_item);
-            play(tMusic);
+            play(tMusic,true);
         }else if (action.equals(Constant.Player.VOICE_PAUSE)){
             isEventPuase = true;
             pause(false);
         }else if (action.equals(Constant.Player.VOICE_REPLAY)){
             isPause = false;
             FDMusic tMusic = mMusicList.get(current_item);
-            play(tMusic);
+            play(tMusic,true);
         }else if (action.equals(Constant.Player.VOICE_STOP)){
             MusicActivity.this.finish();
         }else if (action.equals(Constant.Player.VOICE_PREV)){
@@ -1023,7 +1027,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                     if (mediaPlayer != null && isPause && !isEventPuase) {
 //                        mediaPlayer.setVolume(0.5f, 0.5f);
                         FDMusic music = mMusicList.get(current_item);
-                        play(music);
+                        play(music,false);
                     }
 
                     // Resume playback

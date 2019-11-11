@@ -1,6 +1,7 @@
 package com.fenda.ai.observer;
 
 
+import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 
@@ -40,10 +41,13 @@ public class DuiCommandObserver implements CommandObserver {
     private static final String TAG = "DuiCommandObserver";
     private static final String SYS_VOICE_CALL = "call_voice";
     private static final String SYS_VIDEO_CALL = "call_video";
+    private static final String SYS_TAKE_PHOTO = "take_photo";
     private static final String SYS_END_CALL = "end_call";
     private static final String SYS_ACCEPT_CALL = "accept_call";
     private static final String SYS_MUTE_CALL = "mute_call";
     private static final String COMMAND_WEATHER = "command_weather";
+
+    private static final String TAKE_PHOTO_ACTION = "com.fenda.launcher.ACTION_TAKE_PHOTO";
 
     private ICallProvider callProvider;
 
@@ -58,7 +62,7 @@ public class DuiCommandObserver implements CommandObserver {
      */
     public void regist() {
         DDS.getInstance().getAgent().subscribe(new String[]{
-                        SYS_VIDEO_CALL, SYS_VOICE_CALL, COMMAND_WEATHER, SYS_END_CALL, SYS_ACCEPT_CALL, SYS_MUTE_CALL
+                        SYS_VIDEO_CALL, SYS_VOICE_CALL, COMMAND_WEATHER, SYS_END_CALL, SYS_ACCEPT_CALL, SYS_MUTE_CALL,SYS_TAKE_PHOTO
                 },
                 this);
     }
@@ -133,6 +137,12 @@ public class DuiCommandObserver implements CommandObserver {
                             }
                         }
                     });
+
+        }else if (command.equals(SYS_TAKE_PHOTO)){
+            //拍照
+            Intent mIntent = new Intent();
+            mIntent.setAction(TAKE_PHOTO_ACTION);
+            BaseApplication.getBaseInstance().sendBroadcast(mIntent);
 
         }
     }

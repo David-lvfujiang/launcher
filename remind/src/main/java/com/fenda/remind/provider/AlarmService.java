@@ -119,13 +119,14 @@ public class AlarmService implements IRemindProvider {
         try {
             JSONObject dataObject = new JSONObject(data);
             JSONArray array = dataObject.optJSONArray("content");
-            for (int i = 0; i < array.length(); i++) {
-                JSONObject object = array.optJSONObject(i);
-                AlarmBean bean = getCancelAlarm(object);
-                bean.setType(1);
-                mList.add(bean);
+            if (array != null && array.length() > 0){
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject object = array.optJSONObject(i);
+                    AlarmBean bean = getCancelAlarm(object);
+                    bean.setType(1);
+                    mList.add(bean);
+                }
             }
-
         } catch (JSONException e) {
             e.printStackTrace();
         }

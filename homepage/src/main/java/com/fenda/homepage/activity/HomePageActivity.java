@@ -415,7 +415,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             mICallProvider.initSdk();
             Log.e("TAG", "初始化");
             leaveMessageProvider = (IAppLeaveMessageProvider) ARouter.getInstance().build(RouterPath.Leavemessage.LEAVEMESSAGE_SERVICE).navigation();
-            leaveMessageProvider.initRongIMlistener();
+            if (leaveMessageProvider != null){
+                leaveMessageProvider.initRongIMlistener();
+            }
         }
 
     }
@@ -434,7 +436,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         }
     }
 
-    private void startCycleRollRunnable() {
+    public void startCycleRollRunnable() {
             if (executorService == null) {
                 executorService = new ScheduledThreadPoolExecutor(1);
                 executorService.scheduleWithFixedDelay(new Runnable() {

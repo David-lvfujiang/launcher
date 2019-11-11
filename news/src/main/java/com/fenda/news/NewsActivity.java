@@ -279,10 +279,12 @@ public class NewsActivity extends BaseActivity {
                 // 重置mediaPlayer
                 mMediaPlayer.reset();
                 // 重新加载音频资源
-                FDMusic tMusic = newsListData.get(mCurrentItem);
-                mMediaPlayer.setDataSource(tMusic.getMusicUri());
-                // 准备播放（异步）
-                mMediaPlayer.prepareAsync();
+                if (newsListData != null && newsListData.size() > mCurrentItem){
+                    FDMusic tMusic = newsListData.get(mCurrentItem);
+                    mMediaPlayer.setDataSource(tMusic.getMusicUri());
+                    // 准备播放（异步）
+                    mMediaPlayer.prepareAsync();
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -316,7 +318,7 @@ public class NewsActivity extends BaseActivity {
 
         Log.e("qob", "nextMusic current_item: " + mCurrentItem);
         mCurrentItem++;
-        if (mCurrentItem >= newsListData.size()){
+        if (newsListData != null && mCurrentItem >= newsListData.size()){
             mCurrentItem = 0;
         }
         vpNewsList.setCurrentItem(mCurrentItem);
