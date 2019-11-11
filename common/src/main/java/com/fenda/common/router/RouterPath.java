@@ -97,6 +97,7 @@ public interface RouterPath {
     }
 
     interface VOICE {
+        String DDSService = "/voice/DDSService";
         String INIT_PROVIDER = "/voice/initService";
         String REQUEST_PROVIDER = "/voice/requestService";
 

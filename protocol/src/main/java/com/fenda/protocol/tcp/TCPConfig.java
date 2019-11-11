@@ -56,6 +56,7 @@ public class TCPConfig {
         int USER_REPAIR_HEAD = 1010;//用户修改头像
 
         int ANDLINK_NETWORK_OK = 1011; //中国移动网络配置成功通知
+        int DCA_MSG = 1014;
     }
 
 

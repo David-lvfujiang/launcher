@@ -93,7 +93,15 @@ public interface Constant {
         int DELETE_ALARM = 2;
         int CLOSE_ALARM = 4;
     }
-
+    /**
+     * 主页组件
+     */
+    interface HomePage{
+        String DCA_AUTNCODE = "dca_authcode";
+        String DCA_CODEVERIFIER = "dca_codeVerifier";
+        String DCA_CLIENDID = "dca_cliendId";
+        String DCA_USERID = "dca_userId";
+    }
     /**
      * 设置组件
      */
