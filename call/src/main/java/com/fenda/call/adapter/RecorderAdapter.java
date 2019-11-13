@@ -52,20 +52,20 @@ public class RecorderAdapter extends RecyclerView.Adapter {
         final CallRecoderBean bean = mDatas.get(position);
         final String userId = bean.getPhone();
         String name = bean.getName();
-        String phone=bean.getPhone();
+        String phone = bean.getPhone();
         holder.tvTime.setText(DateUtils.getNewChatTime(bean.getCallTime()));
-        int count=bean.getCount();
+        int count = bean.getCount();
         if (!TextUtils.isEmpty(name)) {
-            if (count==1) {
+            if (count == 1) {
                 holder.tvName.setText(name);
-            }else{
-                holder.tvName.setText(name+"("+count+")");
+            } else {
+                holder.tvName.setText(name + "(" + count + ")");
             }
-        } else if (!TextUtils.isEmpty(phone)){
-            if (count==1) {
+        } else if (!TextUtils.isEmpty(phone)) {
+            if (count == 1) {
                 holder.tvName.setText(phone);
-            }else{
-                holder.tvName.setText(phone+"("+count+")");
+            } else {
+                holder.tvName.setText(phone + "(" + count + ")");
             }
         }
         String icon = bean.getIcon();
@@ -74,50 +74,27 @@ public class RecorderAdapter extends RecyclerView.Adapter {
         } else {
             ImageUtil.loadImg(mContext, holder.civHead, icon);
         }
-        if (getItemCount() == 1) {
-            holder.vTopLine.setVisibility(View.INVISIBLE);
-            holder.vBottomLine.setVisibility(View.INVISIBLE);
-            holder.tvDot.setVisibility(View.INVISIBLE);
-        } else {
-            if (position == 0) {
-                holder.vTopLine.setVisibility(View.INVISIBLE);
-                holder.tvDot.setVisibility(View.VISIBLE);
-                holder.vBottomLine.setVisibility(View.VISIBLE);
-            } else if (position == getItemCount() - 1) {
-                holder.tvDot.setVisibility(View.VISIBLE);
-                holder.vTopLine.setVisibility(View.VISIBLE);
-                holder.vBottomLine.setVisibility(View.INVISIBLE);
-            }else {
-                holder.tvDot.setVisibility(View.VISIBLE);
-                holder.vTopLine.setVisibility(View.VISIBLE);
-                holder.vBottomLine.setVisibility(View.VISIBLE);
-            }
-        }
         int callStatus = bean.getCallStatus();
 
         if (callStatus == 0) {
-            holder.tvName.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
+            holder.tvName.setTextColor(mContext.getResources().getColor(R.color.call_miss_call));
         } else {
             holder.tvName.setTextColor(mContext.getResources().getColor(R.color.white));
         }
         final int callType = bean.getCallType();
-        int callMode = bean.getCallMode();
-        if (callType == RongCallCommon.CallMediaType.AUDIO.getValue() && callMode == 0) {
-            // 音频呼入
-            holder.ivStatus.setImageResource(R.mipmap.call_ico_call);
+        if (callStatus == 0) {
+            // 未接
+            holder.ivStatus.setImageResource(R.mipmap.call_ico_miss_call);
 
-        } else if (callType == RongCallCommon.CallMediaType.AUDIO.getValue() && callMode == 1) {
+        } else if (callStatus == 1) {
             // 音频呼出
-            holder.ivStatus.setImageResource(R.mipmap.call_ico_callphone);
-
-        } else if (callType == RongCallCommon.CallMediaType.VIDEO.getValue() && callMode == 0) {
-            // 视频呼入
-            holder.ivStatus.setImageResource(R.mipmap.call_video_incoming);
-
-        } else if (callType == RongCallCommon.CallMediaType.VIDEO.getValue() && callMode == 1) {
-            // 视频呼出
-            holder.ivStatus.setImageResource(R.mipmap.call_video_out);
+            if (callType == RongCallCommon.CallMediaType.AUDIO.getValue()) {
+                holder.ivStatus.setImageResource(R.mipmap.call_ico_call);
+            } else if (callType == RongCallCommon.CallMediaType.VIDEO.getValue()) {
+                holder.ivStatus.setImageResource(R.mipmap.call_ico_vedio);
+            }
         }
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -143,9 +120,6 @@ public class RecorderAdapter extends RecyclerView.Adapter {
         TextView tvTime;
         TextView tvName;
         ImageView ivStatus;
-        View vTopLine;
-        View vBottomLine;
-        TextView tvDot;
         CircleImageView civHead;
 
         public MyRecorderHolder(@NonNull View itemView) {
@@ -153,10 +127,7 @@ public class RecorderAdapter extends RecyclerView.Adapter {
             tvTime = itemView.findViewById(R.id.tvTime);
             tvName = itemView.findViewById(R.id.tvName);
             civHead = itemView.findViewById(R.id.civHead);
-            tvDot = itemView.findViewById(R.id.tvDot);
             ivStatus = itemView.findViewById(R.id.ivStatus);
-            vTopLine = itemView.findViewById(R.id.vTopLine);
-            vBottomLine = itemView.findViewById(R.id.vButtomLine);
         }
     }
 }

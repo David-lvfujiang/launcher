@@ -9,7 +9,6 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.call.R;
 import com.fenda.call.adapter.MyFragmentPagerAdapter;
 import com.fenda.call.fragment.ContactsFragment;
-import com.fenda.call.fragment.KeyboardFragment;
 import com.fenda.call.fragment.RecorderFragment;
 import com.fenda.common.base.BaseActivity;
 import com.fenda.common.router.RouterPath;
@@ -47,10 +46,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public void initData() {
         ContactsFragment contactsFragment = new ContactsFragment();
         RecorderFragment recorderFragment = new RecorderFragment();
-        KeyboardFragment keyboardFragment = new KeyboardFragment();
+//        KeyboardFragment keyboardFragment = new KeyboardFragment();
         mFragmentList.add(contactsFragment);
         mFragmentList.add(recorderFragment);
-        mFragmentList.add(keyboardFragment);
+//        mFragmentList.add(keyboardFragment);
         mVpContent.setAdapter(new MyFragmentPagerAdapter(getSupportFragmentManager(), mFragmentList));
     }
 
@@ -64,9 +63,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     mVpContent.setCurrentItem(0);
                 } else if (checkedId == R.id.recorder) {
                     mVpContent.setCurrentItem(1);
-                } else if (checkedId == R.id.keyborad) {
-                    mVpContent.setCurrentItem(2);
                 }
+//                else if (checkedId == R.id.keyborad) {
+//                    mVpContent.setCurrentItem(2);
+//                }
             }
         });
         mVpContent.setOnPageChangeListener(new LazyViewPager.OnPageChangeListener() {
@@ -81,9 +81,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     mRgMenu.check(R.id.contacts);
                 } else if (position == 1) {
                     mRgMenu.check(R.id.recorder);
-                } else if (position == 2) {
-                    mRgMenu.check(R.id.keyborad);
                 }
+//                else if (position == 2) {
+//                    mRgMenu.check(R.id.keyborad);
+//                }
             }
 
             @Override

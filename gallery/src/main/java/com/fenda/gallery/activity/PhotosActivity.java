@@ -31,6 +31,7 @@ import com.fenda.common.base.BaseResponse;
 import com.fenda.common.util.DensityUtil;
 import com.fenda.common.util.FastClickUtils;
 import com.fenda.common.util.ImageUtil;
+import com.fenda.common.util.NetUtil;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.gallery.R;
 import com.fenda.gallery.adapter.CatalogAdapter;
@@ -170,6 +171,10 @@ public class PhotosActivity extends BaseMvpActivity<GalleryPresenter, GalleryMod
             }
             if (mList != null && mList.size() > 9) {
                 ToastUtils.show("最多只能选择9张图片");
+                return;
+            }
+            if (!NetUtil.isNetworkAvailable(mContext)) {
+                ToastUtils.show(getString(R.string.no_net));
                 return;
             }
             showLoading("");

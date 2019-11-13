@@ -32,5 +32,6 @@
     <dimen name="callkit_dimen_size_150">150dp</dimen>
     <dimen name="callkit_dimen_size_200">200dp</dimen>
     <dimen name="callkit_dimen_size_219">219dp</dimen>
+    <dimen name="callkit_dimen_size_264">264dp</dimen>
     <dimen name="callkit_dimen_size_289">289dp</dimen>
 </resources>

@@ -158,6 +158,8 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
         smartFilter.addAction(VoiceConstant.ACTION_CLOSE_REMIND);
         //关闭QQ音乐
         smartFilter.addAction(VoiceConstant.ACTION_CLOSE_QQMUSIC);
+        //关闭语音弹窗
+        smartFilter.addAction(VoiceConstant.ACTION_CLOSE_VIEW);
         registerReceiver(smartReceiver, smartFilter);
 
         speechView = new SpeechView(BaseApplication.getInstance());
@@ -563,13 +565,13 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
 //        config.addConfig(DDSConfig.K_AUDIO_FOCUS_MODE, "external"); //TTS
         // 用于唤醒音频调试, 开启后在 "/sdcard/Android/data/包名/cache" 目录下会生成唤醒音频
 //        config.addConfig(DDSConfig.K_TTS_DEBUG, "true");
-        String num = SystemPropertiesProxyUtil.getString(this,"ro.mic.num");
-        if ("2".equals(num)){
-            config.addConfig(DDSConfig.K_MIC_TYPE, "5");
-        }else {
-            config.addConfig(DDSConfig.K_MIC_TYPE, "2");
-        }
-
+//        String num = SystemPropertiesProxyUtil.getString(this,"ro.mic.num");
+//        if ("2".equals(num)){
+//            config.addConfig(DDSConfig.K_MIC_TYPE, "5");
+//        }else {
+//            config.addConfig(DDSConfig.K_MIC_TYPE, "2");
+//        }
+        config.addConfig(DDSConfig.K_MIC_TYPE, "5");
         String androidId = DeviceIdUtil.getDeviceId(this);
         LogUtil.i("ANDROID_ID = " + androidId);
         //填入唯一的deviceId -- 选填
