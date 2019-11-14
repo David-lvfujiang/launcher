@@ -101,6 +101,8 @@ import java.util.concurrent.TimeUnit;
 public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener {
     private final static String TAG = "HomePageActivity";
 
+    private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
     TextClock mHeaderTimeTv;
     LauncherRecycleView mTipInfoRv;
     ImageView mHeaderWeatherIv;
@@ -471,7 +473,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             LogUtil.e("applyId 家庭解散通知1 栈顶activityName = ");
 
             isExitHome = true;
-
+            mBluetoothAdapter.disable();
             ARouter.getInstance().build(RouterPath.SETTINGS.SettingsBindDeviceActivity).navigation();
 
         } else if (TCPConfig.MessageType.DCA_MSG == message.getCode()) {
@@ -816,7 +818,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     protected void onDestroy () {
         unregisterReceiver(mBtReceiver);
         super.onDestroy();
-
     }
 
     @Override

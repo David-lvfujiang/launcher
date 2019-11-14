@@ -49,7 +49,6 @@ public class CalendarViewPagerFragment extends Fragment {
         if (getArguments() != null) {
             isChoiceModelSingle = getArguments().getBoolean(CHOICE_MODE_SINGLE,false);
         }
-
     }
 
     @Nullable
