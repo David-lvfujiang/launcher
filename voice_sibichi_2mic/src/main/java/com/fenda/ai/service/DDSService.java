@@ -25,6 +25,7 @@ import com.aispeech.dui.dds.DDSConfig;
 import com.aispeech.dui.dds.agent.DMCallback;
 import com.aispeech.dui.dds.exceptions.DDSNotInitCompleteException;
 import com.aispeech.dui.plugin.music.MusicPlugin;
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.ai.BuildConfig;
 import com.fenda.ai.R;
@@ -50,6 +51,7 @@ import com.fenda.common.provider.IWeatherProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.service.AccessibilityMonitorService;
 import com.fenda.common.util.AppUtils;
+import com.fenda.common.util.SystemPropertiesProxyUtil;
 import com.fenda.protocol.util.DeviceIdUtil;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.view.SpeechView;
@@ -71,6 +73,7 @@ import io.reactivex.functions.Consumer;
 /**
  * 参见Android SDK集成文档: https://www.dui.ai/docs/operation/#/ct_common_Andriod_SDK
  */
+@Route(path = RouterPath.VOICE.DDSService)
 public class DDSService extends Service implements DuiUpdateObserver.UpdateCallback, DuiMessageObserver.MessageCallback {
     public static final String TAG = "DDSService";
 
@@ -155,6 +158,8 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
         smartFilter.addAction(VoiceConstant.ACTION_CLOSE_REMIND);
         //关闭QQ音乐
         smartFilter.addAction(VoiceConstant.ACTION_CLOSE_QQMUSIC);
+        //关闭语音弹窗
+        smartFilter.addAction(VoiceConstant.ACTION_CLOSE_VIEW);
         registerReceiver(smartReceiver, smartFilter);
 
         speechView = new SpeechView(BaseApplication.getInstance());
@@ -432,6 +437,10 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 if (Util.isTaskQQmusic(BaseApplication.getInstance())) {
                     MusicPlugin.get().getMusicApi().exit();
                 }
+            } else if (VoiceConstant.ACTION_CLOSE_VIEW.equals(intent.getAction())){
+                if (speechView != null){
+                    speechView.closeView();
+                }
             }
         }
     };
@@ -551,12 +560,18 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
         config.addConfig(DDSConfig.K_USE_UPDATE_DUICORE, "false");
         // 是否使用内置的资源更新通知栏
         config.addConfig(DDSConfig.K_USE_UPDATE_NOTIFICATION, "false");
-        config.addConfig(DDSConfig.K_MIC_TYPE, "2");
+
         config.addConfig(DDSConfig.K_AEC_MODE, "external");
 //        config.addConfig(DDSConfig.K_AUDIO_FOCUS_MODE, "external"); //TTS
         // 用于唤醒音频调试, 开启后在 "/sdcard/Android/data/包名/cache" 目录下会生成唤醒音频
 //        config.addConfig(DDSConfig.K_TTS_DEBUG, "true");
-
+//        String num = SystemPropertiesProxyUtil.getString(this,"ro.mic.num");
+//        if ("2".equals(num)){
+//            config.addConfig(DDSConfig.K_MIC_TYPE, "5");
+//        }else {
+//            config.addConfig(DDSConfig.K_MIC_TYPE, "2");
+//        }
+        config.addConfig(DDSConfig.K_MIC_TYPE, "5");
         String androidId = DeviceIdUtil.getDeviceId(this);
         LogUtil.i("ANDROID_ID = " + androidId);
         //填入唯一的deviceId -- 选填
@@ -610,7 +625,8 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
             //    handleMesagestate(state);
             //   break;
             case VoiceConstant.SIBICHI.CONTEXT_INPUT_TEXT:
-                speechView.showView(Jsonparse.parseInputText(state));
+                String text = Jsonparse.parseInputText(state);
+                speechView.showView(text);
                 break;
             case VoiceConstant.SIBICHI.CONTEXT_WIDGET_MEDIA:
             case VoiceConstant.SIBICHI.CONTEXT_WIDGET_WEB:

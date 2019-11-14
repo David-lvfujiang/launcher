@@ -1,108 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/demension_dp134"
-    android:layout_marginLeft="@dimen/demension_dp45"
-    android:layout_marginRight="@dimen/demension_dp45"
+    android:layout_height="@dimen/demension_dp101"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/demension_dp132"
-        android:orientation="vertical">
+        android:layout_height="@dimen/demension_dp100"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/demension_dp131"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/demension_dp46"
+            android:layout_weight="1"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="@dimen/demension_dp5"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+            <com.fenda.common.view.CircleImageView
+                android:id="@+id/civHead"
+                android:layout_width="@dimen/demension_dp60"
+                android:layout_height="@dimen/demension_dp60"
+                android:layout_marginRight="@dimen/demension_dp15" />
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <com.fenda.common.view.CircleImageView
-                        android:id="@+id/civHead"
-                        android:layout_width="@dimen/demension_dp80"
-                        android:layout_height="@dimen/demension_dp80"
-                        android:layout_marginLeft="@dimen/demension_dp20"
-                        android:layout_marginRight="@dimen/demension_dp20" />
-
-                    <TextView
-                        android:id="@+id/tvName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="@dimen/demension_dp20"
-                        android:ellipsize="end"
-                        android:singleLine="true"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/textsize_sp50" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tvRole"
-                    android:layout_width="@dimen/demension_dp135"
-                    android:layout_height="@dimen/demension_dp44"
-                    android:layout_marginRight="@dimen/demension_dp10"
-                    android:background="@mipmap/call_label_bg_01"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="47dp"
-                    android:text="管理员"
-                    android:textColor="#ffffff"
-                    android:textSize="24sp"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/tvPermissions"
-                    android:layout_width="@dimen/demension_dp162"
-                    android:layout_height="@dimen/demension_dp44"
-                    android:background="@mipmap/call_label_bg_02"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="47dp"
-                    android:text="拥有权限"
-                    android:textColor="#ffffff"
-                    android:textSize="24sp"
-                    android:visibility="gone" />
-            </LinearLayout>
-
-
-            <ImageView
-                android:id="@+id/ivAudio"
+            <TextView
+                android:id="@+id/tvName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/demension_dp98"
-                android:src="@mipmap/call_ico_callphone" />
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/demension_dp40"
+                android:ellipsize="end"
+                android:maxWidth="@dimen/demension_dp450"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textsize_sp36" />
 
-
-            <ImageView
-                android:id="@+id/ivVideo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <TextView
+                android:id="@+id/tvRole"
+                android:layout_width="@dimen/demension_dp115"
+                android:layout_height="@dimen/demension_dp44"
                 android:layout_marginRight="@dimen/demension_dp20"
-                android:src="@mipmap/call_ico_vedio" />
-
+                android:background="@mipmap/call_label_bg_01"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/demension_dp40"
+                android:text="管理员"
+                android:textColor="#ffffff"
+                android:textSize="@dimen/textsize_sp21"
+                android:visibility="gone" />
 
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/demension_dp2"
-            android:layout_alignParentBottom="true"
-            android:background="@color/white" />
+
+        <ImageView
+            android:id="@+id/ivAudio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/demension_dp78"
+            android:src="@mipmap/call_ico_call" />
+
+
+        <ImageView
+            android:id="@+id/ivVideo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/demension_dp62"
+            android:src="@mipmap/call_ico_vedio" />
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/demension_dp1"
+        android:background="@color/color_4cffffff" />
+</LinearLayout>
 
-</RelativeLayout>

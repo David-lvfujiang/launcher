@@ -43,6 +43,18 @@ public class ImageUtil {
                 .error(R.mipmap.ic_launcher);
         Glide.with(imageView.getContext()).load(url).apply(options).into(imageView);
     }
+    /**
+     * 普通加载
+     * @param url
+     * @param imageView
+     */
+    public static void loadImage( String url, ImageView imageView,int defaultImg) {
+        RequestOptions options = new RequestOptions()
+                .centerCrop()
+                .placeholder(defaultImg)
+                .error(defaultImg);
+        Glide.with(imageView.getContext()).load(url).apply(options).into(imageView);
+    }
 
     /**
      * 加载圆形图片

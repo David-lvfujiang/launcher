@@ -31,24 +31,24 @@ public class GridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.submenu_item_recyclerview, null);
                 final Holder holder = new Holder(view);
-                //对加载的子项注册监听事件
-                holder.fruitView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        int position = holder.getAdapterPosition();
-                        String applyId = mList.get(position).getApplyId();
-                        onItemClickListener.onItemClick(view ,applyId);
-                    }
-                });
                 return holder;
 
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            Holder contentHolder = (Holder) holder;
+            final Holder contentHolder = (Holder) holder;
             contentHolder.mApplyNameTv.setText(mList.get(position).getApplyName());
             contentHolder.mApplyImageIv.setImageResource(mList.get(position).getApplyImage());
+            //对加载的子项注册监听事件
+             contentHolder.fruitView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int position = contentHolder.getAdapterPosition();
+                String applyId = mList.get(position).getApplyId();
+                onItemClickListener.onItemClick(view ,applyId);
+            }
+        });
 
     }
 

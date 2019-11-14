@@ -24,6 +24,7 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
+        flavorDimensions "default"
         javaCompileOptions {
 
             annotationProcessorOptions {
@@ -71,6 +72,26 @@ android {
         }
     }
 
+    productFlavors {
+        _dev {//开发环境
+            //设置baseUrl 使用方法Application.getContext().getResources().getString(R.string.API_SERVER)
+            resValue "string", "BASE_SERVER_URL", "http://192.168.43.37:8998/smartsound/"
+            resValue "string", "TCP_IP", "192.168.43.37"
+            resValue "string", "DEVICE_SN", " "
+        }
+
+        _test {//测试环境
+            resValue "string", "BASE_SERVER_URL", "http://192.168.100.127:8998/smartsound/"
+            resValue "string", "TCP_IP", "192.168.100.127"
+            resValue "string", "DEVICE_SN", " "
+        }
+
+        _prod {//正式环境
+            resValue "string", "BASE_SERVER_URL", "https://ai.fenda.com/smartsound/"
+            resValue "string", "TCP_IP", "47.106.223.29"
+            resValue "string", "DEVICE_SN", "-pro"
+        }
+    }
 
     buildTypes {
         release {
@@ -154,11 +175,6 @@ repositories {
     }
 }
 
-
-
-
-
-
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     //AI语音
@@ -176,8 +192,5 @@ dependencies {
 //        implementation deps.fenda_common
 //    }
     implementation project(path: ':common')
-
     annotationProcessor deps.arouter_compiler
-
-
 }

@@ -115,8 +115,12 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
             tvDisVcodeText.setText("验证码(测试环境)");
             tvDisVcodeText.setTextColor(getColor(R.color.settings_colorAccent));
             tvDisVcodeText.setTextSize(22);
-        } else if("http://192.168.43.34:8998/smartsound/".equals(baseEvn) || "http://192.168.43.37:8998/smartsound/".equals(baseEvn)){
+        } else if("http://192.168.43.34:8998/smartsound/".equals(baseEvn)){
             tvDisVcodeText.setText("验证码(192.198.43.34)");
+            tvDisVcodeText.setTextColor(getColor(R.color.settings_colorAccent));
+            tvDisVcodeText.setTextSize(22);
+        } else if("http://192.168.43.37:8998/smartsound/".equals(baseEvn)){
+            tvDisVcodeText.setText("验证码(192.198.43.37)");
             tvDisVcodeText.setTextColor(getColor(R.color.settings_colorAccent));
             tvDisVcodeText.setTextSize(22);
         }
@@ -156,17 +160,10 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReceiveEvent(EventMessage<BaseTcpMessage> message) {
         if (message.getCode() == TCPConfig.MessageType.MANGER_SUCCESS) {
-            String mBindIntent1 = "onReceive";
-            mPresenter.getContactsList();
             LogUtil.d(TAG, "bind onReceiveEvent = " + message);
+
             AppUtils.saveBindedDevice(getApplicationContext(), true);
-            Intent hintent = new Intent();
-            hintent.setAction("android.intent.action.MAIN");
-            hintent.addCategory("android.intent.category.HOME");
-            hintent.putExtra("HOME_PAGE",true);
-            hintent.putExtra("BIND_EVENT_INTENT", mBindIntent1);
-            startActivity(hintent);
-            finish();
+            mPresenter.getContactsList();
         }
     }
 
@@ -305,6 +302,15 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
     @Override
     public void getContactsListSuccess(BaseResponse<List<UserInfoBean>> response) {
         ContentProviderManager.getInstance(SettingsBindDeviceActivity.this, Uri.parse(ContentProviderManager.BASE_URI + "/user")).insertUsers(response.getData());
+
+        String mBindIntent1 = "onReceive";
+        Intent hintent = new Intent();
+        hintent.setAction("android.intent.action.MAIN");
+        hintent.addCategory("android.intent.category.HOME");
+        hintent.putExtra("HOME_PAGE",true);
+        hintent.putExtra("BIND_EVENT_INTENT", mBindIntent1);
+        startActivity(hintent);
+        finish();
     }
 
     @Override

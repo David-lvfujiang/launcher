@@ -119,25 +119,38 @@ public class RequestService implements IVoiceRequestProvider {
 
     @Override
     public void openVoice() {
-        try {
             LogUtil.d( "FD-------openVoice ");
-            DDS.getInstance().getAgent().getWakeupEngine().enableWakeup();
-        } catch (DDSNotInitCompleteException e) {
-            e.printStackTrace();
-        }
+
+            if (DDS.getInstance().getInitStatus() == DDS.INIT_COMPLETE_FULL ||
+                    DDS.getInstance().getInitStatus() == DDS.INIT_COMPLETE_NOT_FULL) {
+                try {
+                    if (DDS.getInstance().isAuthSuccess()) {
+                        DDS.getInstance().getAgent().getWakeupEngine().enableWakeup();
+                    }
+                } catch (DDSNotInitCompleteException e) {
+                    e.printStackTrace();
+                }
+            }
+
 
     }
 
     @Override
     public void closeVoice() {
 
-        try {
             LogUtil.d( "FD-------closeVoice ");
-            DDS.getInstance().getAgent().getWakeupEngine().disableWakeup();
-            cancelMusic();
-        } catch (DDSNotInitCompleteException e) {
-            e.printStackTrace();
-        }
+
+            if (DDS.getInstance().getInitStatus() == DDS.INIT_COMPLETE_FULL ||
+                    DDS.getInstance().getInitStatus() == DDS.INIT_COMPLETE_NOT_FULL) {
+                try {
+                    if (DDS.getInstance().isAuthSuccess()) {
+                        DDS.getInstance().getAgent().getWakeupEngine().disableWakeup();
+                        cancelMusic();
+                    }
+                } catch (DDSNotInitCompleteException e) {
+                    e.printStackTrace();
+                }
+            }
 
     }
 
@@ -200,6 +213,7 @@ public class RequestService implements IVoiceRequestProvider {
     public void requestNews(int number) {
         try {
 
+            LogUtil.e("===============================请求新闻"+number+"================================");
             BaseApplication.getBaseInstance().setRequestNews(true);
             SkillIntent skillIntent = new SkillIntent("2019031900001180",
                     "新闻", "播报新闻",

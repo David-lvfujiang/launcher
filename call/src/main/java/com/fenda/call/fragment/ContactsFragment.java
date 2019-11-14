@@ -17,6 +17,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * @author kevin.wangzhiqiang
  * @Date 2019/9/2 10:21
@@ -47,6 +48,7 @@ public class ContactsFragment extends BaseFragment {
         mRvContactList.setLayoutManager(new LinearLayoutManager(mContext));
         mAdapter = new ContactListAdapter(mContext, mDatas);
         mRvContactList.setAdapter(mAdapter);
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

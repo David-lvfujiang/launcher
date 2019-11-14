@@ -22,6 +22,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.support.annotation.RequiresApi;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
@@ -30,14 +31,17 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextClock;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.alibaba.fastjson.JSONObject;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
@@ -51,7 +55,6 @@ import com.fenda.common.constant.Constant;
 import com.fenda.common.db.ContentProviderManager;
 import com.fenda.common.provider.IAppLeaveMessageProvider;
 import com.fenda.common.provider.ICallProvider;
-import com.fenda.common.provider.ICaptureUserActionProvider;
 import com.fenda.common.provider.ISettingsProvider;
 import com.fenda.common.provider.IVoiceInitProvider;
 import com.fenda.common.provider.IVoiceRequestProvider;
@@ -73,13 +76,13 @@ import com.fenda.homepage.bean.ApplyBean;
 import com.fenda.homepage.bean.RepairPersonHeadBean;
 import com.fenda.homepage.contract.MainContract;
 import com.fenda.homepage.data.AllApplyData;
-import com.fenda.homepage.view.LauncherRecycleView;
 import com.fenda.homepage.model.MainModel;
-import com.fenda.homepage.view.MyRelativeLayout;
-import com.fenda.homepage.view.PullView;
 import com.fenda.homepage.observer.MyContentObserver;
 import com.fenda.homepage.presenter.MainPresenter;
 import com.fenda.homepage.receiver.ScreenOffAdminReceiver;
+import com.fenda.homepage.view.LauncherRecycleView;
+import com.fenda.homepage.view.MyRelativeLayout;
+import com.fenda.homepage.view.PullView;
 import com.fenda.protocol.tcp.TCPConfig;
 import com.fenda.protocol.tcp.bean.BaseTcpMessage;
 import com.fenda.protocol.tcp.bean.EventMessage;
@@ -97,6 +100,8 @@ import java.util.concurrent.TimeUnit;
 @Route(path = RouterPath.HomePage.HOMEPAGE_MAIN)
 public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener {
     private final static String TAG = "HomePageActivity";
+
+    private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
     TextClock mHeaderTimeTv;
     LauncherRecycleView mTipInfoRv;
@@ -133,7 +138,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     private ImageView submenuDropRight;
     private ContentProviderManager manager;
     private LinearLayout nestScroll;
-    //    private LinearLayout ll_submenu_back;
+//    private LinearLayout ll_submenu_back;
     private ImageView imgGIF;
     private TextView mMsgTv;
     private boolean isWeather;
@@ -148,12 +153,12 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     private MyNestedScrollView scrollView;
 
 
-    private Handler mHandler = new Handler() {
+    private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             LogUtil.e("进入了Oncreate的接收到了handler信息");
             initSubmenuView();
-            ImageUtil.loadGIFImage(R.mipmap.cm_pull, imgGIF, R.mipmap.cm_pull);
+            ImageUtil.loadGIFImage(R.mipmap.cm_pull,imgGIF,R.mipmap.cm_pull);
             mAdminReceiver = new ComponentName(mContext, ScreenOffAdminReceiver.class);
             mPowerManager = (PowerManager) getSystemService(POWER_SERVICE);
             mPolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
@@ -198,9 +203,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     //完成主界面更新,拿到数据
                     int data = (int) msg.obj;
                     mMsgTv.setVisibility(View.VISIBLE);
-                    if (data < 100) {
-                        mMsgTv.setText("" + data);
-                    } else {
+                    if (data<100){
+                        mMsgTv.setText(""+data);
+                    }else {
                         mMsgTv.setText("99+");
                     }
                     break;
@@ -225,12 +230,12 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         return R.layout.homepage_home_activity;
     }
 
-    public int getLauncherState() {
+    public int getLauncherState(){
 
         return LAUNCHER_STATUS;
     }
 
-    public void setLauncherState(int state) {
+    public void setLauncherState(int state){
         this.LAUNCHER_STATUS = state;
     }
 
@@ -242,7 +247,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mTipInfoRv = findViewById(R.id.rv_Tipinfo);
         mHeaderWeatherIv = findViewById(R.id.iv_header_weather);
         mHeaderWeatherTv = findViewById(R.id.tv_header_temp);
-        relaPre = findViewById(R.id.rela_pre);
+        relaPre         = findViewById(R.id.rela_pre);
 
         mAiTipIv = findViewById(R.id.iv_main_tip_icon);
         mAiTipTitleTv = findViewById(R.id.tv_main_item_content);
@@ -260,6 +265,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mHeaderWeatherIv.setOnClickListener(this);
         initRecycleView();
         initSleepView();
+
 
 
         LogUtil.e("进入了Oncreate的initView");
@@ -286,14 +292,15 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
-        if (intent != null) {
-            boolean HOME_PAGE = intent.getBooleanExtra("HOME_PAGE", false);
-            LogUtil.e("HOME_PAGE = " + HOME_PAGE);
-            if (HOME_PAGE) {
+        if (intent != null){
+            boolean HOME_PAGE = intent.getBooleanExtra("HOME_PAGE",false);
+            LogUtil.e("HOME_PAGE = "+HOME_PAGE);
+            if (HOME_PAGE){
                 returnDefault();
             }
             finishAllActivity();
         }
+
 
 
     }
@@ -348,12 +355,12 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                                 mAiTipTitleTv.setText("新闻资讯｜" + newsRecommend.get(current).getMusicTitle());
                             } else {
                                 current = 0;
-                                if (initVoiceProvider == null) {
-                                    initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
-                                }
-                                if (initVoiceProvider != null) {
-                                    initVoiceProvider.requestNews(20);
-                                }
+//                                if (initVoiceProvider == null) {
+//                                    initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
+//                                }
+//                                if (initVoiceProvider != null){
+//                                    initVoiceProvider.requestNews(20);
+//                                }
                             }
                         } else {
                             mAiTipTitleTv.setText(R.string.cm_main_page_describe_1);
@@ -387,15 +394,13 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void initData() {
-
-
         if (initProvider != null) {
             initProvider.init(this);
             initProvider.initVoice();
         }
 
 
-        if (mIWeatherProvider == null) {
+        if (mIWeatherProvider == null){
             mIWeatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
         }
 
@@ -412,9 +417,8 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             mICallProvider.initSdk();
             Log.e("TAG", "初始化");
             leaveMessageProvider = (IAppLeaveMessageProvider) ARouter.getInstance().build(RouterPath.Leavemessage.LEAVEMESSAGE_SERVICE).navigation();
-            if (leaveMessageProvider != null) {
+            if (leaveMessageProvider != null){
                 leaveMessageProvider.initRongIMlistener();
-
             }
         }
 
@@ -434,54 +438,57 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         }
     }
 
-
     public void startCycleRollRunnable() {
+            if (executorService == null) {
+                executorService = new ScheduledThreadPoolExecutor(1);
+                executorService.scheduleWithFixedDelay(new Runnable() {
+                    @Override
+                    public void run() {
+                        mHandler.post(cycleRollRunabler);
 
-        if (executorService == null) {
-            executorService = new ScheduledThreadPoolExecutor(1);
-            executorService.scheduleWithFixedDelay(new Runnable() {
-                @Override
-                public void run() {
-                    mHandler.post(cycleRollRunabler);
-
-                }
-            }, HomeUtil.PAGE_SHOW_TIME, HomeUtil.PAGE_SHOW_TIME, TimeUnit.MILLISECONDS);
+                    }
+                }, HomeUtil.PAGE_SHOW_TIME, HomeUtil.PAGE_SHOW_TIME, TimeUnit.MILLISECONDS);
+            }
         }
 
-
-    }
-
     @Override
-    protected void initPresenter() {
+    protected void initPresenter () {
         mPresenter.setVM(this, mModel);
     }
 
     @Override
-    public void onEvent(final EventMessage<BaseTcpMessage> message) {
+    public void onEvent ( final EventMessage<BaseTcpMessage> message){
         //家庭解散通知
         if (message.getCode() == TCPConfig.MessageType.FAMILY_DISSOLVE) {
             LogUtil.d("家庭解散通知1 " + message);
-            LogUtil.d("家庭解散通知1 " + message.getData().getMsg());
             ContentProviderManager.getInstance(mContext, Constant.Common.URI).clear();
             ICallProvider callService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
             if (callService != null) {
                 callService.syncFamilyContacts();
             }
             AppUtils.saveBindedDevice(getApplicationContext(), false);
-            if (leaveMessageProvider != null) {
-                leaveMessageProvider.removeRongIMAllMessage();
-
-            }
-
 //            ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
 //            String activityName = am.getRunningTasks(1).get(0).topActivity.getClassName();
 //
             LogUtil.e("applyId 家庭解散通知1 栈顶activityName = ");
 
             isExitHome = true;
-
+            mBluetoothAdapter.disable();
             ARouter.getInstance().build(RouterPath.SETTINGS.SettingsBindDeviceActivity).navigation();
 
+        } else if (TCPConfig.MessageType.DCA_MSG == message.getCode()) {
+            LogUtil.d(TAG, "收到DCA消息 = " + message.getData());
+            BaseTcpMessage tcpMsg = message.getData();
+            String dataMsg = tcpMsg.getMsg();
+            JSONObject jsonObject = JSONObject.parseObject(dataMsg);
+            String authCode = jsonObject.getString("authCode");
+            String cliendId = jsonObject.getString("cliendId");
+            String codeVerifier = jsonObject.getString("codeVerifier");
+            String userId = jsonObject.getString("userId");
+            SPUtils.put(getApplicationContext(), Constant.HomePage.DCA_AUTNCODE, authCode);
+            SPUtils.put(getApplicationContext(), Constant.HomePage.DCA_CODEVERIFIER, codeVerifier);
+            SPUtils.put(getApplicationContext(), Constant.HomePage.DCA_CLIENDID, cliendId);
+            SPUtils.put(getApplicationContext(), Constant.HomePage.DCA_USERID, userId);
         }
         //普通成员退出家庭通知
         else if (message.getCode() == TCPConfig.MessageType.USER_EXIT_FAMILY) {
@@ -495,10 +502,8 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             if (beanList != null && beanList.size() > 0) {
                 String userMobile = beanList.get(0).getMobile();
                 LogUtil.i("phone = " + userMobile);
-                if (leaveMessageProvider != null) {
-                    leaveMessageProvider.removeRongIMMessage(userMobile);
-
-                }
+                IAppLeaveMessageProvider leaveMessageProvider = (IAppLeaveMessageProvider) ARouter.getInstance().build(RouterPath.Leavemessage.LEAVEMESSAGE_SERVICE).navigation();
+                leaveMessageProvider.removeRongIMMessage(userMobile);
             } else {
                 LogUtil.i("找不到用户");
             }
@@ -533,6 +538,13 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         } else if (message.getCode() == Constant.Common.INIT_VOICE_SUCCESS) {
             // @todo  勿删 语音初始化成功后会回调这里,在语音成功之前调用会导致应用崩溃
             LogUtil.e("===== INIT_VOICE_SUCCESS =====");
+
+            IVoiceInitProvider ddsService = (IVoiceInitProvider) ARouter.getInstance().build(RouterPath.VOICE.INIT_PROVIDER).navigation();
+            if (ddsService != null) {
+                ddsService.initAuth();
+            }
+
+
             if (initVoiceProvider == null) {
                 initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
             }
@@ -578,7 +590,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         }
     }
 
-    private void finishAllActivity() {
+    private void finishAllActivity () {
         Stack<Activity> activities = AppManager.getAppManager().getActivityStack();
         for (int i = 0, size = activities.size(); i < size; i++) {
             Activity mActivity = activities.get(i);
@@ -589,7 +601,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         AppManager.getAppManager().clearActivityStack();
     }
 
-    private synchronized void weather() {
+    private synchronized void weather () {
         //避免重复调用
         if (initVoiceProvider != null && !isWeather) {
             isWeather = true;
@@ -600,7 +612,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void isNetWodrkConnect() {
+    public void isNetWodrkConnect () {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         Network activeInfo = connectivityManager.getActiveNetwork();
         LogUtil.d(TAG, "activeInfo = " + activeInfo);
@@ -725,7 +737,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     };
 
     @Override
-    protected void onResume() {
+    protected void onResume () {
         super.onResume();
         isExitHome = false;
         Intent intent = getIntent();
@@ -743,7 +755,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     }
 
     @Override
-    protected void onStop() {
+    protected void onStop () {
         super.onStop();
 //        mCyclicRollHandler.removeCallbacks(cycleRollRunabler);
         if (executorService != null) {
@@ -760,7 +772,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
     }
 
-    public void stopCycleRollRunnable() {
+    public void stopCycleRollRunnable () {
         if (executorService != null) {
             executorService.setRemoveOnCancelPolicy(true);
             executorService.shutdown();
@@ -769,8 +781,8 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     }
 
 
-    @Override
-    public void onClick(View v) {
+        @Override
+    public void onClick (View v){
         int resId = v.getId();
         if (resId == R.id.tv_main_phone) {
             //通讯录
@@ -781,12 +793,14 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         } else if (resId == R.id.iv_header_weather || resId == R.id.tv_header_temp) {
 
             String saveWeahterValue = (String) SPUtils.get(getApplicationContext(), Constant.Weather.SP_NOW_WEATHER, "");
-            if (saveWeahterValue != null && saveWeahterValue.length() > 1) {
+            if (saveWeahterValue != null && saveWeahterValue.length() > 1 && mIWeatherProvider != null) {
                 mIWeatherProvider.weatherFromVoiceControl(saveWeahterValue);
             } else {
                 ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN).navigation();
             }
-            initVoiceProvider.nowWeather();
+            if (initVoiceProvider != null){
+                initVoiceProvider.nowWeather();
+            }
 
         } else if (resId == R.id.tv_main_qqmusic) {
             if (initVoiceProvider != null) {
@@ -797,23 +811,21 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 initVoiceProvider.openAqiyi();
             }
         } else if (resId == R.id.iv_header_love) {
-            if (leaveMessageProvider != null) {
+            if (leaveMessageProvider != null){
                 leaveMessageProvider.openConversationListActivity();
             }
-
         }
     }
 
 
     @Override
-    protected void onDestroy() {
+    protected void onDestroy () {
         unregisterReceiver(mBtReceiver);
         super.onDestroy();
-
     }
 
     @Override
-    public void getFamilyContactsSuccess(BaseResponse<List<UserInfoBean>> response) {
+    public void getFamilyContactsSuccess (BaseResponse < List < UserInfoBean >> response) {
         ContentProviderManager.getInstance(mContext, Constant.Common.URI).insertUsers(response.getData());
         //有新人加入时跳转至设置昵称界面
         if (mMsgType == TCPConfig.MessageType.NEW_USER_ADD) {
@@ -826,18 +838,18 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     }
 
     @Override
-    public void getFamilyContactsFailure(BaseResponse<List<UserInfoBean>> response) {
+    public void getFamilyContactsFailure (BaseResponse < List < UserInfoBean >> response) {
 
     }
 
 
     @Override
-    public void showErrorTip(String msg) {
+    public void showErrorTip (String msg){
 
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent (MotionEvent event){
         // TODO Auto-generated method stub
         //如果这个方法消费了这个这个event事件，就返回True，否则false。
         return super.onTouchEvent(event);
@@ -845,14 +857,14 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventHomePageFromVoiceControl(WeatherWithHomeBean weatherWithHomeBean) {
+    public void onEventHomePageFromVoiceControl (WeatherWithHomeBean weatherWithHomeBean){
         Log.e(TAG, "homePageFromVoiceControl " + weatherWithHomeBean.getWeatherTempNum() + " " + weatherWithHomeBean.getWeatherIconId());
         mHeaderWeatherTv.setText(weatherWithHomeBean.getWeatherTempNum());
         mHeaderWeatherIv.setImageDrawable(getResources().getDrawable(weatherWithHomeBean.getWeatherIconId()));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onRecommendEvent(MusicPlayBean bean) {
+    public void onRecommendEvent (MusicPlayBean bean){
         newsRecommend = bean.getFdMusics();
         List<FDMusic> newsListData;
         newsListData = bean.getFdMusics();
@@ -865,7 +877,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMsgEvent(LeaveMessageBean msgBean) {
+    public void onMsgEvent (LeaveMessageBean msgBean){
         final int msgNum = msgBean.getLeaveMessageNumber();
         if (msgNum == 0) {
             mMsgTv.setVisibility(View.INVISIBLE);
@@ -888,7 +900,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onScreenEvent(String type) {
+    public void onScreenEvent (String type){
         if (type.equals(Constant.Common.SCREEN_OFF)) {
             LogUtil.i("homepage:screenOff");
             screenOff();
@@ -898,30 +910,30 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         }
     }
 
-    /**
-     * 亮屏
-     */
-    @SuppressLint("InvalidWakeLockTag")
-    public void screenOn() {
-        boolean screenOn = mPowerManager.isInteractive();
-        if (!screenOn) {
-            mWakeLock = mPowerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "tag");
-            mWakeLock.acquire();
-            mWakeLock.release();
+        /**
+         * 亮屏
+         */
+        @SuppressLint("InvalidWakeLockTag")
+        public void screenOn () {
+            boolean screenOn = mPowerManager.isInteractive();
+            if (!screenOn) {
+                mWakeLock = mPowerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "tag");
+                mWakeLock.acquire();
+                mWakeLock.release();
+            }
         }
-    }
 
-    /**
-     * 熄屏
-     */
-    public void screenOff() {
-        boolean admin = mPolicyManager.isAdminActive(mAdminReceiver);
-        if (admin) {
-            mPolicyManager.lockNow();
-        } else {
-            ToastUtils.show("没有设备管理员权限");
+        /**
+         * 熄屏
+         */
+        public void screenOff () {
+            boolean admin = mPolicyManager.isAdminActive(mAdminReceiver);
+            if (admin) {
+                mPolicyManager.lockNow();
+            } else {
+                ToastUtils.show("没有设备管理员权限");
+            }
         }
-    }
 
 
     /**
@@ -933,17 +945,17 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mSubmenuListRv = submenuView.findViewById(R.id.rv_submenu_list);
         submenuDropLeft = submenuView.findViewById(R.id.iv_submenu_drop_left);
         submenuDropRight = submenuView.findViewById(R.id.iv_submenu_drop_right);
-        nestScroll = submenuView.findViewById(R.id.nest_scroll);
-        scrollView = submenuView.findViewById(R.id.scrollView);
-        pullView = submenuView.findViewById(R.id.pullView);
-        relaPre.setSkillAndLauncher(this, mTipInfoRv, nestScroll, scrollView, pullView);
+        nestScroll      = submenuView.findViewById(R.id.nest_scroll);
+        scrollView      = submenuView.findViewById(R.id.scrollView);
+        pullView        = submenuView.findViewById(R.id.pullView);
+        relaPre.setSkillAndLauncher(this,mTipInfoRv,nestScroll,scrollView,pullView);
         initAdapter();
 
 
     }
 
 
-    private void returnDefault() {
+    private void returnDefault () {
         if (nestScroll != null) {
             nestScroll.setTranslationY(BaseApplication.getBaseInstance().getScreenHeight());
             setLauncherState(Constant.Common.HOME_PAGE);
@@ -951,7 +963,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
     }
 
-    private void initAdapter() {
+    private void initAdapter () {
         //这里的第二个参数4代表的是网格的列数
         mSubmenuListRv.setLayoutManager(new GridLayoutManager(mContext, 4));
         mSubmenuListRv.setNestedScrollingEnabled(false);
@@ -980,22 +992,17 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.WEATHER)) {
                     //                    ToastUtils.show("天气");
                     String saveWeahterValue = (String) SPUtils.get(getApplicationContext(), Constant.Weather.SP_NOW_WEATHER, "");
-                    if (saveWeahterValue != null && saveWeahterValue.length() > 1) {
+                    if (saveWeahterValue != null && saveWeahterValue.length() > 1 && mIWeatherProvider != null) {
                         mIWeatherProvider.weatherFromVoiceControl(saveWeahterValue);
                     } else {
                         ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation();
                     }
-                    initVoiceProvider.nowWeather();
+                    if (initVoiceProvider != null){
+                        initVoiceProvider.nowWeather();
+                    }
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.CALENDAR)) {
                     //                    ToastUtils.show("日历");
-                    try {
-                        ICaptureUserActionProvider iCaptureUserActionProvider = (ICaptureUserActionProvider) ARouter.getInstance().build(RouterPath.Capture.CAPTURE_MYPROVIDER).navigation();
-                        iCaptureUserActionProvider.captureUserAction("日历", "首页", "0");
-                    } catch (Exception e) {
-                        LogUtil.e(e.toString());
-                    }
                     ARouter.getInstance().build(RouterPath.Calendar.Perpetual_CALENDAR_ACTIVITY).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation();
-
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.PHOTO)) {
                     //                    ToastUtils.show("相册");
                     ARouter.getInstance().build(RouterPath.Gallery.GALLERY_CATOGORY).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation();
@@ -1156,11 +1163,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     }
 
     @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
+    public void onWindowFocusChanged ( boolean hasFocus){
         super.onWindowFocusChanged(hasFocus);
 
         LogUtil.e("进入了Oncreate  : hasFocus = " + hasFocus);
     }
-
-
 }

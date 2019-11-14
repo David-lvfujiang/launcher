@@ -157,7 +157,6 @@ public abstract class BaseFragment extends Fragment {
             mLoadingInitView = view.findViewById(R.id.view_init_loading);
         }
         mLoadingInitView.setVisibility(show ? View.VISIBLE : View.GONE);
-        mLoadingInitView.loading(show);
     }
 
 

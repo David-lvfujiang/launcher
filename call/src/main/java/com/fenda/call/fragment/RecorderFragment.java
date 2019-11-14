@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.rong.callkit.bean.CallRecoderBean;
+import io.rong.callkit.config.Constant;
 import io.rong.callkit.util.DbUtil;
 
 /**
@@ -50,7 +51,7 @@ public class RecorderFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSyncEvent(String syncContact) {
-        if (CallService.SYNC_CONTACTS.equals(syncContact)) {
+        if (CallService.SYNC_CONTACTS.equals(syncContact) || Constant.SYNCRECORDER.equals(syncContact)) {
             mAllDatas = DbUtil.getInstance(mContext).listAllCallRecoderByPhone();
             mDatas = sortData(mAllDatas);
             mAdapter.setNewData(mDatas);

@@ -3,6 +3,7 @@ package com.fenda.common.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -50,7 +51,9 @@ public class SPUtils {
     } else if (object instanceof Long) {
       editor.putLong(key, (Long) object);
     } else {
-      editor.putString(key, object.toString());
+      if (object != null){
+          editor.putString(key, object.toString());
+      }
     }
 
     SharedPreferencesCompat.apply(editor);

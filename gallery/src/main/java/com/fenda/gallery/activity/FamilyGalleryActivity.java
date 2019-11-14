@@ -109,6 +109,10 @@ public class FamilyGalleryActivity extends BaseMvpActivity<GalleryPresenter, Gal
             @Override
             public void onClick(View v) {
                 if (isDelete && !FastClickUtils.isFastClick()) {
+                    if (!NetUtil.isNetworkAvailable(mContext)) {
+                        ToastUtils.show(getString(R.string.no_net));
+                        return;
+                    }
                     sendDelete();
                 }
             }

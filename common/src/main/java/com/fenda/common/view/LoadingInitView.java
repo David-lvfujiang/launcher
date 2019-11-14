@@ -1,12 +1,12 @@
 package com.fenda.common.view;
 
 import android.content.Context;
-import android.graphics.drawable.AnimationDrawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.fenda.common.R;
+import com.fenda.common.util.ImageUtil;
 
 
 /**
@@ -17,24 +17,10 @@ import com.fenda.common.R;
  * Update:     <br>
  */
 public class LoadingInitView extends RelativeLayout {
-    private final AnimationDrawable mAnimationDrawable;
     public LoadingInitView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        inflate(context, R.layout.common_view_init_loading,this);
+        inflate(context, R.layout.common_view_init_loading, this);
         ImageView imgLoading = findViewById(R.id.img_init_loading);
-        mAnimationDrawable = (AnimationDrawable) imgLoading.getDrawable();
-    }
-    public void startLoading(){
-        mAnimationDrawable.start();
-    }
-    public void stopLoading(){
-        mAnimationDrawable.stop();
-    }
-    public void loading(boolean b){
-        if(b){
-            startLoading();
-        }else{
-            stopLoading();
-        }
+        ImageUtil.loadGIFImage(R.mipmap.loading, imgLoading, R.mipmap.loading);
     }
 }

@@ -97,7 +97,10 @@ public class SettingsActivity extends BaseActivity {
         String[] listItemName = new String[]{getString(R.string.settings_set_names_list_wifi), getString(R.string.settings_set_names_list_bluetooth),
                 getString(R.string.settings_set_names_list_screen), getString(R.string.settings_set_names_list_light), getString(R.string.settings_set_names_list_volume),
                 getString(R.string.settings_set_names_list_deviceinfo), getString(R.string.settings_set_names_list_about)};
-        String[] listItemStatus = new String[]{getString(R.string.settings_set_status_wifi_noconnect), "","", "", "", "", ""};
+        String[] listItemStatus = new String[7];
+        listItemStatus[0] = getString(R.string.settings_set_status_wifi_noconnect);
+
+//        String[] listItemStatus = new String[]{getString(R.string.settings_set_status_wifi_noconnect), "","", "", "", "", ""};
 
         mArrayListData = new ArrayList<>();
         for (int i = 0; i < listItemName.length; i++) {

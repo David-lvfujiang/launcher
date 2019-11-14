@@ -27,6 +27,7 @@ public class VoiceConstant {
     public static final String ACTION_CLOSE_ALARM = "com.fenda.lucher.ACTION_CLOSE_ALARM";
     public static final String ACTION_CLOSE_REMIND = "com.fenda.lucher.ACTION_CLOSE_REMIND";
     public static final String ACTION_CLOSE_QQMUSIC = "com.fenda.lucher.ACTION_CLOSE_QQMUSIC";
+    public static final String ACTION_CLOSE_VIEW    = "com.fenda.launcher.ACTION_CLOSE_VIEW";
 
 
     public static final int PLAY = 0;

@@ -4,23 +4,12 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.chinamobile.smartgateway.andsdk.device.service.HandleSDKServerMeaasge;
-import com.chinamobile.smartgateway.andsdk.device.serviceimpl.AndSdkImpl;
-import com.fenda.common.bean.AndlinkDeviceInfo;
-import com.fenda.common.bean.AndlinkDmInformInfo;
-import com.fenda.common.callback.AndlinkCallBack;
 import com.fenda.common.util.DensityUtil;
-import com.fenda.common.util.LogUtil;
 import com.fenda.protocol.AppApplicaiton;
-import com.fenda.protocol.util.DeviceIdUtil;
-import com.google.gson.Gson;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-
-import cn.richinfo.mt.MTSdk;
 
 //import cn.richinfo.mt.MTSdk;
 

@@ -122,6 +122,8 @@ public class SingleCallActivity extends BaseCallActivity implements Handler.Call
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.rc_voip_activity_single_call);
+        //音视频时关闭语音弹窗
+        sendCloseVoiceDialogBroad();
         mDbUtil = DbUtil.getInstance(this);
         EventBus.getDefault().register(this);
         // 音视频通话时设置标志禁止其他语言操作
@@ -928,7 +930,12 @@ public class SingleCallActivity extends BaseCallActivity implements Handler.Call
         sendBroadcast(intent);
 
     }
+    public void sendCloseVoiceDialogBroad() {
+        Log.i("smartCall", "sendCloseVoiceDialogBroad action:com.fenda.launcher.ACTION_CLOSE_VIEW");
+        Intent intent = new Intent("com.fenda.launcher.ACTION_CLOSE_VIEW");
+        sendBroadcast(intent);
 
+    }
     @Override
     public void onNetworkSendLost(int lossRate, int delay) {
         isSendLost = lossRate > 15;

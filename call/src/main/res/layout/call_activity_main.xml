@@ -24,18 +24,16 @@
             android:id="@+id/radio_group"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginRight="@dimen/demension_dp49"
             android:orientation="horizontal">
 
             <RadioButton
                 android:id="@+id/contacts"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginRight="@dimen/demension_dp37"
                 android:layout_weight="1"
-                android:background="@drawable/call_bg_memu_selector"
                 android:button="@null"
                 android:checked="true"
+                android:drawableBottom="@drawable/call_bg_memu_selector"
                 android:gravity="center"
                 android:text="@string/call_family_contacts"
                 android:textColor="@color/call_selector_text_color"
@@ -45,9 +43,8 @@
                 android:id="@+id/recorder"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginRight="@dimen/demension_dp37"
                 android:layout_weight="1"
-                android:background="@drawable/call_bg_memu_selector"
+                android:drawableBottom="@drawable/call_bg_memu_selector"
                 android:button="@null"
                 android:gravity="center"
                 android:text="@string/call_call_recorder"
@@ -60,12 +57,13 @@
                 android:layout_height="match_parent"
                 android:layout_marginRight="@dimen/demension_dp37"
                 android:layout_weight="1"
-                android:background="@drawable/call_bg_memu_selector"
+                android:drawableBottom="@drawable/call_bg_memu_selector"
                 android:button="@null"
                 android:gravity="center"
                 android:text="@string/call_keyboard"
                 android:textColor="@color/call_selector_text_color"
-                android:textSize="@dimen/textsize_sp40" />
+                android:textSize="@dimen/textsize_sp40"
+                android:visibility="gone" />
         </RadioGroup>
     </LinearLayout>
 

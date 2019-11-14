@@ -12,5 +12,7 @@ public interface IVoiceInitProvider extends IProvider {
     /**初始化语音**/
     void initVoice();
 
+//    void initAuth(String authCode, String codeVerifier, String cliendId, String userId);
+    void initAuth();
 
 }

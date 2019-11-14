@@ -82,6 +82,9 @@ public class MyRelativeLayout extends RelativeLayout {
                 mActivePointerId = ev.getPointerId(0);
                 mDownPos.set(ev.getX(), ev.getY());
                 mLastPos.set(mDownPos);
+                if (skillView == null){
+                    return false;
+                }
                 if (skillView.getVisibility() == INVISIBLE){
                     skillView.setVisibility(VISIBLE);
                     skillView.setTranslationY(BaseApplication.getBaseInstance().getScreenHeight());

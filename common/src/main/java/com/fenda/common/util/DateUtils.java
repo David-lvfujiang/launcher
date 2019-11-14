@@ -1076,7 +1076,7 @@ public class DateUtils {
         Calendar todayCalendar = Calendar.getInstance();
         Calendar otherCalendar = Calendar.getInstance();
         otherCalendar.setTimeInMillis(timesamp);
-        String timeFormat = "MM/dd\nHH:mm";
+        String timeFormat = "MM/dd";
         String yearTimeFormat = "yyyy年\nMM/dd";
         boolean yearTemp = todayCalendar.get(Calendar.YEAR) == otherCalendar.get(Calendar.YEAR);
         if (yearTemp) {
@@ -1089,7 +1089,7 @@ public class DateUtils {
                         result = getHourAndMin(timesamp);
                         break;
                     case 1:
-                        result = "昨天\n" + getHourAndMin(timesamp);
+                        result = "昨天";
                         break;
                     case 2:
                     case 3:
@@ -1101,7 +1101,7 @@ public class DateUtils {
                         if (dayOfMonth == todayOfMonth) {//表示是同一周
                             int dayOfWeek = otherCalendar.get(Calendar.DAY_OF_WEEK);
                             if (dayOfWeek != 1) {//判断当前是不是星期日   如想显示为：周日 12:09 可去掉此判断
-                                result = dayNames[otherCalendar.get(Calendar.DAY_OF_WEEK) - 1] + "\n" + getHourAndMin(timesamp);
+                                result = dayNames[otherCalendar.get(Calendar.DAY_OF_WEEK) - 1];
                             } else {
                                 result = getTime(timesamp, timeFormat);
                             }
