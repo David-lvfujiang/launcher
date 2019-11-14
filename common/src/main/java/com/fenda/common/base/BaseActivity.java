@@ -20,7 +20,6 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.R;
 import com.fenda.common.baseapp.AppManager;
 import com.fenda.common.util.NetUtil;
-import com.fenda.common.util.ScreenSaverManager;
 import com.fenda.common.view.LoadingInitView;
 import com.fenda.common.view.LoadingTransView;
 import com.fenda.common.view.NetErrorView;
@@ -285,7 +284,6 @@ public abstract class BaseActivity extends RxAppCompatActivity {
             mLoadingInitView = view.findViewById(R.id.view_init_loading);
         }
         mLoadingInitView.setVisibility(show ? View.VISIBLE : View.GONE);
-        mLoadingInitView.loading(show);
     }
 
 
