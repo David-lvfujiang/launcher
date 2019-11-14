@@ -51,7 +51,7 @@
         android:layout_marginLeft="40dp"
         android:layout_marginRight="45dp"
         android:scaleType="centerCrop"
-        android:src="@mipmap/news_poetry_pic_default" />
+        android:src="@mipmap/news_default_pic" />
 
     </LinearLayout>
 

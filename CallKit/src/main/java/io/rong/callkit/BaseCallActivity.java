@@ -33,6 +33,8 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fenda.common.basebean.player.FDMusic;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -95,6 +97,7 @@ public class BaseCallActivity extends BaseNoActionBarActivity implements IRongCa
      * 判断是拨打界面还是接听界面
      */
     private boolean isIncoming;
+    private AudioManager manager;
 
     public void setShouldShowFloat(boolean ssf) {
         CallKitUtils.shouldShowFloat = ssf;
@@ -197,7 +200,43 @@ public class BaseCallActivity extends BaseNoActionBarActivity implements IRongCa
                 }
             });
         }
-    }
+        if (manager == null){
+            manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            manager.requestAudioFocus(changeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        }
+        }
+
+    /**
+     * 音频焦点监听
+     */
+    AudioManager.OnAudioFocusChangeListener changeListener = new AudioManager.OnAudioFocusChangeListener() {
+        @Override
+        public void onAudioFocusChange(int focusChange) {
+            if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
+                // 展示失去音频焦点，暂停播放等待重新获得音频焦点
+                if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+                }
+
+            } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+                // 获得音频焦点
+                if (mMediaPlayer != null) {
+                }
+
+                // Resume playback
+
+            } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+                // 长久的失去音频焦点，释放MediaPlayer
+
+
+            } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
+                //失去焦点，降低音量
+                if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+
+                }
+            }
+        }
+    };
+
 
     @Override
     protected void onStart() {
@@ -227,6 +266,9 @@ public class BaseCallActivity extends BaseNoActionBarActivity implements IRongCa
                 mMediaPlayer.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
             }
 //            mMediaPlayer.prepareAsync();
+
+
+
             mMediaPlayer.prepare();
             final AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             if (am != null) {

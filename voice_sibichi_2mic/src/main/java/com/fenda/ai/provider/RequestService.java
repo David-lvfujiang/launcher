@@ -213,6 +213,7 @@ public class RequestService implements IVoiceRequestProvider {
     public void requestNews(int number) {
         try {
 
+            LogUtil.e("===============================请求新闻"+number+"================================");
             BaseApplication.getBaseInstance().setRequestNews(true);
             SkillIntent skillIntent = new SkillIntent("2019031900001180",
                     "新闻", "播报新闻",

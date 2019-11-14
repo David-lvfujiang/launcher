@@ -13,7 +13,6 @@ import com.fenda.common.basebean.player.FDMusic;
 import com.fenda.common.util.ImageUtil;
 import com.fenda.news.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -58,7 +57,7 @@ public class ViewPagerCardAdapter extends PagerAdapter {
         newsContent.setText(newsListData.get(position).getMusicTitle());
         String time = mContext.getResources().getString(R.string.news_time_source,newsListData.get(position).getMusicArtist(),newsListData.get(position).getMusicTime());
         newsTime.setText(time);
-        ImageUtil.loadImage(newsListData.get(position).getMusicImage() ,newImage);
+        ImageUtil.loadImage(newsListData.get(position).getMusicImage() ,newImage,R.mipmap.news_default_pic);
         container.addView(view);
         return view;
     }

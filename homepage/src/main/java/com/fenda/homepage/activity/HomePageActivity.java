@@ -355,12 +355,12 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                                 mAiTipTitleTv.setText("新闻资讯｜" + newsRecommend.get(current).getMusicTitle());
                             } else {
                                 current = 0;
-                                if (initVoiceProvider == null) {
-                                    initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
-                                }
-                                if (initVoiceProvider != null){
-                                    initVoiceProvider.requestNews(20);
-                                }
+//                                if (initVoiceProvider == null) {
+//                                    initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
+//                                }
+//                                if (initVoiceProvider != null){
+//                                    initVoiceProvider.requestNews(20);
+//                                }
                             }
                         } else {
                             mAiTipTitleTv.setText(R.string.cm_main_page_describe_1);
@@ -793,12 +793,14 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         } else if (resId == R.id.iv_header_weather || resId == R.id.tv_header_temp) {
 
             String saveWeahterValue = (String) SPUtils.get(getApplicationContext(), Constant.Weather.SP_NOW_WEATHER, "");
-            if (saveWeahterValue != null && saveWeahterValue.length() > 1) {
+            if (saveWeahterValue != null && saveWeahterValue.length() > 1 && mIWeatherProvider != null) {
                 mIWeatherProvider.weatherFromVoiceControl(saveWeahterValue);
             } else {
                 ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN).navigation();
             }
-            initVoiceProvider.nowWeather();
+            if (initVoiceProvider != null){
+                initVoiceProvider.nowWeather();
+            }
 
         } else if (resId == R.id.tv_main_qqmusic) {
             if (initVoiceProvider != null) {
@@ -809,7 +811,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 initVoiceProvider.openAqiyi();
             }
         } else if (resId == R.id.iv_header_love) {
-            leaveMessageProvider.openConversationListActivity();
+            if (leaveMessageProvider != null){
+                leaveMessageProvider.openConversationListActivity();
+            }
         }
     }
 
@@ -988,12 +992,14 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.WEATHER)) {
                     //                    ToastUtils.show("天气");
                     String saveWeahterValue = (String) SPUtils.get(getApplicationContext(), Constant.Weather.SP_NOW_WEATHER, "");
-                    if (saveWeahterValue != null && saveWeahterValue.length() > 1) {
+                    if (saveWeahterValue != null && saveWeahterValue.length() > 1 && mIWeatherProvider != null) {
                         mIWeatherProvider.weatherFromVoiceControl(saveWeahterValue);
                     } else {
                         ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation();
                     }
-                    initVoiceProvider.nowWeather();
+                    if (initVoiceProvider != null){
+                        initVoiceProvider.nowWeather();
+                    }
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.CALENDAR)) {
                     //                    ToastUtils.show("日历");
                     ARouter.getInstance().build(RouterPath.Calendar.Perpetual_CALENDAR_ACTIVITY).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation();

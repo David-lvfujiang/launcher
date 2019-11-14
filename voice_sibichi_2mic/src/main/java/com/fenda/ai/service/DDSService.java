@@ -625,7 +625,8 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
             //    handleMesagestate(state);
             //   break;
             case VoiceConstant.SIBICHI.CONTEXT_INPUT_TEXT:
-                speechView.showView(Jsonparse.parseInputText(state));
+                String text = Jsonparse.parseInputText(state);
+                speechView.showView(text);
                 break;
             case VoiceConstant.SIBICHI.CONTEXT_WIDGET_MEDIA:
             case VoiceConstant.SIBICHI.CONTEXT_WIDGET_WEB:
