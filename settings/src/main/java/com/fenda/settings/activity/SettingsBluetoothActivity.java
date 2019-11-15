@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.v4.content.FileProvider;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -435,24 +436,25 @@ public class SettingsBluetoothActivity extends BaseMvpActivity {
 
     private void changeBtItemStatus(String name, String addr, String status) {
         int index = 0;
-        for (int i = 0; i < mSettingsBluetoothAdapter.getListDevices().size(); i++) {
-            String itemName = mSettingsBluetoothAdapter.getListDevices().get(i).getName();
-            String itemAddr = mSettingsBluetoothAdapter.getListDevices().get(i).getAddress();
-            if (name != null) {
-                if (name.equals(itemName)) {
-                    mSettingsBluetoothAdapter.getListDevices().get(i).setStatus(status);
-                    index = i;
-                    break;
-                }
-            } else if (addr != null) {
-                if (addr.equals(itemAddr)) {
-                    mSettingsBluetoothAdapter.getListDevices().get(i).setStatus(status);
-                    index = i;
-                    break;
+        if(0 != mSettingsBluetoothAdapter.getListDevices().size()) {
+            for (int i = 0; i < mSettingsBluetoothAdapter.getListDevices().size(); i++) {
+                String itemName = mSettingsBluetoothAdapter.getListDevices().get(i).getName();
+                String itemAddr = mSettingsBluetoothAdapter.getListDevices().get(i).getAddress();
+                if (name != null) {
+                    if (name.equals(itemName)) {
+                        mSettingsBluetoothAdapter.getListDevices().get(i).setStatus(status);
+                        index = i;
+                        break;
+                    }
+                } else if (addr != null) {
+                    if (addr.equals(itemAddr)) {
+                        mSettingsBluetoothAdapter.getListDevices().get(i).setStatus(status);
+                        index = i;
+                        break;
+                    }
                 }
             }
         }
-
         SettingsBluetoothDeviceBean bd = mSettingsBluetoothAdapter.getListDevices().get(index);
         mSettingsBluetoothAdapter.getListDevices().remove(index);
         mSettingsBluetoothAdapter.getListDevices().add(0, bd);

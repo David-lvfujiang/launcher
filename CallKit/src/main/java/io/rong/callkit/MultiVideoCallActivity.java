@@ -1009,6 +1009,7 @@ public class MultiVideoCallActivity extends BaseCallActivity {
                     intent.putStringArrayListExtra("invitedMembers", added);
                     intent.putExtra("conversationType", callSession.getConversationType().getValue());
                     intent.putExtra("mediaType", RongCallCommon.CallMediaType.VIDEO.getValue());
+                    intent.setType("video/*");
                     startActivityForResult(intent, REQUEST_CODE_ADD_MEMBER);
                 }
 
@@ -1030,6 +1031,7 @@ public class MultiVideoCallActivity extends BaseCallActivity {
             intent.putExtra("groupId", callSession.getTargetId());
             intent.putExtra("conversationType", callSession.getConversationType().getValue());
             intent.putExtra("mediaType", RongCallCommon.CallMediaType.VIDEO.getValue());
+            intent.setType("video/*");
             startActivityForResult(intent, REQUEST_CODE_ADD_MEMBER);
         } else {
             ArrayList<String> added = new ArrayList<>();

@@ -7,7 +7,6 @@
     android:background="@mipmap/submenu_bg"
     >
 
-
     <com.fenda.homepage.view.PullView
         android:id="@+id/pullView"
         android:layout_width="match_parent"
@@ -32,10 +31,6 @@
                 android:layout_marginStart="@dimen/demension_dp10"
                 />
 
-
-
-
-
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
@@ -46,9 +41,6 @@
                 android:paddingLeft="@dimen/demension_dp20"
                 android:layout_below="@id/rv_submenu_list"
                 />
-
-
-
 
             <LinearLayout
                 android:id="@+id/lin1"

@@ -1,5 +1,6 @@
 package com.fenda.homepage.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityOptions;
@@ -153,6 +154,11 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     private MyNestedScrollView scrollView;
 
 
+    private String[] mPermission = new String[] {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+    };
+
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -231,7 +237,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     }
 
     public int getLauncherState(){
-
         return LAUNCHER_STATUS;
     }
 
@@ -300,9 +305,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             }
             finishAllActivity();
         }
-
-
-
     }
 
     private void initRecycleView() {
@@ -578,15 +580,11 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                         }
                     }).start();
                 }
-
             }
-
-
         } else if (message.getCode() == Constant.Common.GO_HOME) {
             //回到首页时 把列表页面回到默认位置
             finishAllActivity();
             returnDefault();
-
         }
     }
 
@@ -762,7 +760,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             executorService.setRemoveOnCancelPolicy(true);
             executorService.shutdown();
             executorService = null;
-
         }
         if (isExitHome) {
             returnDefault();
@@ -791,7 +788,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             //通讯录
             //            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
         } else if (resId == R.id.iv_header_weather || resId == R.id.tv_header_temp) {
-
             String saveWeahterValue = (String) SPUtils.get(getApplicationContext(), Constant.Weather.SP_NOW_WEATHER, "");
             if (saveWeahterValue != null && saveWeahterValue.length() > 1 && mIWeatherProvider != null) {
                 mIWeatherProvider.weatherFromVoiceControl(saveWeahterValue);
@@ -935,7 +931,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             }
         }
 
-
     /**
      * 二级菜单
      */
@@ -945,13 +940,11 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mSubmenuListRv = submenuView.findViewById(R.id.rv_submenu_list);
         submenuDropLeft = submenuView.findViewById(R.id.iv_submenu_drop_left);
         submenuDropRight = submenuView.findViewById(R.id.iv_submenu_drop_right);
-        nestScroll      = submenuView.findViewById(R.id.nest_scroll);
-        scrollView      = submenuView.findViewById(R.id.scrollView);
-        pullView        = submenuView.findViewById(R.id.pullView);
+        nestScroll = submenuView.findViewById(R.id.nest_scroll);
+        scrollView = submenuView.findViewById(R.id.scrollView);
+        pullView = submenuView.findViewById(R.id.pullView);
         relaPre.setSkillAndLauncher(this,mTipInfoRv,nestScroll,scrollView,pullView);
         initAdapter();
-
-
     }
 
 
@@ -960,7 +953,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             nestScroll.setTranslationY(BaseApplication.getBaseInstance().getScreenHeight());
             setLauncherState(Constant.Common.HOME_PAGE);
         }
-
     }
 
     private void initAdapter () {
