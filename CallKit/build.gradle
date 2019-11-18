@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 //apply from: 'maven_config.gradle'
-apply plugin: 'org.greenrobot.greendao'
 android {
     compileSdkVersion 26
     //buildToolsVersion '28.0.2'
@@ -25,12 +24,6 @@ android {
     lintOptions {
         abortOnError false
     }
-    greendao {
-        schemaVersion 1
-        daoPackage 'io.rong.callkit.gen'  //包名
-        targetGenDir 'src/main/java'   //目录文件夹
-    }
-
 }
 
 dependencies {

@@ -26,7 +26,9 @@ import android.widget.Toast;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.BaseApplication;
+import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.constant.Constant;
+import com.fenda.common.db.ContentProviderManager;
 import com.fenda.common.provider.IVoiceRequestProvider;
 import com.fenda.common.util.LogUtil;
 import com.fenda.protocol.tcp.bus.EventBusUtils;
@@ -42,12 +44,11 @@ import java.util.Locale;
 
 import cn.rongcloud.rtc.engine.view.RongRTCVideoView;
 import cn.rongcloud.rtc.utils.FinLog;
-import io.rong.callkit.bean.CallRecoderBean;
-import io.rong.callkit.bean.UserInfoBean;
-import io.rong.callkit.db.ContentProviderManager;
+import com.fenda.common.bean.CallRecoderBean;
+
 import io.rong.callkit.util.BluetoothUtil;
 import io.rong.callkit.util.CallKitUtils;
-import io.rong.callkit.util.DbUtil;
+import com.fenda.common.util.DbUtil;
 import io.rong.callkit.util.GlideUtils;
 import io.rong.callkit.util.HeadsetInfo;
 import io.rong.calllib.CallUserProfile;
@@ -897,10 +898,11 @@ public class SingleCallActivity extends BaseCallActivity implements Handler.Call
             String name = userInfo.getUserName();
             String phone = userInfo.getMobile();
             String icon = userInfo.getIcon();
+            String userId=userInfo.getUserId();
             bean.setIcon(icon);
             bean.setName(name);
             bean.setPhone(phone);
-
+            bean.setUserId(userId);
         } else {
             bean.setPhone(targetId);
 

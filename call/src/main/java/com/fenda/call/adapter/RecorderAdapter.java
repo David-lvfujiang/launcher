@@ -19,7 +19,7 @@ import com.fenda.common.view.CircleImageView;
 import java.util.List;
 
 import io.rong.callkit.RongCallKit;
-import io.rong.callkit.bean.CallRecoderBean;
+import com.fenda.common.bean.CallRecoderBean;
 import io.rong.calllib.RongCallCommon;
 
 /**

@@ -112,7 +112,7 @@ public class GalleryCategoryActivity extends BaseMvpActivity<GalleryPresenter, G
         FamilyPhotoRequest request = new FamilyPhotoRequest();
         request.setCurrentPage(mIndexPage);
         request.setPageSize(mPageCount);
-        mPresenter.getFamilyPhoto(request);
+        mPresenter.getFamilyPhoto(request, false);
     }
 
     private void initLocalPhoto() {

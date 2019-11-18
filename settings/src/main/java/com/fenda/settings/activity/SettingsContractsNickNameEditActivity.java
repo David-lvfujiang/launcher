@@ -14,11 +14,13 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
+import com.fenda.common.bean.MessageBean;
 import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.db.ContentProviderManager;
 import com.fenda.common.provider.ICallProvider;
 import com.fenda.common.router.RouterPath;
+import com.fenda.common.util.DbUtil;
 import com.fenda.common.util.GsonUtil;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.ToastUtils;
@@ -90,19 +92,19 @@ public class SettingsContractsNickNameEditActivity extends BaseMvpActivity<Setti
         //已经加入的用户
         mClickNickNameIcon = intent.getStringExtra("clickChangedNickNameIcon");
 
-        LogUtil.d(TAG,  "new add user name  = " + mNewUserNameIntent);
-        LogUtil.d(TAG,  "mClickNickNameIcon  = " + mClickNickNameIcon);
+        LogUtil.d(TAG, "new add user name  = " + mNewUserNameIntent);
+        LogUtil.d(TAG, "mClickNickNameIcon  = " + mClickNickNameIcon);
 
         //不是最新加入的成员
-        if(mNewUserNameIntent == null){
+        if (mNewUserNameIntent == null) {
             btnSetNickNameCancel.setVisibility(View.VISIBLE);
-            if(!mClickNickNameIntent.contains("管理员")) {
+            if (!mClickNickNameIntent.contains("管理员")) {
                 //非管理员用户
                 mGetUserIdName = mClickNickNameIntent;
                 etSetNickName.setText(mClickNickNameIntent);
             } else {
                 //管理员用户
-                mGetUserIdName = mClickNickNameIntent.replace("(管理员)","");
+                mGetUserIdName = mClickNickNameIntent.replace("(管理员)", "");
                 etSetNickName.setText(mGetUserIdName);
             }
             mUserNameId = ContentProviderManager.getInstance(SettingsContractsNickNameEditActivity.this, mUri).getUserID(mGetUserIdName);
@@ -142,6 +144,7 @@ public class SettingsContractsNickNameEditActivity extends BaseMvpActivity<Setti
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 etSetNickName.removeTextChangedListener(this);//**** 注意的地方
@@ -149,12 +152,13 @@ public class SettingsContractsNickNameEditActivity extends BaseMvpActivity<Setti
                     etSetNickName.setText(s.toString().substring(0, maxTextCount));
                     etSetNickName.setSelection(maxTextCount);
 
-                    Toast toast = Toast.makeText(getApplicationContext(),getString(R.string.settings_nickname_edittext_num_limit_name),Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER,0,0);
+                    Toast toast = Toast.makeText(getApplicationContext(), getString(R.string.settings_nickname_edittext_num_limit_name), Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                 }
                 etSetNickName.addTextChangedListener(this);//****  注意的地方
             }
+
             @Override
             public void afterTextChanged(Editable s) {
             }
@@ -174,18 +178,27 @@ public class SettingsContractsNickNameEditActivity extends BaseMvpActivity<Setti
                 SetttingsRepairContactNicknameBean bean = GsonUtil.GsonToBean(msg, SetttingsRepairContactNicknameBean.class);
                 if (bean != null) {
                     ContentProviderManager.getInstance(SettingsContractsNickNameEditActivity.this, mUri).updateNickNameByUserID(bean.getNickName(), bean.getUserId());
+                    DbUtil.getInstance(mContext).updateNameByUserId(bean.getNickName(), bean.getUserId());
                     ICallProvider callService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
-                    if (callService!=null){
+                    if (callService != null) {
                         callService.syncFamilyContacts();
                     }
                 }
             }
-        } else if(message.getCode() == TCPConfig.MessageType.USER_EXIT_FAMILY){
+        } else if (message.getCode() == TCPConfig.MessageType.USER_EXIT_FAMILY) {
             LogUtil.d(TAG, "普通成员退出家庭通知");
 
-//                普通成员退出家庭通知
-            ContentProviderManager.getInstance(SettingsContractsNickNameEditActivity.this, mUri).clear();
-            mPresenter.getContactsList();
+            // 普通成员退出家庭通知
+            MessageBean messageBean = GsonUtil.GsonToBean(message.getData().getMsg(), MessageBean.class);
+            if (messageBean != null && messageBean.getMessageUserInfoDTO() != null) {
+                String userId = messageBean.getMessageUserInfoDTO().getUserId();
+                ContentProviderManager.getInstance(mContext, Constant.Common.URI).deleteUserByUserID(userId);
+            }
+            Intent mIntent = new Intent(SettingsContractsNickNameEditActivity.this, SettingsDeviceContractsActivity.class);
+            startActivity(mIntent);
+            finish();
+
+            LogUtil.d(TAG, "intent to contracts success!");
 
         }
     }
@@ -231,14 +244,7 @@ public class SettingsContractsNickNameEditActivity extends BaseMvpActivity<Setti
 
     @Override
     public void getContactsListSuccess(BaseResponse<List<UserInfoBean>> response) {
-        LogUtil.d(TAG, "getContactsListSuccess");
-        ContentProviderManager.getInstance(mContext, Constant.Common.URI).insertUsers(response.getData());
 
-        Intent mIntent = new Intent(SettingsContractsNickNameEditActivity.this, SettingsDeviceContractsActivity.class);
-        startActivity(mIntent);
-        finish();
-
-        LogUtil.d(TAG, "intent to contracts success!");
     }
 
     @Override

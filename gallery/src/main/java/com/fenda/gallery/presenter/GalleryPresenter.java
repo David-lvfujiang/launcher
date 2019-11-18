@@ -18,8 +18,8 @@ public class GalleryPresenter extends GalleryContract.Presenter {
 
 
     @Override
-    public void getFamilyPhoto(final FamilyPhotoRequest request) {
-        mRxManage.add(mModel.getFamilyGallery(request).subscribeWith(new RxResourceObserver<BaseResponse<FamilyPhotoResponse>>(mView) {
+    public void getFamilyPhoto(final FamilyPhotoRequest request,boolean showLoading) {
+        mRxManage.add(mModel.getFamilyGallery(request).subscribeWith(new RxResourceObserver<BaseResponse<FamilyPhotoResponse>>(mView,showLoading) {
             @Override
             protected void _onNext(BaseResponse<FamilyPhotoResponse> response) {
                 if (response.getCode() == 200) {
