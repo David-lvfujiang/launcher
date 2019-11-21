@@ -1,12 +1,17 @@
 package com.fenda.player.fragment;
 
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -23,6 +28,8 @@ import com.fenda.protocol.tcp.bus.EventBusUtils;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.IOException;
+
 
 /**
  * @author WangZL
@@ -34,11 +41,16 @@ public class LyricFragment extends BaseFragment implements View.OnTouchListener 
     TextView tvAuthor;
     LinearLayout linContent;
     AutoScrollView mAutoScrollView;
+    FDMusic music;
+    int rowNumber;
+
     int mPosX = 0, mPosY = 0, mCurPosX = 0, mCurPosY = 0;
     private static final long TIME_INTERVAL = 500L;
     long downTime = 0;
 
     public static LyricFragment getInstance(FDMusic music) {
+        Log.e("LyricFragment", music.getMusicTime() + "");
+
         LyricFragment fragment = new LyricFragment();
         Bundle mBundle = new Bundle();
         mBundle.putParcelable("poetry", music);
@@ -64,7 +76,7 @@ public class LyricFragment extends BaseFragment implements View.OnTouchListener 
 
     @Override
     public void initData() {
-        FDMusic music = getArguments().getParcelable("poetry");
+        music = getArguments().getParcelable("poetry");
         initLyricData(music.getMusicTitle(), music.getMusicArtist(), music.getContent());
     }
 
@@ -72,6 +84,14 @@ public class LyricFragment extends BaseFragment implements View.OnTouchListener 
      * 设置滚动
      */
     public void settingScroll() {
+
+        View view = (View) mAutoScrollView.getChildAt(mAutoScrollView.getChildCount() - 1);
+        //获取textView的高度
+        int childViewHight = view.getBottom();
+        Log.e("高度", "" + childViewHight);
+        Log.e("句长", "" + rowNumber);
+
+
         //获取焦点
         mAutoScrollView.requestFocus();
         //滚动条重初始化
@@ -82,8 +102,25 @@ public class LyricFragment extends BaseFragment implements View.OnTouchListener 
         mAutoScrollView.setAutoToScroll(true);
         //开始滚动时间
         mAutoScrollView.setFistTimeScroll(9000);
-        //滚动的速率
         mAutoScrollView.setScrollRate(240);
+        if (music.getMusicUri() == null || "".equals(music.getMusicUri())) {
+            mAutoScrollView.setScrollRate(60);
+        } else {
+            if (rowNumber > 10) {
+                mAutoScrollView.setScrollRate(220);
+            } else if (rowNumber > 30) {
+                mAutoScrollView.setScrollRate(200);
+            } else if (rowNumber > 50) {
+                mAutoScrollView.setFistTimeScroll(15000);
+                mAutoScrollView.setScrollRate(160);
+            } else if (rowNumber > 80) {
+                mAutoScrollView.setFistTimeScroll(15000);
+                mAutoScrollView.setScrollRate(130);
+            } else if (rowNumber > 100) {
+                mAutoScrollView.setFistTimeScroll(15000);
+                mAutoScrollView.setScrollRate(120);
+            }
+        }
         //是否循环滑动
         mAutoScrollView.setScrollLoop(false);
         LogUtils.e("滚动 ");
@@ -91,19 +128,21 @@ public class LyricFragment extends BaseFragment implements View.OnTouchListener 
     }
 
     private void initLyricData(String title, String author, String text) {
-        settingScroll();
         LogUtils.e("播放");
         tvTitle.setText(title);
         tvAuthor.setText(author);
         linContent.removeAllViews();
         if (!TextUtils.isEmpty(text) && text.indexOf("。") != -1) {
             String[] contents = text.split("。");
+            rowNumber = 0;
+            rowNumber = contents.length;
             for (int i = 0; i < contents.length; i++) {
                 String item = contents[i];
                 if (item.indexOf("！") != -1) {
                     String[] mItems = item.split("！");
+                    rowNumber = rowNumber + mItems.length;
                     for (int i1 = 0; i1 < mItems.length; i1++) {
-                        String mText = mItems[i1];
+                        String mText = mItems[i1].trim();
                         TextView tv = new TextView(getActivity());
                         tv.setTextSize(30);
                         tv.setTextColor(ContextCompat.getColor(getActivity(), R.color.player_white));
@@ -114,19 +153,39 @@ public class LyricFragment extends BaseFragment implements View.OnTouchListener 
 
                         }
                         tv.setGravity(Gravity.CENTER);
+                        //   tv.setBackgroundColor(Color.RED);
+                        linContent.addView(tv);
+                    }
+                } else if (item.indexOf("？") != -1) {
+                    String[] mItems = item.split("？");
+                    rowNumber = rowNumber + mItems.length;
+                    for (int i1 = 0; i1 < mItems.length; i1++) {
+                        String mText = mItems[i1].trim();
+                        TextView tv = new TextView(getActivity());
+                        tv.setTextSize(30);
+                        tv.setTextColor(ContextCompat.getColor(getActivity(), R.color.player_white));
+                        if (i1 == mItems.length - 1) {
+                            tv.setText(mText + "。");
+                        } else {
+                            tv.setText(mText + "？");
+
+                        }
+                        tv.setGravity(Gravity.CENTER);
+                        //   tv.setBackgroundColor(Color.RED);
                         linContent.addView(tv);
                     }
                 } else {
                     TextView tv = new TextView(getActivity());
                     tv.setTextSize(30);
                     tv.setTextColor(ContextCompat.getColor(getActivity(), R.color.player_white));
-                    tv.setText(item + "。");
+                    tv.setText(item.trim() + "。");
                     tv.setGravity(Gravity.CENTER);
+                    // tv.setBackgroundColor(Color.RED);
                     linContent.addView(tv);
                 }
             }
         }
-
+        settingScroll();
 
     }
 
