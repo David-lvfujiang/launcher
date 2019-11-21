@@ -43,7 +43,6 @@ public class LyricFragment extends BaseFragment implements View.OnTouchListener 
     AutoScrollView mAutoScrollView;
     FDMusic music;
     int rowNumber;
-
     int mPosX = 0, mPosY = 0, mCurPosX = 0, mCurPosY = 0;
     private static final long TIME_INTERVAL = 500L;
     long downTime = 0;
@@ -83,15 +82,12 @@ public class LyricFragment extends BaseFragment implements View.OnTouchListener 
     /**
      * 设置滚动
      */
-    public void settingScroll() {
-
+    public void settingScroll(int playTime) {
         View view = (View) mAutoScrollView.getChildAt(mAutoScrollView.getChildCount() - 1);
         //获取textView的高度
         int childViewHight = view.getBottom();
         Log.e("高度", "" + childViewHight);
-        Log.e("句长", "" + rowNumber);
-
-
+        Log.e("高度", "" + rowNumber);
         //获取焦点
         mAutoScrollView.requestFocus();
         //滚动条重初始化
@@ -101,26 +97,11 @@ public class LyricFragment extends BaseFragment implements View.OnTouchListener 
         //滚动条自动滚动
         mAutoScrollView.setAutoToScroll(true);
         //开始滚动时间
-        mAutoScrollView.setFistTimeScroll(9000);
-        mAutoScrollView.setScrollRate(240);
-        if (music.getMusicUri() == null || "".equals(music.getMusicUri())) {
-            mAutoScrollView.setScrollRate(60);
-        } else {
-            if (rowNumber > 10) {
-                mAutoScrollView.setScrollRate(220);
-            } else if (rowNumber > 30) {
-                mAutoScrollView.setScrollRate(200);
-            } else if (rowNumber > 50) {
-                mAutoScrollView.setFistTimeScroll(15000);
-                mAutoScrollView.setScrollRate(160);
-            } else if (rowNumber > 80) {
-                mAutoScrollView.setFistTimeScroll(15000);
-                mAutoScrollView.setScrollRate(130);
-            } else if (rowNumber > 100) {
-                mAutoScrollView.setFistTimeScroll(15000);
-                mAutoScrollView.setScrollRate(120);
-            }
-        }
+        mAutoScrollView.setFistTimeScroll(15000);
+        //根据时长与行高计算每一行的时间
+        int rate = playTime / rowNumber;
+        LogUtils.e("musicActivity " + playTime + "," + rate);
+        mAutoScrollView.setScrollRate(rate * 27);
         //是否循环滑动
         mAutoScrollView.setScrollLoop(false);
         LogUtils.e("滚动 ");
@@ -129,10 +110,10 @@ public class LyricFragment extends BaseFragment implements View.OnTouchListener 
 
     private void initLyricData(String title, String author, String text) {
         LogUtils.e("播放");
-        tvTitle.setText(title);
-        tvAuthor.setText(author);
-        linContent.removeAllViews();
         if (!TextUtils.isEmpty(text) && text.indexOf("。") != -1) {
+            tvTitle.setText(title);
+            tvAuthor.setText(author);
+            linContent.removeAllViews();
             String[] contents = text.split("。");
             rowNumber = 0;
             rowNumber = contents.length;
@@ -185,13 +166,24 @@ public class LyricFragment extends BaseFragment implements View.OnTouchListener 
                 }
             }
         }
-        settingScroll();
 
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onEvnet(PlayerMessage message) {
-        initLyricData(message.getMusicTitle(), message.getMusicName(), message.getContent());
+        Log.e("onEvnet", message.toString());
+        if (message.getMsgType() == 1) {
+            //暂停
+            mAutoScrollView.setPause(true);
+        } else if (message.getMsgType() == 2) {
+            mAutoScrollView.setPause(false);
+        } else {
+            if (message.getPlaytime() > 0) {
+                settingScroll(message.getPlaytime());
+            } else {
+                initLyricData(message.getMusicTitle(), message.getMusicName(), message.getContent());
+            }
+        }
 
     }
 

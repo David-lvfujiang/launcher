@@ -62,4 +62,7 @@ public class EventBusUtils {
     public static void postSticky(EventMessage event) {
         EventBus.getDefault().postSticky(event);
     }
+    public static void postSticky(Object type) {
+        EventBus.getDefault().postSticky(type);
+    }
 }

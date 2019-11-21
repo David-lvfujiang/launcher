@@ -18,6 +18,7 @@ public class AutoScrollView extends ScrollView {
     private int paddingTop = 0;
     private final int MSG_SCROLL = 10;
     private final int MSG_SCROLL_Loop = 11;
+    private boolean isPause = false;
     //是否能滑动
     private boolean scrollAble = true;
     //是否自动滚动
@@ -25,7 +26,7 @@ public class AutoScrollView extends ScrollView {
     //是否循环滚动
     private boolean scrollLoop = false;
     //多少秒后开始滚动，默认5秒
-    private int fistTimeScroll = 5000;
+    private int fistTimeScroll = 10000;
     //多少毫秒滚动一个像素点
     private int scrollRate = 500;
 
@@ -42,8 +43,11 @@ public class AutoScrollView extends ScrollView {
                     if (scrollAble && autoToScroll) {
                         scrollTo(0, paddingTop);
                         paddingTop += 1;
-                        mHandler.removeMessages(MSG_SCROLL);
-                        mHandler.sendEmptyMessageDelayed(MSG_SCROLL, scrollRate);
+                        if (isPause == false) {
+                            mHandler.removeMessages(MSG_SCROLL);
+                            mHandler.sendEmptyMessageDelayed(MSG_SCROLL, scrollRate);
+                        }
+
                     }
                     break;
                 case MSG_SCROLL_Loop:
@@ -142,7 +146,17 @@ public class AutoScrollView extends ScrollView {
     public void setFistTimeScroll(int fistTimeScroll) {
         this.fistTimeScroll = fistTimeScroll;
         mHandler.removeMessages(MSG_SCROLL);
+        isPause = false;
         mHandler.sendEmptyMessageDelayed(MSG_SCROLL, fistTimeScroll);
+    }
+
+    public void setPause(Boolean b) {
+        if (b == false) {
+            isPause = false;
+            mHandler.sendEmptyMessageDelayed(MSG_SCROLL, scrollRate);
+        } else if (b == true) {
+            isPause = true;
+        }
     }
 
     /**

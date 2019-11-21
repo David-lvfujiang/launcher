@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.aispeech.ailog.AILog;
@@ -734,6 +735,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
     }
 
     private void HandleMessage(String message, final String data) {
+        LogUtil.v(TAG, "HandleMessage-----" + message + "||||||" + data);
 
         switch (message) {
 
@@ -799,6 +801,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 break;
             //media widget 1
             case VoiceConstant.SIBICHI.CONTEXT_WIDGET_MEDIA:
+                LogUtil.v(TAG, "CONTEXT_WIDGET_MEDIA-----" + message + "||||||" + data);
                 mediaHandler(data);
                 break;
             //custom widget 1 收到自定义控件消息
@@ -848,6 +851,8 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
     private MediaModel mediaModel;
 
     public void mediaHandler(String data) {
+        LogUtil.v(TAG, "mediaHandler-----" + data + "||||||" + data);
+
         JSONObject object = new JSONObject();
         try {
             if (data != null) {
@@ -870,6 +875,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 mediaModel = new MediaModel();
             }
             mediaModel.handleMusicMediaWidget(object, intentName);
+
         }
 
 

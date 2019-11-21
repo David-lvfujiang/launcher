@@ -15,13 +15,17 @@ public class PlayerMessage implements Serializable {
     private boolean playAnimation;
     private int contentType;
     private String content;
+    private int playtime;
 
-    public PlayerMessage(String musicUrl, String musicName, String musicTitle, int msgType, boolean playAnimation) {
+    public PlayerMessage(String musicUrl, String musicName, String musicTitle, int msgType, boolean playAnimation, int contentType, String content, int playtime) {
         this.musicUrl = musicUrl;
         this.musicName = musicName;
         this.musicTitle = musicTitle;
         this.msgType = msgType;
         this.playAnimation = playAnimation;
+        this.contentType = contentType;
+        this.content = content;
+        this.playtime = playtime;
     }
 
     public PlayerMessage() {
@@ -83,6 +87,14 @@ public class PlayerMessage implements Serializable {
         this.playAnimation = playAnimation;
     }
 
+    public void setPlaytime(int playtime) {
+        this.playtime = playtime;
+    }
+
+    public int getPlaytime() {
+        return playtime;
+    }
+
     @Override
     public String toString() {
         return "PlayerMessage{" +
@@ -91,6 +103,9 @@ public class PlayerMessage implements Serializable {
                 ", musicTitle='" + musicTitle + '\'' +
                 ", msgType=" + msgType +
                 ", playAnimation=" + playAnimation +
+                ", contentType=" + contentType +
+                ", content='" + content + '\'' +
+                ", playtime=" + playtime +
                 '}';
     }
 }

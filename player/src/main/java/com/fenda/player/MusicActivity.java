@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.wifi.WifiManager;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.os.PowerManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -26,7 +28,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
-import com.airbnb.lottie.L;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.base.BaseActivity;
@@ -120,8 +121,8 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
     private int runTimeSecond;
     private MyFragmentPagerAdapter adapter;
     private Handler mProgressHandler = new Handler();
-    private boolean isEventPuase;
 
+    private boolean isEventPuase;
 
     private Runnable mProgressRunable = new Runnable() {
         @Override
@@ -155,6 +156,23 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                         tvMusicRunTime.setText(text);
                     }
                 }
+            }
+
+        }
+    };
+
+    Handler sendMessageHandler = new Handler() {
+        @Override
+        public void handleMessage(Message message) {
+            Bundle bundle;
+            PlayerMessage m;
+            switch (message.arg1) {
+                case 1:
+                     bundle = message.getData();
+                     m = (PlayerMessage) bundle.get("message");
+                    EventBusUtils.post(m);
+                    break;
+
             }
 
         }
@@ -224,8 +242,10 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         message.setMusicUrl(tMusic.getMusicImage());
         message.setContentType(contentType);
         playerFragment = PlayerFragment.getInstance(message);
+
         addFragment(tMusic);
         play(tMusic, true);
+
     }
 
 
@@ -560,6 +580,9 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
             if (isPause) {
                 FDMusic tMusic = mMusicList.get(current_item);
                 play(tMusic, true);
+                PlayerMessage message =  new PlayerMessage();
+                message.setMsgType(2);
+                EventBusUtils.post(message);
             } else {
                 pause(false);
             }
@@ -629,10 +652,19 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                 int length = time / 1000;
                 int second = length % 60;
                 int minute = length / 60;
+
                 tvMusicTime.setText("/" + minute + ":" + (second < 10 ? "0" + second : second));
                 mMusicProgressSb.setMax(time);
                 LogUtil.e("MediaPlayer -----》" + time);
                 mediaPlayer.start();
+                PlayerMessage message = new PlayerMessage();
+                message.setPlaytime(length);
+                Message sendM = new Message();
+                sendM.arg1 = 1;
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("message", message);
+                sendM.setData(bundle);
+                sendMessageHandler.sendMessageDelayed(sendM, 1000);
                 isPause = false;
                 if (contentType != Constant.Player.FM) {
                     mProgressHandler.postDelayed(mProgressRunable, 1000);
@@ -742,9 +774,9 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                     imgFmPlay.setImageResource(R.mipmap.player_icon_fm_play);
                 }
                 if (isSendPlay) {
-                    PlayerMessage message = new PlayerMessage();
-                    message.setMsgType(2);
-                    EventBusUtils.post(message);
+//                    PlayerMessage message = new PlayerMessage();
+//                    message.setMsgType(2);
+//                    EventBusUtils.post(message);
                 }
 
 
@@ -759,16 +791,24 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                 // 重新加载音频资源
                 mediaPlayer.setDataSource(tMusic.getMusicUri());
                 LogUtil.e(tMusic.toString());
+                // 准备播放（异步）
+                mediaPlayer.prepareAsync();
+
                 PlayerMessage message = new PlayerMessage();
                 message.setMusicUrl(tMusic.getMusicImage());
                 message.setMusicTitle(tMusic.getMusicTitle());
                 message.setMusicName(tMusic.getMusicArtist());
                 message.setContentType(contentType);
                 message.setContent(tMusic.getContent());
-                LogUtil.e("PlayerMessage musicActivity = " + message.toString());
-                EventBusUtils.post(message);
-                // 准备播放（异步）
-                mediaPlayer.prepareAsync();
+                message.setPlaytime(mediaPlayer.getCurrentPosition() / 1000);
+                message.setContentType(2);
+                LogUtil.e("playmusicActivity = " + message.toString());
+                Message sendM = new Message();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("message", message);
+                sendM.setData(bundle);
+                sendM.arg1 = 1;
+                sendMessageHandler.sendMessageDelayed(sendM, 0);
 
                 runTimeSecond = 0;
                 tvMusicRunTime.setText("00:00");
@@ -1065,4 +1105,3 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
 
 
 }
-
