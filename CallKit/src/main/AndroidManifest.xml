@@ -21,7 +21,8 @@
             android:name=".MultiVideoCallActivity"
             android:exported="true"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
+            android:theme="@style/NoTitleFullscreen"
             android:windowSoftInputMode="stateHidden|adjustResize">
             <intent-filter>
                 <action android:name="io.rong.intent.action.voip.MULTIVIDEO" />
@@ -33,6 +34,7 @@
             android:name=".SingleCallActivity"
             android:exported="true"
             android:launchMode="singleTop"
+            android:screenOrientation="landscape"
             android:theme="@style/NoTitleFullscreen"
             android:windowSoftInputMode="stateHidden|adjustResize">
             <intent-filter>
@@ -50,7 +52,8 @@
             android:name=".MultiAudioCallActivity"
             android:exported="true"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
+            android:theme="@style/NoTitleFullscreen"
             android:windowSoftInputMode="stateHidden|adjustResize">
             <intent-filter>
                 <action android:name="io.rong.intent.action.voip.MULTIAUDIO" />

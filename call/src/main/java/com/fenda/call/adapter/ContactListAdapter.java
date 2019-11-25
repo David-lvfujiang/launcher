@@ -5,7 +5,6 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,6 +72,7 @@ public class ContactListAdapter extends RecyclerView.Adapter {
                 public void onClick(View v) {
                     // 跳转至扫码界面
                     ARouter.getInstance().build(RouterPath.SETTINGS.SettingsDeviceAddContractsQRActivity).with(ActivityOptions.makeSceneTransitionAnimation((Activity) mContext).toBundle()).navigation();
+//                    mContext.startActivity(new Intent(mContext, SelectContactsActivity.class));
                 }
             });
         } else if (viewHolder instanceof MyContactViewHolder) {
@@ -87,12 +87,15 @@ public class ContactListAdapter extends RecyclerView.Adapter {
             } else if (userType == 2) {
                 holder.tvRole.setVisibility(View.GONE);
             }
+            final String groupId = (String) SPUtils.get(mContext, Constant.Settings.USER_ID, "");
             holder.ivVideo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (ImConnectUtil.isConectIm(mContext)) {
                         RongCallKit.startSingleCall(mContext, userId, RongCallKit.CallMediaType.CALL_MEDIA_TYPE_VIDEO);
-                        Log.d(TAG, "onClick: startSingleCall id" + userId);
+//                        ArrayList<String> userIds = new ArrayList<>();
+//                        userIds.add(userId);
+//                        RongCallKit.startMultiCall(mContext, Conversation.ConversationType.GROUP, groupId, RongCallKit.CallMediaType.CALL_MEDIA_TYPE_VIDEO, userIds);
                     }
 
                 }
@@ -102,6 +105,9 @@ public class ContactListAdapter extends RecyclerView.Adapter {
                 public void onClick(View v) {
                     if (ImConnectUtil.isConectIm(mContext)) {
                         RongCallKit.startSingleCall(mContext, userId, RongCallKit.CallMediaType.CALL_MEDIA_TYPE_AUDIO);
+//                        ArrayList<String> userIds = new ArrayList<>();
+//                        userIds.add(userId);
+//                        RongCallKit.startMultiCall(mContext, Conversation.ConversationType.GROUP, groupId, RongCallKit.CallMediaType.CALL_MEDIA_TYPE_AUDIO, userIds);
                     }
                 }
             });

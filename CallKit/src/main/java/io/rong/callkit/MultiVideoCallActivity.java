@@ -885,7 +885,7 @@ public class MultiVideoCallActivity extends BaseCallActivity {
                     }
                 }
 
-                RelativeLayout bottomButtonLayout = (RelativeLayout) inflater.inflate(R.layout.rc_voip_call_bottom_incoming_button_layout, null);
+                RelativeLayout bottomButtonLayout = (RelativeLayout) inflater.inflate(R.layout.rc_voip_multi_call_bottom_incoming_button_layout, null);
                 ImageView answerV = (ImageView) bottomButtonLayout.findViewById(R.id.rc_voip_call_answer_btn);
                 answerV.setImageResource(R.drawable.rc_voip_vedio_answer_selector);
                 bottomButtonContainer.addView(bottomButtonLayout);

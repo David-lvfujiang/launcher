@@ -81,10 +81,10 @@ public class MultiAudioCallActivity extends BaseCallActivity {
         TextView rc_voip_remind=incomingLayout.findViewById(R.id.rc_voip_remind);
         CallKitUtils.textViewShadowLayer(rc_voip_remind,MultiAudioCallActivity.this);
 
-        outgoingController = (RelativeLayout) LayoutInflater.from(this).inflate(R.layout.rc_voip_call_bottom_connected_button_layout, null);
+        outgoingController = (RelativeLayout) LayoutInflater.from(this).inflate(R.layout.rc_voip_multi_call_bottom_connected_button_layout, null);
         ImageView button = outgoingController.findViewById(R.id.rc_voip_call_mute_btn);
         button.setEnabled(false);
-        incomingController = (RelativeLayout) LayoutInflater.from(this).inflate(R.layout.rc_voip_call_bottom_incoming_button_layout, null);
+        incomingController = (RelativeLayout) LayoutInflater.from(this).inflate(R.layout.rc_voip_multi_call_bottom_incoming_button_layout, null);
 
         startForCheckPermissions = getIntent().getBooleanExtra("checkPermissions", false);
         if (requestCallPermissions(RongCallCommon.CallMediaType.AUDIO, REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS)) {

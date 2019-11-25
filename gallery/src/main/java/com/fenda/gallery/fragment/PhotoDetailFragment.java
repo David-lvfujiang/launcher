@@ -40,9 +40,9 @@ public class PhotoDetailFragment extends BaseFragment {
             PhoneCameraBean cameraBean = mBundle.getParcelable("bean");
             int style = mBundle.getInt("style");
             if (style == 1) {
-                ImageUtil.loadImg(mContext, mIvDetail, cameraBean.getPhotos());
+                ImageUtil.loadBigImg(mContext, mIvDetail, cameraBean.getPhotos());
             } else {
-                ImageUtil.loadImg(mContext, mIvDetail, cameraBean.getPhotos());
+                ImageUtil.loadBigImg(mContext, mIvDetail, cameraBean.getPhotos());
             }
 
         }

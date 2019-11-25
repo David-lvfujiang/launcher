@@ -789,8 +789,7 @@ public class SingleCallActivity extends BaseCallActivity implements Handler.Call
         mButtonContainer.setVisibility(View.GONE);
     }
 
-    public void
-    showVideoCallInformation() {
+    public void showVideoCallInformation() {
         isInformationShow = true;
         mUserInfoContainer.setVisibility(View.VISIBLE);
         mButtonContainer.setVisibility(View.VISIBLE);

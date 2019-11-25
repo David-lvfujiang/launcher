@@ -91,6 +91,7 @@ public class FamilyGalleryActivity extends BaseMvpActivity<GalleryPresenter, Gal
         if (NetUtil.checkNet()) {
             getNetFamilyGallery();
         } else {
+            ToastUtils.show(getString(R.string.no_net));
             getLocalFamilyGallery();
         }
 

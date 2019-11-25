@@ -197,7 +197,7 @@ public class RongCallModule implements IExternalModule, IRongCallListener {
             mViewLoaded = false;
             RongCallClient.getInstance().acceptCall(callSession.getCallId());
 
-        } else if ("".equals(extra)) {
+        } else if ("".equals(extra) || "multi".equals(extra)) {
             mViewLoaded = true;
         }
     }
@@ -211,11 +211,10 @@ public class RongCallModule implements IExternalModule, IRongCallListener {
      */
     @Override
     public void onViewCreated() {
-
         mViewLoaded = true;
-        if (mCallSession != null) {
-            startVoIPActivity(mContext, mCallSession, false);
-        }
+//        if (mCallSession != null) {
+//            startVoIPActivity(mContext, mCallSession, false);
+//        }
     }
 
     @Override
