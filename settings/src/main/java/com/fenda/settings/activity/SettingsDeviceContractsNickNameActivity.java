@@ -11,10 +11,12 @@ import android.widget.TextView;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
+import com.fenda.common.bean.MessageBean;
 import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.db.ContentProviderManager;
 import com.fenda.common.router.RouterPath;
+import com.fenda.common.util.GsonUtil;
 import com.fenda.common.util.ImageUtil;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.SPUtils;
@@ -72,7 +74,7 @@ public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<Set
 
     @Override
     public void initView() {
-        ivBack = findViewById(R.id. change_nameinfo_back);
+        ivBack = findViewById(R.id.change_nameinfo_back);
         tvDisNickName = findViewById(R.id.nick_name);
         tvDisUserName = findViewById(R.id.user_name);
         tvModifyNickName = findViewById(R.id.modify_nick_name);
@@ -106,21 +108,21 @@ public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<Set
 //        } else {
 //            mIntentIconTmp = mIntentIcon;
 //        }
-        if(mIntentIcon != null){
+        if (mIntentIcon != null) {
             SPUtils.put(getApplicationContext(), Constant.Settings.CONTRACTS_ICON, mIntentIcon);
         }
 
         mIntentIconTmp = (String) SPUtils.get(getApplicationContext(), Constant.Settings.CONTRACTS_ICON, "");
         LogUtil.d(TAG, "mIntentIconTmp = " + mIntentIconTmp);
 
-        if(mIntentUserName == null){
+        if (mIntentUserName == null) {
             tvDisNickName.setText(changedNickNameIntent);
             mIntentUserName2 = changedNickNameIntent;
-            if(changedNickNameIntent == null){
+            if (changedNickNameIntent == null) {
                 tvDisNickName.setText(cancelNickNameIntent);
                 mIntentUserName2 = cancelNickNameIntent;
 
-                if(!cancelNickNameIntent.contains("管理员")){
+                if (!cancelNickNameIntent.contains("管理员")) {
                     //非管理员用户
                     tvDelectThisUser.setVisibility(View.VISIBLE);
                 } else {
@@ -128,7 +130,7 @@ public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<Set
                     tvAdminUnbind.setVisibility(View.VISIBLE);
                 }
             } else {
-                if(!changedNickNameIntent.contains("管理员")){
+                if (!changedNickNameIntent.contains("管理员")) {
                     //非管理员用户
                     tvDelectThisUser.setVisibility(View.VISIBLE);
                 } else {
@@ -139,7 +141,7 @@ public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<Set
         } else {
             tvDisNickName.setText(mIntentUserName);
             mIntentUserName2 = mIntentUserName;
-            if(!mIntentUserName.contains("管理员")){
+            if (!mIntentUserName.contains("管理员")) {
                 //非管理员用户
                 tvDelectThisUser.setVisibility(View.VISIBLE);
             } else {
@@ -176,15 +178,15 @@ public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<Set
             @Override
             public void onClick(View view) {
                 String delecteUserName;
-                if(!mIntentUserName2.contains("管理员")) {
+                if (!mIntentUserName2.contains("管理员")) {
                     //非管理员用户
                     delecteUserName = mIntentUserName2;
                 } else {
                     //管理员用户
-                    delecteUserName = mIntentUserName2.replace("(管理员)","");
+                    delecteUserName = mIntentUserName2.replace("(管理员)", "");
                 }
-                final String delecteUserId=  ContentProviderManager.getInstance(SettingsDeviceContractsNickNameActivity.this, mUri).getUserID(delecteUserName);
-                if(SettingsWifiUtil.isWifiEnabled(getApplicationContext())){
+                final String delecteUserId = ContentProviderManager.getInstance(SettingsDeviceContractsNickNameActivity.this, mUri).getUserID(delecteUserName);
+                if (SettingsWifiUtil.isWifiEnabled(getApplicationContext())) {
                     final AlertDialog.Builder normalDialog = new AlertDialog.Builder(SettingsDeviceContractsNickNameActivity.this);
                     normalDialog.setMessage(getString(R.string.settings_delecte_user_tips));
                     normalDialog.setPositiveButton(getString(R.string.settings_nickname_sure), new DialogInterface.OnClickListener() {
@@ -192,7 +194,8 @@ public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<Set
                         public void onClick(DialogInterface dialog, int which) {
                             SettingDeleteLinkmanRequest deleteLinkmanRequest = new SettingDeleteLinkmanRequest();
                             deleteLinkmanRequest.setUserId(delecteUserId);
-                            mPresenter.deleteLinkmanFromDevice(deleteLinkmanRequest);                        }
+                            mPresenter.deleteLinkmanFromDevice(deleteLinkmanRequest);
+                        }
                     });
                     normalDialog.setNegativeButton(getString(R.string.settings_nickname_cancel),
                             new DialogInterface.OnClickListener() {
@@ -212,8 +215,8 @@ public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<Set
         tvAdminUnbind.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(SettingsWifiUtil.isWifiEnabled(getApplicationContext())){
-                    LogUtil.d(TAG,  "wifi is connect");
+                if (SettingsWifiUtil.isWifiEnabled(getApplicationContext())) {
+                    LogUtil.d(TAG, "wifi is connect");
                     final AlertDialog.Builder normalDialog = new AlertDialog.Builder(SettingsDeviceContractsNickNameActivity.this);
                     normalDialog.setMessage(getString(R.string.settings_dismiss_family_confirm));
                     normalDialog.setPositiveButton(getString(R.string.settings_nickname_sure), new DialogInterface.OnClickListener() {
@@ -232,7 +235,7 @@ public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<Set
                             });
                     // 显示
                     normalDialog.show();
-                }  else {
+                } else {
                     ToastUtils.show(getString(R.string.settings_nowifi_no_unbind));
                 }
             }
@@ -245,8 +248,15 @@ public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<Set
         //普通成员退出家庭通知
         if (message.getCode() == TCPConfig.MessageType.USER_EXIT_FAMILY) {
             LogUtil.d(TAG, " 普通成员退出家庭通知 = " + message);
-            ContentProviderManager.getInstance(SettingsDeviceContractsNickNameActivity.this, mUri).clear();
-            mPresenter.getContactsList();
+            // 普通成员退出家庭通知
+            MessageBean messageBean = GsonUtil.GsonToBean(message.getData().getMsg(), MessageBean.class);
+            if (messageBean != null && messageBean.getMessageUserInfoDTO() != null) {
+                String userId = messageBean.getMessageUserInfoDTO().getUserId();
+                ContentProviderManager.getInstance(mContext, Constant.Common.URI).deleteUserByUserID(userId);
+                Intent delectIntent = new Intent(SettingsDeviceContractsNickNameActivity.this, SettingsDeviceContractsActivity.class);
+                startActivity(delectIntent);
+                finish();
+            }
         }
     }
 
@@ -287,10 +297,7 @@ public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<Set
 
     @Override
     public void getContactsListSuccess(BaseResponse<List<UserInfoBean>> response) {
-        ContentProviderManager.getInstance(SettingsDeviceContractsNickNameActivity.this, mUri).insertUsers(response.getData());
-        Intent delectIntent = new Intent(SettingsDeviceContractsNickNameActivity.this, SettingsDeviceContractsActivity.class);
-        startActivity(delectIntent);
-        finish();
+
     }
 
     @Override

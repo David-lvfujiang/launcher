@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/demension_dp165"
+    android:layout_height="@dimen/demension_dp120"
     android:background="@color/color_4cffffff">
 
     <ImageView
         android:id="@+id/ivDeciceIcon"
-        android:layout_width="@dimen/demension_dp120"
-        android:layout_height="@dimen/demension_dp120"
+        android:layout_width="@dimen/demension_dp80"
+        android:layout_height="@dimen/demension_dp80"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/demension_dp46"
         android:src="@mipmap/call_device_icon" />

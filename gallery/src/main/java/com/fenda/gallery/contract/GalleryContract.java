@@ -44,7 +44,7 @@ public interface GalleryContract {
     }
 
     abstract class Presenter extends BasePresenter<View,Model> {
-        public abstract void getFamilyPhoto(FamilyPhotoRequest request);
+        public abstract void getFamilyPhoto(FamilyPhotoRequest request,boolean showLoading);
 
         public abstract  void deleteFamilyPhoto(String ids);
 

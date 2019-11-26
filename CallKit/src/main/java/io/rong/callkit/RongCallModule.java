@@ -8,20 +8,20 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.fenda.common.bean.UserInfoBean;
+import com.fenda.common.db.ContentProviderManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.rongcloud.rtc.utils.FinLog;
-import io.rong.callkit.bean.UserInfoBean;
-import io.rong.callkit.db.ContentProviderManager;
+import io.rong.callkit.bean.CustomizeMessage;
 import io.rong.callkit.util.CallKitUtils;
 import io.rong.calllib.IRongCallListener;
 import io.rong.calllib.IRongReceivedCallListener;
@@ -35,9 +35,10 @@ import io.rong.common.RLog;
 import io.rong.imkit.RongIM;
 import io.rong.imkit.manager.IExternalModule;
 import io.rong.imkit.plugin.IPluginModule;
-import io.rong.imkit.utilities.PermissionCheckUtil;
+import io.rong.imlib.IRongCallback;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
+import io.rong.imlib.model.Message;
 
 /**
  * Created by weiqinxiao on 16/8/15.
@@ -196,7 +197,7 @@ public class RongCallModule implements IExternalModule, IRongCallListener {
             mViewLoaded = false;
             RongCallClient.getInstance().acceptCall(callSession.getCallId());
 
-        } else if ("".equals(extra)) {
+        } else if ("".equals(extra) || "multi".equals(extra)) {
             mViewLoaded = true;
         }
     }
@@ -210,11 +211,10 @@ public class RongCallModule implements IExternalModule, IRongCallListener {
      */
     @Override
     public void onViewCreated() {
-
         mViewLoaded = true;
-        if (mCallSession != null) {
-            startVoIPActivity(mContext, mCallSession, false);
-        }
+//        if (mCallSession != null) {
+//            startVoIPActivity(mContext, mCallSession, false);
+//        }
     }
 
     @Override
@@ -326,7 +326,6 @@ public class RongCallModule implements IExternalModule, IRongCallListener {
 
     @Override
     public void onCallConnected(RongCallSession rongCallSession, SurfaceView surfaceView) {
-
     }
 
     @Override
@@ -361,7 +360,13 @@ public class RongCallModule implements IExternalModule, IRongCallListener {
 
     @Override
     public void onError(RongCallCommon.CallErrorCode callErrorCode) {
-
+        if (callErrorCode == RongCallCommon.CallErrorCode.OPEN_CAMERA_FAILED) {
+            Message message = new Message();
+            message.setTargetId(mCallSession.getTargetId());
+            message.setConversationType(Conversation.ConversationType.PRIVATE);
+            message.setContent(new CustomizeMessage("cameraError"));
+            RongIM.getInstance().sendMessage(message, (String) null, (String) null, (IRongCallback.ISendMessageCallback) null);
+        }
     }
 
     @Override
@@ -371,7 +376,6 @@ public class RongCallModule implements IExternalModule, IRongCallListener {
 
     @Override
     public void onNetworkReceiveLost(String s, int i) {
-
     }
 
     @Override

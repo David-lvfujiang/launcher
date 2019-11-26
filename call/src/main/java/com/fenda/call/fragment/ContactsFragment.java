@@ -17,6 +17,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.rong.callkit.RongCallKit;
+
 
 /**
  * @author kevin.wangzhiqiang
@@ -28,7 +30,7 @@ public class ContactsFragment extends BaseFragment {
     private RecyclerView mRvContactList;
     private List<UserInfoBean> mDatas;
     private ContactListAdapter mAdapter;
-
+    private ArrayList<String> mAllUserIds;
 
     @Override
     public int onBindLayout() {
@@ -44,7 +46,21 @@ public class ContactsFragment extends BaseFragment {
     @Override
     public void initData() {
         mDatas = new ArrayList<>();
+        mAllUserIds = new ArrayList<>();
         mDatas = ContentProviderManager.getInstance(mContext, Constant.Common.URI).queryUser(null, null);
+        for (UserInfoBean bean : mDatas) {
+            mAllUserIds.add(bean.getMobile());
+        }
+        RongCallKit.setGroupMemberProvider(new RongCallKit.GroupMembersProvider() {
+            @Override
+
+            public ArrayList<String> getMemberList(String groupId, final RongCallKit.OnGroupMembersResult result) {
+
+                //返回群组成员userId的集合
+                return mAllUserIds;
+
+            }
+        });
         mRvContactList.setLayoutManager(new LinearLayoutManager(mContext));
         mAdapter = new ContactListAdapter(mContext, mDatas);
         mRvContactList.setAdapter(mAdapter);
@@ -55,6 +71,20 @@ public class ContactsFragment extends BaseFragment {
     public void onSyncEvent(String syncContact) {
         if (syncContact.equals(CallService.SYNC_CONTACTS)) {
             mDatas = ContentProviderManager.getInstance(mContext, Constant.Common.URI).queryUser(null, null);
+            mAllUserIds.clear();
+            for (UserInfoBean bean : mDatas) {
+                mAllUserIds.add(bean.getMobile());
+            }
+            RongCallKit.setGroupMemberProvider(new RongCallKit.GroupMembersProvider() {
+                @Override
+
+                public ArrayList<String> getMemberList(String groupId, final RongCallKit.OnGroupMembersResult result) {
+
+                    //返回群组成员userId的集合
+                    return mAllUserIds;
+
+                }
+            });
             mAdapter.setNewData(mDatas);
         }
     }

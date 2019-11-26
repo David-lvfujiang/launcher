@@ -167,7 +167,6 @@ public class MainActivity extends BaseActivity {
             e.printStackTrace();
         }
         startService(new Intent(this, DDSService.class));
-
     }
 
 

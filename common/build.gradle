@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: 'maven_config.gradle'
-
+apply plugin: 'org.greenrobot.greendao'
 
 android {
     compileSdkVersion BUILD_VERSIONS.COMPILE_SDK
@@ -36,7 +36,11 @@ android {
             buildConfigField "boolean", "LOG_DEBUG", "true"
         }
     }
-
+    greendao {
+        schemaVersion 1
+        daoPackage 'com.fenda.common.gen'  //包名
+        targetGenDir 'src/main/java'   //目录文件夹
+    }
 }
 repositories {
     flatDir {

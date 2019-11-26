@@ -166,8 +166,8 @@ public class ImageUtil {
 
     public static void loadImg(Context context, ImageView v, String url) {
         RequestOptions options = new RequestOptions()
-                .placeholder(R.mipmap.ic_launcher)
-                .error(R.mipmap.ic_launcher)
+                .placeholder(R.mipmap.img_loading)
+                .error(R.mipmap.img_loading)
                 .dontAnimate()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .priority(Priority.HIGH);
@@ -178,7 +178,19 @@ public class ImageUtil {
                 .into(v);
     }
 
+    public static void loadBigImg(Context context, ImageView v, String url) {
+        RequestOptions options = new RequestOptions()
+                .placeholder(R.mipmap.big_image_loading)
+                .error(R.mipmap.big_image_loading)
+                .dontAnimate()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .priority(Priority.HIGH);
 
+        Glide.with(context)
+                .load(url)
+                .apply(options)
+                .into(v);
+    }
     public static File compressImage(File imageFile, float reqWidth, float reqHeight, Bitmap.CompressFormat compressFormat, int quality, String destinationPath) throws IOException {
         FileOutputStream fileOutputStream = null;
         String desPath = DirectoryPath + destinationPath;

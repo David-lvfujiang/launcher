@@ -19,7 +19,9 @@ import com.fenda.common.view.CircleImageView;
 import java.util.List;
 
 import io.rong.callkit.RongCallKit;
-import io.rong.callkit.bean.CallRecoderBean;
+
+import com.fenda.common.bean.CallRecoderBean;
+
 import io.rong.calllib.RongCallCommon;
 
 /**
@@ -84,8 +86,11 @@ public class RecorderAdapter extends RecyclerView.Adapter {
         final int callType = bean.getCallType();
         if (callStatus == 0) {
             // 未接
-            holder.ivStatus.setImageResource(R.mipmap.call_ico_miss_call);
-
+            if (callType == RongCallCommon.CallMediaType.AUDIO.getValue()) {
+                holder.ivStatus.setImageResource(R.mipmap.call_ico_miss_call);
+            } else if (callType == RongCallCommon.CallMediaType.VIDEO.getValue()) {
+                holder.ivStatus.setImageResource(R.mipmap.call_ico_vedio_miss);
+            }
         } else if (callStatus == 1) {
             // 音频呼出
             if (callType == RongCallCommon.CallMediaType.AUDIO.getValue()) {

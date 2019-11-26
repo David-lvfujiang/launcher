@@ -85,7 +85,7 @@ public class MyRelativeLayout extends RelativeLayout {
                 if (skillView == null){
                     return false;
                 }
-                if (skillView.getVisibility() == INVISIBLE){
+                if (INVISIBLE == skillView.getVisibility()){
                     skillView.setVisibility(VISIBLE);
                     skillView.setTranslationY(BaseApplication.getBaseInstance().getScreenHeight());
                 }
@@ -93,13 +93,13 @@ public class MyRelativeLayout extends RelativeLayout {
                 case MotionEvent.ACTION_MOVE:
                     int pointerIndex = ev.findPointerIndex(mActivePointerId);
                     float interMoveY  = VERTICAL.getDisplacement(ev, pointerIndex, mDownPos);
-                    if (pageActivity.getLauncherState() == Constant.Common.HOME_PAGE){
+                    if (Constant.Common.HOME_PAGE == pageActivity.getLauncherState()){
                         if (interMoveY < (-MIX_SCROLL)){
                             mShiftStart = BaseApplication.getBaseInstance().getScreenHeight();
                             //上滑
                             return true;
                         }
-                    }else if (pageActivity.getLauncherState() == Constant.Common.ALL_SKILL){
+                    }else if (Constant.Common.ALL_SKILL == pageActivity.getLauncherState()){
                         boolean isTop = scrollView.isScrolledToTop();
                         if (isTop && interMoveY > MIX_SCROLL){
                             mShiftStart = 0;
@@ -150,7 +150,7 @@ public class MyRelativeLayout extends RelativeLayout {
                 return true;
             case MotionEvent.ACTION_UP:
 
-                if (pageActivity.getLauncherState() == Constant.Common.HOME_PAGE){
+                if (Constant.Common.HOME_PAGE == pageActivity.getLauncherState()){
                     if (skillView.getTranslationY() > SCROLL_Y){
                         animateToWorkspace();
                     }else {

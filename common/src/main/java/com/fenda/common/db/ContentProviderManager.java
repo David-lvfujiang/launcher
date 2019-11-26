@@ -146,7 +146,26 @@ public class ContentProviderManager {
         }
         return result;
     }
+    public UserInfoBean queryUserById(String id) {
+        Cursor cursor = mContentResolver.query(mUri, null, "phone = ?", new String[]{id}, null);
+        UserInfoBean userInfoBean = null;
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                int _id = cursor.getInt(cursor.getColumnIndex("_id"));
+                String userId = cursor.getString(cursor.getColumnIndex("userId"));
+                String name = cursor.getString(cursor.getColumnIndex("name"));
+                String icon = cursor.getString(cursor.getColumnIndex("icon"));
+                String phone = cursor.getString(cursor.getColumnIndex("phone"));
+                String email = cursor.getString(cursor.getColumnIndex("email"));
+                int userType = cursor.getInt(cursor.getColumnIndex("user_type"));
+                String registerTime = cursor.getString(cursor.getColumnIndex("register_time"));
+                String updateTime = cursor.getString(cursor.getColumnIndex("update_time"));
+                userInfoBean = new UserInfoBean(_id, userId, name, phone, userType, icon, email, registerTime, updateTime);
+            }
 
+        }
+        return userInfoBean;
+    }
     public int updateUser(UserInfoBean bean) {
         ContentValues values = new ContentValues();
         values.put("userId", bean.getUserId());
@@ -186,7 +205,7 @@ public class ContentProviderManager {
         return mContentResolver.update(mUri, values, "userId = ? ", new String[]{userId});
     }
 
-    public int deleteUser(String userId) {
+    public int deleteUserByUserID(String userId) {
         return mContentResolver.delete(mUri, "userId = ? ", new String[]{userId});
     }
 

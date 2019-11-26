@@ -11,7 +11,6 @@ public class UserInfoBean {
     private String email;
     private String registerTime;
     private String updateTime;
-
     public UserInfoBean() {
     }
 

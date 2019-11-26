@@ -7,16 +7,18 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.call.utils.ImConnectUtil;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.constant.Constant;
-import com.fenda.common.provider.IAppLeaveMessageProvider;
 import com.fenda.common.provider.ICallProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.LogUtils;
 import com.fenda.protocol.tcp.bus.EventBusUtils;
 
 import io.rong.callkit.RongCallKit;
+import io.rong.callkit.bean.CustomizeMessage;
 import io.rong.calllib.RongCallClient;
 import io.rong.calllib.RongCallSession;
 import io.rong.imkit.RongIM;
+import io.rong.imlib.AnnotationNotFoundException;
+import io.rong.imlib.RongIMClient;
 
 /**
  * @author kevin.wangzhiqiang
@@ -34,6 +36,11 @@ public class CallService implements ICallProvider {
     @Override
     public void initSdk() {
         RongIM.init(BaseApplication.getContext());
+        try {
+            RongIMClient.registerMessageType(CustomizeMessage.class);
+        } catch (AnnotationNotFoundException e) {
+            e.printStackTrace();
+        }
         //调用留言模块，注册消息接收监听
         Log.e("监听", "initSdk: ");
     }

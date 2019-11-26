@@ -279,11 +279,13 @@ public class NewsActivity extends BaseActivity {
                 // 重置mediaPlayer
                 mMediaPlayer.reset();
                 // 重新加载音频资源
-                if (newsListData != null && newsListData.size() > mCurrentItem){
-                    FDMusic tMusic = newsListData.get(mCurrentItem);
-                    mMediaPlayer.setDataSource(tMusic.getMusicUri());
-                    // 准备播放（异步）
-                    mMediaPlayer.prepareAsync();
+                if(0 != newsListData.size()) {
+                    if (newsListData != null && newsListData.size() > mCurrentItem) {
+                        FDMusic tMusic = newsListData.get(mCurrentItem);
+                        mMediaPlayer.setDataSource(tMusic.getMusicUri());
+                        // 准备播放（异步）
+                        mMediaPlayer.prepareAsync();
+                    }
                 }
             }
         } catch (IOException e) {

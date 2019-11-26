@@ -885,7 +885,7 @@ public class MultiVideoCallActivity extends BaseCallActivity {
                     }
                 }
 
-                RelativeLayout bottomButtonLayout = (RelativeLayout) inflater.inflate(R.layout.rc_voip_call_bottom_incoming_button_layout, null);
+                RelativeLayout bottomButtonLayout = (RelativeLayout) inflater.inflate(R.layout.rc_voip_multi_call_bottom_incoming_button_layout, null);
                 ImageView answerV = (ImageView) bottomButtonLayout.findViewById(R.id.rc_voip_call_answer_btn);
                 answerV.setImageResource(R.drawable.rc_voip_vedio_answer_selector);
                 bottomButtonContainer.addView(bottomButtonLayout);
@@ -1009,6 +1009,7 @@ public class MultiVideoCallActivity extends BaseCallActivity {
                     intent.putStringArrayListExtra("invitedMembers", added);
                     intent.putExtra("conversationType", callSession.getConversationType().getValue());
                     intent.putExtra("mediaType", RongCallCommon.CallMediaType.VIDEO.getValue());
+                    intent.setType("video/*");
                     startActivityForResult(intent, REQUEST_CODE_ADD_MEMBER);
                 }
 
@@ -1030,6 +1031,7 @@ public class MultiVideoCallActivity extends BaseCallActivity {
             intent.putExtra("groupId", callSession.getTargetId());
             intent.putExtra("conversationType", callSession.getConversationType().getValue());
             intent.putExtra("mediaType", RongCallCommon.CallMediaType.VIDEO.getValue());
+            intent.setType("video/*");
             startActivityForResult(intent, REQUEST_CODE_ADD_MEMBER);
         } else {
             ArrayList<String> added = new ArrayList<>();

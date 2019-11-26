@@ -81,15 +81,27 @@ public class SettingsActivity extends BaseActivity {
             mSettingsBluetoothAdapter = new SettingsBluetoothAdapter(SettingsActivity.this, mSettingsBluetoothDeviceBean);
         }
         mWifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+    }
 
-
+    @Override
+    protected void onResume() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         registerReceiver(mWifiReceiver, filter);
+
         IntentFilter btIntentFilter = new IntentFilter();
         btIntentFilter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
         btIntentFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         registerReceiver(mBtReceiver, btIntentFilter);
+
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(mWifiReceiver);
+        unregisterReceiver(mBtReceiver);
+        super.onPause();
     }
 
     @Override
@@ -297,8 +309,8 @@ public class SettingsActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        unregisterReceiver(mWifiReceiver);
-        unregisterReceiver(mBtReceiver);
+//        unregisterReceiver(mWifiReceiver);
+//        unregisterReceiver(mBtReceiver);
         super.onDestroy();
     }
 }
