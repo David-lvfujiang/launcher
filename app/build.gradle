@@ -84,7 +84,7 @@ dependencies {
         implementation "com.fenda:call:$local.call_version"
         implementation "com.fenda:calendar:$local.calendar_version"
         implementation "com.fenda:calculator:$local.calculator_version"
-        implementation "com.fenda:encyclopedia:$local.encyclopdia_version"
+        implementation "com.fenda:encyclopedia:$local.encyclopedia_version"
         implementation "com.fenda:news:$local.news_version"
         implementation "com.fenda:player:$local.player_version"
         implementation "com.fenda:remind:$local.remind_version"

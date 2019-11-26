@@ -282,9 +282,11 @@ public class NewsActivity extends BaseActivity {
                 if(0 != newsListData.size()) {
                     if (newsListData != null && newsListData.size() > mCurrentItem) {
                         FDMusic tMusic = newsListData.get(mCurrentItem);
-                        mMediaPlayer.setDataSource(tMusic.getMusicUri());
-                        // 准备播放（异步）
-                        mMediaPlayer.prepareAsync();
+                        if(tMusic.getMusicUri() != null) {
+                            mMediaPlayer.setDataSource(tMusic.getMusicUri());
+                            // 准备播放（异步）
+                            mMediaPlayer.prepareAsync();
+                        }
                     }
                 }
             }

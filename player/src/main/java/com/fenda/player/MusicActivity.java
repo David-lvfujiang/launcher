@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -57,12 +59,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
-
 /**
- * @author mirrer.wangzhonglin
- * @Date 2019/8/30 11:25
- * @Description
- */
+  * @author mirrer.wangzhonglin
+  * @Date 2019/8/30 11:25
+  * @Description
+  *
+  */
 @Route(path = RouterPath.PLAYER.MUSIC)
 public class MusicActivity extends BaseActivity implements View.OnClickListener {
 
@@ -218,6 +220,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.FROYO)
     @Override
     public void initData() {
         current_item = 0;
@@ -228,7 +231,11 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         String title = bean.getMsgName();
         contentType = bean.getMsgType();
         mMusicList.addAll(bean.getFdMusics());
-        Log.e("qob", "MusicActivity List " + mMusicList);
+        if(mMusicList == null){
+           Log.e("qob", "MusicActivity List is null");
+        } else {
+            Log.e("qob", "MusicActivity List " + mMusicList);
+        }
         initTitle(title);
         getRandomIndex();
 
@@ -299,6 +306,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         isPlay = true;
 
     }
+
 
 
     private void addListener() {
@@ -376,6 +384,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
+
 
 
     }
@@ -456,7 +465,8 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         Log.e("qob", "MyBroadcastReceiver List " + mMusicList);
         getRandomIndex();
         isPause = false;
-        play(tMusic, true);
+        play(tMusic,true);
+
 
 
     }
@@ -480,6 +490,9 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
     }
 
 
+
+
+
     private void setPlayStatus() {
         if (playStatus == Constant.Player.LIST_CYCLE_PLAY) {
             mMusicRepeatBt.setImageResource(R.mipmap.player_ico_list_cycle);
@@ -494,102 +507,100 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
     private void getRandomIndex() {
 
         Random random = new Random();
-        if (contentType == Constant.Player.JOKE) {
-            int index = random.nextInt(jokeImg.length - 1);
+        if (contentType == Constant.Player.JOKE){
+            int index = random.nextInt(jokeImg.length-1);
             imgMusicBg.setImageResource(jokeImg[index]);
             goneFmView();
-        } else if (contentType == Constant.Player.CROSS_TALLK) {
-            int index = random.nextInt(bgImg.length - 1);
+        }else if (contentType == Constant.Player.CROSS_TALLK){
+            int index = random.nextInt(bgImg.length-1);
             imgMusicBg.setImageResource(bgImg[index]);
             goneFmView();
-        } else if (contentType == Constant.Player.POETRY) {
+        }else if (contentType == Constant.Player.POETRY){
             imgMusicBg.setImageResource(R.mipmap.player_poetry_bg);
             goneFmView();
-        } else if (contentType == Constant.Player.FM) {
-            ImageUtil.loadGIFImage(R.mipmap.player_fm_bg, imgMusicBg, R.mipmap.player_fm_bg);
+        }else if (contentType == Constant.Player.FM){
+            ImageUtil.loadGIFImage(R.mipmap.player_fm_bg,imgMusicBg,R.mipmap.player_fm_bg);
             visFmView();
-        } else {
+        }else {
             imgMusicBg.setImageResource(R.mipmap.player_xiangsheng_bg_02);
         }
     }
 
-    private void visFmView() {
-        if (mMusicNextBt.getVisibility() == View.VISIBLE) {
+    private void visFmView(){
+        if (mMusicNextBt.getVisibility() == View.VISIBLE){
             mMusicNextBt.setVisibility(View.GONE);
         }
-        if (mMusicPreBt.getVisibility() == View.VISIBLE) {
+        if (mMusicPreBt.getVisibility() == View.VISIBLE){
             mMusicPreBt.setVisibility(View.GONE);
         }
-        if (mMusicPlayBt.getVisibility() == View.VISIBLE) {
+        if (mMusicPlayBt.getVisibility() == View.VISIBLE){
             mMusicPlayBt.setVisibility(View.GONE);
         }
-        if (mMusicRepeatBt.getVisibility() == View.VISIBLE) {
+        if (mMusicRepeatBt.getVisibility() == View.VISIBLE){
             mMusicRepeatBt.setVisibility(View.GONE);
         }
-        if (mMusicProgressSb.getVisibility() == View.VISIBLE) {
+        if (mMusicProgressSb.getVisibility() == View.VISIBLE){
             mMusicProgressSb.setVisibility(View.GONE);
         }
-        if (tvMusicRunTime.getVisibility() == View.VISIBLE) {
+        if (tvMusicRunTime.getVisibility() == View.VISIBLE){
             tvMusicRunTime.setVisibility(View.GONE);
         }
-        if (tvMusicTime.getVisibility() == View.VISIBLE) {
+        if (tvMusicTime.getVisibility() == View.VISIBLE){
             tvMusicTime.setVisibility(View.GONE);
         }
-        if (imgFmPlay.getVisibility() == View.GONE) {
+        if (imgFmPlay.getVisibility() == View.GONE){
             imgFmPlay.setVisibility(View.VISIBLE);
         }
 
     }
 
-    private void goneFmView() {
-        if (mMusicNextBt.getVisibility() == View.GONE) {
+    private void goneFmView(){
+        if (mMusicNextBt.getVisibility() == View.GONE){
             mMusicNextBt.setVisibility(View.VISIBLE);
         }
-        if (mMusicPreBt.getVisibility() == View.GONE) {
+        if (mMusicPreBt.getVisibility() == View.GONE){
             mMusicPreBt.setVisibility(View.VISIBLE);
         }
-        if (mMusicPlayBt.getVisibility() == View.GONE) {
+        if (mMusicPlayBt.getVisibility() == View.GONE){
             mMusicPlayBt.setVisibility(View.VISIBLE);
         }
-        if (mMusicRepeatBt.getVisibility() == View.GONE) {
+        if (mMusicRepeatBt.getVisibility() == View.GONE){
             mMusicRepeatBt.setVisibility(View.VISIBLE);
         }
-        if (mMusicProgressSb.getVisibility() == View.GONE) {
+        if (mMusicProgressSb.getVisibility() == View.GONE){
             mMusicProgressSb.setVisibility(View.VISIBLE);
         }
-        if (tvMusicRunTime.getVisibility() == View.GONE) {
+        if (tvMusicRunTime.getVisibility() == View.GONE){
             tvMusicRunTime.setVisibility(View.VISIBLE);
         }
-        if (tvMusicTime.getVisibility() == View.GONE) {
+        if (tvMusicTime.getVisibility() == View.GONE){
             tvMusicTime.setVisibility(View.VISIBLE);
         }
-        if (imgFmPlay.getVisibility() == View.VISIBLE) {
+        if (imgFmPlay.getVisibility() == View.VISIBLE){
             imgFmPlay.setVisibility(View.GONE);
         }
 
     }
 
 
+
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.bt_music_pre) {
+        if (id == R.id.bt_music_pre){
             //上一曲
             preMusic();
-        } else if (id == R.id.bt_music_play) {
+        }else if (id == R.id.bt_music_play){
             if (isPause) {
                 FDMusic tMusic = mMusicList.get(current_item);
-                play(tMusic, true);
-                PlayerMessage message =  new PlayerMessage();
-                message.setMsgType(2);
-                EventBusUtils.post(message);
+                play(tMusic,true);
             } else {
                 pause(false);
             }
-        } else if (id == R.id.bt_music_next) {
+        }else if (id == R.id.bt_music_next){
             //下一曲
             nextMusic();
-        } else if (id == R.id.bt_music_repeat) {
+        }else if (id == R.id.bt_music_repeat){
             if (playStatus == Constant.Player.LIST_CYCLE_PLAY) {
                 playStatus = Constant.Player.SINGLE_CYCLE_PLAY;
             } else if (playStatus == Constant.Player.SINGLE_CYCLE_PLAY) {
@@ -598,7 +609,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                 playStatus = Constant.Player.LIST_CYCLE_PLAY;
             }
             setPlayStatus();
-        } else if (id == R.id.bt_music_list) {
+        }else if (id == R.id.bt_music_list){
             isPlay = false;
             Intent tIntent = new Intent(this, MusicListActivity.class);
             tIntent.putExtra(Constant.Player.keyDataMusicList, mMusicList);
@@ -657,16 +668,8 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                 mMusicProgressSb.setMax(time);
                 LogUtil.e("MediaPlayer -----》" + time);
                 mediaPlayer.start();
-                PlayerMessage message = new PlayerMessage();
-                message.setPlaytime(length);
-                Message sendM = new Message();
-                sendM.arg1 = 1;
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("message", message);
-                sendM.setData(bundle);
-                sendMessageHandler.sendMessageDelayed(sendM, 1000);
                 isPause = false;
-                if (contentType != Constant.Player.FM) {
+                if (contentType != Constant.Player.FM){
                     mProgressHandler.postDelayed(mProgressRunable, 1000);
                 }
             }
@@ -707,7 +710,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                         isPause = false;
                     }
                     FDMusic tMusic = mMusicList.get(current_item);
-                    play(tMusic, true);
+                    play(tMusic,true);
                 } else {
                     nextMusic();
                 }
@@ -730,30 +733,30 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         mProgressHandler.removeCallbacks(mProgressRunable);
         mMusicProgressSb.setProgress(0);
 
-        if (isPause) {
+        if (isPause){
             isPause = false;
         }
 
         Log.e("qob", "preMusic current_item: " + current_item);
 
-        if (playStatus == Constant.Player.RANDOM_PLAY) {
+        if (playStatus == Constant.Player.RANDOM_PLAY){
             int ramdomNum = getMusicRandom();
             current_item = ramdomNum;
-        } else {
+        }else {
             current_item--;
         }
         if (current_item < 0) {
             current_item = mMusicList.size() - 1;
         }
         FDMusic tMusic = mMusicList.get(current_item);
-        play(tMusic, true);
+        play(tMusic,true);
 
     }
 
     /**
      * 播放
      */
-    private void play(FDMusic tMusic, boolean isSendPlay) {
+    private void play(FDMusic tMusic,boolean isSendPlay) {
 
         try {
             isEventPuase = false;
@@ -767,21 +770,21 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                 mediaPlayer.start();
                 isPause = false;
 
-                if (contentType != Constant.Player.FM) {
+                if (contentType != Constant.Player.FM){
                     mMusicPlayBt.setImageResource(R.mipmap.player_ico_pause);
                     mProgressHandler.postDelayed(mProgressRunable, 1000);
-                } else {
+                }else {
                     imgFmPlay.setImageResource(R.mipmap.player_icon_fm_play);
                 }
-                if (isSendPlay) {
-//                    PlayerMessage message = new PlayerMessage();
-//                    message.setMsgType(2);
-//                    EventBusUtils.post(message);
+                if (isSendPlay){
+                    PlayerMessage message = new PlayerMessage();
+                    message.setMsgType(2);
+                    EventBusUtils.post(message);
                 }
 
 
             } else {
-                if (!NetUtil.isNetworkAvailable(this)) {
+                if (!NetUtil.isNetworkAvailable(this)){
                     showToast("网络不可用");
                     return;
                 }
@@ -790,26 +793,18 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                 mediaPlayer.reset();
                 // 重新加载音频资源
                 mediaPlayer.setDataSource(tMusic.getMusicUri());
-                LogUtil.e(tMusic.toString());
-                // 准备播放（异步）
-                mediaPlayer.prepareAsync();
 
+                LogUtil.e(tMusic.toString());
                 PlayerMessage message = new PlayerMessage();
                 message.setMusicUrl(tMusic.getMusicImage());
                 message.setMusicTitle(tMusic.getMusicTitle());
                 message.setMusicName(tMusic.getMusicArtist());
                 message.setContentType(contentType);
                 message.setContent(tMusic.getContent());
-                message.setPlaytime(mediaPlayer.getCurrentPosition() / 1000);
-                message.setContentType(2);
-                LogUtil.e("playmusicActivity = " + message.toString());
-                Message sendM = new Message();
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("message", message);
-                sendM.setData(bundle);
-                sendM.arg1 = 1;
-                sendMessageHandler.sendMessageDelayed(sendM, 0);
-
+                LogUtil.e("PlayerMessage musicActivity = "+message.toString());
+                EventBusUtils.post(message);
+                // 准备播放（异步）
+                mediaPlayer.prepareAsync();
                 runTimeSecond = 0;
                 tvMusicRunTime.setText("00:00");
                 tvMusicTime.setText("/00:00");
@@ -846,16 +841,17 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         if (mediaPlayer != null) {
             mediaPlayer.pause();
         }
-        if (contentType == Constant.Player.FM) {
+        if (contentType == Constant.Player.FM){
             imgFmPlay.setImageResource(R.mipmap.player_icon_fm_pause);
-        } else {
+        }else {
             mMusicPlayBt.setImageResource(R.mipmap.player_ico_play);
         }
-        if (!isManager) {
+        if (!isManager){
             PlayerMessage message = new PlayerMessage();
             message.setMsgType(1);
             EventBusUtils.post(message);
         }
+
 
 
         return current_item;
@@ -886,7 +882,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
             current_item = 0;
         }
         FDMusic tMusic = mMusicList.get(current_item);
-        play(tMusic, true);
+        play(tMusic,true);
     }
 
     private int getMusicRandom() {
@@ -903,7 +899,8 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
     }
 
 
-    private void stop() {
+
+    private void stop(){
         if (mediaPlayer != null) {
             if (mediaPlayer.isPlaying()) {
                 mediaPlayer.stop();
@@ -917,8 +914,8 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
     public void onResultEvent(MusicPlayBean bean) {
         LogUtil.i(bean.toString());
         String action = bean.getAidlMsgType();
-        LogUtil.d("action = " + action);
-        if (action.equals(Constant.Player.keyBroadcastMusicList)) {
+        LogUtil.d("action = "+action);
+        if (action.equals(Constant.Player.keyBroadcastMusicList)){
             stop();
             List<FDMusic> tMusicList = bean.getFdMusics();
             String title = bean.getMsgName();
@@ -933,7 +930,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
             Log.e("qob", "MyBroadcastReceiver List " + mMusicList);
             current_item = 0;
             getRandomIndex();
-            play(tMusic, true);
+            play(tMusic,true);
         } else if (action.equals(Constant.Player.keyBroadcastSelectItem)) {
 
             mProgressHandler.removeCallbacks(mProgressRunable);
@@ -944,9 +941,9 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
 
             Log.e("qob", "MyBroadcastReceiver List " + current_item + " keyBroadcastSelectItem");
             FDMusic tMusic = mMusicList.get(current_item);
-            play(tMusic, true);
-        } else if (action.equals(Constant.Player.closeVoiceBroadcast)) {
-            if (audioManagerSatatus != AudioManager.AUDIOFOCUS_GAIN) {
+            play(tMusic,true);
+        }else if (action.equals(Constant.Player.closeVoiceBroadcast)){
+            if (audioManagerSatatus != AudioManager.AUDIOFOCUS_GAIN){
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
@@ -954,54 +951,54 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                 }
             }
             pause(false);
-        } else if (action.equals(Constant.Player.VOICE_PLAY)) {
+        }else if (action.equals(Constant.Player.VOICE_PLAY)){
             FDMusic tMusic = mMusicList.get(current_item);
-            play(tMusic, true);
-        } else if (action.equals(Constant.Player.VOICE_PAUSE)) {
+            play(tMusic,true);
+        }else if (action.equals(Constant.Player.VOICE_PAUSE)){
             isEventPuase = true;
             pause(false);
-        } else if (action.equals(Constant.Player.VOICE_REPLAY)) {
+        }else if (action.equals(Constant.Player.VOICE_REPLAY)){
             isPause = false;
             FDMusic tMusic = mMusicList.get(current_item);
-            play(tMusic, true);
-        } else if (action.equals(Constant.Player.VOICE_STOP)) {
+            play(tMusic,true);
+        }else if (action.equals(Constant.Player.VOICE_STOP)){
             MusicActivity.this.finish();
-        } else if (action.equals(Constant.Player.VOICE_PREV)) {
+        }else if (action.equals(Constant.Player.VOICE_PREV)){
             preMusic();
-        } else if (action.equals(Constant.Player.VOICE_NEXT)) {
+        }else if (action.equals(Constant.Player.VOICE_NEXT)){
             nextMusic();
-        } else if (action.equals(Constant.Player.VOICE_LOOP_LIST_PLAY)) {
+        }else if (action.equals(Constant.Player.VOICE_LOOP_LIST_PLAY)){
             //列表循环
             playStatus = Constant.Player.LIST_CYCLE_PLAY;
             setPlayStatus();
 
-        } else if (action.equals(Constant.Player.VOICE_LOOP_SINGLE_PLAY)) {
+        }else if (action.equals(Constant.Player.VOICE_LOOP_SINGLE_PLAY)){
             //单曲循环
             playStatus = Constant.Player.SINGLE_CYCLE_PLAY;
             setPlayStatus();
 
-        } else if (action.equals(Constant.Player.VOICE_RANDOM_PLAY)) {
+        }else if (action.equals(Constant.Player.VOICE_RANDOM_PLAY)){
             //随机播放
             playStatus = Constant.Player.RANDOM_PLAY;
             setPlayStatus();
 
-        } else if (action.equals(Constant.Player.VOICE_FORWARD)) {
+        }else if (action.equals(Constant.Player.VOICE_FORWARD)){
             //快进
             int relativeTime = bean.getRelativeTime();
             int absoluteTime = bean.getAbsoluteTime();
-            if (mediaPlayer != null) {
+            if (mediaPlayer != null){
                 int position = getSeekToForwardPosition(relativeTime, absoluteTime);
                 mediaPlayer.seekTo(position);
             }
-        } else if (action.equals(Constant.Player.VOICE_BACKWARD)) {
+        }else if (action.equals(Constant.Player.VOICE_BACKWARD)){
             //快退
             int relativeTime = bean.getRelativeTime();
             int absoluteTime = bean.getAbsoluteTime();
-            if (mediaPlayer != null) {
-                int position = getSeekToBackwardPosition(relativeTime, absoluteTime);
+            if (mediaPlayer != null){
+                int position = getSeekToBackwardPosition(relativeTime,absoluteTime);
                 mediaPlayer.seekTo(position);
             }
-        } else if (action.equals(Constant.Player.CLOSE_MUSIC_ACTIVITY)) {
+        }else if (action.equals(Constant.Player.CLOSE_MUSIC_ACTIVITY)){
             this.finish();
         }
 
@@ -1009,17 +1006,16 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
 
     /**
      * 快退
-     *
      * @param relativeTime
      * @return
      */
-    private int getSeekToBackwardPosition(int relativeTime, int absoluteTime) {
-        if (relativeTime == 0 && absoluteTime == 0) {
-            return mediaPlayer.getCurrentPosition() - 10000;
-        } else {
-            if (relativeTime > 0) {
+    private int getSeekToBackwardPosition(int relativeTime,int absoluteTime) {
+        if (relativeTime == 0 && absoluteTime == 0){
+                return mediaPlayer.getCurrentPosition() - 10000;
+        }else {
+            if (relativeTime > 0){
                 return mediaPlayer.getCurrentPosition() - (relativeTime * 1000);
-            } else if (absoluteTime > 0) {
+            }else if (absoluteTime > 0){
                 return absoluteTime * 1000;
 
             }
@@ -1029,18 +1025,17 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
 
     /**
      * 快进
-     *
      * @param relativeTime
      * @param absoluteTime
      * @return
      */
     private int getSeekToForwardPosition(int relativeTime, int absoluteTime) {
-        if (relativeTime == 0 && absoluteTime == 0) {
+        if (relativeTime == 0 && absoluteTime == 0){
             return mediaPlayer.getCurrentPosition() + 10000;
-        } else {
-            if (relativeTime > 0) {
+        }else {
+            if (relativeTime > 0){
                 return mediaPlayer.getCurrentPosition() + (relativeTime * 1000);
-            } else if (absoluteTime > 0) {
+            }else if (absoluteTime > 0){
                 return absoluteTime * 1000;
             }
         }
@@ -1049,59 +1044,60 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
 
 
     AudioManager.OnAudioFocusChangeListener changeListener = new AudioManager.OnAudioFocusChangeListener() {
-        @Override
-        public void onAudioFocusChange(int focusChange) {
-            audioManagerSatatus = focusChange;
-            if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
-                // 展示失去音频焦点，暂停播放等待重新获得音频焦点
-                if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            @Override
+            public void onAudioFocusChange(int focusChange) {
+                audioManagerSatatus = focusChange;
+                if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
+                    // 展示失去音频焦点，暂停播放等待重新获得音频焦点
+                    if (mediaPlayer != null && mediaPlayer.isPlaying()) {
 //                        mediaPlayer.setVolume(0.1f, 0.1f);
-                    pause(true);
-                }
+                        pause(true);
+                    }
 
-                // Pause playback
+                    // Pause playback
 
-            } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
-                // 获得音频焦点
-                if (mediaPlayer != null && isPause && !isEventPuase) {
+                } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+                    // 获得音频焦点
+                    if (mediaPlayer != null && isPause && !isEventPuase) {
 //                        mediaPlayer.setVolume(0.5f, 0.5f);
-                    FDMusic music = mMusicList.get(current_item);
-                    play(music, false);
-                }
+                        FDMusic music = mMusicList.get(current_item);
+                        play(music,false);
+                    }
 
-                // Resume playback
+                    // Resume playback
 
-            } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
-                // 长久的失去音频焦点，释放MediaPlayer
-                stop();
+                } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+                    // 长久的失去音频焦点，释放MediaPlayer
+                    stop();
 
 
-            } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
-                //失去焦点，降低音量
-                if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
+                    //失去焦点，降低音量
+                    if (mediaPlayer != null && mediaPlayer.isPlaying()) {
 //                        mediaPlayer.setVolume(0.1f, 0.1f);
-                    pause(true);
+                        pause(true);
+                    }
                 }
             }
-        }
-    };
+        };
 
 
-    private class MyFragmentPagerAdapter extends FragmentPagerAdapter {
-        public MyFragmentPagerAdapter(FragmentManager fm) {
-            super(fm);
+        private class MyFragmentPagerAdapter extends FragmentPagerAdapter {
+            public MyFragmentPagerAdapter(FragmentManager fm) {
+                super(fm);
+            }
+
+            @Override
+            public Fragment getItem(int position) {
+                return fragmentList.get(position);
+            }
+
+            @Override
+            public int getCount() {
+                return fragmentList.size();
+            }
         }
 
-        @Override
-        public Fragment getItem(int position) {
-            return fragmentList.get(position);
-        }
 
-        @Override
-        public int getCount() {
-            return fragmentList.size();
-        }
     }
 
-
-}

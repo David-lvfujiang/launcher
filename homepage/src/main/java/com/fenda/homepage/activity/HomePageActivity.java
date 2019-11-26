@@ -793,6 +793,11 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             //通讯录
             ARouter.getInstance().build(RouterPath.Call.MAIN_ACTIVITY).navigation();
         } else if (resId == R.id.tv_main_cmcc) {
+            String apksUrl = "http://www.sfth.cn/";
+            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsLoadWebviewActivity)
+                    .withString("APK_URL", apksUrl)
+                    .navigation();
+
             //通讯录
             //            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).navigation();
         } else if (resId == R.id.iv_header_weather || resId == R.id.tv_header_temp) {
@@ -820,7 +825,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             }
         }
     }
-
 
     @Override
     protected void onDestroy () {

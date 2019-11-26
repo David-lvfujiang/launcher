@@ -82,6 +82,7 @@ public class PerpetualCalendarActivity extends BaseActivity implements
         // Fragment fragment = new CalendarViewPagerFragment();
         CalendarViewPagerFragment fragment = CalendarViewPagerFragment.newInstance(true);
         ft.replace(R.id.fl_content, fragment);
+//        ft.commit();
         ft.commitAllowingStateLoss();
     }
 

@@ -139,7 +139,6 @@ public interface Constant {
         int HOME_PAGE = 0;
         //技能
         int ALL_SKILL = 1;
-
     }
 
     interface Weather{

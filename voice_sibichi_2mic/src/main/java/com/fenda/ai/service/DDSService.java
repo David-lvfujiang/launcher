@@ -823,8 +823,6 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                                 .subscribe(new Consumer<String>() {
                                     @Override
                                     public void accept(String s) throws Exception {
-
-
                                         if (weatherProvider == null) {
                                             weatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
                                         }

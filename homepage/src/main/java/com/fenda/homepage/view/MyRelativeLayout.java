@@ -93,6 +93,9 @@ public class MyRelativeLayout extends RelativeLayout {
                 case MotionEvent.ACTION_MOVE:
                     int pointerIndex = ev.findPointerIndex(mActivePointerId);
                     float interMoveY  = VERTICAL.getDisplacement(ev, pointerIndex, mDownPos);
+                    if(pageActivity == null){
+                        return false;
+                    }
                     if (Constant.Common.HOME_PAGE == pageActivity.getLauncherState()){
                         if (interMoveY < (-MIX_SCROLL)){
                             mShiftStart = BaseApplication.getBaseInstance().getScreenHeight();

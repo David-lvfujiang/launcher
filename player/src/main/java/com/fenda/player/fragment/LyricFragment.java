@@ -1,8 +1,5 @@
 package com.fenda.player.fragment;
 
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -11,7 +8,6 @@ import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -75,8 +71,10 @@ public class LyricFragment extends BaseFragment implements View.OnTouchListener 
 
     @Override
     public void initData() {
-        music = getArguments().getParcelable("poetry");
-        initLyricData(music.getMusicTitle(), music.getMusicArtist(), music.getContent());
+        FDMusic music = getArguments().getParcelable("poetry");
+        if(music != null) {
+            initLyricData(music.getMusicTitle(), music.getMusicArtist(), music.getContent());
+        }
     }
 
     /**

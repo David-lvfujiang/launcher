@@ -489,6 +489,7 @@ public class MultiAudioCallActivity extends BaseCallActivity {
                             intent.putStringArrayListExtra("invitedMembers", added);
                             intent.putExtra("conversationType", callSession.getConversationType().getValue());
                             intent.putExtra("mediaType", RongCallCommon.CallMediaType.AUDIO.getValue());
+                            intent.addCategory("android.intent.category.OPENABLE");
                             intent.setType("audio/*");
                             startActivityForResult(intent, REQUEST_CODE_ADD_MEMBER);
                         }
@@ -511,6 +512,7 @@ public class MultiAudioCallActivity extends BaseCallActivity {
                     intent.putExtra("conversationType", callSession.getConversationType().getValue());
                     intent.putExtra("groupId", callSession.getTargetId());
                     intent.putExtra("mediaType", RongCallCommon.CallMediaType.AUDIO.getValue());
+                    intent.addCategory("android.intent.category.OPENABLE");
                     intent.setType("audio/*");
                     startActivityForResult(intent, REQUEST_CODE_ADD_MEMBER);
                 } else {

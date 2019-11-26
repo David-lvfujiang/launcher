@@ -28,10 +28,11 @@ public class EncyclopediaFragmentPensenter implements IEncyclopediaProvider {
     @Override
     public void processQuestionTextMsg(String msg) {
         JSONObject jsonObject = JSONObject.parseObject(msg);
-        String content = jsonObject.getJSONObject("dm").getJSONObject("widget").get("text").toString();
-        String title = jsonObject.getJSONObject("dm").get("input").toString();
-        ARouter.getInstance().build(RouterPath.Encyclopedia.ENCYCLOPEDIA_QUESTIION_ACTIVITY).withString("content", content).withString("title", title).navigation();
-
+        if(jsonObject != null) {
+            String content = jsonObject.getJSONObject("dm").getJSONObject("widget").get("text").toString();
+            String title = jsonObject.getJSONObject("dm").get("input").toString();
+            ARouter.getInstance().build(RouterPath.Encyclopedia.ENCYCLOPEDIA_QUESTIION_ACTIVITY).withString("content", content).withString("title", title).navigation();
+        }
     }
 
     /**
