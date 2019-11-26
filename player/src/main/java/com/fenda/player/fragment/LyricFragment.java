@@ -102,6 +102,9 @@ public class LyricFragment extends BaseFragment implements View.OnTouchListener 
         int rate = playTime / rowNumber;
         LogUtils.e("musicActivity " + playTime + "," + rate);
         mAutoScrollView.setScrollRate(rate * 27);
+        if (rowNumber > 100) {
+            mAutoScrollView.setScrollRate(rate * 24);
+        }
         //是否循环滑动
         mAutoScrollView.setScrollLoop(false);
         LogUtils.e("滚动 ");

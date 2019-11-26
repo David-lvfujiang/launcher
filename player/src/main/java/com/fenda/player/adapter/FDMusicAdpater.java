@@ -87,7 +87,7 @@ public class FDMusicAdpater extends RecyclerView.Adapter<FDMusicAdpater.MusicIte
             if (TextUtils.isEmpty(artist)){
                 viewHolder.musicAuthorTv.setText(mContext.getResources().getString(R.string.player_play_music));
             }else {
-                viewHolder.musicAuthorTv.setText(artist);
+                viewHolder.musicAuthorTv.setText(artist+mContext.getResources().getString(R.string.player_play_music));
             }
 
         }else{
