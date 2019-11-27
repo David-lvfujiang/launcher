@@ -99,8 +99,8 @@ public class SettingsDeviceCenterActivity extends BaseMvpActivity<SettingsPresen
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent mIntent = new Intent(SettingsDeviceCenterActivity.this, SettingsActivity.class);
-                startActivity(mIntent);
+//                Intent mIntent = new Intent(SettingsDeviceCenterActivity.this, SettingsActivity.class);
+//                startActivity(mIntent);
                 finish();
             }
         });
@@ -121,7 +121,7 @@ public class SettingsDeviceCenterActivity extends BaseMvpActivity<SettingsPresen
                 } else if(setClickedListName.equals(getString(R.string.settings_device_center_add_family))) {
                     Intent contactsIntent = new Intent(SettingsDeviceCenterActivity.this, SettingsDeviceContractsActivity.class);
                     startActivity(contactsIntent);
-                    finish();
+//                    finish();
                 }  else if(setClickedListName.equals(getString(R.string.settings_device_center_dismiss_family))) {
                     if (SettingsWifiUtil.isWifiEnabled(getApplicationContext())) {
                         LogUtil.d(TAG, "wifi is connect");

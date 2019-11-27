@@ -154,7 +154,8 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
 
     private MyNestedScrollView scrollView;
-
+    @Autowired
+    ISettingsProvider mISettingsProvider;
 
     private String[] mPermission = new String[] {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -402,16 +403,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             initProvider.initVoice();
         }
 
-
         if (mIWeatherProvider == null){
             mIWeatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
         }
-
-        ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
-        if (settingService != null) {
-            settingService.deviceStatus(this);
-        }
-
 
         LogUtil.e("进入了Oncreate的initData");
 
@@ -469,8 +463,13 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             if (mICallProvider != null) {
                 mICallProvider.syncFamilyContacts();
             }
+
+            if(mISettingsProvider != null){
+                mISettingsProvider.syncSettingsContacts();
+            }
             AppUtils.saveBindedDevice(getApplicationContext(), false);
-//            ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
+//            ActivityManager am = (ActivityManager)getSystemService(Con
+//            text.ACTIVITY_SERVICE);
 //            String activityName = am.getRunningTasks(1).get(0).topActivity.getClassName();
 //
             LogUtil.e("applyId 家庭解散通知1 栈顶activityName = ");
@@ -518,6 +517,10 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 if (mICallProvider != null) {
                     mICallProvider.syncFamilyContacts();
                 }
+
+                if(mISettingsProvider != null){
+                    mISettingsProvider.syncSettingsContacts();
+                }
             }
         } else if (message.getCode() == TCPConfig.MessageType.USER_REPAIR_HEAD) {
             if (message != null && message.getData() != null) {
@@ -530,6 +533,10 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     if (mICallProvider != null) {
                         mICallProvider.syncFamilyContacts();
                     }
+
+                    if(mISettingsProvider != null){
+                        mISettingsProvider.syncSettingsContacts();
+                    }
                 }
             }
         } else if (message.getCode() == TCPConfig.MessageType.NEW_USER_ADD) { //新人加入家庭通知
@@ -541,6 +548,10 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 ContentProviderManager.getInstance(mContext, Constant.Common.URI).insertUser(userInfoBean);
                 if (mICallProvider != null) {
                     mICallProvider.syncFamilyContacts();
+                }
+
+                if(mISettingsProvider != null){
+                    mISettingsProvider.syncSettingsContacts();
                 }
             }
             mNewUserName = msgContent.substring(msgContent.indexOf("【") + 1, msgContent.indexOf("】"));
@@ -836,9 +847,14 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     public void getFamilyContactsSuccess(BaseResponse<List<UserInfoBean>> response) {
         ContentProviderManager.getInstance(mContext, Constant.Common.URI).insertUsers(response.getData());
         ICallProvider callService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
+        ISettingsProvider settingsService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
         if (callService != null) {
             callService.syncFamilyContacts();
         }
+        if (settingsService != null) {
+            settingsService.syncSettingsContacts();
+        }
+
     }
 
     @Override

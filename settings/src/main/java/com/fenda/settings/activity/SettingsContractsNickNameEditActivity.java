@@ -19,6 +19,7 @@ import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.db.ContentProviderManager;
 import com.fenda.common.provider.ICallProvider;
+import com.fenda.common.provider.ISettingsProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.DbUtil;
 import com.fenda.common.util.GsonUtil;
@@ -183,6 +184,11 @@ public class SettingsContractsNickNameEditActivity extends BaseMvpActivity<Setti
                     if (callService != null) {
                         callService.syncFamilyContacts();
                     }
+
+                    ISettingsProvider settingsService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
+                    if (settingsService != null) {
+                        settingsService.syncSettingsContacts();
+                    }
                 }
             }
         } else if (message.getCode() == TCPConfig.MessageType.USER_EXIT_FAMILY) {
@@ -232,8 +238,8 @@ public class SettingsContractsNickNameEditActivity extends BaseMvpActivity<Setti
     @Override
     public void changeNickNameSuccess(BaseResponse response) {
         ToastUtils.show("修改成功~");
-        Intent setNickNameSucessIntent = new Intent(SettingsContractsNickNameEditActivity.this, SettingsDeviceContractsActivity.class);
-        startActivity(setNickNameSucessIntent);
+//        Intent setNickNameSucessIntent = new Intent(SettingsContractsNickNameEditActivity.this, SettingsDeviceContractsActivity.class);
+//        startActivity(setNickNameSucessIntent);
         finish();
     }
 

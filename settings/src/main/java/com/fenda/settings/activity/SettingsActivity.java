@@ -148,7 +148,7 @@ public class SettingsActivity extends BaseActivity {
             public void onClick(View view) {
                 Intent setDeviceCenterIntent = new Intent(SettingsActivity.this, SettingsDeviceCenterActivity.class);
                 startActivity(setDeviceCenterIntent);
-                finish();
+//                finish();
             }
         });
         lvDisSetListItem.setOnItemClickListener(new AdapterView.OnItemClickListener() {

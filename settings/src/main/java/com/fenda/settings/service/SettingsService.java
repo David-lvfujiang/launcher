@@ -20,6 +20,7 @@ import com.fenda.common.util.ToastUtils;
 import com.fenda.protocol.http.RetrofitHelper;
 import com.fenda.protocol.http.RxSchedulers;
 import com.fenda.protocol.tcp.ClientBootstrap;
+import com.fenda.protocol.tcp.bus.EventBusUtils;
 import com.fenda.protocol.util.DeviceIdUtil;
 import com.fenda.settings.R;
 import com.fenda.settings.activity.SettingsBindDeviceActivity;
@@ -39,6 +40,9 @@ import io.reactivex.functions.Consumer;
 @Route(path = RouterPath.SETTINGS.SettingsService)
 public class SettingsService implements ISettingsProvider {
     private static final String TAG = "SettingsService";
+
+    public static final String SETTINGS_SYNC_CONTACTS="settings_sync_contacts";
+
     private String registeName = "奋达小和";
     private String registeMac;
     private String registeVersion;
@@ -194,5 +198,10 @@ public class SettingsService implements ISettingsProvider {
             Intent intent = new Intent(context, SettingsBindDeviceActivity.class);
             context.startActivity(intent);
         }
+    }
+
+    @Override
+    public void syncSettingsContacts() {
+        EventBusUtils.post(SETTINGS_SYNC_CONTACTS);
     }
 }

@@ -159,8 +159,8 @@ public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<Set
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent backIntent = new Intent(SettingsDeviceContractsNickNameActivity.this, SettingsDeviceContractsActivity.class);
-                startActivity(backIntent);
+//                Intent backIntent = new Intent(SettingsDeviceContractsNickNameActivity.this, SettingsDeviceContractsActivity.class);
+//                startActivity(backIntent);
                 finish();
             }
         });
@@ -253,8 +253,8 @@ public class SettingsDeviceContractsNickNameActivity extends BaseMvpActivity<Set
             if (messageBean != null && messageBean.getMessageUserInfoDTO() != null) {
                 String userId = messageBean.getMessageUserInfoDTO().getUserId();
                 ContentProviderManager.getInstance(mContext, Constant.Common.URI).deleteUserByUserID(userId);
-                Intent delectIntent = new Intent(SettingsDeviceContractsNickNameActivity.this, SettingsDeviceContractsActivity.class);
-                startActivity(delectIntent);
+//                Intent delectIntent = new Intent(SettingsDeviceContractsNickNameActivity.this, SettingsDeviceContractsActivity.class);
+//                startActivity(delectIntent);
                 finish();
             }
         }

@@ -1,5 +1,7 @@
 package com.fenda.settings.activity;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -8,8 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.base.BaseResponse;
+import com.fenda.common.baseapp.AppManager;
 import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.db.ContentProviderManager;
@@ -54,6 +58,7 @@ public class SettingsDeviceAddContractsQRActivity extends BaseMvpActivity<Settin
     private TextView tvBack;
 
     private Uri mUri = Uri.parse(ContentProviderManager.BASE_URI + "/user");
+    private String qrIntent;
 
     @Override
     protected void initPresenter() {
@@ -74,6 +79,9 @@ public class SettingsDeviceAddContractsQRActivity extends BaseMvpActivity<Settin
 
     @Override
     public void initData() {
+        Intent intent = getIntent();
+        //新用户
+        qrIntent = intent.getStringExtra("QR_FLAG");
 
         String vcode2 = (String) SPUtils.get(getApplicationContext(), Constant.Settings.VCODE, "");
 
@@ -109,8 +117,21 @@ public class SettingsDeviceAddContractsQRActivity extends BaseMvpActivity<Settin
         tvBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(SettingsDeviceAddContractsQRActivity.this, SettingsDeviceContractsActivity.class));
                 finish();
+//                if("SETTING_CONTACT".equals(qrIntent)) {
+//                    startActivity(new Intent(SettingsDeviceAddContractsQRActivity.this, SettingsDeviceContractsActivity.class));
+//                    finish();
+//                } else if("CALL_CONTACT".equals(qrIntent)){
+//                    ARouter.getInstance().build(RouterPath.Call.MAIN_ACTIVITY)
+//                            .with(ActivityOptions.makeSceneTransitionAnimation((Activity) mContext).toBundle())
+//                            .navigation();
+//                    finish();
+//                    try {
+//                        AppManager.getAppManager().finishActivity(Class.forName("com.fenda.settings.activity.SettingsDeviceAddContractsQRActivity"));
+//                    } catch (ClassNotFoundException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
             }
         });
     }
