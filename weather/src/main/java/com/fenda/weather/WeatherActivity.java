@@ -58,6 +58,7 @@ public class WeatherActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     public void initView() {
+        autoFinsh(10000);
         findViewById(R.id.tv_navbar_back).setOnClickListener(this);
 
         mWeahterBgIv = findViewById(R.id.gif_weather_bg);

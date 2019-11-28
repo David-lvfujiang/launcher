@@ -6,6 +6,8 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.MotionEvent;
@@ -32,6 +34,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.lang.ref.WeakReference;
+
 
 /**
  * @Author mirrer.wangzhonglin
@@ -56,10 +60,14 @@ public abstract class BaseActivity extends RxAppCompatActivity {
 
     private TextView tvBack;
     private LinearLayout linTitle;
+    private MyHandler mHandler;
+    private static final int mMessageDelay = 100;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        mHandler = new MyHandler(this);
         boolean isFull = initStatusBar();
         if (!isFull) {
             setStatusBarFullTransparent();
@@ -88,6 +96,39 @@ public abstract class BaseActivity extends RxAppCompatActivity {
         }
         return super.dispatchTouchEvent(ev);
     }
+
+    /**
+     * 一段时间后页面自动消失
+     *
+     * @param interval 时间间隔
+     */
+    protected void autoFinsh(int interval) {
+        mHandler.sendEmptyMessageDelayed(mMessageDelay, interval);
+    }
+
+    static class MyHandler extends Handler {
+        public WeakReference<BaseActivity> weakReference;
+
+        public MyHandler(BaseActivity activity) {
+            weakReference = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case mMessageDelay:
+                    BaseActivity activity = (BaseActivity) weakReference.get();
+                    if (activity != null) {
+                        activity.finish();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
     /**
      * 全透状态栏
      */
@@ -109,14 +150,15 @@ public abstract class BaseActivity extends RxAppCompatActivity {
     }
 
     /**
-     *初始化顶部Title
+     * 初始化顶部Title
+     *
      * @param title
      */
-    protected void initTitle(String title){
-        if (tvBack == null){
+    protected void initTitle(String title) {
+        if (tvBack == null) {
             tvBack = findViewById(R.id.tv_back);
-            if (tvBack != null ){
-                if (TextUtils.isEmpty(title)){
+            if (tvBack != null) {
+                if (TextUtils.isEmpty(title)) {
                     title = "";
                 }
                 tvBack.setText(title);
@@ -127,32 +169,35 @@ public abstract class BaseActivity extends RxAppCompatActivity {
                     }
                 });
             }
-        }else {
-            if (!TextUtils.isEmpty(title)){
+        } else {
+            if (!TextUtils.isEmpty(title)) {
                 tvBack.setText(title);
             }
         }
     }
+
     /**
      * 设置Title背景颜色
+     *
      * @param color
      */
-    protected void setTitleBackgroundColor(int color){
-        if (linTitle == null){
+    protected void setTitleBackgroundColor(int color) {
+        if (linTitle == null) {
             linTitle = findViewById(R.id.lin_title);
         }
-        if (linTitle != null){
+        if (linTitle != null) {
             linTitle.setBackgroundColor(color);
         }
     }
 
     /**
      * 设置返回键的图片
+     *
      * @param res
      */
-    protected void setBackImage(int res){
-        if (tvBack != null){
-            tvBack.setCompoundDrawablesWithIntrinsicBounds(res,0,0,0);
+    protected void setBackImage(int res) {
+        if (tvBack != null) {
+            tvBack.setCompoundDrawablesWithIntrinsicBounds(res, 0, 0, 0);
         }
     }
 
@@ -161,10 +206,9 @@ public abstract class BaseActivity extends RxAppCompatActivity {
      * 关闭页面，如果需要在关闭页面时做特殊处理
      * 请重写这个方法
      */
-    protected void finishActivity(){
+    protected void finishActivity() {
         this.finish();
     }
-
 
     /**
      * 全屏显示 设置这个状态可能无法下拉状态栏
