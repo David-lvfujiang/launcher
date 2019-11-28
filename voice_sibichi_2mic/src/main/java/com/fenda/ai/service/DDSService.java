@@ -17,7 +17,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.aispeech.ailog.AILog;
@@ -315,7 +314,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
             @Override
             public JSONObject onDMResult(JSONObject jsonObject) {
                 try {
-                    LogUtil.e("onDMResult =====  "+jsonObject.toString());
+                    i(TAG,"onDMResult =====  "+jsonObject.toString());
                     JSONObject dmJson = jsonObject.optJSONObject("dm");
                     String intentName = dmJson.optString("intentName");
                     if (BaseApplication.getBaseInstance().isCall()){
@@ -325,19 +324,24 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                             dmJson.put("shouldEndSession", false);
                             jsonObject.put("ignore", true);
                         }
-                    }else if ("查询天气".equals(intentName) && BaseApplication.getBaseInstance().isRequestWeather() ){
+                    }else if ("查询天气".equals(intentName)  ){
                         JSONObject widgetObject = dmJson.optJSONObject("widget");
 
-                        if (weatherProvider == null) {
-                            weatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
+                        if (BaseApplication.getBaseInstance().isRequestWeather()){
+                            if (weatherProvider == null) {
+                                weatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
+                            }
+                            if (weatherProvider != null) {
+                                weatherProvider.weatherFromVoiceControlToMainPage(widgetObject.toString());
+                            }
+                            BaseApplication.getBaseInstance().setRequestWeather(false);
+                            dmJson.put("nlg","");
+                            dmJson.put("shouldEndSession",false);
+                            jsonObject.put("ignore", true);
+                        }else {
+                            dmJson.put("shouldEndSession",true);
                         }
-                        if (weatherProvider != null) {
-                            weatherProvider.weatherFromVoiceControlToMainPage(widgetObject.toString());
-                        }
-                        BaseApplication.getBaseInstance().setRequestWeather(false);
-                        dmJson.put("nlg","");
-                        dmJson.put("shouldEndSession",false);
-                        jsonObject.put("ignore", true);
+
                     }else if ("播报新闻".equals(intentName) && BaseApplication.getBaseInstance().isRequestNews()){
                         JSONObject widgetJson  = dmJson.optJSONObject("widget");
                         IRecommendProvider recommendProvider = ARouter.getInstance().navigation(IRecommendProvider.class);
@@ -352,12 +356,26 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                LogUtil.e("onDMResult ===== end ======  "+jsonObject.toString());
+                i(TAG,"onDMResult ===== end ======  "+jsonObject.toString());
                 return jsonObject;
             }
         });
 
 
+    }
+
+
+    public static void i(String tag, String msg) {  //信息太长,分段打印
+        //因为String的length是字符数量不是字节数量所以为了防止中文字符过多，
+        //  把4*1024的MAX字节打印长度改为2001字符数
+        int max_str_length = 2001 - tag.length();
+        //大于4000时
+        while (msg.length() > max_str_length) {
+            Log.i(tag, msg.substring(0, max_str_length));
+            msg = msg.substring(max_str_length);
+        }
+        //剩余部分
+        Log.i(tag, msg);
     }
 
     private void doauth_when_net_ok() {
@@ -572,12 +590,14 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
         }else {
             config.addConfig(DDSConfig.K_MIC_TYPE, "2");
         }
-//        config.addConfig(DDSConfig.K_MIC_TYPE, "2");
+//        config.addConfig(DDSConfig.K_MIC_TYPE, "5");
         String androidId = DeviceIdUtil.getDeviceId(this);
         LogUtil.i("ANDROID_ID = " + androidId);
         //填入唯一的deviceId -- 选填
         config.addConfig(DDSConfig.K_DEVICE_ID, androidId);
 
+        //过滤 ‘嗯’ ‘哦’等语气词
+        config.addConfig(DDSConfig.K_VAD_DISABLE_SIGNAL,"true");
         // 麦克风阵列配置项
         //config.addConfig(DDSConfig.K_MIC_TYPE, "2"); // 设置硬件采集模组的类型 0：无。默认值。 1：单麦回消 2：线性四麦 3：环形六麦 4：车载双麦 5：家具双麦
 
@@ -801,7 +821,6 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 break;
             //media widget 1
             case VoiceConstant.SIBICHI.CONTEXT_WIDGET_MEDIA:
-                LogUtil.v(TAG, "CONTEXT_WIDGET_MEDIA-----" + message + "||||||" + data);
                 mediaHandler(data);
                 break;
             //custom widget 1 收到自定义控件消息
@@ -823,6 +842,8 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                                 .subscribe(new Consumer<String>() {
                                     @Override
                                     public void accept(String s) throws Exception {
+
+
                                         if (weatherProvider == null) {
                                             weatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
                                         }
@@ -849,8 +870,6 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
     private MediaModel mediaModel;
 
     public void mediaHandler(String data) {
-        LogUtil.v(TAG, "mediaHandler-----" + data + "||||||" + data);
-
         JSONObject object = new JSONObject();
         try {
             if (data != null) {
@@ -873,7 +892,6 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 mediaModel = new MediaModel();
             }
             mediaModel.handleMusicMediaWidget(object, intentName);
-
         }
 
 

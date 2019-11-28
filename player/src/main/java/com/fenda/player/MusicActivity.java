@@ -593,7 +593,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         }else if (id == R.id.bt_music_play){
             if (isPause) {
                 FDMusic tMusic = mMusicList.get(current_item);
-                play(tMusic,true);
+                play(tMusic,false);
             } else {
                 pause(false);
             }

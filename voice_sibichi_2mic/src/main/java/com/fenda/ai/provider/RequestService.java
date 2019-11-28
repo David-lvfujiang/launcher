@@ -3,6 +3,7 @@ package com.fenda.ai.provider;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.aispeech.dui.dds.DDS;
 import com.aispeech.dui.dds.agent.DMCallback;
@@ -22,6 +23,7 @@ import com.fenda.common.provider.IAlarmProvider;
 import com.fenda.common.provider.IVoiceRequestProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.LogUtil;
+import com.fenda.common.util.LogUtils;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -80,7 +82,6 @@ public class RequestService implements IVoiceRequestProvider {
 
     @Override
     public void cancelMusic(){
-
         if (Util.isQQMusicPlay()){
             MusicPlugin.get().getMusicApi().exit();
         }
@@ -211,7 +212,6 @@ public class RequestService implements IVoiceRequestProvider {
     @Override
     public void requestNews(int number) {
         try {
-
             LogUtil.e("===============================请求新闻"+number+"================================");
             BaseApplication.getBaseInstance().setRequestNews(true);
             SkillIntent skillIntent = new SkillIntent("2019031900001180",
@@ -268,6 +268,8 @@ public class RequestService implements IVoiceRequestProvider {
             }
         });
     }
+
+
 
 
 }
