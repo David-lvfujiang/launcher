@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.fenda.settings.activity.SettingsActivity"
-    android:background="@mipmap/settings_background">
+    android:background="@mipmap/setting_background">
 
     <ImageView
         android:id="@+id/set_back_iv"

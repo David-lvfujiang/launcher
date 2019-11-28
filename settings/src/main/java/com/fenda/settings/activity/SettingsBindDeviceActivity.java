@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,10 +20,12 @@ import com.fenda.common.base.BaseResponse;
 import com.fenda.common.bean.UserInfoBean;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.db.ContentProviderManager;
+import com.fenda.common.provider.ICallProvider;
 import com.fenda.common.provider.IVoiceRequestProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.AppUtils;
 import com.fenda.common.util.LogUtil;
+import com.fenda.common.util.LogUtils;
 import com.fenda.common.util.QRcodeUtil;
 import com.fenda.common.util.SPUtils;
 import com.fenda.common.util.ToastUtils;
@@ -66,7 +69,6 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
 
     private long [] mHits = null;
     private boolean mShow;
-//    private String mBindIntent;
 
     @Override
     protected void initPresenter() {
@@ -100,7 +102,6 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
         });
         setStatusBarDisable(DISABLE_EXPAND);
         return true;
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -135,11 +136,6 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
     @Override
     public void initData() {
         mPresenter.queryDeviceInfo();
-
-        String userId = (String) SPUtils.get(BaseApplication.getInstance(), Constant.Settings.USER_ID,"");
-        LogUtil.d(TAG, "userId = " + userId);
-        ClientBootstrap bootstrap = ClientBootstrap.getInstance();
-        bootstrap.init(mContext, userId, SettingsContant.TCP_IP, SettingsContant.TCP_PORT, 0);
     }
 
     @Override
@@ -166,19 +162,6 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
             mPresenter.getContactsList();
         }
     }
-
-    public void sendMicDisableBroad() {
-        LogUtil.d(TAG, "sendMicDisableBroad action:com.fenda.smartcall.ACTION_MIC_ENABLE");
-        Intent intent = new Intent("com.fenda.smartcall.ACTION_MIC_ENABLE");
-        sendBroadcast(intent);
-    }
-
-    public void sendMicAbleBroad() {
-        LogUtil.d(TAG, "sendMicAbleBroad action:com.fenda.smartcall.ACTION_MIC_ABLE");
-        Intent intent = new Intent("com.fenda.smartcall.ACTION_MIC_ABLE");
-        sendBroadcast(intent);
-    }
-
     private void setStatusBarDisable(int disableStatus) {//调用statusBar的disable方法
         @SuppressLint("WrongConstant") Object service = getSystemService("statusbar");
         try {
@@ -194,13 +177,11 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
     @Override
     public void onResume() {
         super.onResume();
-//        setStatusBarDisable(DISABLE_EXPAND);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-//        setStatusBarDisable(DISABLE_NONE);
     }
 
     @Override
@@ -211,8 +192,6 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
 
     @Override
     protected void onDestroy() {
-
-//        sendMicAbleBroad();
         super.onDestroy();
     }
 
@@ -258,6 +237,21 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
         SPUtils.put(getApplicationContext(), Constant.Settings.DEVICE_NAME, queryDeviceInfoResponse.getName());
         SPUtils.put(getApplicationContext(), Constant.Settings.DEVICE_ICON, queryDeviceInfoResponse.getIcon());
         SPUtils.put(getApplicationContext(), Constant.Settings.VCODE, queryDeviceInfoResponse.getVcode());
+        SPUtils.put(getApplicationContext(), Constant.Settings.RONGYUNCLOUDTOKEN, queryDeviceInfoResponse.getRongcloud_token());
+
+        if (!TextUtils.isEmpty(queryDeviceInfoResponse.getRongcloud_token())) {
+            // 调用音视频服务接口登录IM
+            ICallProvider loginService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
+            if (loginService != null) {
+                LogUtils.v(TAG, "login rongCloudToken ");
+                loginService.login(queryDeviceInfoResponse.getRongcloud_token());
+            }
+        }
+
+        ClientBootstrap bootstrap = ClientBootstrap.getInstance();
+        bootstrap.init(mContext, queryDeviceInfoResponse.getId(), SettingsContant.TCP_IP, SettingsContant.TCP_PORT, 0);
+
+        LogUtils.v(TAG, "userId ===  " + queryDeviceInfoResponse.getId());
         final String filePath2 = QRcodeUtil.getFileRoot(SettingsBindDeviceActivity.this) + File.separator + "qr_" + System.currentTimeMillis() + ".jpg";
 //        二维码图片较大时，生成图片、保存文件的时间可能较长，因此放在新线程中
         CThreadPoolExecutor.runInBackground(new Runnable() {
@@ -302,7 +296,7 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
     @Override
     public void getContactsListSuccess(BaseResponse<List<UserInfoBean>> response) {
         ContentProviderManager.getInstance(SettingsBindDeviceActivity.this, Uri.parse(ContentProviderManager.BASE_URI + "/user")).insertUsers(response.getData());
-
+        //调用更新语音
         String mBindIntent1 = "onReceive";
         Intent hintent = new Intent();
         hintent.setAction("android.intent.action.MAIN");

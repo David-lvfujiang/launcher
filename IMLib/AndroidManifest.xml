@@ -10,13 +10,13 @@
 
     <application>
         <!--k51hidwqk4smb 本地环境-->
-        <!--82hegw5u8xlqx 测试环境-->
+        <!--k51hidwqk4smb 测试环境-->
         <!--bmdehs6pbg7qs 正式环境-->
 
         <!-- imlib config begin -->
         <meta-data
             android:name="RONG_CLOUD_APP_KEY"
-            android:value="82hegw5u8xlqx" />
+            android:value="bmdehs6pbg7qs" />
 
         <service
             android:name="io.rong.imlib.ipc.RongService"
@@ -31,7 +31,6 @@
             android:name="io.rong.imlib.HeartbeatReceiver"
             android:process=":ipc" />
         <!-- imlib config end -->
-
 
         <!--必选： SDK 核心功能-->
         <!--第三方相关,向第三方推送服务请求 token 的服务 -->

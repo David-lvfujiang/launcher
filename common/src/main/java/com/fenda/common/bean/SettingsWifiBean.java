@@ -1,4 +1,4 @@
-package com.fenda.settings.bean;
+package com.fenda.common.bean;
 
 import android.net.wifi.ScanResult;
 

@@ -18,11 +18,11 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.fenda.common.R;
 import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.ToastUtils;
-import com.fenda.settings.R;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -82,10 +82,10 @@ public class SettingsLoadWebviewActivity extends BaseMvpActivity {
         //允许使用js
         webSettings.setJavaScriptEnabled(true);
 
-         //LOAD_CACHE_ONLY: 不使用网络，只读取本地缓存数据
-         //LOAD_DEFAULT: （默认）根据cache-control决定是否从网络上取数据。
-         //LOAD_NO_CACHE: 不使用缓存，只从网络获取数据.
-         //LOAD_CACHE_ELSE_NETWORK，只要本地有，无论是否过期，或者no-cache，都使用缓存中的数据。
+        //LOAD_CACHE_ONLY: 不使用网络，只读取本地缓存数据
+        //LOAD_DEFAULT: （默认）根据cache-control决定是否从网络上取数据。
+        //LOAD_NO_CACHE: 不使用缓存，只从网络获取数据.
+        //LOAD_CACHE_ELSE_NETWORK，只要本地有，无论是否过期，或者no-cache，都使用缓存中的数据。
         //不使用缓存，只从网络获取数据.
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
 

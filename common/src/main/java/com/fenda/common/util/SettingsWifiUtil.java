@@ -1,4 +1,4 @@
-package com.fenda.settings.utils;
+package com.fenda.common.util;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -12,9 +12,8 @@ import android.net.wifi.WifiManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.fenda.common.util.LogUtil;
-import com.fenda.common.util.ToastUtils;
-import com.fenda.settings.bean.SettingsWifiBean;
+
+import com.fenda.common.bean.SettingsWifiBean;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -19,7 +19,7 @@ public class AppUtils {
     private static final String KEY_SP_REGISTER_DEVICE = "key_sp_registerdeviceid";
     private static final String KEY_SP_WIFI_CHECKED = "key_sp_wifichecked";
     private static final String KEY_SP_IS_RUN_SCREEN_SAVER = "key_sp_isrunscreensaver";
-
+    private static final String KEY_SP_FIRST_START = "key_sp_isfirststart";
 
     public static void jump2SmartCallApp(final Context context) {
 
@@ -103,8 +103,19 @@ public class AppUtils {
         sp.edit().putBoolean(KEY_SP_BIND_DEVICE, isBind).apply();
     }
 
+    public static Boolean isFirstStart(Context context){
 
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME,
+                Context.MODE_PRIVATE);
+        return sp.getBoolean(KEY_SP_FIRST_START, false);
+    }
 
+    public static void saveFirstStart(Context context, boolean isStarted){
+
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME,
+                Context.MODE_PRIVATE);
+        sp.edit().putBoolean(KEY_SP_FIRST_START, isStarted).apply();
+    }
 
 
     public static Boolean isRunScreenSaver(Context context){

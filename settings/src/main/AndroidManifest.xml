@@ -33,11 +33,13 @@
     <application>
 
         <activity android:name=".activity.SettingsActivity"
-            android:launchMode="singleTop"
-            />
+            android:launchMode="singleTop" />
+
+        <activity android:name=".activity.SettingsWifiActivity">
+        </activity>
+
         <activity android:name=".activity.SettingsVolumeActivity"/>
         <activity android:name=".activity.SetttingsBrightnessActivity"/>
-        <activity android:name=".activity.SettingsWifiActivity"/>
         <activity android:name=".activity.SettingsWifiInputPswActivity"/>
         <activity android:name=".activity.SettingsWifiConnectedInfoActivity"/>
         <activity android:name=".activity.SettingsDeviceInfoActivity"/>
@@ -45,7 +47,6 @@
         <activity android:name=".activity.SettingsDeviceCenterActivity"/>
         <activity android:name=".activity.SettingsChangeDeviceNameActivity"/>
         <activity android:name=".activity.SettingsDeviceContractsActivity"/>
-        <activity android:name=".activity.SettingsLoadWebviewActivity"/>
         <activity android:name=".activity.SettingsBindDeviceActivity"/>
         <activity android:name=".activity.SettingsDeviceContractsNickNameActivity"/>
         <activity android:name=".activity.SettingsContractsNickNameEditActivity"/>
@@ -55,6 +56,7 @@
         <activity android:name=".activity.SettingsScreenActivity"/>
         <activity android:name=".activity.SettingsScreenIntoStandbyActivity"/>
         <activity android:name=".activity.SettingsScreenStyleActivity"/>
+        <activity android:name=".activity.SettingsLoadWebviewActivity"/>
 
         <service
             android:name="cn.richinfo.mt.service.MTService"

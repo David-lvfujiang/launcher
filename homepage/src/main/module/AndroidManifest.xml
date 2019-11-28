@@ -17,7 +17,18 @@
         android:supportsRtl="true"
         android:hardwareAccelerated="true"
         android:theme="@style/NoTitleFullscreen">
+
         <activity android:name=".activity.HomePageActivity"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.MONKEY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".activity.StartWifiConfigureActivity"
             android:theme="@style/LauncherTheme1"
             android:clearTaskOnLaunch="true"
             android:enabled="true"
@@ -25,16 +36,15 @@
             android:resizeableActivity="true"
             android:resumeWhilePausing="true"
             android:screenOrientation="nosensor"
-            android:stateNotNeeded="true"
-            >
+            android:stateNotNeeded="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.HOME" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.MONKEY" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".activity.HomepageWifiInputPswActivity"/>
+        <activity android:name=".activity.HomepageWifiConnectedInfoActivity"/>
         <receiver
             android:name=".receiver.ScreenOffAdminReceiver"
             android:label="@string/app_name"

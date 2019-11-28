@@ -82,8 +82,6 @@ public class InitService implements IVoiceInitProvider {
 
     }
 
-
-
     /**
      * 拷贝assets下的文件的方法
      */

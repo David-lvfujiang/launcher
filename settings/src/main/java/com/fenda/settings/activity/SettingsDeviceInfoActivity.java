@@ -13,9 +13,9 @@ import com.fenda.common.base.BaseMvpActivity;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.AppUtils;
 import com.fenda.common.util.LogUtil;
+import com.fenda.common.util.SettingsWifiUtil;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.settings.R;
-import com.fenda.settings.utils.SettingsWifiUtil;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

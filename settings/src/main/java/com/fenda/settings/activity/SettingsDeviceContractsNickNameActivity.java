@@ -20,6 +20,7 @@ import com.fenda.common.util.GsonUtil;
 import com.fenda.common.util.ImageUtil;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.SPUtils;
+import com.fenda.common.util.SettingsWifiUtil;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.common.view.CircleImageView;
 import com.fenda.protocol.tcp.TCPConfig;
@@ -32,7 +33,6 @@ import com.fenda.settings.model.request.SettingDeleteLinkmanRequest;
 import com.fenda.settings.model.response.SettingsQueryDeviceInfoResponse;
 import com.fenda.settings.model.response.SettingsRegisterDeviceResponse;
 import com.fenda.settings.presenter.SettingsPresenter;
-import com.fenda.settings.utils.SettingsWifiUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;

@@ -1,5 +1,7 @@
-package com.fenda.settings.activity;
+package com.fenda.homepage.activity;
 
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -31,27 +33,47 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.base.BaseMvpActivity;
+import com.fenda.common.base.BaseResponse;
 import com.fenda.common.bean.SettingsWifiBean;
+import com.fenda.common.bean.UserInfoBean;
+import com.fenda.common.constant.Constant;
+import com.fenda.common.db.ContentProviderManager;
+import com.fenda.common.provider.ISettingsProvider;
+import com.fenda.common.provider.IVoiceInitProvider;
+import com.fenda.common.provider.IVoiceRequestProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.SettingsCheckWifiLoginTask;
 import com.fenda.common.util.SettingsWifiUtil;
 import com.fenda.common.util.ToastUtils;
-import com.fenda.settings.R;
+import com.fenda.homepage.R;
+import com.fenda.homepage.contract.MainContract;
+import com.fenda.homepage.model.MainModel;
+import com.fenda.homepage.presenter.MainPresenter;
+import com.fenda.protocol.tcp.bean.BaseTcpMessage;
+import com.fenda.protocol.tcp.bean.EventMessage;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.app.PendingIntent.getActivity;
 
 /**
  * Created by  Android Studio.
  * Author :   aviva.jiangjing
- * Date:   2019/8/30 15:33
+ * Date:   2019/11/18 13:52
  */
-@Route(path = RouterPath.SETTINGS.SettingsWifiActivity)
-public class SettingsWifiActivity extends BaseMvpActivity{
-    private static final String TAG = "SettingsWifiActivity";
+@Route(path = RouterPath.HomePage.HOMEPAGE_WIFI)
+public class StartWifiConfigureActivity extends BaseMvpActivity<MainPresenter, MainModel> implements MainContract.View, View.OnClickListener {
+    private static final String TAG = "StartWifiConfigureActivity";
+
+    public static final int DISABLE_EXPAND = 0x00010000;
+    public static final int DISABLE_NONE = 0x00000000;
 
     private Switch wifiSwitch;
     private RecyclerView rvWifiList;
@@ -76,33 +98,64 @@ public class SettingsWifiActivity extends BaseMvpActivity{
     public int level;
     private String mPswSureSsid;
 
+    @Autowired
+    IVoiceInitProvider initProvider;
+    @Autowired
+    IVoiceRequestProvider initVoiceProvider;
+
+    private ContentProviderManager manager;
+
+    ProgressDialog progressDialog;
 
     @Override
     protected void initPresenter() {
-
+        mPresenter.setVM(this, mModel);
     }
 
     @Override
     public int onBindLayout() {
-        return R.layout.settings_wifi_layout;
+        return R.layout.start_wifi_configure_layout;
+    }
+
+    @Override
+    public boolean initStatusBar() {
+        final View decorView = getWindow().getDecorView();
+        final int uiOption = View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_IMMERSIVE;
+
+        decorView.setSystemUiVisibility(uiOption);
+
+        decorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+            @Override
+            public void  onSystemUiVisibilityChange(int visibility) {
+                if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+                    decorView.setSystemUiVisibility(uiOption);
+                }
+            }
+        });
+        setStatusBarDisable(DISABLE_EXPAND);
+        return true;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void initView() {
-        ivImageView = findViewById(R.id.wifi_circle_progress);
-        tvScanWifiTv = findViewById(R.id.scan_wifi_tv);
-        ivScanWifiGif = findViewById(R.id.scan_wifi_iv);
-        rvWifiList= findViewById(R.id.set_wifi_listview);
-        wifiSwitch = findViewById(R.id.wifi_switch);
-        tvBack = findViewById(R.id.set_wifi_back_iv);
+        ivImageView = findViewById(R.id.start_wifi_circle_progress);
+        tvScanWifiTv = findViewById(R.id.start_scan_wifi_tv);
+        ivScanWifiGif = findViewById(R.id.start_scan_wifi_iv);
+        rvWifiList= findViewById(R.id.start_set_wifi_listview);
+        wifiSwitch = findViewById(R.id.start_wifi_switch);
+        tvBack = findViewById(R.id.start_set_wifi_back_iv);
 
         rvWifiList.setLayoutManager(new LinearLayoutManager(this));
         rvWifiList.setItemAnimator(new DefaultItemAnimator());
         mScanWifiListBean = new ArrayList<>();
         mMyWifiAdapter = new MyWifiAdapter(getLayoutInflater(), mScanWifiListBean);
         rvWifiList.setAdapter(mMyWifiAdapter);
-        mSettingsWifiUtil = new SettingsWifiUtil(SettingsWifiActivity.this);
+        mSettingsWifiUtil = new SettingsWifiUtil(StartWifiConfigureActivity.this);
         mSettingsWifiBean = new SettingsWifiBean();
 
         mWifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
@@ -123,15 +176,42 @@ public class SettingsWifiActivity extends BaseMvpActivity{
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(mWifiReceiver, filter);
         isNetWodrkConnect();
+//        mWaitDialog = new WaitDialog(StartWifiConfigureActivity.this.getApplicationContext());
+//        progressDialog.setTitle("我是个等待的Dialog");
+//        mWindowManager = (WindowManager) getApplication().getSystemService(Context.WINDOW_SERVICE);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("正在初始化中，请稍等...");
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
     }
 
     @Override
     public void initData() {
+//        if(AppUtils.isFirstStart(getApplicationContext())){
+//            tvBack.setVisibility(View.VISIBLE);
+//            tvBack.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    Intent hintent = new Intent();
+//                    hintent.setAction("android.intent.action.MAIN");
+//                    hintent.addCategory("android.intent.category.HOME");
+//                    hintent.putExtra("HOME_PAGE",true);
+//                    startActivity(hintent);
+//                    finish();
+//                }
+//            });
+//        } else {
+//            AppUtils.saveFirstStart(getApplicationContext(), true);
+//            tvBack.setVisibility(View.GONE);
+//        }
+
+        if (initProvider != null) {
+            initProvider.init(this);
+            initProvider.initVoice();
+        }
+
         Intent mIntent = getIntent();
         mPswSureSsid = mIntent.getStringExtra("SURE_CONNECT_SSID");
-//        if(mPswSureSsid != null){
-//            mSettingsWifiBean.setStatus(3);
-//        }
 
         wifiSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -153,7 +233,7 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                     mHandler.post(runnable);
                 } else{
                     LogUtil.d(TAG, "wifi switch is off ");
-                    mSettingsWifiUtil.closeWifi(SettingsWifiActivity.this);
+                    mSettingsWifiUtil.closeWifi(StartWifiConfigureActivity.this);
                     wifiSwitch.setVisibility(View.VISIBLE);
                     ivImageView.setVisibility(View.GONE);
 
@@ -166,6 +246,7 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                     mScanWifiListBean.clear();
                     rvWifiList.setAdapter(null);
                     mHandler.removeCallbacks(runnable);
+
                 }
             }
         });
@@ -221,7 +302,7 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                 case OPEN_WIFI :
                     break;
                 case CLOSE_WIFI:
-                    mSettingsWifiUtil.closeWifi(SettingsWifiActivity.this);
+                    mSettingsWifiUtil.closeWifi(StartWifiConfigureActivity.this);
                 default:
                     break;
             }
@@ -229,20 +310,75 @@ public class SettingsWifiActivity extends BaseMvpActivity{
     };
 
     @Override
-    public void initListener() {
-        tvBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent mIntent = new Intent(SettingsWifiActivity.this, SettingsActivity.class);
-                startActivity(mIntent);
-                finish();
-            }
-        });
-    }
-    @Override
     public void showErrorTip(String msg) {
 
     }
+
+    @SuppressLint("LongLogTag")
+    @Override
+    public void onEvent(EventMessage<BaseTcpMessage> event) {
+        if (event.getCode() == Constant.Common.INIT_VOICE_SUCCESS) {
+            // @todo  勿删 语音初始化成功后会回调这里,在语音成功之前调用会导致应用崩溃
+            Log.e(TAG, "===== INIT_VOICE_SUCCESS =====");
+
+//            if (initVoiceProvider == null) {
+//                initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
+//            }
+//            if (initVoiceProvider != null) {
+//                initVoiceProvider.openVoice();
+//            }
+//            if (manager == null) {
+//                manager = ContentProviderManager.getInstance(this, Uri.parse(ContentProviderManager.BASE_URI + "/user"));
+//                getContentResolver().registerContentObserver(Uri.parse(ContentProviderManager.BASE_URI), true, new MyContentObserver(new Handler(), manager));
+//
+//            }
+//            //避免重复调用
+//            if (initVoiceProvider != null && !BaseApplication.getBaseInstance().isVoiceInit()) {
+//                BaseApplication.getBaseInstance().setVoiceInit(true);
+//                if (!BaseApplication.getBaseInstance().isRequestWeather()) {
+//                    initVoiceProvider.requestWeather();
+//                }
+//                if (!BaseApplication.getBaseInstance().isRequestNews()) {
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            //暂停5S执行，不然无法获取新闻
+//                            try {
+//                                Thread.sleep(5000);
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
+//
+//                            initVoiceProvider.requestNews(10);
+//
+//                        }
+//                    }).start();
+//                }
+//            }
+
+            ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
+            if (settingService != null) {
+                LogUtil.d(TAG, "init device status");
+                settingService.deviceStatus(getApplicationContext());
+            }
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+
+    }
+
+    @Override
+    public void getFamilyContactsSuccess(BaseResponse<List<UserInfoBean>> response) {
+
+    }
+
+    @Override
+    public void getFamilyContactsFailure(BaseResponse<List<UserInfoBean>> response) {
+
+    }
+
     private class MyWifiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         LayoutInflater mLayoutInflater;
         List<SettingsWifiBean> mWifiBeanList;
@@ -254,7 +390,7 @@ public class SettingsWifiActivity extends BaseMvpActivity{
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = mLayoutInflater.inflate(R.layout.settings_wifi_listitem_layout, parent,false);
+            View view = mLayoutInflater.inflate(R.layout.homepage_wifi_listitem_layout, parent,false);
             return new ViewHolder(view);
         }
 
@@ -294,14 +430,14 @@ public class SettingsWifiActivity extends BaseMvpActivity{
             } else if (status == 1){
                 LogUtil.d(TAG, "wifi 连接上了 connect sucess ");
                 mHolder.tvStatus.setVisibility(View.VISIBLE);
-                mHolder.tvStatus.setText(getString(R.string.settings_wifi_connected_status));
+                mHolder.tvStatus.setText("已连接");
                 mHolder.connectWifiIcon.setVisibility(View.VISIBLE);
                 mHolder.connectWifiLoading.setVisibility(View.GONE);
                 mHolder.connectWifiLoading.setImageResource(R.drawable.settings_wifi_connecting_gif);
                 mAnimationDrawable = (AnimationDrawable) mHolder.connectWifiLoading.getDrawable();
                 mAnimationDrawable.stop();
             } else if(status == 2) {
-                mHolder.tvStatus.setText(getString(R.string.settings_wifi_psw_error));
+                mHolder.tvStatus.setText("密码错误，请重试！");
                 mHolder.tvStatus.setVisibility(View.VISIBLE);
                 mHolder.connectWifiIcon.setVisibility(View.GONE);
                 mHolder.connectWifiLoading.setVisibility(View.GONE);
@@ -339,7 +475,7 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                     LogUtil.d(TAG, "clicked wifi ssid = " + mListItemClickedSsid);
 
                     if(mListItemClickedSsid.equals(mConnectedSsid)) {
-                        Intent connectedIntent = new Intent(SettingsWifiActivity.this, SettingsWifiConnectedInfoActivity.class);
+                        Intent connectedIntent = new Intent(StartWifiConfigureActivity.this, HomepageWifiConnectedInfoActivity.class);
                         connectedIntent.putExtra("CONNECTED_MESSAGE", mListItemClickedSsid);
                         startActivity(connectedIntent);
                         finish();
@@ -354,7 +490,7 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                         } else {
                             if(scanResult.capabilities.contains("WEP") || scanResult.capabilities.contains("PSK") || scanResult.capabilities.contains("EAP")){
                                 //密码连接
-                                Intent connectIntent = new Intent(SettingsWifiActivity.this, SettingsWifiInputPswActivity.class);
+                                Intent connectIntent = new Intent(StartWifiConfigureActivity.this, HomepageWifiInputPswActivity.class);
                                 connectIntent.putExtra("MESSAGE", mListItemClickedSsid);
                                 startActivity(connectIntent);
                                 finish();
@@ -383,7 +519,7 @@ public class SettingsWifiActivity extends BaseMvpActivity{
 
 //                                    Toast.makeText(SettingsWifiActivity.this, "连接成功！",Toast.LENGTH_SHORT).show();
                                 } else {
-                                    Toast.makeText(SettingsWifiActivity.this, "连接失败！", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(StartWifiConfigureActivity.this, "连接失败！", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }
@@ -406,17 +542,18 @@ public class SettingsWifiActivity extends BaseMvpActivity{
 
             public ViewHolder(View itemView) {
                 super(itemView);
-                wifiSsid= itemView.findViewById(R.id.wifi_ssid);
-                wifiLevel= itemView.findViewById(R.id.wifi_level);
-                tvStatus = itemView.findViewById(R.id.tv_status);
-                connectWifiIcon = itemView.findViewById(R.id.connected_wifi_status_icon);
-                connectWifiLoading = itemView.findViewById(R.id.wifi_list_item_connecting);
+                wifiSsid= itemView.findViewById(R.id.start_wifi_ssid);
+                wifiLevel= itemView.findViewById(R.id.start_wifi_level);
+                tvStatus = itemView.findViewById(R.id.start_tv_status);
+                connectWifiIcon = itemView.findViewById(R.id.start_connected_wifi_status_icon);
+                connectWifiLoading = itemView.findViewById(R.id.start_wifi_list_item_connecting);
             }
         }
     }
 
     //监听wifi状态变化
     private BroadcastReceiver mWifiReceiver = new BroadcastReceiver () {
+        @SuppressLint("LongLogTag")
         @Override
         public void onReceive(Context context, Intent intent) {
             WifiInfo mWifiInfo;
@@ -478,7 +615,7 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                     String extra = info.getExtraInfo();
                     Log.i(TAG, "extra = " + extra);
                     extra = extra.substring(1, extra.length() - 1);
-                    mSettingsWifiUtil.startScan(SettingsWifiActivity.this);
+                    mSettingsWifiUtil.startScan(StartWifiConfigureActivity.this);
                     mScanWifiListBean.clear();
                     mScanWifiListBean.addAll(mSettingsWifiUtil.getWifiList(mBroadcastStatus, extra));
                     mMyWifiAdapter.notifyDataSetChanged();
@@ -514,8 +651,6 @@ public class SettingsWifiActivity extends BaseMvpActivity{
         LogUtil.d(TAG, "activeInfo = " + activeInfo);
 
         if (activeInfo == null) {//|| !activeInfo. || !activeInfo.isAvailable) {
-            //  tv.text = "网络不可用—NetworkCallback"
-            //noNetWorkSnackBar();
             ToastUtils.show("网络未连接，请先连接网络！");
         }
 
@@ -538,7 +673,7 @@ public class SettingsWifiActivity extends BaseMvpActivity{
                 public void onLost(Network network) {
                     super.onLost(network);
                     LogUtil.d(TAG, "onLost: " + network);
-                    // ToastUtils.show(getString(R.string.network_not_connect));
+//                     ToastUtils.show(getString(R.string.network_not_connect));
                 }
 
                 @Override
@@ -563,29 +698,80 @@ public class SettingsWifiActivity extends BaseMvpActivity{
     }
 
 
+    @SuppressLint("LongLogTag")
     @Override
     protected void onDestroy() {
+        Log.e(TAG, "ondestory");
         unregisterReceiver(mWifiReceiver);
         mHandler.removeCallbacksAndMessages(null);
+        progressDialog.dismiss();
         super.onDestroy();
     }
 
+    @SuppressLint("LongLogTag")
+    @Override
+    protected void onStop() {
+        Log.e(TAG, "onStop");
+        setStatusBarDisable(DISABLE_NONE);
+        super.onStop();
+    }
+
+    private void setStatusBarDisable(int disableStatus) {
+        //调用statusBar的disable方法
+        @SuppressLint("WrongConstant") Object service = getSystemService("statusbar");
+        try {
+            Class<?> statusBarManager = Class.forName
+                    ("android.app.StatusBarManager");
+            Method expand = statusBarManager.getMethod("disable", int.class);
+            expand.invoke(service, disableStatus);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressLint("LongLogTag")
+    @Override
+    protected void onResume() {
+        Log.e(TAG, "onResume");
+        super.onResume();
+    }
+
+    @SuppressLint("LongLogTag")
+    @Override
+    protected void onRestart() {
+        Log.e(TAG, "onRestart");
+        super.onRestart();
+    }
+
+    @SuppressLint("LongLogTag")
+    @Override
+    protected void onPause() {
+        Log.e(TAG, "onPause");
+        super.onPause();
+    }
 
     //** wifi 认证 检测 **/
     private void portalWifi() {
         SettingsCheckWifiLoginTask.checkWifi(new SettingsCheckWifiLoginTask.ICheckWifiCallBack() {
+            @SuppressLint("LongLogTag")
             @Override
             public void portalNetWork(boolean isLogin) {
                 //不需要wifi认证
                 if(!isLogin){
                     LogUtil.d(TAG, "不需要wifi门户验证");
+                    if(isFinishing()){
+                        Log.e(TAG, "StartWifiConfigureActivity is finish");
+                    } else {
+                        progressDialog.show();
+                    }
+
                 }else {
                     LogUtil.d(TAG, "需要wifi门户验证");
                     ToastUtils.show("请先进行网络认证！");
                     String apksUrl = "http://i.eastmoney.com/2188113638420790";
-                    Intent aboutIntent = new Intent(SettingsWifiActivity.this, SettingsLoadWebviewActivity.class);
-                    aboutIntent.putExtra("APK_URL", apksUrl);
-                    startActivity(aboutIntent);
+//                    Intent aboutIntent = new Intent(StartWifiConfigureActivity.this, SettingsLoadWebviewActivity.class);
+//                    aboutIntent.putExtra("APK_URL", apksUrl);
+//                    startActivity(aboutIntent);
                 }
             }
         });

@@ -20,6 +20,7 @@ import com.fenda.common.db.ContentProviderManager;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.SPUtils;
+import com.fenda.common.util.SettingsWifiUtil;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.settings.R;
 import com.fenda.settings.contract.SettingsContract;
@@ -27,7 +28,6 @@ import com.fenda.settings.model.SettingsModel;
 import com.fenda.settings.model.response.SettingsQueryDeviceInfoResponse;
 import com.fenda.settings.model.response.SettingsRegisterDeviceResponse;
 import com.fenda.settings.presenter.SettingsPresenter;
-import com.fenda.settings.utils.SettingsWifiUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;

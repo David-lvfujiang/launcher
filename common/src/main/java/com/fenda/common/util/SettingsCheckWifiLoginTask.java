@@ -1,4 +1,4 @@
-package com.fenda.settings.utils;
+package com.fenda.common.util;
 
 import android.os.AsyncTask;
 
@@ -15,7 +15,7 @@ public class SettingsCheckWifiLoginTask extends AsyncTask<Integer,Integer,Boolea
     private ICheckWifiCallBack mCallBack;
 
 
-    public SettingsCheckWifiLoginTask (ICheckWifiCallBack mCallBack){
+    public SettingsCheckWifiLoginTask(ICheckWifiCallBack mCallBack){
         super();
         this.mCallBack=mCallBack;
     }

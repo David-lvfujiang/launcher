@@ -91,9 +91,6 @@ public interface RouterPath {
         String SettingsContractsNickNameEditActivity = "/settings/SettingsContractsNickNameEditActivity";
         String SettingsDeviceAddContractsQRActivity = "/settings/SettingsDeviceAddContractsQRActivity";
         String SettingsDeviceContractsNickNameActivity = "/settings/SettingsDeviceContractsNickNameActivity";
-
-        String SettingsWifiTestActivity = "/settings/SettingsWifiTestActivity";
-
     }
 
     interface VOICE {
@@ -111,6 +108,7 @@ public interface RouterPath {
 
     interface HomePage {
         String HOMEPAGE_MAIN = "/homepage/HomePageActivity";
+        String HOMEPAGE_WIFI = "/homepage/StartWifiConfigureActivity";
     }
 
     interface Weather {

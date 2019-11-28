@@ -1,4 +1,4 @@
-package com.fenda.settings.activity;
+package com.fenda.homepage.activity;
 
 import android.content.Intent;
 import android.net.wifi.WifiConfiguration;
@@ -11,12 +11,10 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.common.base.BaseMvpActivity;
-import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.SettingsWifiUtil;
-import com.fenda.settings.R;
+import com.fenda.homepage.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,10 +24,9 @@ import java.util.Map;
 /**
  * Created by  Android Studio.
  * Author :   aviva.jiangjing
- * Date:   2019/8/30 18:24
+ * Date:   2019/11/19 17:53
  */
-@Route(path = RouterPath.SETTINGS.SettingsWifiConnectedInfoActivity)
-public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
+public class HomepageWifiConnectedInfoActivity extends BaseMvpActivity {
     private static final String TAG = "SettingsWifiConnectedInfoActivity";
 
     private ListView lvConnectedWifiConfig;
@@ -51,7 +48,7 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
 
     @Override
     public int onBindLayout() {
-        return R.layout.settings_wifi_connected_info_layout;
+        return R.layout.homepage_wifi_connected_info_layout;
     }
 
     @Override
@@ -59,9 +56,9 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
         String mWifiSpeedUnit;
         int mWifiSpeed;
 
-        lvConnectedWifiConfig = findViewById(R.id.wifi_config_listview);
-        tvWifiName = findViewById(R.id.wifi_config_name_tv);
-        ivBack = findViewById(R.id.wifi_config_back_iv);
+        lvConnectedWifiConfig = findViewById(R.id.homepage_wifi_config_listview);
+        tvWifiName = findViewById(R.id.homepage_wifi_config_name_tv);
+        ivBack = findViewById(R.id.homepage_wifi_config_back_iv);
         mSettingsWifiUtil = new SettingsWifiUtil(getApplicationContext());
 
         mWifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
@@ -106,8 +103,7 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
         mConnectedSsid = intent.getStringExtra("CONNECTED_MESSAGE");
         tvWifiName.setText(mConnectedSsid);
 
-        String[] listName = new String[] {getString(R.string.settings_wifi_connected_cancel_save), getString(R.string.settings_wifi_connected_IP),
-                getString(R.string.settings_wifi_connected_safe), getString(R.string.settings_wifi_connected_signal)};
+        String[] listName = new String[] {"忽略此网络", "IP地址", "安全性", "连接速度"};
         String[] list1;
 
 
@@ -127,8 +123,8 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
             mListitem.add(map);
         }
 
-        mSimpleAdapter = new SimpleAdapter(this, mListitem, R.layout.settings_wifi_connected_info_items_layout,
-                new String[]{"name", "state"}, new int[]{R.id.connected_wifi_config_listtv, R.id.connected_wifi_config_status});
+        mSimpleAdapter = new SimpleAdapter(this, mListitem, R.layout.homepage_wifi_connected_info_items_layout,
+                new String[]{"name", "state"}, new int[]{R.id.homepage_connected_wifi_config_listtv, R.id.homepage_connected_wifi_config_status});
 
         lvConnectedWifiConfig.setAdapter(mSimpleAdapter);
     }
@@ -138,7 +134,7 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(SettingsWifiConnectedInfoActivity.this, SettingsWifiActivity.class));
+                startActivity(new Intent(HomepageWifiConnectedInfoActivity.this, StartWifiConfigureActivity.class));
                 finish();
             }
         });
@@ -159,7 +155,7 @@ public class SettingsWifiConnectedInfoActivity extends BaseMvpActivity {
                 if(("忽略此网络").equals(setClickedListName)) {
                     mSettingsWifiUtil.removeWifi(netId1);
                     mWifiManager.saveConfiguration();
-                    Intent connectIntent = new Intent(SettingsWifiConnectedInfoActivity.this, SettingsWifiActivity.class);
+                    Intent connectIntent = new Intent(HomepageWifiConnectedInfoActivity.this, StartWifiConfigureActivity.class);
                     startActivity(connectIntent);
                     finish();
                 }

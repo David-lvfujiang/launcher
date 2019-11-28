@@ -26,14 +26,21 @@
             android:resumeWhilePausing="true"
             android:screenOrientation="nosensor"
             android:stateNotNeeded="true"
-            android:theme="@style/LauncherTheme1"
-
-            >
-            <intent-filter android:priority = "1000" >
+            android:theme="@style/LauncherTheme1">
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".activity.StartWifiConfigureActivity">
+
+<!--            <intent-filter android:priority = "1000" >-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
+
         <activity
             android:name=".activity.SubmenuActivity"
             android:launchMode="singleTask"/>

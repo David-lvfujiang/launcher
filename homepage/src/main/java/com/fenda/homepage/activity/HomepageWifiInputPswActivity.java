@@ -1,4 +1,4 @@
-package com.fenda.settings.activity;
+package com.fenda.homepage.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,21 +9,18 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.common.base.BaseMvpActivity;
-import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.SettingsWifiUtil;
-import com.fenda.settings.R;
+import com.fenda.homepage.R;
 
 /**
  * Created by  Android Studio.
  * Author :   aviva.jiangjing
- * Date:   2019/8/30 18:24
+ * Date:   2019/11/19 18:02
  */
-@Route(path = RouterPath.SETTINGS.SettingsWifiInputPswActivity)
-public class SettingsWifiInputPswActivity extends BaseMvpActivity {
-    private static final String TAG = "SettingsWifiInputPswActivity";
+public class HomepageWifiInputPswActivity extends BaseMvpActivity {
+    private static final String TAG = "HomepageWifiInputPswActivity";
 
     private TextView tvCancelbtn;
     private TextView tvSurebtn;
@@ -41,7 +38,7 @@ public class SettingsWifiInputPswActivity extends BaseMvpActivity {
 
     @Override
     public int onBindLayout() {
-        return R.layout.settings_wifi_input_psw_layout;
+        return R.layout.homepage_wifi_input_psw_layout;
     }
 
     @Override
@@ -53,7 +50,7 @@ public class SettingsWifiInputPswActivity extends BaseMvpActivity {
         tvConnectName = findViewById(R.id.connect_wifi_name);
         etPsw = findViewById(R.id.wifi_psw);
 
-        mSettingsWifiUtil = new SettingsWifiUtil(SettingsWifiInputPswActivity.this);
+        mSettingsWifiUtil = new SettingsWifiUtil(HomepageWifiInputPswActivity.this);
         etPsw.addTextChangedListener(textWatcher);
 
         Intent mIntent = getIntent();
@@ -71,7 +68,7 @@ public class SettingsWifiInputPswActivity extends BaseMvpActivity {
         tvCancelbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(SettingsWifiInputPswActivity.this, SettingsWifiActivity.class));
+                startActivity(new Intent(HomepageWifiInputPswActivity.this, StartWifiConfigureActivity.class));
                 finish();
             }
         });
@@ -110,7 +107,7 @@ public class SettingsWifiInputPswActivity extends BaseMvpActivity {
                         editor.commit();
                         mSettingsWifiUtil.addNetwork(mSettingsWifiUtil.createWifiInfo(mConnectSsid, mInputWifiPsw, 3));
 
-                        Intent mIntent = new Intent(SettingsWifiInputPswActivity.this, SettingsWifiActivity.class);
+                        Intent mIntent = new Intent(HomepageWifiInputPswActivity.this, StartWifiConfigureActivity.class);
                         mIntent.putExtra("SURE_CONNECT_SSID", mConnectSsid);
                         startActivity(mIntent);
                         finish();
@@ -122,4 +119,5 @@ public class SettingsWifiInputPswActivity extends BaseMvpActivity {
             }
         }
     };
+
 }

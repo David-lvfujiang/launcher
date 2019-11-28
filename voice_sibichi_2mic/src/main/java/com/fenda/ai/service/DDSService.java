@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.aispeech.ailog.AILog;
@@ -76,7 +77,6 @@ import io.reactivex.functions.Consumer;
 @Route(path = RouterPath.VOICE.DDSService)
 public class DDSService extends Service implements DuiUpdateObserver.UpdateCallback, DuiMessageObserver.MessageCallback {
     public static final String TAG = "DDSService";
-
 
     /**
      * 授权次数,用来记录自动授权
@@ -360,8 +360,6 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 return jsonObject;
             }
         });
-
-
     }
 
 
@@ -490,7 +488,9 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 mNativeObserver = new DuiNativeApiObserver();
                 mNativeObserver.regist();
                 mMessageObserver.regist(this);
-                mUpdateObserver.regist(this);
+
+//                mUpdateObserver.regist(this);
+
                 mCommandObserver.regist();
                 isInit = true;
             }
@@ -515,9 +515,9 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
         if (mMessageObserver != null) {
             mMessageObserver.unregist();
         }
-        if (mUpdateObserver != null) {
-            mUpdateObserver.unregist();
-        }
+//        if (mUpdateObserver != null) {
+//            mUpdateObserver.unregist();
+//        }
         if (mCommandObserver != null) {
             mCommandObserver.unregist();
         }

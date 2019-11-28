@@ -178,7 +178,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 mICallProvider.initSdk();
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                isNetWodrkConnect();
+//                isNetWodrkConnect();
             }
         }
     };
@@ -398,14 +398,21 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void initData() {
-        if (initProvider != null) {
-            initProvider.init(this);
-            initProvider.initVoice();
-        }
+//        if (initProvider != null) {
+//            initProvider.init(this);
+//            initProvider.initVoice();
+//        }
+
 
         if (mIWeatherProvider == null){
             mIWeatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
         }
+
+//        ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
+//        if (settingService != null) {
+//            settingService.deviceStatus(this);
+//        }
+
 
         LogUtil.e("进入了Oncreate的initData");
 
@@ -491,6 +498,11 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             SPUtils.put(getApplicationContext(), Constant.HomePage.DCA_CODEVERIFIER, codeVerifier);
             SPUtils.put(getApplicationContext(), Constant.HomePage.DCA_CLIENDID, cliendId);
             SPUtils.put(getApplicationContext(), Constant.HomePage.DCA_USERID, userId);
+
+            IVoiceInitProvider ddsService = (IVoiceInitProvider) ARouter.getInstance().build(RouterPath.VOICE.INIT_PROVIDER).navigation();
+            if (ddsService != null) {
+                ddsService.initAuth();
+            }
         }
         //普通成员退出家庭通知
         else if (message.getCode() == TCPConfig.MessageType.USER_EXIT_FAMILY) {
@@ -558,51 +570,53 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             ARouter.getInstance().build(RouterPath.SETTINGS.SettingsContractsNickNameEditActivity).withString("newAddUserName", mNewUserName).navigation();
             LogUtil.d(TAG, "新人加入家庭通知" + mNewUserName);
 
-        } else if (message.getCode() == Constant.Common.INIT_VOICE_SUCCESS) {
-            // @todo  勿删 语音初始化成功后会回调这里,在语音成功之前调用会导致应用崩溃
-            LogUtil.e("===== INIT_VOICE_SUCCESS =====");
-
-            IVoiceInitProvider ddsService = (IVoiceInitProvider) ARouter.getInstance().build(RouterPath.VOICE.INIT_PROVIDER).navigation();
-            if (ddsService != null) {
-                ddsService.initAuth();
-            }
-
-
-            if (initVoiceProvider == null) {
-                initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
-            }
-            if (initVoiceProvider != null) {
-                initVoiceProvider.openVoice();
-            }
-            if (manager == null) {
-                manager = ContentProviderManager.getInstance(this, Uri.parse(ContentProviderManager.BASE_URI + "/user"));
-                getContentResolver().registerContentObserver(Uri.parse(ContentProviderManager.BASE_URI), true, new MyContentObserver(new Handler(), manager));
-
-            }
-            //避免重复调用
-            if (initVoiceProvider != null && !BaseApplication.getBaseInstance().isVoiceInit()) {
-                BaseApplication.getBaseInstance().setVoiceInit(true);
-                if (!BaseApplication.getBaseInstance().isRequestWeather()) {
-                    initVoiceProvider.requestWeather();
-                }
-                if (!BaseApplication.getBaseInstance().isRequestNews()) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //暂停5S执行，不然无法获取新闻
-                            try {
-                                Thread.sleep(5000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-
-                            initVoiceProvider.requestNews(10);
-
-                        }
-                    }).start();
-                }
-            }
-        } else if (message.getCode() == Constant.Common.GO_HOME) {
+        }
+//        else if (message.getCode() == Constant.Common.INIT_VOICE_SUCCESS) {
+//            // @todo  勿删 语音初始化成功后会回调这里,在语音成功之前调用会导致应用崩溃
+//            LogUtil.e("===== INIT_VOICE_SUCCESS =====");
+//
+//            IVoiceInitProvider ddsService = (IVoiceInitProvider) ARouter.getInstance().build(RouterPath.VOICE.INIT_PROVIDER).navigation();
+//            if (ddsService != null) {
+//                ddsService.initAuth();
+//            }
+//
+//
+//            if (initVoiceProvider == null) {
+//                initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
+//            }
+//            if (initVoiceProvider != null) {
+//                initVoiceProvider.openVoice();
+//            }
+//            if (manager == null) {
+//                manager = ContentProviderManager.getInstance(this, Uri.parse(ContentProviderManager.BASE_URI + "/user"));
+//                getContentResolver().registerContentObserver(Uri.parse(ContentProviderManager.BASE_URI), true, new MyContentObserver(new Handler(), manager));
+//
+//            }
+//            //避免重复调用
+//            if (initVoiceProvider != null && !BaseApplication.getBaseInstance().isVoiceInit()) {
+//                BaseApplication.getBaseInstance().setVoiceInit(true);
+//                if (!BaseApplication.getBaseInstance().isRequestWeather()) {
+//                    initVoiceProvider.requestWeather();
+//                }
+//                if (!BaseApplication.getBaseInstance().isRequestNews()) {
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            //暂停5S执行，不然无法获取新闻
+//                            try {
+//                                Thread.sleep(5000);
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
+//
+//                            initVoiceProvider.requestNews(10);
+//
+//                        }
+//                    }).start();
+//                }
+//            }
+//        }
+        else if (message.getCode() == Constant.Common.GO_HOME) {
             //回到首页时 把列表页面回到默认位置
             finishAllActivity();
             returnDefault();
@@ -764,9 +778,14 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
         }
         LogUtil.e("进入了onResume");
+        if (initVoiceProvider == null) {
+            initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
+        }
+
         if (initVoiceProvider != null && !BaseApplication.getBaseInstance().isRequestWeather()) {
             initVoiceProvider.openVoice();
         }
+
         startCycleRollRunnable();
 //        mCyclicRollHandler.postDelayed(cycleRollRunabler, HomeUtil.PAGE_SHOW_TIME);
     }
@@ -785,7 +804,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         }
 
         LogUtil.e("Homepage onStop方法执行");
-
     }
 
     public void stopCycleRollRunnable () {
@@ -795,8 +813,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             executorService = null;
         }
     }
-
-
+    
         @Override
     public void onClick (View v){
         int resId = v.getId();
@@ -999,14 +1016,12 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
                     LogUtil.e("applyId 栈顶activityName = ");
 
-                    ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation();
-
-
+                    ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity)
+                            .with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle())
+                            .navigation();
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.CALCULATOR)) {
-                    //                    ToastUtils.show("计算器");
                     ARouter.getInstance().build(RouterPath.Calculator.CALCULATOR_ACTIVITY).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation();
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.WEATHER)) {
-                    //                    ToastUtils.show("天气");
                     String saveWeahterValue = (String) SPUtils.get(getApplicationContext(), Constant.Weather.SP_NOW_WEATHER, "");
                     if (saveWeahterValue != null && saveWeahterValue.length() > 1 && mIWeatherProvider != null) {
                         mIWeatherProvider.weatherFromVoiceControl(saveWeahterValue);
@@ -1017,101 +1032,78 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                         initVoiceProvider.nowWeather();
                     }
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.CALENDAR)) {
-                    //                    ToastUtils.show("日历");
                     ARouter.getInstance().build(RouterPath.Calendar.Perpetual_CALENDAR_ACTIVITY).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation();
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.PHOTO)) {
-                    //                    ToastUtils.show("相册");
                     ARouter.getInstance().build(RouterPath.Gallery.GALLERY_CATOGORY).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation();
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.TIME)) {
                     ToastUtils.show("闹钟");
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.FM)) {
-                    //                    ToastUtils.show("收音机");
                     intent.putExtra("applyId", applyId);
                     startActivity(intent);
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.CAMERA)) {
-                    //                    ToastUtils.show("相机");
                     PackageManager packageManager = getPackageManager();
                     Intent packageIntent = packageManager.getLaunchIntentForPackage("com.android.camera2");
                     startActivity(packageIntent);
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.PLAY)) {
-                    //                    ToastUtils.show("播放器");
                     intent.putExtra("applyId", applyId);
                     startActivity(intent);
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.QQ_MUSIC)) {
-                    //                    ToastUtils.show("QQ音乐");
                     if (initVoiceProvider != null) {
                         initVoiceProvider.openQQMusic();
                     }
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.IQIYI)) {
-                    //                    ToastUtils.show("爱奇艺");
                     if (initVoiceProvider != null) {
                         initVoiceProvider.openAqiyi();
                     }
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.NEWS)) {
-                    //                    ToastUtils.show("新闻");
                     if (initVoiceProvider != null) {
                         openNewsFlag = true;
                         initVoiceProvider.requestNews(20);
                     }
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.CROSS_TALK)) {
-                    //                    ToastUtils.show("相声");
                     intent.putExtra("applyId", applyId);
                     startActivity(intent);
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.CHILDREN)) {
-                    //                    ToastUtils.show("儿歌");
                     intent.putExtra("applyId", applyId);
                     startActivity(intent);
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.POETRY)) {
-                    //                    ToastUtils.show("诗词");
                     intent.putExtra("applyId", applyId);
                     startActivity(intent);
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.JOKE)) {
-                    //                    ToastUtils.show("笑话");
                     intent.putExtra("applyId", applyId);
                     startActivity(intent);
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.IDIOM)) {
-                    //                    ToastUtils.show("成语");
                     intent.putExtra("applyId", applyId);
                     startActivity(intent);
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.ENCYCLOPEDIA)) {
-                    //                    ToastUtils.show("百科");
                     intent.putExtra("applyId", applyId);
                     startActivity(intent);
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.GUOXUE)) {
-                    //                    ToastUtils.show("国学");
                     intent.putExtra("applyId", applyId);
                     startActivity(intent);
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.HOLIDAYS)) {
-                    //                    ToastUtils.show("节假日查询");
                     intent.putExtra("applyId", applyId);
                     startActivity(intent);
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.REMIND)) {
-                    //                    ToastUtils.show("提醒");
                     if (initVoiceProvider != null) {
                         initVoiceProvider.requestAlarm();
                     }
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.STORY)) {
-                    //                    ToastUtils.show("故事");
                     intent.putExtra("applyId", applyId);
                     startActivity(intent);
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.TRANSLATION)) {
-                    //                    ToastUtils.show("翻译");
                     intent.putExtra("applyId", applyId);
                     startActivity(intent);
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.STOCK)) {
-                    //                    ToastUtils.show("股票");
                     intent.putExtra("applyId", applyId);
                     startActivity(intent);
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.UNITS)) {
-                    //                    ToastUtils.show("单位换算");
                     intent.putExtra("applyId", applyId);
                     startActivity(intent);
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.RELATIVE)) {
-                    //                    ToastUtils.show("亲戚关系计算");
                     intent.putExtra("applyId", applyId);
                     startActivity(intent);
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.CONSTELLATION)) {
-                    //                    ToastUtils.show("星座运势");
                     intent.putExtra("applyId", applyId);
                     startActivity(intent);
                 } else if (applyId.equals(com.fenda.homepage.data.Constant.CMCC)) {
