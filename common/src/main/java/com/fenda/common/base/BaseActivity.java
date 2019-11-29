@@ -74,6 +74,7 @@ public abstract class BaseActivity extends RxAppCompatActivity {
         } else {
             NoTitleFullScreen();
         }
+        initHomeAvtivity();
         setContentView(R.layout.common_activity_root);
         mContext = this;
         initCommonView();
@@ -83,6 +84,10 @@ public abstract class BaseActivity extends RxAppCompatActivity {
         initData();
         EventBus.getDefault().register(this);
         AppManager.getAppManager().addActivity(this);
+    }
+
+    public void initHomeAvtivity(){
+
     }
 
     public boolean initStatusBar() {

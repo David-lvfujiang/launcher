@@ -178,7 +178,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 mICallProvider.initSdk();
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                isNetWodrkConnect();
+                isNetWodrkConnect();
             }
         }
     };
@@ -231,6 +231,15 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     private int LAUNCHER_STATUS = Constant.Common.HOME_PAGE;
     private PullView pullView;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void initHomeAvtivity() {
+        if(!AppUtils.isFirstStart(getApplicationContext())){
+            isExitHome = true;
+            Intent setWifiIntent = new Intent(HomePageActivity.this, StartWifiConfigureActivity.class);
+            startActivity(setWifiIntent);
+        }
+    }
 
     @Override
     public int onBindLayout() {
@@ -398,21 +407,17 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void initData() {
-//        if (initProvider != null) {
-//            initProvider.init(this);
-//            initProvider.initVoice();
-//        }
-
+        if(AppUtils.isFirstStart(getApplicationContext())) {
+            LogUtil.d(TAG, "首页初始化语音");
+            if (initProvider != null) {
+                initProvider.init(this);
+                initProvider.initVoice();
+            }
+        }
 
         if (mIWeatherProvider == null){
             mIWeatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
         }
-
-//        ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
-//        if (settingService != null) {
-//            settingService.deviceStatus(this);
-//        }
-
 
         LogUtil.e("进入了Oncreate的initData");
 
@@ -425,7 +430,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 leaveMessageProvider.initRongIMlistener();
             }
         }
-
     }
 
     /**
@@ -534,7 +538,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     mISettingsProvider.syncSettingsContacts();
                 }
             }
-        } else if (message.getCode() == TCPConfig.MessageType.USER_REPAIR_HEAD) {
+        } else if (message.getCode() == TCPConfig.MessageType.USER_REPAIR_HEAD ) {
             if (message != null && message.getData() != null) {
                 BaseTcpMessage baseTcpMessage = (BaseTcpMessage) message.getData();
                 String msg = baseTcpMessage.getMsg();
@@ -571,51 +575,74 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             LogUtil.d(TAG, "新人加入家庭通知" + mNewUserName);
 
         }
-//        else if (message.getCode() == Constant.Common.INIT_VOICE_SUCCESS) {
-//            // @todo  勿删 语音初始化成功后会回调这里,在语音成功之前调用会导致应用崩溃
-//            LogUtil.e("===== INIT_VOICE_SUCCESS =====");
-//
-//            IVoiceInitProvider ddsService = (IVoiceInitProvider) ARouter.getInstance().build(RouterPath.VOICE.INIT_PROVIDER).navigation();
-//            if (ddsService != null) {
-//                ddsService.initAuth();
-//            }
-//
-//
-//            if (initVoiceProvider == null) {
-//                initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
-//            }
-//            if (initVoiceProvider != null) {
-//                initVoiceProvider.openVoice();
-//            }
-//            if (manager == null) {
-//                manager = ContentProviderManager.getInstance(this, Uri.parse(ContentProviderManager.BASE_URI + "/user"));
-//                getContentResolver().registerContentObserver(Uri.parse(ContentProviderManager.BASE_URI), true, new MyContentObserver(new Handler(), manager));
-//
-//            }
-//            //避免重复调用
-//            if (initVoiceProvider != null && !BaseApplication.getBaseInstance().isVoiceInit()) {
-//                BaseApplication.getBaseInstance().setVoiceInit(true);
-//                if (!BaseApplication.getBaseInstance().isRequestWeather()) {
-//                    initVoiceProvider.requestWeather();
-//                }
-//                if (!BaseApplication.getBaseInstance().isRequestNews()) {
-//                    new Thread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            //暂停5S执行，不然无法获取新闻
-//                            try {
-//                                Thread.sleep(5000);
-//                            } catch (InterruptedException e) {
-//                                e.printStackTrace();
-//                            }
-//
-//                            initVoiceProvider.requestNews(10);
-//
-//                        }
-//                    }).start();
-//                }
-//            }
-//        }
+        else if (message.getCode() == Constant.Common.INIT_VOICE_SUCCESS && AppUtils.isFirstStart(getApplicationContext())) {
+            // @todo  勿删 语音初始化成功后会回调这里,在语音成功之前调用会导致应用崩溃
+            LogUtil.e("===== INIT_VOICE_SUCCESS =====");
+
+            if (initVoiceProvider == null) {
+                initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
+            }
+            if (initVoiceProvider != null) {
+                initVoiceProvider.openVoice();
+            }
+            if (manager == null) {
+                manager = ContentProviderManager.getInstance(this, Uri.parse(ContentProviderManager.BASE_URI + "/user"));
+                getContentResolver().registerContentObserver(Uri.parse(ContentProviderManager.BASE_URI), true, new MyContentObserver(new Handler(), manager));
+            }
+
+            if (mGetBindEventIntent == null) {
+                if (mGetBindMultiIntent == null) {
+                    LogUtil.d(TAG, "null 正常进入主界面");
+                    ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
+                    if (settingService != null) {
+                        LogUtil.d(TAG, "init device status");
+                        settingService.deviceStatus(getApplicationContext());
+                    }
+                    // 清除本地联系人数据时重新请求网络数据并保存到本地数据库
+                    if (ContentProviderManager.getInstance(mContext, Constant.Common.URI).isEmpty()) {
+                        mPresenter.getFamilyContacts();
+                    }
+                } else {
+                    LogUtil.d(TAG, "特殊方式进入主界面");
+                }
+            } else {
+                LogUtil.d(TAG, "绑定成功进入主界面");
+                ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
+                if (settingService != null) {
+                    LogUtil.d(TAG, "init device status");
+                    settingService.deviceStatus(getApplicationContext());
+                }
+                // 清除本地联系人数据时重新请求网络数据并保存到本地数据库
+                if (ContentProviderManager.getInstance(mContext, Constant.Common.URI).isEmpty()) {
+                    mPresenter.getFamilyContacts();
+                }
+            }
+
+
+            //避免重复调用
+            if (initVoiceProvider != null && !BaseApplication.getBaseInstance().isVoiceInit()) {
+                BaseApplication.getBaseInstance().setVoiceInit(true);
+                if (!BaseApplication.getBaseInstance().isRequestWeather()) {
+                    initVoiceProvider.requestWeather();
+                }
+                if (!BaseApplication.getBaseInstance().isRequestNews()) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //暂停5S执行，不然无法获取新闻
+                            try {
+                                Thread.sleep(5000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+
+                            initVoiceProvider.requestNews(10);
+
+                        }
+                    }).start();
+                }
+            }
+        }
         else if (message.getCode() == Constant.Common.GO_HOME) {
             //回到首页时 把列表页面回到默认位置
             finishAllActivity();
@@ -662,33 +689,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 public void onAvailable(Network network) {
                     super.onAvailable(network);
                     LogUtil.d(TAG, "wifi onAvailable: " + network);
-                    if (mGetBindEventIntent == null) {
-                        if (mGetBindMultiIntent == null) {
-                            LogUtil.d(TAG, "null 正常进入主界面");
-                            ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
-                            if (settingService != null) {
-                                LogUtil.d(TAG, "init device status");
-                                settingService.deviceStatus(getApplicationContext());
-                            }
-                            // 清除本地联系人数据时重新请求网络数据并保存到本地数据库
-                            if (ContentProviderManager.getInstance(mContext, Constant.Common.URI).isEmpty()) {
-                                mPresenter.getFamilyContacts();
-                            }
-                        } else {
-                            LogUtil.d(TAG, "特殊方式进入主界面");
-                        }
-                    } else {
-                        LogUtil.d(TAG, "绑定成功进入主界面");
-                        ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
-                        if (settingService != null) {
-                            LogUtil.d(TAG, "init device status");
-                            settingService.deviceStatus(getApplicationContext());
-                        }
-                        // 清除本地联系人数据时重新请求网络数据并保存到本地数据库
-                        if (ContentProviderManager.getInstance(mContext, Constant.Common.URI).isEmpty()) {
-                            mPresenter.getFamilyContacts();
-                        }
-                    }
+
                 }
 
                 @Override
@@ -813,7 +814,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             executorService = null;
         }
     }
-    
+
         @Override
     public void onClick (View v){
         int resId = v.getId();

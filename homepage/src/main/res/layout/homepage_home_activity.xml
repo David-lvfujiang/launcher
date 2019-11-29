@@ -188,7 +188,8 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/tv_header_time"
         android:layout_alignBottom="@id/tv_header_time"
-        android:layout_toRightOf="@id/iv_header_love" />
+        android:layout_toRightOf="@id/iv_header_love"
+        android:visibility="gone"/>
 
 
     <ImageView

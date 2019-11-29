@@ -46,6 +46,7 @@ import com.fenda.common.provider.ISettingsProvider;
 import com.fenda.common.provider.IVoiceInitProvider;
 import com.fenda.common.provider.IVoiceRequestProvider;
 import com.fenda.common.router.RouterPath;
+import com.fenda.common.util.AppUtils;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.SettingsCheckWifiLoginTask;
 import com.fenda.common.util.SettingsWifiUtil;
@@ -320,6 +321,8 @@ public class StartWifiConfigureActivity extends BaseMvpActivity<MainPresenter, M
         if (event.getCode() == Constant.Common.INIT_VOICE_SUCCESS) {
             // @todo  勿删 语音初始化成功后会回调这里,在语音成功之前调用会导致应用崩溃
             Log.e(TAG, "===== INIT_VOICE_SUCCESS =====");
+
+//            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsBindDeviceActivity).navigation();
 
 //            if (initVoiceProvider == null) {
 //                initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
@@ -705,6 +708,7 @@ public class StartWifiConfigureActivity extends BaseMvpActivity<MainPresenter, M
         unregisterReceiver(mWifiReceiver);
         mHandler.removeCallbacksAndMessages(null);
         progressDialog.dismiss();
+        AppUtils.saveFirstStart(getApplicationContext(), true);
         super.onDestroy();
     }
 

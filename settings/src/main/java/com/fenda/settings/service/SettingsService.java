@@ -65,11 +65,11 @@ public class SettingsService implements ISettingsProvider {
                 ClientBootstrap bootstrap = ClientBootstrap.getInstance();
                 bootstrap.init(context, userId, SettingsContant.TCP_IP, SettingsContant.TCP_PORT, 0);
 
-                Intent hintent = new Intent();
-                hintent.setAction("android.intent.action.MAIN");
-                hintent.addCategory("android.intent.category.HOME");
-                hintent.putExtra("HOME_PAGE",true);
-                context.startActivity(hintent);
+//                Intent hintent = new Intent();
+//                hintent.setAction("android.intent.action.MAIN");
+//                hintent.addCategory("android.intent.category.HOME");
+//                hintent.putExtra("HOME_PAGE",true);
+//                context.startActivity(hintent);
                 try {
                     AppManager.getAppManager().finishActivity(Class.forName("com.fenda.homepage.activity.StartWifiConfigureActivity"));
                 } catch (ClassNotFoundException e) {
