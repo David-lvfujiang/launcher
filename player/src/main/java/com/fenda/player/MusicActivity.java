@@ -1098,6 +1098,5 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
             }
         }
 
-
     }
 
