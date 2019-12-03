@@ -415,8 +415,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
             e.printStackTrace();
         }
     }
-
-
+    
     /**
      * 认证广播
      */
