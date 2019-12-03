@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.chinamobile.smartgateway.andsdk.app.SdkApp;
 
+
 /**
  * @author kevin.wangzhiqiang
  * @Date 2019/9/12 16:01

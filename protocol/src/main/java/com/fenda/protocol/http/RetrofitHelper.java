@@ -259,6 +259,7 @@ public class RetrofitHelper {
             Request.Builder builder = chain.request().newBuilder();
 
             builder.addHeader("south-device-access-token", DeviceIdUtil.getDeviceId());
+//            builder.addHeader("south-device-access-token", "7");
             builder.addHeader("version", getVerName(AppApplicaiton.getContext()));
 
             Log.d(TAG, "south-device-access-token = " + DeviceIdUtil.getDeviceId());

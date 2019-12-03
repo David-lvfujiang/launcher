@@ -37,6 +37,7 @@ public class MyDDSAuthListener implements DDSAuthListener {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
+                LogUtil.e("授权错误");
                 Toast.makeText(mContext,
                         "授权错误:" + errId + ":\n" + error + "\n请查看手册处理", Toast.LENGTH_SHORT).show();
             }

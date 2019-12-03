@@ -63,6 +63,7 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
     private TextView tvDisVcodeText;
 
     private final String mContentET = "http://www.fenda.com/?sn=" + DeviceIdUtil.getDeviceId();
+//    private final String mContentET = "http://www.fenda.com/?sn=7";
     private String baseEvn = SettingsContant.TEST_BASE_URL;
     public static final int DISABLE_EXPAND = 0x00010000;
     public static final int DISABLE_NONE = 0x00000000;
@@ -238,6 +239,8 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
         SPUtils.put(getApplicationContext(), Constant.Settings.DEVICE_ICON, queryDeviceInfoResponse.getIcon());
         SPUtils.put(getApplicationContext(), Constant.Settings.VCODE, queryDeviceInfoResponse.getVcode());
         SPUtils.put(getApplicationContext(), Constant.Settings.RONGYUNCLOUDTOKEN, queryDeviceInfoResponse.getRongcloud_token());
+
+        LogUtil.d(TAG, "RONGYUNCLOUDTOKEN = " + queryDeviceInfoResponse.getRongcloud_token());
 
         if (!TextUtils.isEmpty(queryDeviceInfoResponse.getRongcloud_token())) {
             // 调用音视频服务接口登录IM

@@ -407,6 +407,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void initData() {
+        String token = (String) SPUtils.get(getApplicationContext(), Constant.Settings.RONGYUNCLOUDTOKEN, "");
+        LogUtil.d(TAG, "rongyun token = " + token);
+        LogUtil.d(TAG, "isFirstStart value =  " + AppUtils.isFirstStart(getApplicationContext()));
         if(AppUtils.isFirstStart(getApplicationContext())) {
             LogUtil.d(TAG, "首页初始化语音");
             if (initProvider != null) {
@@ -577,14 +580,14 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         }
         else if (message.getCode() == Constant.Common.INIT_VOICE_SUCCESS && AppUtils.isFirstStart(getApplicationContext())) {
             // @todo  勿删 语音初始化成功后会回调这里,在语音成功之前调用会导致应用崩溃
-            LogUtil.e("===== INIT_VOICE_SUCCESS =====");
-
+            Log.e(TAG, "===== 首页初始化语音成功 INIT_VOICE_SUCCESS =====");
             if (initVoiceProvider == null) {
                 initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
             }
             if (initVoiceProvider != null) {
                 initVoiceProvider.openVoice();
             }
+
             if (manager == null) {
                 manager = ContentProviderManager.getInstance(this, Uri.parse(ContentProviderManager.BASE_URI + "/user"));
                 getContentResolver().registerContentObserver(Uri.parse(ContentProviderManager.BASE_URI), true, new MyContentObserver(new Handler(), manager));
@@ -617,7 +620,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                     mPresenter.getFamilyContacts();
                 }
             }
-
 
             //避免重复调用
             if (initVoiceProvider != null && !BaseApplication.getBaseInstance().isVoiceInit()) {
