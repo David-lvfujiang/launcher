@@ -23,6 +23,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -105,18 +107,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     private final static String TAG = "HomePageActivity";
 
     private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-    TextClock mHeaderTimeTv;
-    LauncherRecycleView mTipInfoRv;
-    ImageView mHeaderWeatherIv;
-    TextView mHeaderWeatherTv;
-    ImageView mAiTipIv;
-    TextView mAiTipTitleTv;
-    TextView mAiTipMicTv;
-    private MyRelativeLayout relaPre;
-
-    private int showPageIndex;
-    private Handler mCyclicRollHandler = new Handler();
     private String mBtName;
     private String mGetBindMultiIntent;
     private String mGetBindEventIntent;
@@ -134,112 +124,25 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     private PowerManager.WakeLock mWakeLock;
     private ComponentName mAdminReceiver;
 
-    private List<ApplyBean> mApplyList;
-    private RecyclerView mSubmenuListRv;
-    private GridAdapter mGridAdapter;
-    private ImageView submenuDropLeft;
-    private ImageView submenuDropRight;
     private ContentProviderManager manager;
-    private LinearLayout nestScroll;
-//    private LinearLayout ll_submenu_back;
-    private ImageView imgGIF;
-    private TextView mMsgTv;
     private boolean isWeather;
-    private boolean openNewsFlag;
-    private List<FDMusic> newsRecommend;
-    private int current = 0;
-    private int number = 0;
-    private static final int CHANGE_Msg = 1;
-    private boolean isExitHome;
 
 
-    private MyNestedScrollView scrollView;
+
     @Autowired
     ISettingsProvider mISettingsProvider;
 
-    private String[] mPermission = new String[] {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-    };
-
-    private Handler mHandler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            LogUtil.e("进入了Oncreate的接收到了handler信息");
-            initSubmenuView();
-            ImageUtil.loadGIFImage(R.mipmap.cm_pull,imgGIF,R.mipmap.cm_pull);
-            mAdminReceiver = new ComponentName(mContext, ScreenOffAdminReceiver.class);
-            mPowerManager = (PowerManager) getSystemService(POWER_SERVICE);
-            mPolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-            if (!mPolicyManager.isAdminActive(mAdminReceiver)) {
-                openDeviceManager();
-            }
-            if (mICallProvider != null) {
-                mICallProvider.initSdk();
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                isNetWodrkConnect();
-            }
-        }
-    };
-
-
-    Runnable cycleRollRunabler = new Runnable() {
-        @Override
-        public void run() {
-            Log.e("fd", "cycleRollRunabler timeout " + showPageIndex);
-
-            if (showPageIndex + 1 >= HomeUtil.PAGE_NUM_MAX) {
-                mTipInfoRv.scrollToPosition(0);
-                showPageIndex = 0;
-                current++;
-                mAiTipIv.setVisibility(View.VISIBLE);
-                mAiTipMicTv.setText(R.string.cm_main_page_title_0);
-                mAiTipTitleTv.setText(R.string.cm_main_page_describe_0);
-
-            } else {
-                mTipInfoRv.smoothScrollToPosition(showPageIndex + 1);
-            }
-        }
-    };
-
-    private Handler mHandlerMsg = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case CHANGE_Msg:
-                    //完成主界面更新,拿到数据
-                    int data = (int) msg.obj;
-                    mMsgTv.setVisibility(View.VISIBLE);
-                    if (data<100){
-                        mMsgTv.setText(""+data);
-                    }else {
-                        mMsgTv.setText("99+");
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
 
     private String mNewUserName;
 
-    private ScheduledThreadPoolExecutor executorService;
 
-    private int LAUNCHER_STATUS = Constant.Common.HOME_PAGE;
-    private PullView pullView;
+    private LinearLayout linLayout;
+    private HomeFragment homeFragment;
+    private FragmentTransaction transaction;
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
-    public void initHomeAvtivity() {
-        if(!AppUtils.isFirstStart(getApplicationContext())){
-            isExitHome = true;
-            Intent setWifiIntent = new Intent(HomePageActivity.this, StartWifiConfigureActivity.class);
-            startActivity(setWifiIntent);
-        }
-    }
+    private StartWifiConfigureFragment configureFragment;
+
+
 
     @Override
     public int onBindLayout() {
@@ -247,61 +150,77 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         return R.layout.homepage_home_activity;
     }
 
-    public int getLauncherState(){
-        return LAUNCHER_STATUS;
-    }
-
-    public void setLauncherState(int state){
-        this.LAUNCHER_STATUS = state;
-    }
 
 
     @Override
     public void initView() {
+        FragmentManager manager = getSupportFragmentManager();
+        transaction = manager.beginTransaction();
         BaseApplication.getBaseInstance().setRequestWeather(false);
-        mHeaderTimeTv = findViewById(R.id.tv_header_time);
-        mTipInfoRv = findViewById(R.id.rv_Tipinfo);
-        mHeaderWeatherIv = findViewById(R.id.iv_header_weather);
-        mHeaderWeatherTv = findViewById(R.id.tv_header_temp);
-        relaPre         = findViewById(R.id.rela_pre);
-
-        mAiTipIv = findViewById(R.id.iv_main_tip_icon);
-        mAiTipTitleTv = findViewById(R.id.tv_main_item_content);
-        mAiTipMicTv = findViewById(R.id.tv_ai_tiptext);
-        imgGIF = findViewById(R.id.img_gif);
-        mMsgTv = findViewById(R.id.tv_home_nsg_dot_red);
-
-        findViewById(R.id.tv_main_phone).setOnClickListener(this);
-        findViewById(R.id.tv_main_cmcc).setOnClickListener(this);
-        findViewById(R.id.tv_main_qqmusic).setOnClickListener(this);
-        findViewById(R.id.tv_main_iqiyi).setOnClickListener(this);
-        findViewById(R.id.iv_header_love).setOnClickListener(this);
-        //
-        mHeaderWeatherTv.setOnClickListener(this);
-        mHeaderWeatherIv.setOnClickListener(this);
-        initRecycleView();
-        initSleepView();
+        linLayout = findViewById(R.id.rela_pre);
 
 
 
-        LogUtil.e("进入了Oncreate的initView");
+        if (!AppUtils.isFirstStart(this)){
+            showWifiConfigureFragment();
+        }else {
+            showHomePageView();
+        }
+
+
+
+
     }
 
-    private void initSleepView() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                Message msg = mHandler.obtainMessage();
-                mHandler.sendMessage(msg);
-                LogUtil.e("进入了Oncreate的发送了handler信息");
-            }
-        }).start();
+
+    /**
+     * 显示首页界面
+     */
+    private void showHomePageView(){
+        if (homeFragment == null){
+            homeFragment = new HomeFragment();
+        }
+        hideWifiConfigureFragment();
+        transaction.add(R.id.rela_pre,homeFragment);
+        transaction.commit();
     }
+
+    /**
+     * 隐藏首页界面
+     */
+    private void hideHomePageView(){
+        if (homeFragment != null && transaction != null){
+            transaction.hide(homeFragment);
+        }
+    }
+
+    /**
+     * 显示wifi配网页面
+     */
+    private void showWifiConfigureFragment(){
+        if (configureFragment == null){
+            configureFragment = new StartWifiConfigureFragment();
+        }
+        hideHomePageView();
+        transaction.add(R.id.rela_pre,configureFragment);
+        transaction.commit();
+
+    }
+
+    /**
+     * 隐藏wifi配网页面
+     */
+    private void hideWifiConfigureFragment(){
+        if (configureFragment != null && transaction != null){
+            transaction.hide(configureFragment);
+        }
+    }
+
+
+
+
+
+
 
 
     @Override
@@ -311,125 +230,47 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         if (intent != null){
             boolean HOME_PAGE = intent.getBooleanExtra("HOME_PAGE",false);
             LogUtil.e("HOME_PAGE = "+HOME_PAGE);
-            if (HOME_PAGE){
-                returnDefault();
-            }
-            finishAllActivity();
+//            if (HOME_PAGE){
+//                returnDefault();
+//            }
+//            finishAllActivity();
         }
     }
 
-    private void initRecycleView() {
 
-        IntentFilter btIntentFilter = new IntentFilter();
-        btIntentFilter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
-        btIntentFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-        registerReceiver(mBtReceiver, btIntentFilter);
-
-        showPageIndex = 0;
-
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mTipInfoRv.setLayoutManager(layoutManager);
-
-        PagerSnapHelper snapHelper = new PagerSnapHelper();
-        snapHelper.attachToRecyclerView(mTipInfoRv);
-
-        MainAdapter tMainAdapter = new MainAdapter(this);
-        mTipInfoRv.setAdapter(tMainAdapter);
-
-        mTipInfoRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    //Dragging
-//                    mCyclicRollHandler.removeCallbacks(cycleRollRunabler);
-                } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    int review_position = layoutManager.findFirstVisibleItemPosition();
-                    Log.e("fd", "onScrollStateChanged review_position " + review_position + " showPageIndex " + showPageIndex);
-
-//                    mCyclicRollHandler.postDelayed(cycleRollRunabler, HomeUtil.PAGE_SHOW_TIME);
-
-                    if (review_position == showPageIndex) {
-                        return;
-                    }
-                    showPageIndex = review_position;
-
-                    if (showPageIndex == 0) {
-                        mAiTipIv.setVisibility(View.VISIBLE);
-                        mAiTipMicTv.setText(R.string.cm_main_page_title_0);
-                        mAiTipTitleTv.setText(R.string.cm_main_page_describe_0);
-                    } else if (showPageIndex == 1) {
-                        mAiTipIv.setVisibility(View.GONE);
-                        mAiTipMicTv.setText(R.string.cm_main_page_title_1);
-                        if (newsRecommend != null) {
-                            number = newsRecommend.size();
-                            if (current < number) {
-                                mAiTipTitleTv.setText("新闻资讯｜" + newsRecommend.get(current).getMusicTitle());
-                            } else {
-                                current = 0;
-//                                if (initVoiceProvider == null) {
-//                                    initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
-//                                }
-//                                if (initVoiceProvider != null){
-//                                    initVoiceProvider.requestNews(20);
-//                                }
-                            }
-                        } else {
-                            mAiTipTitleTv.setText(R.string.cm_main_page_describe_1);
-                        }
-                    } else if (showPageIndex == 2) {
-                        mAiTipIv.setVisibility(View.GONE);
-                        mAiTipMicTv.setText(R.string.cm_main_page_title_2);
-                        mAiTipTitleTv.setText(R.string.cm_main_page_describe_2);
-                    } else if (showPageIndex == 3) {
-                        mAiTipIv.setVisibility(View.GONE);
-                        mAiTipMicTv.setText(R.string.cm_main_page_title_3);
-                        mAiTipTitleTv.setText(R.string.cm_main_page_describe_3);
-
-                    } else if (showPageIndex == 4) {
-                        mAiTipIv.setVisibility(View.GONE);
-                        mAiTipMicTv.setText(R.string.cm_main_page_title_4);
-                        mAiTipTitleTv.setText(R.string.cm_main_page_describe_4);
-                    }
-                }
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-                //              int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
-            }
-        });
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void initData() {
-        if(AppUtils.isFirstStart(getApplicationContext())) {
-            LogUtil.d(TAG, "首页初始化语音");
-            if (initProvider != null) {
-                initProvider.init(this);
-                initProvider.initVoice();
-            }
+
+        mAdminReceiver = new ComponentName(mContext, ScreenOffAdminReceiver.class);
+        mPowerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        mPolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+        if (!mPolicyManager.isAdminActive(mAdminReceiver)) {
+            openDeviceManager();
+        }
+
+
+        LogUtil.d(TAG, "首页初始化语音");
+        if (initProvider != null) {
+            initProvider.init(this);
+            initProvider.initVoice();
         }
 
         if (mIWeatherProvider == null){
             mIWeatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
         }
-
-        LogUtil.e("进入了Oncreate的initData");
-
-
-        if (mICallProvider != null) {
-            mICallProvider.initSdk();
-            Log.e("TAG", "初始化");
-            leaveMessageProvider = (IAppLeaveMessageProvider) ARouter.getInstance().build(RouterPath.Leavemessage.LEAVEMESSAGE_SERVICE).navigation();
-            if (leaveMessageProvider != null){
-                leaveMessageProvider.initRongIMlistener();
-            }
-        }
+//
+//        LogUtil.e("进入了Oncreate的initData");
+//
+//        if (mICallProvider != null) {
+//            mICallProvider.initSdk();
+//            Log.e("TAG", "初始化");
+//            leaveMessageProvider = (IAppLeaveMessageProvider) ARouter.getInstance().build(RouterPath.Leavemessage.LEAVEMESSAGE_SERVICE).navigation();
+//            if (leaveMessageProvider != null){
+//                leaveMessageProvider.initRongIMlistener();
+//            }
+//        }
     }
 
     /**
@@ -446,18 +287,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         }
     }
 
-    public void startCycleRollRunnable() {
-            if (executorService == null) {
-                executorService = new ScheduledThreadPoolExecutor(1);
-                executorService.scheduleWithFixedDelay(new Runnable() {
-                    @Override
-                    public void run() {
-                        mHandler.post(cycleRollRunabler);
-
-                    }
-                }, HomeUtil.PAGE_SHOW_TIME, HomeUtil.PAGE_SHOW_TIME, TimeUnit.MILLISECONDS);
-            }
-        }
 
     @Override
     protected void initPresenter () {
@@ -485,7 +314,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 //
             LogUtil.e("applyId 家庭解散通知1 栈顶activityName = ");
 
-            isExitHome = true;
             mBluetoothAdapter.disable();
             ARouter.getInstance().build(RouterPath.SETTINGS.SettingsBindDeviceActivity).navigation();
 
@@ -646,7 +474,7 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         else if (message.getCode() == Constant.Common.GO_HOME) {
             //回到首页时 把列表页面回到默认位置
             finishAllActivity();
-            returnDefault();
+//            returnDefault();
         }
     }
 
@@ -771,23 +599,23 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     @Override
     protected void onResume () {
         super.onResume();
-        isExitHome = false;
+//        isExitHome = false;
         Intent intent = getIntent();
         if (intent != null) {
             mGetBindMultiIntent = intent.getStringExtra("BIND_INTENT");
             mGetBindEventIntent = intent.getStringExtra("BIND_EVENT_INTENT");
 
         }
-        LogUtil.e("进入了onResume");
-        if (initVoiceProvider == null) {
-            initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
-        }
-
-        if (initVoiceProvider != null && !BaseApplication.getBaseInstance().isRequestWeather()) {
-            initVoiceProvider.openVoice();
-        }
-
-        startCycleRollRunnable();
+//        LogUtil.e("进入了onResume");
+//        if (initVoiceProvider == null) {
+//            initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
+//        }
+//
+//        if (initVoiceProvider != null && !BaseApplication.getBaseInstance().isRequestWeather()) {
+//            initVoiceProvider.openVoice();
+//        }
+//
+//        startCycleRollRunnable();
 //        mCyclicRollHandler.postDelayed(cycleRollRunabler, HomeUtil.PAGE_SHOW_TIME);
     }
 
@@ -795,25 +623,18 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     protected void onStop () {
         super.onStop();
 //        mCyclicRollHandler.removeCallbacks(cycleRollRunabler);
-        if (executorService != null) {
-            executorService.setRemoveOnCancelPolicy(true);
-            executorService.shutdown();
-            executorService = null;
-        }
-        if (isExitHome) {
-            returnDefault();
-        }
+//        if (executorService != null) {
+//            executorService.setRemoveOnCancelPolicy(true);
+//            executorService.shutdown();
+//            executorService = null;
+//        }
+//        if (isExitHome) {
+//            returnDefault();
+//        }
 
         LogUtil.e("Homepage onStop方法执行");
     }
 
-    public void stopCycleRollRunnable () {
-        if (executorService != null) {
-            executorService.setRemoveOnCancelPolicy(true);
-            executorService.shutdown();
-            executorService = null;
-        }
-    }
 
         @Override
     public void onClick (View v){
@@ -894,47 +715,8 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     }
 
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventHomePageFromVoiceControl (WeatherWithHomeBean weatherWithHomeBean){
-        Log.e(TAG, "homePageFromVoiceControl " + weatherWithHomeBean.getWeatherTempNum() + " " + weatherWithHomeBean.getWeatherIconId());
-        mHeaderWeatherTv.setText(weatherWithHomeBean.getWeatherTempNum());
-        mHeaderWeatherIv.setImageDrawable(getResources().getDrawable(weatherWithHomeBean.getWeatherIconId()));
-    }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onRecommendEvent (MusicPlayBean bean){
-        newsRecommend = bean.getFdMusics();
-        List<FDMusic> newsListData;
-        newsListData = bean.getFdMusics();
-        if (newsListData != null && openNewsFlag) {
-            openNewsFlag = false;
-            ARouter.getInstance().build(RouterPath.NEWS.NEWS_ACTIVITY)
-                    .withObject("newsListData", newsListData)
-                    .navigation();
-        }
-    }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMsgEvent (LeaveMessageBean msgBean){
-        final int msgNum = msgBean.getLeaveMessageNumber();
-        if (msgNum == 0) {
-            mMsgTv.setVisibility(View.INVISIBLE);
-            LogUtils.e("onMsgEvent: " + msgNum);
-        } else {
-            LogUtils.e("onMsgEvent: " + msgNum);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    //新建一个Message对象，存储需要发送的消息
-                    Message message = new Message();
-                    message.what = CHANGE_Msg;
-                    message.obj = msgNum;
-                    //然后将消息发送出去
-                    mHandlerMsg.sendMessage(message);
-                }
-            }).start();
-        }
-    }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -973,187 +755,11 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             }
         }
 
-    /**
-     * 二级菜单
-     */
-    public void initSubmenuView() {
-        ViewStub stub = findViewById(R.id.stub);
-        View submenuView = stub.inflate();
-        mSubmenuListRv = submenuView.findViewById(R.id.rv_submenu_list);
-        submenuDropLeft = submenuView.findViewById(R.id.iv_submenu_drop_left);
-        submenuDropRight = submenuView.findViewById(R.id.iv_submenu_drop_right);
-        nestScroll = submenuView.findViewById(R.id.nest_scroll);
-        scrollView = submenuView.findViewById(R.id.scrollView);
-        pullView = submenuView.findViewById(R.id.pullView);
-        relaPre.setSkillAndLauncher(this,mTipInfoRv,nestScroll,scrollView,pullView);
-        initAdapter();
-    }
 
 
-    private void returnDefault () {
-        if (nestScroll != null) {
-            nestScroll.setTranslationY(BaseApplication.getBaseInstance().getScreenHeight());
-            setLauncherState(Constant.Common.HOME_PAGE);
-        }
-    }
-
-    private void initAdapter () {
-        //这里的第二个参数4代表的是网格的列数
-        mSubmenuListRv.setLayoutManager(new GridLayoutManager(mContext, 4));
-        mSubmenuListRv.setNestedScrollingEnabled(false);
-        mApplyList = new ArrayList<>();
-        mApplyList = AllApplyData.dataList(mApplyList);
-
-        mGridAdapter = new GridAdapter(mApplyList);
-        mSubmenuListRv.setAdapter(mGridAdapter);
-        mGridAdapter.setOnItemClickListener(new GridAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, String applyId) {
-                LogUtil.e("applyId = " + applyId);
-                Intent intent = new Intent(HomePageActivity.this, PromptActivity.class);
-                if (applyId.equals(com.fenda.homepage.data.Constant.SETTINGS)) {
-//                    ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
-//                    String activityName = am.getRunningTasks(1).get(0).topActivity.getClassName();
-
-                    LogUtil.e("applyId 栈顶activityName = ");
-
-                    ARouter.getInstance().build(RouterPath.SETTINGS.SettingsActivity)
-                            .with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle())
-                            .navigation();
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.CALCULATOR)) {
-                    ARouter.getInstance().build(RouterPath.Calculator.CALCULATOR_ACTIVITY).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation();
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.WEATHER)) {
-                    String saveWeahterValue = (String) SPUtils.get(getApplicationContext(), Constant.Weather.SP_NOW_WEATHER, "");
-                    if (saveWeahterValue != null && saveWeahterValue.length() > 1 && mIWeatherProvider != null) {
-                        mIWeatherProvider.weatherFromVoiceControl(saveWeahterValue);
-                    } else {
-                        ARouter.getInstance().build(RouterPath.Weather.WEATHER_MAIN).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation();
-                    }
-                    if (initVoiceProvider != null){
-                        initVoiceProvider.nowWeather();
-                    }
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.CALENDAR)) {
-                    ARouter.getInstance().build(RouterPath.Calendar.Perpetual_CALENDAR_ACTIVITY).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation();
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.PHOTO)) {
-                    ARouter.getInstance().build(RouterPath.Gallery.GALLERY_CATOGORY).with(ActivityOptions.makeSceneTransitionAnimation(HomePageActivity.this).toBundle()).navigation();
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.TIME)) {
-                    ToastUtils.show("闹钟");
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.FM)) {
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.CAMERA)) {
-                    PackageManager packageManager = getPackageManager();
-                    Intent packageIntent = packageManager.getLaunchIntentForPackage("com.android.camera2");
-                    startActivity(packageIntent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.PLAY)) {
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.QQ_MUSIC)) {
-                    if (initVoiceProvider != null) {
-                        initVoiceProvider.openQQMusic();
-                    }
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.IQIYI)) {
-                    if (initVoiceProvider != null) {
-                        initVoiceProvider.openAqiyi();
-                    }
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.NEWS)) {
-                    if (initVoiceProvider != null) {
-                        openNewsFlag = true;
-                        initVoiceProvider.requestNews(20);
-                    }
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.CROSS_TALK)) {
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.CHILDREN)) {
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.POETRY)) {
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.JOKE)) {
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.IDIOM)) {
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.ENCYCLOPEDIA)) {
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.GUOXUE)) {
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.HOLIDAYS)) {
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.REMIND)) {
-                    if (initVoiceProvider != null) {
-                        initVoiceProvider.requestAlarm();
-                    }
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.STORY)) {
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.TRANSLATION)) {
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.STOCK)) {
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.UNITS)) {
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.RELATIVE)) {
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.CONSTELLATION)) {
-                    intent.putExtra("applyId", applyId);
-                    startActivity(intent);
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.CMCC)) {
-                    ToastUtils.show("10086");
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.GDYD)) {
-                    ToastUtils.show("广东移动营业厅");
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.MIGU_MUSIC)) {
-                    ToastUtils.show("咪咕音乐");
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.MIGU_AIKAN)) {
-                    ToastUtils.show("咪咕爱看");
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.MIGU_ZHIBO)) {
-                    ToastUtils.show("咪咕直播");
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.MIGU_LINGXI)) {
-                    ToastUtils.show("咪咕灵犀");
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.MIGU_QUANQUAN)) {
-                    ToastUtils.show("咪咕圈圈");
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.MIGU_SHANPAO)) {
-                    ToastUtils.show("咪咕擅跑");
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.MIGU_VIDEO)) {
-                    ToastUtils.show("咪咕视频");
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.MIGU_MOVIE)) {
-                    ToastUtils.show("咪咕影院");
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.MIGU_READ)) {
-                    ToastUtils.show("咪咕阅读");
-                } else if (applyId.equals(com.fenda.homepage.data.Constant.MIGU_CITIC)) {
-                    ToastUtils.show("咪咕中信书店");
-                }
-            }
-        });
-    }
-
-    public void closeDiscoverableTimeout() {
-        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-        try {
-            Method setDiscoverableTimeout = BluetoothAdapter.class.getMethod("setDiscoverableTimeout", int.class);
-            setDiscoverableTimeout.setAccessible(true);
-            Method setScanMode = BluetoothAdapter.class.getMethod("setScanMode", int.class, int.class);
-            setScanMode.setAccessible(true);
-            setDiscoverableTimeout.invoke(adapter, 1);
-            setScanMode.invoke(adapter, BluetoothAdapter.SCAN_MODE_CONNECTABLE, 1);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 
-    public void onPullOnclick(View v) {
-        ToastUtils.show("努力开发中，敬请期待。。。");
-    }
+
 
 
     public void setDiscoverableTimeout(int timeout) {

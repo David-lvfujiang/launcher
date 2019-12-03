@@ -1,14 +1,20 @@
 package com.fenda.calculator;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.os.CountDownTimer;
+import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.common.base.BaseActivity;
 import com.fenda.common.router.RouterPath;
+import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.ToastUtils;
 
 @Route(path = RouterPath.Calculator.CALCULATOR_ACTIVITY)
@@ -21,10 +27,13 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
      * 表达式显示框
      */
     private TextView tvExpressionOutput;
+
+    private LinearLayout layout;
     // 用于计算
     private StringBuilder mStringBuilder = new StringBuilder();
     //用于显示
     private StringBuilder mExpression = new StringBuilder();
+    private CountDownTimer timer;
 
 
     @Override
@@ -35,10 +44,22 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
     @Override
     public void initView() {
         initTitle("计算器");
+        Intent mIntent = getIntent();
+        String answer = mIntent.getStringExtra("answer");
+        String exp = mIntent.getStringExtra("exp");
+
+
+
         tvIo = findViewById(R.id.input_outputView);
+        layout = findViewById(R.id.lin_layout);
         tvExpressionOutput = findViewById(R.id.expressionOutputView);
         tvIo.setMovementMethod(ScrollingMovementMethod.getInstance());
         tvExpressionOutput.setMovementMethod(ScrollingMovementMethod.getInstance());
+        if (!TextUtils.isEmpty(answer) && !TextUtils.isEmpty(exp)){
+            tvExpressionOutput.setText(exp + " = ");
+            tvIo.setText(answer);
+            countDownTime();
+        }
         //数字0-9
         findViewById(R.id.calculator_bt0).setOnClickListener(this);
         findViewById(R.id.calculator_bt1).setOnClickListener(this);
@@ -99,6 +120,43 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
     private boolean equals = false;
     private int count_bracket_left = 0;
     private int count_bracket_right = 0;
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        String answer = intent.getStringExtra("answer");
+        String exp = intent.getStringExtra("exp");
+        if (!TextUtils.isEmpty(answer) && !TextUtils.isEmpty(exp)){
+            tvExpressionOutput.setText(exp + " = ");
+            tvIo.setText(answer);
+            closeTimer();
+            countDownTime();
+        }
+
+    }
+
+
+    private void countDownTime() {
+        if (timer ==  null){
+            timer = new CountDownTimer(10000, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                }
+                @Override
+                public void onFinish() {
+                    CalculatorActivity.this.finish();
+                }
+            };
+            timer.start();
+        }
+    }
+
+    private void closeTimer(){
+        if (timer != null){
+            timer.cancel();
+            timer = null;
+        }
+    }
 
 
     @SuppressLint("SetTextI18n")
@@ -588,5 +646,8 @@ public class CalculatorActivity extends BaseActivity implements View.OnClickList
                 }
             }
         }
+
+        closeTimer();
     }
+
 }

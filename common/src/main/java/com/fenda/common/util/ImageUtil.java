@@ -30,17 +30,16 @@ import java.io.IOException;
  */
 public class ImageUtil {
 
-
     /**
      * 普通加载
      * @param url
      * @param imageView
      */
-    public static void loadImage( String url, ImageView imageView) {
+    public static void loadImage( Object url, ImageView imageView,int defaultImg) {
         RequestOptions options = new RequestOptions()
                 .centerCrop()
-                .placeholder(R.mipmap.ic_launcher)
-                .error(R.mipmap.ic_launcher);
+                .placeholder(defaultImg)
+                .error(defaultImg);
         Glide.with(imageView.getContext()).load(url).apply(options).into(imageView);
     }
     /**

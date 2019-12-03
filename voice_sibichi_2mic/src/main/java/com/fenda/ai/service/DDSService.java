@@ -13,6 +13,7 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -249,7 +250,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                         LogUtil.i("FD------auth ok 1");
                         sendInitSuccessEventBus();
                         showToast("授权成功!");
-                        break;
+                        return;
                     } else {
                         // 自动授权
                         doAutoAuth();
@@ -262,7 +263,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 AILog.w(TAG, "waiting  init complete finish...");
             }
             try {
-                Thread.sleep(800);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -743,6 +744,23 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                                     provider.processConstellationTextMsg(state);
                                 }
                             });
+                }else if (task.equals("计算器")){
+
+                    try {
+                        JSONObject dm = jo.getJSONObject("dm");
+                        JSONObject widget = dm.getJSONObject("widget");
+                        JSONObject extra = widget.getJSONObject("extra");
+                        //答案
+                        String answer = extra.getString("text_two");
+                        String exp = extra.getString("exp");
+                        Bundle mBundle = new Bundle();
+                        mBundle.putString("answer",answer);
+                        mBundle.putString("exp",exp);
+                        ARouter.getInstance().build(RouterPath.Calculator.CALCULATOR_ACTIVITY).with(mBundle).navigation();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                 }
                 break;
             case VoiceConstant.SIBICHI.CONTEXT_WIDGET_TEXT:

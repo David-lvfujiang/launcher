@@ -15,8 +15,10 @@ import android.widget.RelativeLayout;
 
 import com.fenda.common.BaseApplication;
 import com.fenda.common.constant.Constant;
+import com.fenda.common.util.LogUtil;
 import com.fenda.common.view.MyNestedScrollView;
 import com.fenda.homepage.BuildConfig;
+import com.fenda.homepage.activity.HomeFragment;
 import com.fenda.homepage.activity.HomePageActivity;
 
 /**
@@ -31,7 +33,7 @@ public class MyRelativeLayout extends RelativeLayout {
 
     private LauncherRecycleView launcherView;
     private LinearLayout skillView;
-    private HomePageActivity pageActivity;
+    private HomeFragment pageActivity;
     private MyNestedScrollView scrollView;
     private PullView pullView;
 
@@ -109,7 +111,6 @@ public class MyRelativeLayout extends RelativeLayout {
                             return true;
                         }
                     }
-
                     break;
                 case MotionEvent.ACTION_UP:
                     break;
@@ -120,14 +121,13 @@ public class MyRelativeLayout extends RelativeLayout {
 
 
 
-    public void setSkillAndLauncher(HomePageActivity pageActivity,LauncherRecycleView launcherView,LinearLayout skillView,MyNestedScrollView scrollView,PullView pullView){
+    public void setSkillAndLauncher(HomeFragment pageActivity, LauncherRecycleView launcherView, LinearLayout skillView, MyNestedScrollView scrollView, PullView pullView){
         this.launcherView = launcherView;
         this.skillView = skillView;
         this.pageActivity = pageActivity;
         this.scrollView = scrollView;
         this.pullView = pullView;
 //        this.linNest = linNest;
-
     }
 
 
@@ -135,7 +135,6 @@ public class MyRelativeLayout extends RelativeLayout {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
-
 
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -146,20 +145,19 @@ public class MyRelativeLayout extends RelativeLayout {
                 pageActivity.stopCycleRollRunnable();
                 shift = Math.min(Math.max(0, mShiftStart + moveY), mShiftRange);
                 float progress = shift/mShiftRange;
+                LogUtil.e("onTouchEvent = "+shift);
                 pullView.setProgress(progress);
                 skillView.setTranslationY(shift);
 
                 mLastPos.set(event.getX(), event.getY());
                 return true;
             case MotionEvent.ACTION_UP:
-
                 if (Constant.Common.HOME_PAGE == pageActivity.getLauncherState()){
                     if (skillView.getTranslationY() > SCROLL_Y){
                         animateToWorkspace();
                     }else {
                         animateToAllApps();
                     }
-
                 }else {
                     if (skillView.getTranslationY() > SCROLL_Y){
                         animateToAllApps();
@@ -167,7 +165,6 @@ public class MyRelativeLayout extends RelativeLayout {
                         animateToWorkspace();
                     }
                 }
-
                     break;
             default:
                 break;
