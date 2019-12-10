@@ -13,6 +13,7 @@ import com.fenda.common.constant.Constant;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.SPUtils;
 import com.fenda.common.util.ToastUtils;
+import com.fenda.protocol.tcp.bus.EventBusUtils;
 import com.fenda.protocol.util.DeviceIdUtil;
 import com.fenda.settings.R;
 import com.fenda.settings.contract.SettingsContract;
@@ -35,6 +36,9 @@ public class SettingsChangeDeviceNameActivity extends BaseMvpActivity<SettingsPr
     private TextView tvCancelBtn;
     private EditText etName;
     private String mChangedName;
+
+    public static final String SETTINGS_SYNC_DEVICENAME="settings_sync_devicename";
+
 
     @Override
     protected void initPresenter() {
@@ -90,6 +94,7 @@ public class SettingsChangeDeviceNameActivity extends BaseMvpActivity<SettingsPr
     public void updateDeviceNameSuccess(BaseResponse response) {
         ToastUtils.show("修改成功");
         SPUtils.put(getApplicationContext(), Constant.Settings.DEVICE_NAME, mChangedName);
+        EventBusUtils.post(SETTINGS_SYNC_DEVICENAME);
         Intent changeNameIntent = new Intent(SettingsChangeDeviceNameActivity.this, SettingsDeviceCenterActivity.class);
         startActivity(changeNameIntent);
         finish();

@@ -21,6 +21,7 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.base.BaseActivity;
 import com.fenda.common.constant.Constant;
+import com.fenda.common.db.ContentProviderManager;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.AppUtils;
 import com.fenda.common.util.LogUtil;
@@ -30,7 +31,11 @@ import com.fenda.common.view.MyListView;
 import com.fenda.settings.R;
 import com.fenda.settings.adapter.SettingsBluetoothAdapter;
 import com.fenda.settings.bean.SettingsBluetoothDeviceBean;
+import com.fenda.settings.service.SettingsService;
 import com.fenda.settings.utils.SettingsBluetoothUtil;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -126,6 +131,14 @@ public class SettingsActivity extends BaseActivity {
 
         String deviceName = (String) SPUtils.get(BaseApplication.getInstance(), Constant.Settings.DEVICE_NAME, "");
         tvDisDeviceName.setText(deviceName);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSyncEvent(String syncContact) {
+        if (syncContact.equals(SettingsChangeDeviceNameActivity.SETTINGS_SYNC_DEVICENAME)) {
+            LogUtil.d(TAG, "sync device name=======");
+            tvDisDeviceName.setText((String) SPUtils.get(BaseApplication.getInstance(), Constant.Settings.DEVICE_NAME, ""));
+        }
     }
 
     @Override

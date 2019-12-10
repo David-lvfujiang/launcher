@@ -593,7 +593,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         }else if (id == R.id.bt_music_play){
             if (isPause) {
                 FDMusic tMusic = mMusicList.get(current_item);
-                play(tMusic,false);
+                play(tMusic, true);
             } else {
                 pause(false);
             }
@@ -668,6 +668,14 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                 mMusicProgressSb.setMax(time);
                 LogUtil.e("MediaPlayer -----》" + time);
                 mediaPlayer.start();
+                PlayerMessage message = new PlayerMessage();
+                message.setPlaytime(length);
+                Message sendM = new Message();
+                sendM.arg1 = 1;
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("message", message);
+                sendM.setData(bundle);
+                sendMessageHandler.sendMessageDelayed(sendM, 0);
                 isPause = false;
                 if (contentType != Constant.Player.FM){
                     mProgressHandler.postDelayed(mProgressRunable, 1000);
@@ -1097,7 +1105,6 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                 return fragmentList.size();
             }
         }
-
 
     }
 

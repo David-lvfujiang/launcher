@@ -183,6 +183,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         init();
+        Log.e(TAG, "onStartCommand: ==============" );
         return Service.START_STICKY;
     }
 
@@ -232,6 +233,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 e.printStackTrace();
             }
         } else {
+            LogUtil.e("授权失败");
             showToast("授权失败!");
         }
     }
@@ -283,7 +285,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                     //如果当前的网络连接成功并且网络连接可用
                     if (NetworkInfo.State.CONNECTED == info.getState() && info.isAvailable()) {
                         if (info.getType() == ConnectivityManager.TYPE_WIFI) {
-                            doauth_when_net_ok();
+//                            doauth_when_net_ok();
 //                            LogUtil.i("TAG",  "FD------连上");
                         }
                     } else {
@@ -378,8 +380,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
     }
 
     private void doauth_when_net_ok() {
-        if (DDS.getInstance().getInitStatus() == DDS.INIT_COMPLETE_FULL ||
-                DDS.getInstance().getInitStatus() == DDS.INIT_COMPLETE_NOT_FULL) {
+        if (DDS.getInstance().getInitStatus() == DDS.INIT_COMPLETE_FULL || DDS.getInstance().getInitStatus() == DDS.INIT_COMPLETE_NOT_FULL) {
             try {
                 if (!DDS.getInstance().isAuthSuccess()) {
                     mAuthCount = 0;
@@ -416,8 +417,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
             e.printStackTrace();
         }
     }
-
-
+    
     /**
      * 认证广播
      */

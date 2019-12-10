@@ -207,6 +207,7 @@ public class StartWifiConfigureActivity extends BaseMvpActivity<MainPresenter, M
 //        }
 
         if (initProvider != null) {
+            LogUtil.d(TAG, "首次开机初始化语音");
             initProvider.init(this);
             initProvider.initVoice();
         }
@@ -320,44 +321,7 @@ public class StartWifiConfigureActivity extends BaseMvpActivity<MainPresenter, M
     public void onEvent(EventMessage<BaseTcpMessage> event) {
         if (event.getCode() == Constant.Common.INIT_VOICE_SUCCESS) {
             // @todo  勿删 语音初始化成功后会回调这里,在语音成功之前调用会导致应用崩溃
-            Log.e(TAG, "===== INIT_VOICE_SUCCESS =====");
-
-//            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsBindDeviceActivity).navigation();
-
-//            if (initVoiceProvider == null) {
-//                initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
-//            }
-//            if (initVoiceProvider != null) {
-//                initVoiceProvider.openVoice();
-//            }
-//            if (manager == null) {
-//                manager = ContentProviderManager.getInstance(this, Uri.parse(ContentProviderManager.BASE_URI + "/user"));
-//                getContentResolver().registerContentObserver(Uri.parse(ContentProviderManager.BASE_URI), true, new MyContentObserver(new Handler(), manager));
-//
-//            }
-//            //避免重复调用
-//            if (initVoiceProvider != null && !BaseApplication.getBaseInstance().isVoiceInit()) {
-//                BaseApplication.getBaseInstance().setVoiceInit(true);
-//                if (!BaseApplication.getBaseInstance().isRequestWeather()) {
-//                    initVoiceProvider.requestWeather();
-//                }
-//                if (!BaseApplication.getBaseInstance().isRequestNews()) {
-//                    new Thread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            //暂停5S执行，不然无法获取新闻
-//                            try {
-//                                Thread.sleep(5000);
-//                            } catch (InterruptedException e) {
-//                                e.printStackTrace();
-//                            }
-//
-//                            initVoiceProvider.requestNews(10);
-//
-//                        }
-//                    }).start();
-//                }
-//            }
+            Log.e(TAG, "===== 首次开机初始化语音 INIT_VOICE_SUCCESS =====");
 
             ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
             if (settingService != null) {
