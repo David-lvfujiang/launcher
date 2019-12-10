@@ -57,7 +57,7 @@ public class SpeechView {
         view = LayoutInflater.from(context).inflate(R.layout.popuplayout,null);
         txInput = view.findViewById(R.id.tv_input);
         imgGif  = view.findViewById(R.id.img_voice_dialog);
-//        ImageUtil.loadGIFImage(R.mipmap.common_voice_dialog,imgGif,R.mipmap.common_voice_dialog);
+        ImageUtil.loadGIFImage(R.mipmap.common_quan,imgGif,R.mipmap.common_quan);
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {

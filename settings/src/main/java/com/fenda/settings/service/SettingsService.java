@@ -2,6 +2,7 @@ package com.fenda.settings.service;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.MutableContextWrapper;
 import android.text.TextUtils;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
@@ -9,6 +10,8 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.fenda.common.BaseApplication;
 import com.fenda.common.base.BaseResponse;
 import com.fenda.common.baseapp.AppManager;
+import com.fenda.common.baserx.RxBus;
+import com.fenda.common.baserx.RxManager;
 import com.fenda.common.constant.Constant;
 import com.fenda.common.provider.ICallProvider;
 import com.fenda.common.provider.ISettingsProvider;
@@ -31,7 +34,12 @@ import com.fenda.settings.model.request.SettingsRegisterDeviceRequest;
 import com.fenda.settings.model.response.SettingsQueryDeviceInfoResponse;
 import com.fenda.settings.model.response.SettingsRegisterDeviceResponse;
 
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.Scheduler;
 import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by  Android Studio.
@@ -47,6 +55,8 @@ public class SettingsService implements ISettingsProvider {
     private String registeName = "奋达小和";
     private String registeMac;
     private String registeVersion;
+
+    private int registerFaildNumber = 0;
 
     @Override
     public void deviceStatus(Context context) {
@@ -70,14 +80,17 @@ public class SettingsService implements ISettingsProvider {
 //                hintent.addCategory("android.intent.category.HOME");
 //                hintent.putExtra("HOME_PAGE",true);
 //                context.startActivity(hintent);
-                try {
-                    AppManager.getAppManager().finishActivity(Class.forName("com.fenda.homepage.activity.StartWifiConfigureActivity"));
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+
+                EventBusUtils.post(Constant.Common.BIND_SUCCESS);
+
+//                try {
+//                    AppManager.getAppManager().finishActivity(Class.forName("com.fenda.homepage.activity.StartWifiConfigureActivity"));
+//                } catch (ClassNotFoundException e) {
+//                    e.printStackTrace();
+//                }
             } else {
                 LogUtil.d(TAG, "device not bind~");
-                queryDeviceInfo(context);
+                queryDeviceInfo(context,true);
             }
         } else {
             LogUtil.d(TAG, "start register device");
@@ -109,10 +122,23 @@ public class SettingsService implements ISettingsProvider {
                         } else if (("设备已经注册").equals(response.getMessage())) {  //已经注册
                             haveRegisterSuccess(context);
                         } else {   //注册失败
-                            ToastUtils.show("注册失败，请重启后再试！");
+                            registerFaildNumber ++;
+                            if (registerFaildNumber < 5){
+                                ToastUtils.show("注册失败，正在尝试第"+registerFaildNumber+"重新注册...");
+                                Observable.timer(2, TimeUnit.SECONDS).subscribeOn(Schedulers.io()).subscribe(new Consumer<Long>() {
+                                    @Override
+                                    public void accept(Long aLong) throws Exception {
+                                        registerDevice(context);
+                                    }
+                                });
+                            }else {
+                                ToastUtils.show("注册失败，请重启设备或联系客服");
+                            }
+
+
                         }
                     }
-                }, new Consumer<Throwable>() {
+                },  new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         // 异常处理
@@ -152,11 +178,11 @@ public class SettingsService implements ISettingsProvider {
         Intent intent = new Intent(context, SettingsBindDeviceActivity.class);
         context.startActivity(intent);
         LogUtils.v(TAG, "注册成功进入绑定界面 ");
-        try {
-            AppManager.getAppManager().finishActivity(Class.forName("com.fenda.homepage.activity.StartWifiConfigureActivity"));
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            AppManager.getAppManager().finishActivity(Class.forName("com.fenda.homepage.activity.StartWifiConfigureActivity"));
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
         AppUtils.saveRegisterDevice(context, true);
     }
 
@@ -165,10 +191,11 @@ public class SettingsService implements ISettingsProvider {
         AppUtils.saveRegisterDevice(context, true);
 
         //查询设备信息保存、判断是否绑定
-        queryDeviceInfo(context);
+        queryDeviceInfo(context,true);
     }
 
-    private void queryDeviceInfo(final Context context) {
+    @Override
+    public void queryDeviceInfo(final Context context, final boolean isSendEvent) {
         RetrofitHelper.getInstance(SettingsContant.TEST_BASE_URL).getServer(SettingsApiService.class).getDeviceInfo()
                 .compose(RxSchedulers.<BaseResponse<SettingsQueryDeviceInfoResponse>>applySchedulers())
                 .subscribe(new Consumer<BaseResponse<SettingsQueryDeviceInfoResponse>>() {
@@ -176,7 +203,7 @@ public class SettingsService implements ISettingsProvider {
                     public void accept(BaseResponse response) throws Exception {
                         if (response.getCode() == 200) {
                             LogUtil.d(TAG, "getDeviceInfo = " + response.getData());
-                            queryDeviceInfoSuccess(context, response);
+                             queryDeviceInfoSuccess(context, response,isSendEvent);
                         } else {
                             LogUtil.d(TAG, "queryDeviceInfo fail = " + response);
                             ToastUtils.show(R.string.settings_init_device_status_query_fail);
@@ -191,16 +218,18 @@ public class SettingsService implements ISettingsProvider {
                 });
     }
 
-    private void queryDeviceInfoSuccess(Context context, BaseResponse<SettingsQueryDeviceInfoResponse> response) {
+    private void queryDeviceInfoSuccess(Context context, BaseResponse<SettingsQueryDeviceInfoResponse> response,boolean isEvent) {
         SPUtils.put(context, Constant.Settings.USER_ID, response.getData().getId());
         SPUtils.put(context, Constant.Settings.DEVICE_NAME, response.getData().getName());
         SPUtils.put(context, Constant.Settings.DEVICE_ICON, response.getData().getIcon());
         SPUtils.put(context, Constant.Settings.VCODE, response.getData().getVcode());
         String rongCloudToken = response.getData().getRongcloud_token();
+        LogUtil.d(TAG, "rongCloudToken = "+rongCloudToken);
         if (!TextUtils.isEmpty(rongCloudToken)) {
             SPUtils.put(context, Constant.Settings.RONGYUNCLOUDTOKEN, rongCloudToken);
             // 调用音视频服务接口登录IM
             ICallProvider loginService = (ICallProvider) ARouter.getInstance().build(RouterPath.Call.CALL_SERVICE).navigation();
+            LogUtil.d(TAG, "loginService = "+loginService);
             if (loginService != null) {
                 LogUtil.d(TAG, "ICallProvider 登录IM ");
                 loginService.login(rongCloudToken);
@@ -212,30 +241,33 @@ public class SettingsService implements ISettingsProvider {
         bootstrap.init(context, userId, SettingsContant.TCP_IP, SettingsContant.TCP_PORT, 0);
 
         //判断设备是否被绑定
-        if (response.getData().getBindStatus()) {
-            LogUtil.d(TAG, "Query: device have bind~");
-            AppUtils.saveBindedDevice(context, true);
-            Intent hintent = new Intent();
-            hintent.setAction("android.intent.action.MAIN");
-            hintent.addCategory("android.intent.category.HOME");
-            hintent.putExtra("HOME_PAGE",true);
-            context.startActivity(hintent);
-            try {
-                AppManager.getAppManager().finishActivity(Class.forName("com.fenda.homepage.activity.StartWifiConfigureActivity"));
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+        if (response.getData().getBindStatus() ) {
+            if (isEvent){
+                EventBusUtils.post(Constant.Common.BIND_SUCCESS);
             }
+            LogUtil.d(TAG, "Query: device have bind~=======");
+//            AppUtils.saveBindedDevice(context, true);
+//            Intent hintent = new Intent();
+//            hintent.setAction("android.intent.action.MAIN");
+//            hintent.addCategory("android.intent.category.HOME");
+//            hintent.putExtra("HOME_PAGE",true);
+//            context.startActivity(hintent);
+//            try {
+//                AppManager.getAppManager().finishActivity(Class.forName("com.fenda.homepage.activity.StartWifiConfigureActivity"));
+//            } catch (ClassNotFoundException e) {
+//                e.printStackTrace();
+//            }
         } else {
             AppUtils.saveBindedDevice(context, false);
 
             LogUtil.d(TAG, "Query: device not bind~");
             Intent intent = new Intent(context, SettingsBindDeviceActivity.class);
             context.startActivity(intent);
-            try {
-                AppManager.getAppManager().finishActivity(Class.forName("com.fenda.homepage.activity.StartWifiConfigureActivity"));
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                AppManager.getAppManager().finishActivity(Class.forName("com.fenda.homepage.activity.StartWifiConfigureActivity"));
+//            } catch (ClassNotFoundException e) {
+//                e.printStackTrace();
+//            }
         }
     }
 

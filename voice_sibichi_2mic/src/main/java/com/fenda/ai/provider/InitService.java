@@ -15,6 +15,7 @@ import com.aispeech.dui.plugin.remind.Event;
 import com.aispeech.dui.plugin.remind.RemindPlugin;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.facade.template.IProvider;
+import com.fenda.ai.R;
 import com.fenda.ai.VoiceConstant;
 import com.fenda.ai.contant.SibichiContant;
 import com.fenda.ai.http.SibichiApiService;
@@ -90,25 +91,26 @@ public class InitService implements IVoiceInitProvider {
 
         String outputPath = modelDir + File.separator + fileName;
         File mFile = new File(outputPath);
+
         if (!mFile.exists()){
             mFile.createNewFile();
+            InputStream myInput;
+            OutputStream myOutput = new FileOutputStream(outputPath);
+
+            String assertFilePath = assertDir + File.separator + fileName;
+            myInput = mContext.getAssets().open(assertFilePath);
+            byte[] buffer = new byte[1024];
+            int length = myInput.read(buffer);
+            while (length > 0) {
+                myOutput.write(buffer, 0, length);
+                length = myInput.read(buffer);
+            }
+            myOutput.flush();
+            myInput.close();
+            myOutput.close();
         }
 
-        InputStream myInput;
-        OutputStream myOutput = new FileOutputStream(outputPath);
 
-        String assertFilePath = assertDir + File.separator + fileName;
-        myInput = mContext.getAssets().open(assertFilePath);
-        byte[] buffer = new byte[1024];
-        int length = myInput.read(buffer);
-        while (length > 0) {
-            myOutput.write(buffer, 0, length);
-            length = myInput.read(buffer);
-        }
-
-        myOutput.flush();
-        myInput.close();
-        myOutput.close();
     }
 
 
@@ -193,6 +195,37 @@ public class InitService implements IVoiceInitProvider {
 
     private void sendDdsNameSuccess(BaseResponse response) {
         LogUtils.v(TAG, "sendDdsNameSuccess: sendDdsNameSuccess");
+
+    }
+
+
+
+    @Override
+    public void PlayWelcomeTTS() {
+//        LogUtil.i("TAG",  "FD------play welcome TTS---");
+        try {
+            if (DDS.getInstance().isAuthSuccess()){
+                String[] wakeupWords = new String[0];
+                String minorWakeupWord = null;
+                try {
+                    wakeupWords = DDS.getInstance().getAgent().getWakeupEngine().getWakeupWords();
+                    minorWakeupWord = DDS.getInstance().getAgent().getWakeupEngine().getMinorWakeupWord();
+                } catch (DDSNotInitCompleteException e) {
+                    e.printStackTrace();
+                }
+                String hiStr = "";
+                if (wakeupWords != null && minorWakeupWord != null) {
+                    hiStr = mContext.getString(R.string.voice_hi_str2, wakeupWords[0], minorWakeupWord);
+                } else if (wakeupWords != null && wakeupWords.length == 2) {
+                    hiStr = mContext.getString(R.string.voice_hi_str2, wakeupWords[0], wakeupWords[1]);
+                } else if (wakeupWords != null && wakeupWords.length > 0) {
+                    hiStr = mContext.getString(R.string.voice_hi_str, wakeupWords[0]);
+                }
+                DDS.getInstance().getAgent().getTTSEngine().speak(hiStr, 1);
+            }
+        } catch (DDSNotInitCompleteException e) {
+            e.printStackTrace();
+        }
 
     }
 }

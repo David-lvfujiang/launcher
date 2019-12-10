@@ -83,7 +83,7 @@ public class DuiUpdateObserver implements MessageObserver {
                 if (BuildConfig.LOG_DEBUG){
                     DDS.getInstance().getAgent().getTTSEngine().speak("发现新版本,正在为您更新", 1);
                 }
-            } catch (DDSNotInitCompleteException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

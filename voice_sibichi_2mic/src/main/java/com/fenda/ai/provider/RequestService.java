@@ -54,12 +54,11 @@ public class RequestService implements IVoiceRequestProvider {
     @Override
     public void requestWeather(){
         try {
-            BaseApplication.getBaseInstance().setRequestWeather(true);
             Thread.sleep(800);
             LogUtil.e("requestWeather ==== 请求天气 ====");
             SkillIntent skillIntent = new SkillIntent("2019042500000544",
                     VoiceConstant.SIBICHI.TASK, "查询天气",
-                    new JSONObject().put("text", "现在的天气").toString());
+                    new JSONObject().put("text", "天气").toString());
             DDS.getInstance().getAgent().triggerIntent(skillIntent);
 
 //            requestNews(10);
@@ -137,9 +136,7 @@ public class RequestService implements IVoiceRequestProvider {
 
     @Override
     public void closeVoice() {
-
             LogUtil.d( "FD-------closeVoice ");
-
             if (DDS.getInstance().getInitStatus() == DDS.INIT_COMPLETE_FULL ||
                     DDS.getInstance().getInitStatus() == DDS.INIT_COMPLETE_NOT_FULL) {
                 try {
@@ -212,8 +209,6 @@ public class RequestService implements IVoiceRequestProvider {
     @Override
     public void requestNews(int number) {
         try {
-            LogUtil.e("===============================请求新闻"+number+"================================");
-            BaseApplication.getBaseInstance().setRequestNews(true);
             SkillIntent skillIntent = new SkillIntent("2019031900001180",
                     "新闻", "播报新闻",
                     new JSONObject().put("text", "播放新闻").toString());
@@ -247,8 +242,6 @@ public class RequestService implements IVoiceRequestProvider {
                 if (alarmProvider != null){
                     alarmProvider.queryAlarm(json);
                 }
-
-
             }
 
             @Override

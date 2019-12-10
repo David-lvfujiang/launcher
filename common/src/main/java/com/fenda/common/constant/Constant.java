@@ -131,6 +131,7 @@ public interface Constant {
         String VOICE_CONTROL="mVoiceControl";
         String OPEN_MUTE="open_mute";
         String CLOSE_MUTE="close_mute";
+        String BIND_SUCCESS = "bind_success";
 
         int INIT_VOICE_SUCCESS = Integer.MAX_VALUE;
         //回到首页

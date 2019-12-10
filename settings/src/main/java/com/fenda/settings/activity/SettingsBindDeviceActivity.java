@@ -34,6 +34,7 @@ import com.fenda.protocol.tcp.ClientBootstrap;
 import com.fenda.protocol.tcp.TCPConfig;
 import com.fenda.protocol.tcp.bean.BaseTcpMessage;
 import com.fenda.protocol.tcp.bean.EventMessage;
+import com.fenda.protocol.tcp.bus.EventBusUtils;
 import com.fenda.protocol.util.DeviceIdUtil;
 import com.fenda.settings.R;
 import com.fenda.settings.constant.SettingsContant;
@@ -300,14 +301,11 @@ public class SettingsBindDeviceActivity extends BaseMvpActivity<SettingsPresente
     public void getContactsListSuccess(BaseResponse<List<UserInfoBean>> response) {
         ContentProviderManager.getInstance(SettingsBindDeviceActivity.this, Uri.parse(ContentProviderManager.BASE_URI + "/user")).insertUsers(response.getData());
         //调用更新语音
-        String mBindIntent1 = "onReceive";
-        Intent hintent = new Intent();
-        hintent.setAction("android.intent.action.MAIN");
-        hintent.addCategory("android.intent.category.HOME");
-        hintent.putExtra("HOME_PAGE",true);
-        hintent.putExtra("BIND_EVENT_INTENT", mBindIntent1);
-        startActivity(hintent);
-        finish();
+
+        LogUtil.e("getContactsListSuccess ============ ");
+
+        EventBusUtils.post(Constant.Common.BIND_SUCCESS);
+
     }
 
     @Override

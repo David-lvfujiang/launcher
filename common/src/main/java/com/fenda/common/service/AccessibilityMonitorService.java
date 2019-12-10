@@ -61,7 +61,7 @@ public class AccessibilityMonitorService extends AccessibilityService {
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
                 mWindowClassName = event.getClassName();
                 String mPackage = event.getPackageName() == null ? "" : event.getPackageName().toString();
-                String className = event.getClassName().toString();
+
                 if (QIYIMOBILE_PKG.equals(mPackage)){
                      if (provider == null){
                          provider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
@@ -69,7 +69,9 @@ public class AccessibilityMonitorService extends AccessibilityService {
                      provider.cancelQQMusic();
                 }
                 packageMap.put("key",mPackage);
-                packageMap.put("class",className);
+                if (mWindowClassName != null){
+                    packageMap.put("class",mWindowClassName.toString());
+                }
 
                 break;
             default:

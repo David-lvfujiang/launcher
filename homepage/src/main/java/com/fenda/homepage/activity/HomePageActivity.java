@@ -70,6 +70,7 @@ import com.fenda.common.util.GsonUtil;
 import com.fenda.common.util.ImageUtil;
 import com.fenda.common.util.LogUtil;
 import com.fenda.common.util.LogUtils;
+import com.fenda.common.util.NetUtil;
 import com.fenda.common.util.SPUtils;
 import com.fenda.common.util.ToastUtils;
 import com.fenda.common.view.MyNestedScrollView;
@@ -141,11 +142,15 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     private FragmentTransaction transaction;
 
     private StartWifiConfigureFragment configureFragment;
-
+    private FragmentManager fragmentManager;
 
 
     @Override
     public int onBindLayout() {
+        if (!isTaskRoot()){
+            finish();
+            return 0;
+        }
         LogUtil.e("进入了Oncreate");
         return R.layout.homepage_home_activity;
     }
@@ -154,19 +159,23 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
     @Override
     public void initView() {
-        FragmentManager manager = getSupportFragmentManager();
-        transaction = manager.beginTransaction();
-        BaseApplication.getBaseInstance().setRequestWeather(false);
+        fragmentManager = getSupportFragmentManager();
         linLayout = findViewById(R.id.rela_pre);
 
 
+        if (!NetUtil.checkNet()){
 
-        if (!AppUtils.isFirstStart(this)){
             showWifiConfigureFragment();
         }else {
-            showHomePageView();
-        }
+            if (!AppUtils.isRegisterDevice(this)  || !AppUtils.isBindedDevice(this)){
 
+                showWifiConfigureFragment();
+            }else {
+                showHomePageView();
+
+                mISettingsProvider.queryDeviceInfo(this,false);
+            }
+        }
 
 
 
@@ -177,12 +186,28 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
      * 显示首页界面
      */
     private void showHomePageView(){
+
+        transaction = fragmentManager.beginTransaction();
+        hideWifiConfigureFragment();
         if (homeFragment == null){
             homeFragment = new HomeFragment();
+
         }
-        hideWifiConfigureFragment();
-        transaction.add(R.id.rela_pre,homeFragment);
-        transaction.commit();
+        if (!homeFragment.isAdded()){
+            transaction.add(R.id.rela_pre,homeFragment);
+        }
+        transaction.show(homeFragment);
+        transaction.commitAllowingStateLoss();
+        if (initProvider != null){
+            initProvider.PlayWelcomeTTS();
+        }
+        if (homeFragment != null){
+            homeFragment.returnDefault();
+        }
+        finishAllActivity();
+        initSuccess();
+
+
     }
 
     /**
@@ -198,12 +223,21 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
      * 显示wifi配网页面
      */
     private void showWifiConfigureFragment(){
+
+        transaction = fragmentManager.beginTransaction();
+        hideHomePageView();
         if (configureFragment == null){
             configureFragment = new StartWifiConfigureFragment();
+
         }
-        hideHomePageView();
-        transaction.add(R.id.rela_pre,configureFragment);
-        transaction.commit();
+
+        if (!configureFragment.isAdded()){
+            transaction.add(R.id.rela_pre,configureFragment);
+        }
+        transaction.show(configureFragment);
+        transaction.commitAllowingStateLoss();
+
+
 
     }
 
@@ -213,13 +247,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     private void hideWifiConfigureFragment(){
         if (configureFragment != null && transaction != null){
             transaction.hide(configureFragment);
+            configureFragment = null;
         }
     }
-
-
-
-
-
 
 
 
@@ -230,10 +260,12 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         if (intent != null){
             boolean HOME_PAGE = intent.getBooleanExtra("HOME_PAGE",false);
             LogUtil.e("HOME_PAGE = "+HOME_PAGE);
-//            if (HOME_PAGE){
-//                returnDefault();
-//            }
-//            finishAllActivity();
+            if (homeFragment != null){
+                if (HOME_PAGE){
+                    homeFragment.returnDefault();
+                }
+                finishAllActivity();
+            }
         }
     }
 
@@ -246,9 +278,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mAdminReceiver = new ComponentName(mContext, ScreenOffAdminReceiver.class);
         mPowerManager = (PowerManager) getSystemService(POWER_SERVICE);
         mPolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-        if (!mPolicyManager.isAdminActive(mAdminReceiver)) {
-            openDeviceManager();
-        }
+//        if (!mPolicyManager.isAdminActive(mAdminReceiver)) {
+//            openDeviceManager();
+//        }
 
 
         LogUtil.d(TAG, "首页初始化语音");
@@ -293,188 +325,37 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         mPresenter.setVM(this, mModel);
     }
 
-    @Override
-    public void onEvent ( final EventMessage<BaseTcpMessage> message){
-        //家庭解散通知
-        if (message.getCode() == TCPConfig.MessageType.FAMILY_DISSOLVE) {
-            LogUtil.d("家庭解散通知1 " + message);
-            ContentProviderManager.getInstance(mContext, Constant.Common.URI).clear();
-            DbUtil.getInstance(mContext).deleteAllCallRecoder();
-            if (mICallProvider != null) {
-                mICallProvider.syncFamilyContacts();
-            }
 
-            if(mISettingsProvider != null){
-                mISettingsProvider.syncSettingsContacts();
-            }
-            AppUtils.saveBindedDevice(getApplicationContext(), false);
-//            ActivityManager am = (ActivityManager)getSystemService(Con
-//            text.ACTIVITY_SERVICE);
-//            String activityName = am.getRunningTasks(1).get(0).topActivity.getClassName();
-//
-            LogUtil.e("applyId 家庭解散通知1 栈顶activityName = ");
 
-            mBluetoothAdapter.disable();
-            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsBindDeviceActivity).navigation();
-
-        } else if (TCPConfig.MessageType.DCA_MSG == message.getCode()) {
-            LogUtil.d(TAG, "收到DCA消息 = " + message.getData());
-            BaseTcpMessage tcpMsg = message.getData();
-            String dataMsg = tcpMsg.getMsg();
-            JSONObject jsonObject = JSONObject.parseObject(dataMsg);
-            String authCode = jsonObject.getString("authCode");
-            String cliendId = jsonObject.getString("cliendId");
-            String codeVerifier = jsonObject.getString("codeVerifier");
-            String userId = jsonObject.getString("userId");
-            SPUtils.put(getApplicationContext(), Constant.HomePage.DCA_AUTNCODE, authCode);
-            SPUtils.put(getApplicationContext(), Constant.HomePage.DCA_CODEVERIFIER, codeVerifier);
-            SPUtils.put(getApplicationContext(), Constant.HomePage.DCA_CLIENDID, cliendId);
-            SPUtils.put(getApplicationContext(), Constant.HomePage.DCA_USERID, userId);
-
-            IVoiceInitProvider ddsService = (IVoiceInitProvider) ARouter.getInstance().build(RouterPath.VOICE.INIT_PROVIDER).navigation();
-            if (ddsService != null) {
-                ddsService.initAuth();
-            }
+    private void initSuccess() {
+        if (initVoiceProvider == null) {
+            initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
         }
-        //普通成员退出家庭通知
-        else if (message.getCode() == TCPConfig.MessageType.USER_EXIT_FAMILY) {
-            LogUtil.d("bind onReceiveEvent = " + message);
-            LogUtil.d("普通成员退出家庭通知" + message.getData().getHead().getUserId());
-            String messageContent = message.getData().getMsg();
-            String userName = messageContent.substring(messageContent.indexOf("【") + 1, messageContent.indexOf("】"));
-            LogUtil.e(userName);
-            ContentProviderManager manager = ContentProviderManager.getInstance(BaseApplication.getBaseInstance(), Uri.parse(ContentProviderManager.BASE_URI + "/user"));
-            List<UserInfoBean> beanList = manager.queryUser("name = ? ", new String[]{userName});
-            if (beanList != null && beanList.size() > 0) {
-                String userMobile = beanList.get(0).getMobile();
-                LogUtil.i("phone = " + userMobile);
-                IAppLeaveMessageProvider leaveMessageProvider = (IAppLeaveMessageProvider) ARouter.getInstance().build(RouterPath.Leavemessage.LEAVEMESSAGE_SERVICE).navigation();
-                leaveMessageProvider.removeRongIMMessage(userMobile);
-            } else {
-                LogUtil.i("找不到用户");
-            }
-            MessageBean messageBean = GsonUtil.GsonToBean(messageContent, MessageBean.class);
-            if (messageBean != null && messageBean.getMessageUserInfoDTO() != null) {
-                String userId = messageBean.getMessageUserInfoDTO().getUserId();
-                ContentProviderManager.getInstance(mContext, Constant.Common.URI).deleteUserByUserID(userId);
-                DbUtil.getInstance(mContext).deleteCallRecoderByUserId(userId);
-                if (mICallProvider != null) {
-                    mICallProvider.syncFamilyContacts();
-                }
-
-                if(mISettingsProvider != null){
-                    mISettingsProvider.syncSettingsContacts();
-                }
-            }
-        } else if (message.getCode() == TCPConfig.MessageType.USER_REPAIR_HEAD ) {
-            if (message != null && message.getData() != null) {
-                BaseTcpMessage baseTcpMessage = (BaseTcpMessage) message.getData();
-                String msg = baseTcpMessage.getMsg();
-                RepairPersonHeadBean bean = GsonUtil.GsonToBean(msg, RepairPersonHeadBean.class);
-                if (bean != null) {
-                    ContentProviderManager.getInstance(mContext, Constant.Common.URI).updateUserHeadByUserID(bean.getIcon(), bean.getUserId());
-                    DbUtil.getInstance(mContext).updateIconByUserId(bean.getIcon(), bean.getUserId());
-                    if (mICallProvider != null) {
-                        mICallProvider.syncFamilyContacts();
-                    }
-
-                    if(mISettingsProvider != null){
-                        mISettingsProvider.syncSettingsContacts();
-                    }
-                }
-            }
-        } else if (message.getCode() == TCPConfig.MessageType.NEW_USER_ADD) { //新人加入家庭通知
-            BaseTcpMessage dataMsg = message.getData();
-            String msgContent = dataMsg.getMsg();
-            MessageBean messageBean = GsonUtil.GsonToBean(msgContent, MessageBean.class);
-            if (messageBean != null && messageBean.getMessageUserInfoDTO() != null) {
-                UserInfoBean userInfoBean = messageBean.getMessageUserInfoDTO();
-                ContentProviderManager.getInstance(mContext, Constant.Common.URI).insertUser(userInfoBean);
-                if (mICallProvider != null) {
-                    mICallProvider.syncFamilyContacts();
-                }
-
-                if(mISettingsProvider != null){
-                    mISettingsProvider.syncSettingsContacts();
-                }
-            }
-            mNewUserName = msgContent.substring(msgContent.indexOf("【") + 1, msgContent.indexOf("】"));
-            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsContractsNickNameEditActivity).withString("newAddUserName", mNewUserName).navigation();
-            LogUtil.d(TAG, "新人加入家庭通知" + mNewUserName);
-
+        if (initVoiceProvider != null) {
+            initVoiceProvider.openVoice();
         }
-        else if (message.getCode() == Constant.Common.INIT_VOICE_SUCCESS && AppUtils.isFirstStart(getApplicationContext())) {
-            // @todo  勿删 语音初始化成功后会回调这里,在语音成功之前调用会导致应用崩溃
-            LogUtil.e("===== INIT_VOICE_SUCCESS =====");
+        if (manager == null) {
+            manager = ContentProviderManager.getInstance(this, Uri.parse(ContentProviderManager.BASE_URI + "/user"));
+            getContentResolver().registerContentObserver(Uri.parse(ContentProviderManager.BASE_URI), true, new MyContentObserver(new Handler(), manager));
+        }
 
-            if (initVoiceProvider == null) {
-                initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
-            }
-            if (initVoiceProvider != null) {
-                initVoiceProvider.openVoice();
-            }
-            if (manager == null) {
-                manager = ContentProviderManager.getInstance(this, Uri.parse(ContentProviderManager.BASE_URI + "/user"));
-                getContentResolver().registerContentObserver(Uri.parse(ContentProviderManager.BASE_URI), true, new MyContentObserver(new Handler(), manager));
-            }
-
-            if (mGetBindEventIntent == null) {
-                if (mGetBindMultiIntent == null) {
-                    LogUtil.d(TAG, "null 正常进入主界面");
-                    ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
-                    if (settingService != null) {
-                        LogUtil.d(TAG, "init device status");
-                        settingService.deviceStatus(getApplicationContext());
-                    }
-                    // 清除本地联系人数据时重新请求网络数据并保存到本地数据库
-                    if (ContentProviderManager.getInstance(mContext, Constant.Common.URI).isEmpty()) {
-                        mPresenter.getFamilyContacts();
-                    }
-                } else {
-                    LogUtil.d(TAG, "特殊方式进入主界面");
-                }
-            } else {
-                LogUtil.d(TAG, "绑定成功进入主界面");
-                ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
-                if (settingService != null) {
-                    LogUtil.d(TAG, "init device status");
-                    settingService.deviceStatus(getApplicationContext());
-                }
-                // 清除本地联系人数据时重新请求网络数据并保存到本地数据库
-                if (ContentProviderManager.getInstance(mContext, Constant.Common.URI).isEmpty()) {
-                    mPresenter.getFamilyContacts();
-                }
-            }
-
-
-            //避免重复调用
-            if (initVoiceProvider != null && !BaseApplication.getBaseInstance().isVoiceInit()) {
-                BaseApplication.getBaseInstance().setVoiceInit(true);
-                if (!BaseApplication.getBaseInstance().isRequestWeather()) {
-                    initVoiceProvider.requestWeather();
-                }
-                if (!BaseApplication.getBaseInstance().isRequestNews()) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            //暂停5S执行，不然无法获取新闻
-                            try {
-                                Thread.sleep(5000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-
-                            initVoiceProvider.requestNews(10);
-
+        //避免重复调用
+        if (initVoiceProvider != null ) {
+                initVoiceProvider.requestWeather();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //暂停5S执行，不然无法获取新闻
+                        try {
+                            Thread.sleep(4000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
-                    }).start();
-                }
-            }
-        }
-        else if (message.getCode() == Constant.Common.GO_HOME) {
-            //回到首页时 把列表页面回到默认位置
-            finishAllActivity();
-//            returnDefault();
+
+                        initVoiceProvider.requestNews(10);
+
+                    }
+                }).start();
         }
     }
 
@@ -489,14 +370,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         AppManager.getAppManager().clearActivityStack();
     }
 
-    private synchronized void weather () {
-        //避免重复调用
-        if (initVoiceProvider != null && !isWeather) {
-            isWeather = true;
-            initVoiceProvider.requestWeather();
-        }
-
-    }
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -678,7 +551,9 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
     @Override
     protected void onDestroy () {
-        unregisterReceiver(mBtReceiver);
+        if (mBtReceiver != null){
+            unregisterReceiver(mBtReceiver);
+        }
         super.onDestroy();
     }
 
@@ -707,28 +582,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
     }
 
-    @Override
-    public boolean onTouchEvent (MotionEvent event){
-        // TODO Auto-generated method stub
-        //如果这个方法消费了这个这个event事件，就返回True，否则false。
-        return super.onTouchEvent(event);
-    }
-
-
-
-
-
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onScreenEvent (String type){
-        if (type.equals(Constant.Common.SCREEN_OFF)) {
-            LogUtil.i("homepage:screenOff");
-            screenOff();
-        } else if (type.equals(Constant.Common.SCREEN_ON)) {
-            LogUtil.i("homepage:screenOn");
-            screenOn();
-        }
-    }
 
         /**
          * 亮屏
@@ -758,10 +611,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
 
 
-
-
-
-
     public void setDiscoverableTimeout(int timeout) {
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
         try {
@@ -777,10 +626,167 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
         }
     }
 
-    @Override
-    public void onWindowFocusChanged ( boolean hasFocus){
-        super.onWindowFocusChanged(hasFocus);
 
-        LogUtil.e("进入了Oncreate  : hasFocus = " + hasFocus);
+//==============================================================================EventBus监听开始===================================================================================
+
+    @Override
+    public void onEvent ( final EventMessage<BaseTcpMessage> message){
+        //家庭解散通知
+        if (message.getCode() == TCPConfig.MessageType.FAMILY_DISSOLVE) {
+            LogUtil.d("家庭解散通知1 " + message);
+            ContentProviderManager.getInstance(mContext, Constant.Common.URI).clear();
+            DbUtil.getInstance(mContext).deleteAllCallRecoder();
+            if (mICallProvider != null) {
+                mICallProvider.syncFamilyContacts();
+            }
+
+            if(mISettingsProvider != null){
+                mISettingsProvider.syncSettingsContacts();
+            }
+            AppUtils.saveBindedDevice(getApplicationContext(), false);
+//            ActivityManager am = (ActivityManager)getSystemService(Con
+//            text.ACTIVITY_SERVICE);
+//            String activityName = am.getRunningTasks(1).get(0).topActivity.getClassName();
+//
+            LogUtil.e("applyId 家庭解散通知1 栈顶activityName = ");
+
+            mBluetoothAdapter.disable();
+            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsBindDeviceActivity).navigation();
+
+        } else if (TCPConfig.MessageType.DCA_MSG == message.getCode()) {
+            LogUtil.d(TAG, "收到DCA消息 = " + message.getData());
+            BaseTcpMessage tcpMsg = message.getData();
+            String dataMsg = tcpMsg.getMsg();
+            JSONObject jsonObject = JSONObject.parseObject(dataMsg);
+            String authCode = jsonObject.getString("authCode");
+            String cliendId = jsonObject.getString("cliendId");
+            String codeVerifier = jsonObject.getString("codeVerifier");
+            String userId = jsonObject.getString("userId");
+            SPUtils.put(getApplicationContext(), Constant.HomePage.DCA_AUTNCODE, authCode);
+            SPUtils.put(getApplicationContext(), Constant.HomePage.DCA_CODEVERIFIER, codeVerifier);
+            SPUtils.put(getApplicationContext(), Constant.HomePage.DCA_CLIENDID, cliendId);
+            SPUtils.put(getApplicationContext(), Constant.HomePage.DCA_USERID, userId);
+
+            IVoiceInitProvider ddsService = (IVoiceInitProvider) ARouter.getInstance().build(RouterPath.VOICE.INIT_PROVIDER).navigation();
+            if (ddsService != null) {
+                ddsService.initAuth();
+            }
+        }
+        //普通成员退出家庭通知
+        else if (message.getCode() == TCPConfig.MessageType.USER_EXIT_FAMILY) {
+            LogUtil.d("bind onReceiveEvent = " + message);
+            LogUtil.d("普通成员退出家庭通知" + message.getData().getHead().getUserId());
+            String messageContent = message.getData().getMsg();
+            String userName = messageContent.substring(messageContent.indexOf("【") + 1, messageContent.indexOf("】"));
+            LogUtil.e(userName);
+            ContentProviderManager manager = ContentProviderManager.getInstance(BaseApplication.getBaseInstance(), Uri.parse(ContentProviderManager.BASE_URI + "/user"));
+            List<UserInfoBean> beanList = manager.queryUser("name = ? ", new String[]{userName});
+            if (beanList != null && beanList.size() > 0) {
+                String userMobile = beanList.get(0).getMobile();
+                LogUtil.i("phone = " + userMobile);
+                IAppLeaveMessageProvider leaveMessageProvider = (IAppLeaveMessageProvider) ARouter.getInstance().build(RouterPath.Leavemessage.LEAVEMESSAGE_SERVICE).navigation();
+                leaveMessageProvider.removeRongIMMessage(userMobile);
+            } else {
+                LogUtil.i("找不到用户");
+            }
+            MessageBean messageBean = GsonUtil.GsonToBean(messageContent, MessageBean.class);
+            if (messageBean != null && messageBean.getMessageUserInfoDTO() != null) {
+                String userId = messageBean.getMessageUserInfoDTO().getUserId();
+                ContentProviderManager.getInstance(mContext, Constant.Common.URI).deleteUserByUserID(userId);
+                DbUtil.getInstance(mContext).deleteCallRecoderByUserId(userId);
+                if (mICallProvider != null) {
+                    mICallProvider.syncFamilyContacts();
+                }
+
+                if(mISettingsProvider != null){
+                    mISettingsProvider.syncSettingsContacts();
+                }
+            }
+        } else if (message.getCode() == TCPConfig.MessageType.USER_REPAIR_HEAD ) {
+            if (message != null && message.getData() != null) {
+                BaseTcpMessage baseTcpMessage = (BaseTcpMessage) message.getData();
+                String msg = baseTcpMessage.getMsg();
+                RepairPersonHeadBean bean = GsonUtil.GsonToBean(msg, RepairPersonHeadBean.class);
+                if (bean != null) {
+                    ContentProviderManager.getInstance(mContext, Constant.Common.URI).updateUserHeadByUserID(bean.getIcon(), bean.getUserId());
+                    DbUtil.getInstance(mContext).updateIconByUserId(bean.getIcon(), bean.getUserId());
+                    if (mICallProvider != null) {
+                        mICallProvider.syncFamilyContacts();
+                    }
+
+                    if(mISettingsProvider != null){
+                        mISettingsProvider.syncSettingsContacts();
+                    }
+                }
+            }
+        } else if (message.getCode() == TCPConfig.MessageType.NEW_USER_ADD) { //新人加入家庭通知
+            BaseTcpMessage dataMsg = message.getData();
+            String msgContent = dataMsg.getMsg();
+            MessageBean messageBean = GsonUtil.GsonToBean(msgContent, MessageBean.class);
+            if (messageBean != null && messageBean.getMessageUserInfoDTO() != null) {
+                UserInfoBean userInfoBean = messageBean.getMessageUserInfoDTO();
+                ContentProviderManager.getInstance(mContext, Constant.Common.URI).insertUser(userInfoBean);
+                if (mICallProvider != null) {
+                    mICallProvider.syncFamilyContacts();
+                }
+
+                if(mISettingsProvider != null){
+                    mISettingsProvider.syncSettingsContacts();
+                }
+            }
+            mNewUserName = msgContent.substring(msgContent.indexOf("【") + 1, msgContent.indexOf("】"));
+            ARouter.getInstance().build(RouterPath.SETTINGS.SettingsContractsNickNameEditActivity).withString("newAddUserName", mNewUserName).navigation();
+            LogUtil.d(TAG, "新人加入家庭通知" + mNewUserName);
+
+        }
+//        else if (message.getCode() == Constant.Common.INIT_VOICE_SUCCESS && AppUtils.isFirstStart(getApplicationContext())) {
+//            // @todo  勿删 语音初始化成功后会回调这里,在语音成功之前调用会导致应用崩溃
+//            LogUtil.e("===== INIT_VOICE_SUCCESS =====");
+//
+//            initSuccess();
+//        }
+        else if (message.getCode() == Constant.Common.GO_HOME) {
+            //回到首页时 把列表页面回到默认位置
+            finishAllActivity();
+//            returnDefault();
+        }
     }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onScreenEvent (String type){
+        if (type.equals(Constant.Common.SCREEN_OFF)) {
+            LogUtil.i("homepage:screenOff");
+            screenOff();
+        } else if (type.equals(Constant.Common.SCREEN_ON)) {
+            LogUtil.i("homepage:screenOn");
+            screenOn();
+        }else if (type.equals(Constant.Common.BIND_SUCCESS)){
+            LogUtil.e("onScreenEvent = "+type);
+            showHomePageView();
+            mISettingsProvider.queryDeviceInfo(this,false);
+            try {
+                AppManager.getAppManager().finishActivity(Class.forName("com.fenda.settings.activity.SettingsBindDeviceActivity"));
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNetworkEvent(com.fenda.common.network.Network network){
+        if (network.isNetwork()){
+            if (configureFragment != null){
+                configureFragment.networkAvailable();
+            }
+        } else {
+            //网络断开
+
+
+        }
+    }
+
+    //==============================================================================EventBus监听结束===================================================================================
+
 }

@@ -170,7 +170,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
     @Override
     public void initView() {
 
-        BaseApplication.getBaseInstance().setRequestWeather(false);
         mHeaderTimeTv = mRootView.findViewById(R.id.tv_header_time);
         mTipInfoRv = mRootView.findViewById(R.id.rv_Tipinfo);
         mHeaderWeatherIv = mRootView.findViewById(R.id.iv_header_weather);
@@ -510,13 +509,14 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         if (initVoiceProvider == null) {
             initVoiceProvider = ARouter.getInstance().navigation(IVoiceRequestProvider.class);
         }
-
-        if (initVoiceProvider != null && !BaseApplication.getBaseInstance().isRequestWeather()) {
-            initVoiceProvider.openVoice();
+        if (mIWeatherProvider == null){
+            mIWeatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
         }
 
+        if (initVoiceProvider != null ) {
+            initVoiceProvider.openVoice();
+        }
         startCycleRollRunnable();
-//        mCyclicRollHandler.postDelayed(cycleRollRunabler, HomeUtil.PAGE_SHOW_TIME);
     }
 
 

@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.fenda.common.BaseApplication;
 import com.fenda.common.base.BaseFragment;
 import com.fenda.common.base.BaseMvpFragment;
 import com.fenda.common.base.BaseResponse;
@@ -43,6 +44,7 @@ import com.fenda.common.provider.ISettingsProvider;
 import com.fenda.common.router.RouterPath;
 import com.fenda.common.util.AppUtils;
 import com.fenda.common.util.LogUtil;
+import com.fenda.common.util.NetUtil;
 import com.fenda.common.util.SettingsCheckWifiLoginTask;
 import com.fenda.common.util.SettingsWifiUtil;
 import com.fenda.common.util.ToastUtils;
@@ -52,6 +54,9 @@ import com.fenda.homepage.model.MainModel;
 import com.fenda.homepage.presenter.MainPresenter;
 import com.fenda.protocol.tcp.bean.BaseTcpMessage;
 import com.fenda.protocol.tcp.bean.EventMessage;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -93,7 +98,7 @@ public class StartWifiConfigureFragment extends BaseMvpFragment<MainPresenter, M
     private String mPswSureSsid;
     private ProgressDialog progressDialog;
 
-    private boolean INIT_SUCCESS;
+    private ISettingsProvider settingService;
 
     @Override
     public int onBindLayout() {
@@ -153,11 +158,9 @@ public class StartWifiConfigureFragment extends BaseMvpFragment<MainPresenter, M
         filter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         getActivity().registerReceiver(mWifiReceiver, filter);
-        isNetWodrkConnect();
-//        mWaitDialog = new WaitDialog(StartWifiConfigureActivity.this.getApplicationContext());
-//        progressDialog.setTitle("我是个等待的Dialog");
-//        mWindowManager = (WindowManager) getApplication().getSystemService(Context.WINDOW_SERVICE);
-//
+        if (NetUtil.checkNet() && !BaseApplication.getBaseInstance().isVoiceAuth()){
+            showProgressDialog();
+        }
 
     }
 
@@ -167,6 +170,7 @@ public class StartWifiConfigureFragment extends BaseMvpFragment<MainPresenter, M
             progressDialog.setMessage("正在初始化中，请稍等...");
             progressDialog.setIndeterminate(true);
             progressDialog.setCancelable(false);
+            progressDialog.show();
         }
 
     }
@@ -290,11 +294,6 @@ public class StartWifiConfigureFragment extends BaseMvpFragment<MainPresenter, M
                     mWifiInfo = mWifiManager.getConnectionInfo();
                     mConnectedSsid = mWifiInfo.getSSID().replace("\"", "");
                     wifiSwitch.setChecked(true);
-                    if (!INIT_SUCCESS){
-                        showProgressDialog();
-                    } else {
-                        //初始化成功开始判断是否授权
-                    }
 
                 } else if (NetworkInfo.State.CONNECTING == info.getState()) {
                     mSettingsWifiBean.setStatus(3);
@@ -331,59 +330,29 @@ public class StartWifiConfigureFragment extends BaseMvpFragment<MainPresenter, M
         }
     };
 
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public void isNetWodrkConnect() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-        Network activeInfo = connectivityManager.getActiveNetwork();
-        LogUtil.d(TAG, "activeInfo = " + activeInfo);
-
-        if (activeInfo == null) {
-            ToastUtils.show("网络未连接，请先连接网络！");
+    /**
+     * 网络连接成功
+     */
+    public void networkAvailable(){
+        if (BaseApplication.getBaseInstance().isVoiceAuth()){
+            if (settingService == null){
+                settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
+            }
+            if (settingService != null) {
+                LogUtil.d(TAG, "init device status");
+                settingService.deviceStatus(mContext);
+            }
+        }else {
+            showProgressDialog();
         }
+        portalWifi();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            connectivityManager.registerDefaultNetworkCallback(new ConnectivityManager.NetworkCallback() {
-                @Override
-                public void onAvailable(Network network) {
-                    super.onAvailable(network);
-                    LogUtil.d(TAG, "wifi onAvailable: " + network);
-                    portalWifi();
-                }
 
-                @Override
-                public void onLosing(Network network, int maxMsToLive) {
-                    super.onLosing(network, maxMsToLive);
-                    LogUtil.d(TAG, "onLosing: " + network);
-                }
-
-                @Override
-                public void onLost(Network network) {
-                    super.onLost(network);
-                    LogUtil.d(TAG, "onLost: " + network);
-//                     ToastUtils.show(getString(R.string.network_not_connect));
-                }
-
-                @Override
-                public void onUnavailable() {
-                    super.onUnavailable();
-                    LogUtil.d(TAG, "onUnavailable: ");
-                }
-
-                @Override
-                public void onCapabilitiesChanged(Network network, NetworkCapabilities networkCapabilities) {
-                    super.onCapabilitiesChanged(network, networkCapabilities);
-                    LogUtil.d(TAG, "onCapabilitiesChanged: " + network);
-                }
-
-                @Override
-                public void onLinkPropertiesChanged(Network network, LinkProperties linkProperties) {
-                    super.onLinkPropertiesChanged(network, linkProperties);
-                    LogUtil.d(TAG, "onLinkPropertiesChanged: " + network);
-                }
-            });
-        }
     }
+
+
+
+
 
     //** wifi 认证 检测 **/
     private void portalWifi() {
@@ -394,7 +363,6 @@ public class StartWifiConfigureFragment extends BaseMvpFragment<MainPresenter, M
                 //不需要wifi认证
                 if(!isLogin){
                     LogUtil.d(TAG, "不需要wifi门户验证");
-                    progressDialog.show();
 
                 }else {
                     LogUtil.d(TAG, "需要wifi门户验证");
@@ -413,10 +381,7 @@ public class StartWifiConfigureFragment extends BaseMvpFragment<MainPresenter, M
     @Override
     public void onDestroy() {
         Log.e(TAG, "ondestory");
-        mContext.unregisterReceiver(mWifiReceiver);
-        mHandler.removeCallbacksAndMessages(null);
-        progressDialog.dismiss();
-        AppUtils.saveFirstStart(mContext, true);
+
         super.onDestroy();
     }
 
@@ -425,7 +390,16 @@ public class StartWifiConfigureFragment extends BaseMvpFragment<MainPresenter, M
     public void onStop() {
         Log.e(TAG, "onStop");
         setStatusBarDisable(DISABLE_NONE);
+//        mContext.unregisterReceiver(mWifiReceiver);
+        mHandler.removeCallbacksAndMessages(null);
         super.onStop();
+    }
+
+    private void dialogDismiss(){
+        if (progressDialog != null){
+            progressDialog.dismiss();
+        }
+
     }
 
     private void setStatusBarDisable(int disableStatus) {
@@ -487,16 +461,19 @@ public class StartWifiConfigureFragment extends BaseMvpFragment<MainPresenter, M
         if (event.getCode() == Constant.Common.INIT_VOICE_SUCCESS) {
             // @todo  勿删 语音初始化成功后会回调这里,在语音成功之前调用会导致应用崩溃
             Log.e(TAG, "===== INIT_VOICE_SUCCESS =====");
-            INIT_SUCCESS = true;
-
-
-//            ISettingsProvider settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
-//            if (settingService != null) {
-//                LogUtil.d(TAG, "init device status");
-//                settingService.deviceStatus(mContext);
-//            }
+            dialogDismiss();
+            if (settingService == null){
+                settingService = (ISettingsProvider) ARouter.getInstance().build(RouterPath.SETTINGS.SettingsService).navigation();
+            }
+            if (settingService != null) {
+                LogUtil.d(TAG, "init device status");
+                settingService.deviceStatus(mContext);
+            }
         }
     }
+
+
+
 
 
     private class MyWifiAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -521,16 +498,6 @@ public class StartWifiConfigureFragment extends BaseMvpFragment<MainPresenter, M
             mSettingsWifiBean = mWifiBeanList.get(position);
             final ScanResult scanResult = mSettingsWifiBean.getResult();
             final int status = mSettingsWifiBean.getStatus();
-//            LogUtil.d(TAG,  "onBindViewHolder status = " + status);
-//            if(mPswSureSsid != null && scanResult.SSID != null){
-//                if(mPswSureSsid.equals(scanResult.SSID)){
-//                    mHolder.connectWifiLoading.setVisibility(View.VISIBLE);
-//                    mHolder.connectWifiLoading.setImageResource(R.drawable.settings_wifi_connecting_gif);
-//                    mAnimationDrawable = (AnimationDrawable) mHolder.connectWifiLoading.getDrawable();
-//                    mAnimationDrawable.start();
-//                    mHolder.connectWifiIcon.setVisibility(View.GONE);
-//                }
-//            }
             mHolder.wifiSsid.setText(scanResult.SSID);
             level = WifiManager.calculateSignalLevel(scanResult.level,5);
             if(scanResult.capabilities.contains("WEP")||scanResult.capabilities.contains("PSK") || scanResult.capabilities.contains("EAP")){
@@ -623,19 +590,6 @@ public class StartWifiConfigureFragment extends BaseMvpFragment<MainPresenter, M
                                 }
                                 if (isWifi) {
                                     LogUtil.d(TAG, "无密码wifi连接成功");
-//                                    if (checkPackInfo("com.hoge.android.app.nanchangbaoye")) {
-//                                        LogUtil.d(TAG, "checkPackInfo OK");
-//                                        boolean openPackage = openPackage(getApplicationContext(),"com.hoge.android.app.nanchangbaoye");
-//                                        LogUtil.d(TAG, "openPackage = " + openPackage);
-//
-//                                    } else {
-//                                        LogUtil.d(TAG, "checkPackInfo fail");
-//
-//                                        Toast.makeText(getApplicationContext(), "没有安装" + "",Toast.LENGTH_LONG).show();
-//
-//                                    }
-
-//                                    Toast.makeText(SettingsWifiActivity.this, "连接成功！",Toast.LENGTH_SHORT).show();
                                 } else {
                                     Toast.makeText(getContext(), "连接失败！", Toast.LENGTH_SHORT).show();
                                 }

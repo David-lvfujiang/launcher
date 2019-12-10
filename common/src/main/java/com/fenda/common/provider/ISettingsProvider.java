@@ -12,5 +12,7 @@ import com.alibaba.android.arouter.facade.template.IProvider;
 public interface ISettingsProvider extends IProvider {
     void deviceStatus(Context context);
 
+    void queryDeviceInfo(Context context,boolean isSendEvent);
+
     void syncSettingsContacts();
 }

@@ -21,6 +21,7 @@
             android:layout_width="120px"
             android:layout_height="120px"
 
+            android:src="@mipmap/common_quan"
             />
 
         <!--<com.fenda.ai.view.WaveView-->

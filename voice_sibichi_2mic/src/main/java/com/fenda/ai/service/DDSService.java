@@ -124,6 +124,8 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
         }
         //初始化广播和语音弹窗
         initReceiverAndSpeechView();
+        EventBusUtils.register(this);
+        init();
 //        setForeground();
         super.onCreate();
     }
@@ -182,8 +184,7 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        init();
-        Log.e(TAG, "onStartCommand: ==============" );
+        LogUtil.e("onStartCommand =====================================");
         return Service.START_STICKY;
     }
 
@@ -233,7 +234,6 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                 e.printStackTrace();
             }
         } else {
-            LogUtil.e("授权失败");
             showToast("授权失败!");
         }
     }
@@ -279,23 +279,10 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
     private BroadcastReceiver authReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
-                NetworkInfo info = intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
-                if (info != null) {
-                    //如果当前的网络连接成功并且网络连接可用
-                    if (NetworkInfo.State.CONNECTED == info.getState() && info.isAvailable()) {
-                        if (info.getType() == ConnectivityManager.TYPE_WIFI) {
-//                            doauth_when_net_ok();
-//                            LogUtil.i("TAG",  "FD------连上");
-                        }
-                    } else {
-//                        LogUtil.i("TAG",  "FD-------断开");
-                    }
-                }
-            } else if (TextUtils.equals(intent.getAction(), VoiceConstant.ACTION_AUTH_SUCCESS)) {
-                LogUtil.i("FD------auth ok 2");
+            if (TextUtils.equals(intent.getAction(), VoiceConstant.ACTION_AUTH_SUCCESS)) {
+                LogUtil.i("FD------auth ok 2222222222222222");
                 sendInitSuccessEventBus();
-                PlayWelcomeTTS();
+//                PlayWelcomeTTS();
                 showToast("授权成功!");
 
             } else if (TextUtils.equals(intent.getAction(), VoiceConstant.ACTION_AUTH_FAILED)) {
@@ -329,15 +316,26 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                         }
                     }else if ("查询天气".equals(intentName)  ){
                         JSONObject widgetObject = dmJson.optJSONObject("widget");
-
-                        if (BaseApplication.getBaseInstance().isRequestWeather()){
+                        JSONObject nlu = jsonObject.optJSONObject("nlu");
+                        JSONObject semantics = nlu.optJSONObject("semantics");
+                        JSONObject request = semantics.optJSONObject("request");
+                        JSONArray slots = request.optJSONArray("slots");
+                        String name = "";
+                        String value = "";
+                        if (slots != null){
+                            JSONObject key = slots.getJSONObject(0);
+                            if (key != null){
+                                name = key.optString("name");
+                                value = key.optString("value");
+                            }
+                        }
+                        if ("天气".equals(value) && "text".equals(name)){
                             if (weatherProvider == null) {
                                 weatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
                             }
                             if (weatherProvider != null) {
                                 weatherProvider.weatherFromVoiceControlToMainPage(widgetObject.toString());
                             }
-                            BaseApplication.getBaseInstance().setRequestWeather(false);
                             dmJson.put("nlg","");
                             dmJson.put("shouldEndSession",false);
                             jsonObject.put("ignore", true);
@@ -345,16 +343,31 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
                             dmJson.put("shouldEndSession",true);
                         }
 
-                    }else if ("播报新闻".equals(intentName) && BaseApplication.getBaseInstance().isRequestNews()){
+                    }else if ("播报新闻".equals(intentName)){
                         JSONObject widgetJson  = dmJson.optJSONObject("widget");
-                        IRecommendProvider recommendProvider = ARouter.getInstance().navigation(IRecommendProvider.class);
-                        if (recommendProvider != null){
-                            recommendProvider.requestRecommend(widgetJson);
+                        JSONObject nlu = jsonObject.optJSONObject("nlu");
+                        JSONObject semantics = nlu.optJSONObject("semantics");
+                        JSONObject request = semantics.optJSONObject("request");
+                        JSONArray slots = request.optJSONArray("slots");
+                        String name = "";
+                        String value = "";
+                        if (slots != null){
+                            JSONObject key = slots.getJSONObject(0);
+                            if (key != null){
+                                name = key.optString("name");
+                                value = key.optString("value");
+                            }
                         }
-                        dmJson.put("nlg","");
-                        dmJson.put("shouldEndSession",false);
-                        jsonObject.put("ignore", true);
-                        BaseApplication.getBaseInstance().setRequestNews(false);
+                        if ("播放新闻".equals(value) && "text".equals(name)){
+                            IRecommendProvider recommendProvider = ARouter.getInstance().navigation(IRecommendProvider.class);
+                            if (recommendProvider != null){
+                                recommendProvider.requestRecommend(widgetJson);
+                            }
+                            dmJson.put("nlg","");
+                            dmJson.put("shouldEndSession",false);
+                            jsonObject.put("ignore", true);
+                        }
+
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -417,7 +430,8 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
             e.printStackTrace();
         }
     }
-    
+
+
     /**
      * 认证广播
      */
@@ -507,11 +521,21 @@ public class DDSService extends Service implements DuiUpdateObserver.UpdateCallb
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void onEvent(Network network){
+        if (network.isNetwork()){
+            doauth_when_net_ok();
+        }
+
+
+    }
+
 
     @Override
     public void onDestroy() {
         super.onDestroy();
 
+        EventBusUtils.unregister(this);
         unregisterReceiver(mInitReceiver);
         if (mMessageObserver != null) {
             mMessageObserver.unregist();

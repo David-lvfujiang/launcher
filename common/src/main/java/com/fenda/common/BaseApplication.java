@@ -1,9 +1,12 @@
 package com.fenda.common;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkRequest;
 import android.support.multidex.MultiDex;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.fenda.common.network.NetworkCallbackImpl;
 import com.fenda.common.util.DensityUtil;
 import com.fenda.protocol.AppApplicaiton;
 import com.tencent.bugly.Bugly;
@@ -40,18 +43,6 @@ public class BaseApplication extends AppApplicaiton {
      */
     private boolean isRemindRing;
     /**
-     * 语音是否初始化成功
-     */
-    private boolean isVoiceInit;
-    /**
-     * 是否主动请求天气(不播报语音)
-     */
-    private boolean isRequestWeather;
-    /**
-     * 是否主动请求新闻(不播报语音)
-     */
-    private boolean isRequestNews;
-    /**
      * 是否在拨打电话
      */
     private boolean isCall;
@@ -64,6 +55,12 @@ public class BaseApplication extends AppApplicaiton {
      * 屏幕的高度
      */
     private int screenHeight;
+    /**
+     * 语音授权状态
+     */
+    private boolean voiceAuth;
+
+
 
 
 
@@ -88,6 +85,7 @@ public class BaseApplication extends AppApplicaiton {
 //        });
         screenWidth  = DensityUtil.getScreenWidth(this);
         screenHeight = DensityUtil.getScreenHeight(this);
+        initNetworkCallback();
 
 //        //待机界面
 //        ScreenSaverManager.init(this);
@@ -105,6 +103,17 @@ public class BaseApplication extends AppApplicaiton {
         Beta.installTinker();
     }
 
+
+    private void initNetworkCallback(){
+        NetworkCallbackImpl networkCallback = new NetworkCallbackImpl();
+        NetworkRequest request = new NetworkRequest.Builder().build();
+        ConnectivityManager cmgr = (ConnectivityManager) instance
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cmgr != null) {
+            cmgr.registerNetworkCallback(request,networkCallback);
+        }
+
+    }
 
 
     public static BaseApplication getBaseInstance() {
@@ -137,30 +146,7 @@ public class BaseApplication extends AppApplicaiton {
         isRemindRing = remindRing;
     }
 
-    public boolean isVoiceInit() {
-        return isVoiceInit;
-    }
 
-    public void setVoiceInit(boolean voiceInit) {
-        isVoiceInit = voiceInit;
-    }
-
-
-    public boolean isRequestWeather() {
-        return isRequestWeather;
-    }
-
-    public void setRequestWeather(boolean requestWeather) {
-        isRequestWeather = requestWeather;
-    }
-
-    public boolean isRequestNews() {
-        return isRequestNews;
-    }
-
-    public void setRequestNews(boolean requestNews) {
-        isRequestNews = requestNews;
-    }
 
     public boolean isCall() {
         return isCall;
@@ -184,5 +170,14 @@ public class BaseApplication extends AppApplicaiton {
 
     public void setScreenHeight(int screenHeight) {
         this.screenHeight = screenHeight;
+    }
+
+
+    public boolean isVoiceAuth() {
+        return voiceAuth;
+    }
+
+    public void setVoiceAuth(boolean voiceAuth) {
+        this.voiceAuth = voiceAuth;
     }
 }

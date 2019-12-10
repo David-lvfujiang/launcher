@@ -15,4 +15,7 @@ public interface IVoiceInitProvider extends IProvider {
 //    void initAuth(String authCode, String codeVerifier, String cliendId, String userId);
     void initAuth();
 
+
+    void PlayWelcomeTTS();
+
 }

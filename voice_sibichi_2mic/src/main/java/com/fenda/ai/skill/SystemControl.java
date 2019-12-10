@@ -26,8 +26,6 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.functions.Consumer;
 
-import static com.fenda.ai.VoiceConstant.MEDIA_STOP;
-import static com.fenda.ai.VoiceConstant.MUSIC_PKG;
 
 /**
  * Created by chuck.liuzhaopeng on 2019/6/24.

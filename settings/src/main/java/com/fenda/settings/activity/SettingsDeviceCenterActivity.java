@@ -170,7 +170,7 @@ public class SettingsDeviceCenterActivity extends BaseMvpActivity<SettingsPresen
 
     @Override
     public void unbindDeviceSuccess(BaseResponse response) {
-        startActivity(new Intent(SettingsDeviceCenterActivity.this, SettingsBindDeviceActivity.class));
+//        startActivity(new Intent(SettingsDeviceCenterActivity.this, SettingsBindDeviceActivity.class));
         LogUtil.d(TAG, "module unbind  ");
         finish();
     }

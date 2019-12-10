@@ -1,18 +1,12 @@
 package com.fenda.ai.skill;
 
 
-import android.util.Log;
 
 import com.aispeech.dui.plugin.iqiyi.IQiyiPlugin;
 import com.aispeech.dui.plugin.mediactrl.MediaCtrl;
 import com.aispeech.dui.plugin.mediactrl.MediaCtrlPlugin;
 import com.aispeech.dui.plugin.music.MusicPlugin;
 import com.fenda.ai.modle.ControlModel;
-import com.fenda.common.BaseApplication;
-
-import com.fenda.ai.VoiceConstant;
-import com.fenda.ai.modle.ControlModel;
-import com.fenda.common.BaseApplication;
 
 import java.util.HashMap;
 

@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by  Android Studio.
- * Author :   aviva.jiangjing
- * Date:   2019/11/19 17:53
+ * @Created by  Android Studio.
+ * @Author :   aviva.jiangjing
+ * @Date:   2019/11/19 17:53
  */
 public class HomepageWifiConnectedInfoActivity extends BaseMvpActivity {
     private static final String TAG = "SettingsWifiConnectedInfoActivity";
