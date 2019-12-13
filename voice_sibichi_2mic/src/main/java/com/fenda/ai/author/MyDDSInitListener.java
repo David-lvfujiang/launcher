@@ -360,38 +360,38 @@ public class MyDDSInitListener implements DDSInitListener {
     }
 
     private void initSpeakText() {
-//        CustomAudioBean bean = new CustomAudioBean();
-//        List<CustomAudioBean> beans = new ArrayList<>();
-//        //替换的tts播放文字
-//        bean.setName("在");
-//        //替换的音频
-//        bean.setPath(VoiceConstant.sVoiceDir+"/zai.pcm");
-//        beans.add(bean);
-//
-//        CustomAudioBean gsbean = new CustomAudioBean();
-//        gsbean.setName("干啥");
-//        gsbean.setPath(VoiceConstant.sVoiceDir+"/gansha.pcm");
-//        beans.add(gsbean);
-//
-//        CustomAudioBean llbean = new CustomAudioBean();
-//        llbean.setName("来了");
-//        llbean.setPath(VoiceConstant.sVoiceDir+"/laile.pcm");
-//        beans.add(llbean);
-//
-//        CustomAudioBean nsbean = new CustomAudioBean();
-//        nsbean.setName("你说");
-//        nsbean.setPath(VoiceConstant.sVoiceDir+"/nishuo.pcm");
-//        beans.add(nsbean);
-//
-//        CustomAudioBean ssbean = new CustomAudioBean();
-//        ssbean.setName("啥事");
-//        ssbean.setPath(VoiceConstant.sVoiceDir+"/shashi.pcm");
-//        beans.add(ssbean);
+        CustomAudioBean bean = new CustomAudioBean();
+        List<CustomAudioBean> beans = new ArrayList<>();
+        //替换的tts播放文字
+        bean.setName("在");
+        //替换的音频
+        bean.setPath(VoiceConstant.sVoiceDir+"/zai.pcm");
+        beans.add(bean);
+
+        CustomAudioBean gsbean = new CustomAudioBean();
+        gsbean.setName("干啥");
+        gsbean.setPath(VoiceConstant.sVoiceDir+"/gansha.pcm");
+        beans.add(gsbean);
+
+        CustomAudioBean llbean = new CustomAudioBean();
+        llbean.setName("来了");
+        llbean.setPath(VoiceConstant.sVoiceDir+"/laile.pcm");
+        beans.add(llbean);
+
+        CustomAudioBean nsbean = new CustomAudioBean();
+        nsbean.setName("你说");
+        nsbean.setPath(VoiceConstant.sVoiceDir+"/nishuo.pcm");
+        beans.add(nsbean);
+
+        CustomAudioBean ssbean = new CustomAudioBean();
+        ssbean.setName("啥事");
+        ssbean.setPath(VoiceConstant.sVoiceDir+"/shashi.pcm");
+        beans.add(ssbean);
 
         try {
-//            DDS.getInstance().getAgent().getTTSEngine().setCustomAudio(beans);
+            DDS.getInstance().getAgent().getTTSEngine().setCustomAudio(beans);
             DDS.getInstance().getAgent().getTTSEngine().setMode(TTSEngine.CLOUD);
-//            DDS.getInstance().getAgent().getTTSEngine().setStyle("short");
+            DDS.getInstance().getAgent().getTTSEngine().setStyle("short");
         } catch (DDSNotInitCompleteException e) {
             e.printStackTrace();
         }

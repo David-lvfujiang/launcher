@@ -126,7 +126,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
     private ComponentName mAdminReceiver;
 
     private ContentProviderManager manager;
-    private boolean isWeather;
 
 
 
@@ -176,7 +175,6 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
                 mISettingsProvider.queryDeviceInfo(this,false);
             }
         }
-
 
 
     }
@@ -289,20 +287,21 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
             initProvider.initVoice();
         }
 
+
         if (mIWeatherProvider == null){
             mIWeatherProvider = ARouter.getInstance().navigation(IWeatherProvider.class);
         }
 //
 //        LogUtil.e("进入了Oncreate的initData");
 //
-//        if (mICallProvider != null) {
-//            mICallProvider.initSdk();
-//            Log.e("TAG", "初始化");
-//            leaveMessageProvider = (IAppLeaveMessageProvider) ARouter.getInstance().build(RouterPath.Leavemessage.LEAVEMESSAGE_SERVICE).navigation();
-//            if (leaveMessageProvider != null){
-//                leaveMessageProvider.initRongIMlistener();
-//            }
-//        }
+        if (mICallProvider != null) {
+            mICallProvider.initSdk();
+            Log.e("TAG", "初始化");
+            leaveMessageProvider = (IAppLeaveMessageProvider) ARouter.getInstance().build(RouterPath.Leavemessage.LEAVEMESSAGE_SERVICE).navigation();
+            if (leaveMessageProvider != null){
+                leaveMessageProvider.initRongIMlistener();
+            }
+        }
     }
 
     /**
@@ -789,4 +788,11 @@ public class HomePageActivity extends BaseMvpActivity<MainPresenter, MainModel> 
 
     //==============================================================================EventBus监听结束===================================================================================
 
+
+
+    //======================================== homepage未完成功能点击 =====================================
+
+    public void onPullOnclick(View v) {
+        ToastUtils.show("努力开发中，敬请期待。。。");
+    }
 }
